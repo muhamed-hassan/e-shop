@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:form id="deleteProductsForm" prependId="false">
+        <h1>Delete Products</h1> 
+        <h:dataTable cellpadding="5" cellspacing="5" 
+                     value="#{manageProductsBean.products}"
+                     var="product"
+                     class="table table-striped table-bordered"
+                     id="productsTable">
+            <h:column>
+                <f:facet name="header">
+                    Name
+                </f:facet>
+                <h:outputText value="#{product[1]}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    Price
+                </f:facet>
+                <h:outputText value="#{product[2]}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    Quantity
+                </f:facet>
+                <h:outputText value="#{product[3]}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    Category
+                </f:facet>
+                <h:outputText value="#{product[4]}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    Vendor
+                </f:facet>
+                <h:outputText value="#{product[5]}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    Action
+                </f:facet>
+                <h:commandButton value="Remove" class="btn-link"
+                                 action="#{manageProductsBean.deleteProduct(product[0], product[1])}"/>
+            </h:column>                            
+        </h:dataTable>        
+        <br />
+        <h:panelGrid columns="4" class="col-md-6 col-md-offset-3"> 
+
+            <h:commandButton value="First" action="#{manageProductsBean.first}" 
+                             disabled="#{manageProductsBean.paginator.cursor eq 0}"
+                             class="btn btn-primary btn-sm"/>
+
+            <h:commandButton value="Previous" action="#{manageProductsBean.previous}" 
+                             disabled="#{manageProductsBean.paginator.cursor eq 0}"
+                             class="btn btn-primary btn-sm"/>
+
+            <h:commandButton value="Next" action="#{manageProductsBean.next}" 
+                             disabled="#{(manageProductsBean.paginator.cursor eq 
+                                         (manageProductsBean.paginator.dataSize - manageProductsBean.paginator.chunkSize))
+                                         or
+                                         (manageProductsBean.paginator.cursor eq 
+                                         ((manageProductsBean.paginator.dataSize - (manageProductsBean.paginator.dataSize % manageProductsBean.paginator.chunkSize))))}"
+                             class="btn btn-primary btn-sm"/>
+
+            <h:commandButton value="Last" action="#{manageProductsBean.last}" 
+                             disabled="#{(manageProductsBean.paginator.cursor eq 
+                                         (manageProductsBean.paginator.dataSize - manageProductsBean.paginator.chunkSize))
+                                         or
+                                         (manageProductsBean.paginator.cursor eq 
+                                         ((manageProductsBean.paginator.dataSize - (manageProductsBean.paginator.dataSize % manageProductsBean.paginator.chunkSize))))}"
+                             class="btn btn-primary btn-sm"/>
+        </h:panelGrid>
+
+        <br /><br /><br />
+        <h:outputFormat rendered="#{requestScope.result eq 1}">
+            <div class="alert alert-success">
+                #{requestScope.msg}
+            </div>
+        </h:outputFormat>
+
+        <h:outputFormat rendered="#{requestScope.result eq -1}">
+            <div class="alert alert-danger">
+                #{requestScope.msg}
+            </div>
+        </h:outputFormat>
+    </h:form>
+</ui:composition>
+
+
+
+

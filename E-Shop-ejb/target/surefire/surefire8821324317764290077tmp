@@ -1,0 +1,9 @@
+#surefire
+#Sun Jun 26 09:34:50 EET 2016
+maven.ext.class.path=C\:\\Program Files\\NetBeans 8.0\\java\\maven-nblib\\netbeans-eventspy.jar
+user.dir=D\:\\J2EE Technologies Study\\Workspace\\E-Shop\\E-Shop-ejb
+file.encoding=UTF-8
+localRepository=C\:\\Users\\Muhamed\\.m2\\repository
+netbeansProjectMappings=
+basedir=D\:\\J2EE Technologies Study\\Workspace\\E-Shop\\E-Shop-ejb
+test=cairoshop.service.AdminServiceTest\#testAddCategory

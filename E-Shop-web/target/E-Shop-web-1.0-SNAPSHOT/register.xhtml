@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/templates/master-layout.xhtml">
+    <ui:define name="pageTitle">
+        Registration page
+    </ui:define>
+
+    <ui:define name="header">
+        <ui:include src="/sections/initial-header.xhtml"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="container">
+            <div class="row "> 
+                <div class="col-md-8 col-md-offset-2 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1">
+                    <div class="form-login">						
+                        <h:form id="regForm">
+                            <br />
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6">                                    
+                                    <div class="form-group input-group">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>                                        
+                                        <h:inputText id="realName" value="#{registerBean.customer.name}" required="true" 
+                                                     requiredMessage="Real name is required" validator="nameValidator"
+                                                     a:placeholder="Real name" class="form-control input-sm" />                                                                                        
+                                    </div>                                    
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+
+                                    <div class="form-group input-group">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-tag"></span></span>                                        
+                                        <h:inputText id="userName" value="#{registerBean.customer.userName}" required="true" 
+                                                     requiredMessage="User name is required" validator="nameValidator"
+                                                     a:placeholder="User name" class="form-control input-sm" />                                                                                        
+                                    </div>
+                                </div>
+                            </div>							
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group input-group">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>                                        
+                                        <h:inputText id="email" value="#{registerBean.customer.mail}" required="true" 
+                                                     requiredMessage="Email is required" validator="emailValidator"
+                                                     a:placeholder="Email" class="form-control input-sm" />                                                                                        
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group input-group">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>                                        
+                                        <h:inputSecret id="password" value="#{registerBean.customer.password}" required="true" 
+                                                       requiredMessage="Passsword is required" validator="passwordValidator"
+                                                       a:placeholder="Password" class="form-control input-sm" />                                                                                        
+                                    </div>
+                                </div>
+                            </div>						
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group input-group">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-home"></span></span>                                        
+                                        <h:inputText id="address" value="#{registerBean.contactDetails.address}" required="true" 
+                                                     requiredMessage="Address is required" validator="addressValidator"
+                                                     a:placeholder="Address" class="form-control input-sm" />                                                                                        
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group input-group">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>                                        
+                                        <h:inputText id="mobile" value="#{registerBean.contactDetails.phone}" required="true" 
+                                                     requiredMessage="Mobile is required" validator="mobileValidator"
+                                                     a:placeholder="Mobile" class="form-control input-sm" />                                                                                        
+                                    </div>
+                                </div>
+                            </div>					
+                            <br />
+                            <div class="form-group">                                
+                                <h:commandButton class="btn btn-primary col-xs-offset-4 col-xs-4" value="Register" 
+                                                 action="#{registerBean.register}" id="register" />
+                            </div>
+                            <br />
+                        </h:form>						
+                    </div>				   
+                </div>		
+            </div> 
+            <br /><br />
+            <ui:param name="errorMessages" value="#{facesContext.getMessageList()}" />
+            <h:outputFormat rendered="#{not empty errorMessages}">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading text-center">Errors summary</div>
+                            <div class="panel-body text-danger">
+                                <h:messages />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </h:outputFormat>
+        </div> 
+    </ui:define>           
+</ui:composition>
+
