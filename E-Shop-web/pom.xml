@@ -24,6 +24,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>E-Shop-ejb</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope> <!-- should'nt be package with WAR - ONLY with EAR in case of EAR existence -->
         </dependency>
         <dependency>
             <groupId>javax</groupId>
