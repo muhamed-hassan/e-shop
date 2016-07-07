@@ -3,7 +3,6 @@ System Description:
 
 === User module === 
 Used for login and registeration
-================================
 
 1 - Customer log in 
 as a user of role customer i can log in to the system and redirected to the shop home
@@ -18,7 +17,6 @@ as a guest I can register for a customer role
 ====================================================================================
 === Admin module === 
 Used for admin operations
-=========================
 
 4 - Manage categories 
 as an admin I can add/edit/delete categories
@@ -36,7 +34,6 @@ as an admin I can activate/deactivate users
 ====================================================================================
 === Customer module === 
 Used for customer operations
-============================
 
 8 - Shop Home 
 as a customer I can see list of all categories
@@ -60,20 +57,12 @@ as a customer I can add a prodcut to the favorites list
 as a customer I can see list of all products in my favorite list
 
 
-
 ====================================================================================
 ====================================================================================
 ====================================================================================
 Used tools and technologies:
 ############################
-IDE: NetBeans
-Building Tool: Maven
-Testing Framework: JUnit 
-DBMS: MySQL Server
-UI Framework: Twitter Bootstrap
-J2EE Techs: JSF, EJB, CDI, and JAX-RS
-Web Server: GlassFish
-ORM Framework: Hibernate
+NetBeans IDE, Maven Building Tool, JUnit for testing, MySQL Server DBMS, Twitter Bootstrap, JSF, EJB, JAX-RS, GlassFish AS, and Hibernate
 
 
 
