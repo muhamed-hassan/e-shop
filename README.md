@@ -2,7 +2,7 @@ System Description:
 ###################
 
 === User module === 
--> Used for login and registeration
+(Used for login and registeration)
 
 1 - Customer log in 
 as a user of role customer i can log in to the system and redirected to the shop home
