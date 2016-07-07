@@ -16,7 +16,7 @@ as a guest I can register for a customer role
 
 ====================================================================================
 === Admin module === 
-Used for admin operations
+(Used for admin operations)
 
 4 - Manage categories 
 as an admin I can add/edit/delete categories
@@ -33,7 +33,7 @@ as an admin I can activate/deactivate users
 
 ====================================================================================
 === Customer module === 
-Used for customer operations
+(Used for customer operations)
 
 8 - Shop Home 
 as a customer I can see list of all categories
@@ -57,8 +57,6 @@ as a customer I can add a prodcut to the favorites list
 as a customer I can see list of all products in my favorite list
 
 
-====================================================================================
-====================================================================================
 ====================================================================================
 Used tools and technologies:
 ############################
