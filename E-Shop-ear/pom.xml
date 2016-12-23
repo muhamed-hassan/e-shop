@@ -36,6 +36,13 @@
                 <configuration>
                     <version>6</version>
                     <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <modules>
+                        <webModule>
+                            <groupId>com.cairoshop</groupId>
+                            <artifactId>E-Shop-web</artifactId>
+                            <contextRoot>/cairo-shop</contextRoot>
+                        </webModule>
+                    </modules>
                 </configuration>
             </plugin>
         </plugins>
