@@ -18,7 +18,7 @@ public class HibernateInitializer
         HibernateUtil.getSessionFactory();
     }
 
-    public void destroy(@Observes @Destroyed(ApplicationScoped.class) Object init)
+    public void destroy(@Observes @Destroyed(ApplicationScoped.class) Object dest)
     {
         HibernateUtil.getSessionFactory().close();
     }
