@@ -16,8 +16,7 @@ import javax.faces.context.*;
  * ************************************************************************ */
 @ManagedBean
 @RequestScoped
-public class LoginBean
-{
+public class LoginBean {
 
     @EJB
     private UserService userService;
@@ -25,23 +24,19 @@ public class LoginBean
     private String email;
     private String password;
 
-    public String getEmail()
-    {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email)
-    {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password)
-    {
+    public void setPassword(String password) {
         this.password = password;
     }
 
@@ -49,36 +44,31 @@ public class LoginBean
      1 -> is customer [welcome customer]
      2 -> is admin [welcome admin]        
      */
-    public String login()
-    {
+    public String login() {
         //null | "notFound" | instanceof User
         Object result = userService.signIn(email, password);
         FacesContext context = FacesContext.getCurrentInstance();
 
-        if (result == null)
-        {
+        if (result == null) {
             ViewHandler viewHandler = context.getApplication().getViewHandler();
             context.setViewRoot(viewHandler.createView(context, "/WEB-INF/utils/error.xhtml"));
             context.getPartialViewContext().setRenderAll(true);
             context.renderResponse();
-        }
-        else if (result instanceof String) // not registered yet || wrong userName or password
+        } else if (result instanceof String) // not registered yet || wrong userName or password
         {
-            context.addMessage("login", new FacesMessage("Wrong email or password"));            
-        }
-        else if (result instanceof User) //true: active user
+            context.addMessage("login", new FacesMessage("Wrong email or password"));
+        } else if (result instanceof User) //true: active user
         {
             User user = (User) result;
 
-            Map<String, Object> sessionMap = context                    
-                                                .getExternalContext()
-                                                .getSessionMap();
-            
+            Map<String, Object> sessionMap = context
+                    .getExternalContext()
+                    .getSessionMap();
+
             sessionMap.put("currentUser", user);
             sessionMap.put("content", "/sections/initial-content.xhtml");
 
-            if (user instanceof Admin)
-            {
+            if (user instanceof Admin) {
                 return "admin";
             }
 

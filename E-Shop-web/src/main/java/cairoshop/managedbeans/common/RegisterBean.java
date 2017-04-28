@@ -16,8 +16,7 @@ import javax.faces.context.*;
  * ************************************************************************ */
 @ManagedBean
 @RequestScoped
-public class RegisterBean
-{
+public class RegisterBean {
 
     @EJB
     private UserService userService;
@@ -26,34 +25,28 @@ public class RegisterBean
     private ContactDetails contactDetails;
 
     @javax.annotation.PostConstruct
-    public void init()
-    {
+    public void init() {
         customer = new Customer();
         contactDetails = new ContactDetails();
     }
 
-    public Customer getCustomer()
-    {
+    public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomer(Customer customer)
-    {
+    public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 
-    public ContactDetails getContactDetails()
-    {
+    public ContactDetails getContactDetails() {
         return contactDetails;
     }
 
-    public void setContactDetails(ContactDetails contactDetails)
-    {
+    public void setContactDetails(ContactDetails contactDetails) {
         this.contactDetails = contactDetails;
     }
 
-    public String register()
-    {
+    public String register() {
         customer.setContactDetails(contactDetails);
         Object result = userService.signUp(customer);
 
@@ -63,10 +56,8 @@ public class RegisterBean
         {
             context.addMessage("register", new FacesMessage("Something went wrong - try again later"));
             return null;
-        }
-        else if( result instanceof String )
-        {
-            context.addMessage("register", new FacesMessage((String)result));
+        } else if (result instanceof String) {
+            context.addMessage("register", new FacesMessage((String) result));
             return null;
         }
 
@@ -74,7 +65,7 @@ public class RegisterBean
                 .getExternalContext()
                 .getSessionMap();
 
-        sessionMap.put("currentUser", (Customer)result);
+        sessionMap.put("currentUser", (Customer) result);
         sessionMap.put("content", "/sections/initial-content.xhtml");
 
         return "done";

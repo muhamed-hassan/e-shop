@@ -10,30 +10,25 @@ import javax.persistence.Embeddable;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Embeddable
-public class ContactDetails implements Serializable
-{
+public class ContactDetails implements Serializable {
 
     private String phone;
 
     private String address;
 
-    public String getPhone()
-    {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone)
-    {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    public String getAddress()
-    {
+    public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address)
-    {
+    public void setAddress(String address) {
         this.address = address;
     }
 

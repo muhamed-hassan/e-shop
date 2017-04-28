@@ -6,8 +6,7 @@ package cairoshop.helpers;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public enum SortDirection
-{
+public enum SortDirection {
 
     ASC, DESC
 }

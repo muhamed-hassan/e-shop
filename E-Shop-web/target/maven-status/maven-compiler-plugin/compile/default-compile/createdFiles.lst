@@ -13,6 +13,7 @@ cairoshop\validators\MobileValidator.class
 cairoshop\managedbeans\customer\ProductDetails.class
 cairoshop\managedbeans\customer\FavoriteProductsListBean.class
 cairoshop\managedbeans\customer\ListCategoriesBean.class
+cairoshop\configs\RestConfig.class
 cairoshop\ws\ImageResource.class
 cairoshop\managedbeans\admin\ManageProductsBean.class
 cairoshop\validators\TypeNameValidator.class

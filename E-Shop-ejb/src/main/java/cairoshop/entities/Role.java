@@ -10,8 +10,7 @@ import javax.persistence.*;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Entity
-public class Role implements Serializable
-{
+public class Role implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,38 +18,31 @@ public class Role implements Serializable
 
     private String name;
 
-    public Role()
-    {
+    public Role() {
     }
 
-    public Role(String name)
-    {
+    public Role(String name) {
         this.name = name;
     }
 
-    public Integer getId()
-    {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id)
-    {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Role{" + "id=" + id + ", name=" + name + '}';
     }
 

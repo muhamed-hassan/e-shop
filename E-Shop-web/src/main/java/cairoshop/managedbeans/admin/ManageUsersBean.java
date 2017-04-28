@@ -18,8 +18,7 @@ import javax.faces.context.*;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class ManageUsersBean implements Serializable, NavigationRule
-{
+public class ManageUsersBean implements Serializable, NavigationRule {
 
     @EJB
     private AdminService adminService;
@@ -32,26 +31,21 @@ public class ManageUsersBean implements Serializable, NavigationRule
     // =========================================================================
     // =======> getters and setters
     // =========================================================================    
-    public List<Customer> getCustomers()
-    {
+    public List<Customer> getCustomers() {
         return customers;
     }
 
     // =========================================================================
     // =======> Change users state
     // =========================================================================    
-    public void activate(Customer c)
-    {
+    public void activate(Customer c) {
         Integer cID = c.getId();
 
         int status = (adminService.activate(cID) ? 1 : -1);
 
-        if (status == 1)
-        {
-            for (Customer tmp : customers)
-            {
-                if (tmp.getId() == cID)
-                {
+        if (status == 1) {
+            for (Customer tmp : customers) {
+                if (tmp.getId() == cID) {
                     c.setActive(true);
                     break;
                 }
@@ -64,21 +58,17 @@ public class ManageUsersBean implements Serializable, NavigationRule
                 .getRequestMap();
         reqMap.put("result", status);
         String msg = ((status == 1) ? c.getName() + " updated successfully." : "Something went wrong - please try again later.");
-        reqMap.put("msg", msg);               
+        reqMap.put("msg", msg);
     }
 
-    public void deactivate(Customer c)
-    {
+    public void deactivate(Customer c) {
         Integer cID = c.getId();
 
         int status = (adminService.deactivate(cID) ? 1 : -1);
 
-        if (status == 1)
-        {
-            for (Customer tmp : customers)
-            {
-                if (tmp.getId() == cID)
-                {
+        if (status == 1) {
+            for (Customer tmp : customers) {
+                if (tmp.getId() == cID) {
                     c.setActive(false);
                     break;
                 }
@@ -97,48 +87,39 @@ public class ManageUsersBean implements Serializable, NavigationRule
     // =========================================================================
     // =======> Pagination
     // =========================================================================
-    public Paginator getPaginator()
-    {
+    public Paginator getPaginator() {
         return paginator;
     }
 
-    public void setPaginator(Paginator paginator)
-    {
+    public void setPaginator(Paginator paginator) {
         this.paginator = paginator;
     }
 
-    public void next()
-    {
+    public void next() {
         customers = adminService.viewCustomers(paginator.getCursor() + 5);
         paginator.setCursor(paginator.getCursor() + 5);
         paginator.setChunkSize(customers.size());
     }
 
-    public void previous()
-    {
+    public void previous() {
         customers = adminService.viewCustomers(paginator.getCursor() - 5);
         paginator.setCursor(paginator.getCursor() - 5);
         paginator.setChunkSize(customers.size());
     }
 
-    public void first()
-    {
+    public void first() {
         paginator.setCursor(0);
         customers = adminService.viewCustomers(paginator.getCursor());
         paginator.setChunkSize(customers.size());
     }
 
-    public void last()
-    {
+    public void last() {
         Integer dataSize = adminService.getCustomersCount();
         Integer chunkSize = paginator.getChunkSize();
 
-        if ((dataSize % chunkSize) == 0)
-        {
+        if ((dataSize % chunkSize) == 0) {
             paginator.setCursor(dataSize - chunkSize);
-        }
-        else
-        {
+        } else {
             paginator.setCursor(dataSize - (dataSize % chunkSize));
         }
 
@@ -146,8 +127,7 @@ public class ManageUsersBean implements Serializable, NavigationRule
         paginator.setChunkSize(customers.size());
     }
 
-    public void resetPaginator()
-    {
+    public void resetPaginator() {
         paginator.setDataSize(adminService.getCustomersCount());
         paginator.setCursor(0);
         customers = adminService.viewCustomers(paginator.getCursor());
@@ -158,10 +138,8 @@ public class ManageUsersBean implements Serializable, NavigationRule
     // =======> Navigation
     // =========================================================================
     @Override
-    public void navigate(String destination)
-    {
-        if (customers == null || customers.isEmpty())
-        {
+    public void navigate(String destination) {
+        if (customers == null || customers.isEmpty()) {
             Map<String, Object> sessionMap = FacesContext
                     .getCurrentInstance()
                     .getExternalContext()
@@ -179,6 +157,5 @@ public class ManageUsersBean implements Serializable, NavigationRule
                 .getSessionMap()
                 .put("content", "/admin/manage-users/manage-users.xhtml");
     }
-    
-    
+
 }

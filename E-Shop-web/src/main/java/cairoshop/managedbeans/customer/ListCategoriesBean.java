@@ -18,8 +18,7 @@ import javax.faces.event.*;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class ListCategoriesBean implements Serializable
-{
+public class ListCategoriesBean implements Serializable {
 
     @EJB
     private CustomerService customerService;
@@ -32,61 +31,50 @@ public class ListCategoriesBean implements Serializable
     // =========================================================================
     // =======> getters and setters
     // =========================================================================
-    public List<Category> getCategories()
-    {
+    public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories)
-    {
+    public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
 
     // =========================================================================
     // =======> Pagination
     // =========================================================================
-    public Paginator getPaginator()
-    {
+    public Paginator getPaginator() {
         return paginator;
     }
 
-    public void setPaginator(Paginator paginator)
-    {
+    public void setPaginator(Paginator paginator) {
         this.paginator = paginator;
     }
 
-    public void next()
-    {
+    public void next() {
         categories = customerService.viewCategories(paginator.getCursor() + 5);
         paginator.setCursor(paginator.getCursor() + 5);
         paginator.setChunkSize(categories.size());
     }
 
-    public void previous()
-    {
+    public void previous() {
         categories = customerService.viewCategories(paginator.getCursor() - 5);
         paginator.setCursor(paginator.getCursor() - 5);
         paginator.setChunkSize(categories.size());
     }
 
-    public void first()
-    {
+    public void first() {
         paginator.setCursor(0);
         categories = customerService.viewCategories(paginator.getCursor());
         paginator.setChunkSize(categories.size());
     }
 
-    public void last()
-    {
+    public void last() {
         Integer dataSize = customerService.getCategoriesCount();
         Integer chunkSize = paginator.getChunkSize();
 
-        if ((dataSize % chunkSize) == 0)
-        {
+        if ((dataSize % chunkSize) == 0) {
             paginator.setCursor(dataSize - chunkSize);
-        }
-        else
-        {
+        } else {
             paginator.setCursor(dataSize - (dataSize % chunkSize));
         }
 
@@ -94,8 +82,7 @@ public class ListCategoriesBean implements Serializable
         paginator.setChunkSize(categories.size());
     }
 
-    public void resetPaginator(ActionEvent event)
-    {
+    public void resetPaginator(ActionEvent event) {
         Integer count = customerService.getCategoriesCount();
 
         paginator.setDataSize(count);
@@ -108,10 +95,8 @@ public class ListCategoriesBean implements Serializable
     // =========================================================================
     // =======> Navigation
     // =========================================================================
-    public void navigate()
-    {
-        if (categories == null || categories.isEmpty())
-        {
+    public void navigate() {
+        if (categories == null || categories.isEmpty()) {
             Map<String, Object> sessionMap = FacesContext
                     .getCurrentInstance()
                     .getExternalContext()

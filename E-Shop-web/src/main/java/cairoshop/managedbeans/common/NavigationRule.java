@@ -6,8 +6,7 @@ package cairoshop.managedbeans.common;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface NavigationRule
-{
+public interface NavigationRule {
 
     void navigate(String destination);
 

@@ -5,6 +5,7 @@ import cairoshop.managedbeans.common.*;
 import cairoshop.service.*;
 import java.io.*;
 import java.util.*;
+import javax.annotation.PostConstruct;
 import javax.ejb.*;
 import javax.faces.bean.*;
 import javax.faces.context.*;
@@ -18,8 +19,7 @@ import javax.faces.event.*;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class ListProductsBean implements Serializable
-{
+public class ListProductsBean implements Serializable {
 
     @EJB
     private CustomerService customerService;
@@ -36,11 +36,9 @@ public class ListProductsBean implements Serializable
     // =========================================================================
     // =======> helpers
     // =========================================================================
-    @javax.annotation.PostConstruct
-    public void init()
-    {        
-        if (categories == null || vendors == null)
-        {
+    @PostConstruct
+    public void init() {
+        if (categories == null || vendors == null) {
             categories = customerService.getAllCategories();
             vendors = customerService.getAllVendors();
 
@@ -59,61 +57,50 @@ public class ListProductsBean implements Serializable
     // =========================================================================
     // =======> getters and setters
     // =========================================================================
-    public List<Object[]> getProducts()
-    {
+    public List<Object[]> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Object[]> products)
-    {
+    public void setProducts(List<Object[]> products) {
         this.products = products;
     }
 
-    public List<Category> getCategories()
-    {
+    public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories)
-    {
+    public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
 
-    public List<Vendor> getVendors()
-    {
+    public List<Vendor> getVendors() {
         return vendors;
     }
 
-    public void setVendors(List<Vendor> vendors)
-    {
+    public void setVendors(List<Vendor> vendors) {
         this.vendors = vendors;
     }
 
-    public Category getSelectedCategory()
-    {
+    public Category getSelectedCategory() {
         return selectedCategory;
     }
 
-    public void setSelectedCategory(Category selectedCategory)
-    {
+    public void setSelectedCategory(Category selectedCategory) {
         this.selectedCategory = selectedCategory;
     }
 
-    public Vendor getSelectedVendor()
-    {
+    public Vendor getSelectedVendor() {
         return selectedVendor;
     }
 
-    public void setSelectedVendor(Vendor selectedVendor)
-    {
+    public void setSelectedVendor(Vendor selectedVendor) {
         this.selectedVendor = selectedVendor;
     }
 
     // =========================================================================
     // =======> onSelect 
     // =========================================================================
-    public void loadProductsOfCategory(ValueChangeEvent e)
-    {
+    public void loadProductsOfCategory(ValueChangeEvent e) {
         Map<String, Object> sessionMap = FacesContext
                 .getCurrentInstance()
                 .getExternalContext()
@@ -121,10 +108,8 @@ public class ListProductsBean implements Serializable
         selectedCategory.setId((Integer) e.getNewValue());
 
         List<Category> categories = (List<Category>) sessionMap.get("categoriesList");
-        for (Category c : categories)
-        {
-            if (selectedCategory.getId() == c.getId())
-            {
+        for (Category c : categories) {
+            if (selectedCategory.getId() == c.getId()) {
                 selectedCategory.setName(c.getName());
                 break;
             }
@@ -132,8 +117,7 @@ public class ListProductsBean implements Serializable
 
         resetPaginator(selectedCategory);
 
-        if (products == null || products.isEmpty())
-        {
+        if (products == null || products.isEmpty()) {
             sessionMap.put("result", -2);
             sessionMap.put("content", "/sections/result.xhtml");
             sessionMap.put("msg", "Category (" + selectedCategory.getName() + ") has no products to display");
@@ -144,8 +128,7 @@ public class ListProductsBean implements Serializable
         sessionMap.put("selected", "category");
     }
 
-    public void loadProductsOfVendor(ValueChangeEvent e)
-    {
+    public void loadProductsOfVendor(ValueChangeEvent e) {
         Map<String, Object> sessionMap = FacesContext
                 .getCurrentInstance()
                 .getExternalContext()
@@ -153,10 +136,8 @@ public class ListProductsBean implements Serializable
         selectedVendor.setId((Integer) e.getNewValue());
 
         List<Vendor> vendors = (List<Vendor>) sessionMap.get("vendorsList");
-        for (Vendor v : vendors)
-        {
-            if (selectedVendor.getId() == v.getId())
-            {
+        for (Vendor v : vendors) {
+            if (selectedVendor.getId() == v.getId()) {
                 selectedVendor.setName(v.getName());
                 break;
             }
@@ -164,8 +145,7 @@ public class ListProductsBean implements Serializable
 
         resetPaginator(selectedVendor);
 
-        if (products == null || products.isEmpty())
-        {
+        if (products == null || products.isEmpty()) {
             sessionMap.put("result", -2);
             sessionMap.put("content", "/sections/result.xhtml");
             sessionMap.put("msg", "Vendor (" + selectedVendor.getName() + ") has no products to display");
@@ -179,48 +159,39 @@ public class ListProductsBean implements Serializable
     // =========================================================================
     // =======> Pagination
     // =========================================================================
-    public Paginator getPaginator()
-    {
+    public Paginator getPaginator() {
         return paginator;
     }
 
-    public void setPaginator(Paginator paginator)
-    {
+    public void setPaginator(Paginator paginator) {
         this.paginator = paginator;
     }
 
-    public void next(String selected)
-    {
+    public void next(String selected) {
         products = customerService.viewProductsIn(((selected.equals("vendor") ? selectedVendor : selectedCategory)), paginator.getCursor() + 5);
         paginator.setCursor(paginator.getCursor() + 5);
         paginator.setChunkSize(products.size());
     }
 
-    public void previous(String selected)
-    {
+    public void previous(String selected) {
         products = customerService.viewProductsIn(((selected.equals("vendor") ? selectedVendor : selectedCategory)), paginator.getCursor() - 5);
         paginator.setCursor(paginator.getCursor() - 5);
         paginator.setChunkSize(products.size());
     }
 
-    public void first(String selected)
-    {
+    public void first(String selected) {
         paginator.setCursor(0);
         products = customerService.viewProductsIn(((selected.equals("vendor") ? selectedVendor : selectedCategory)), paginator.getCursor());
         paginator.setChunkSize(products.size());
     }
 
-    public void last(String selected)
-    {
+    public void last(String selected) {
         Integer dataSize = customerService.getProductsCount(((selected.equals("vendor") ? selectedVendor : selectedCategory)));
         Integer chunkSize = paginator.getChunkSize();
 
-        if ((dataSize % chunkSize) == 0)
-        {
+        if ((dataSize % chunkSize) == 0) {
             paginator.setCursor(dataSize - chunkSize);
-        }
-        else
-        {
+        } else {
             paginator.setCursor(dataSize - (dataSize % chunkSize));
         }
 
@@ -228,8 +199,7 @@ public class ListProductsBean implements Serializable
         paginator.setChunkSize(products.size());
     }
 
-    private void resetPaginator(Object object)
-    {
+    private void resetPaginator(Object object) {
         paginator.setDataSize(customerService.getProductsCount(object));
         paginator.setCursor(0);
         products = customerService.viewProductsIn(object, paginator.getCursor());

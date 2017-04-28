@@ -17,9 +17,8 @@ import javax.faces.context.*;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class FavoriteProductsListBean implements Serializable
-{
-    
+public class FavoriteProductsListBean implements Serializable {
+
     @EJB
     private CustomerService customerService;
 
@@ -27,35 +26,30 @@ public class FavoriteProductsListBean implements Serializable
     private Paginator paginator;
 
     private List<Object[]> products;
-    
+
     private Customer c;
-    
-    
+
     // =========================================================================
     // =======> getters and setters
     // =========================================================================
-    public List<Object[]> getProducts()
-    {
+    public List<Object[]> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Object[]> products)
-    {
+    public void setProducts(List<Object[]> products) {
         this.products = products;
     }
 
     // =========================================================================
     // =======> Navigation
     // =========================================================================
-    public void navigate()
-    {
+    public void navigate() {
         Map<String, Object> sessionMap = FacesContext
-                    .getCurrentInstance()
-                    .getExternalContext()
-                    .getSessionMap();
-        
-        if (products == null || products.isEmpty())
-        {
+                .getCurrentInstance()
+                .getExternalContext()
+                .getSessionMap();
+
+        if (products == null || products.isEmpty()) {
             sessionMap.put("result", -2);
             sessionMap.put("msg", "You have no products in your favorite list");
             sessionMap.put("content", "/sections/result.xhtml");
@@ -65,52 +59,43 @@ public class FavoriteProductsListBean implements Serializable
 
         sessionMap.put("content", "/customer/favorite-products.xhtml");
     }
-    
+
     // =========================================================================
     // =======> Pagination
     // =========================================================================
-    public Paginator getPaginator()
-    {
+    public Paginator getPaginator() {
         return paginator;
     }
 
-    public void setPaginator(Paginator paginator)
-    {
+    public void setPaginator(Paginator paginator) {
         this.paginator = paginator;
     }
 
-    public void next()
-    {
+    public void next() {
         products = customerService.viewMyFavoriteList(c, paginator.getCursor() + 5);
         paginator.setCursor(paginator.getCursor() + 5);
         paginator.setChunkSize(products.size());
     }
 
-    public void previous()
-    {
+    public void previous() {
         products = customerService.viewMyFavoriteList(c, paginator.getCursor() - 5);
         paginator.setCursor(paginator.getCursor() - 5);
         paginator.setChunkSize(products.size());
     }
 
-    public void first()
-    {
+    public void first() {
         paginator.setCursor(0);
         products = customerService.viewMyFavoriteList(c, paginator.getCursor());
         paginator.setChunkSize(products.size());
     }
 
-    public void last()
-    {
+    public void last() {
         Integer dataSize = customerService.getFavoriteProductsCount(c.getId());
         Integer chunkSize = paginator.getChunkSize();
 
-        if ((dataSize % chunkSize) == 0)
-        {
+        if ((dataSize % chunkSize) == 0) {
             paginator.setCursor(dataSize - chunkSize);
-        }
-        else
-        {
+        } else {
             paginator.setCursor(dataSize - (dataSize % chunkSize));
         }
 
@@ -118,14 +103,13 @@ public class FavoriteProductsListBean implements Serializable
         paginator.setChunkSize(products.size());
     }
 
-    public void resetPaginator()
-    {
+    public void resetPaginator() {
         c = (Customer) FacesContext
-                            .getCurrentInstance()
-                            .getExternalContext()
-                            .getSessionMap()
-                            .get("currentUser");
-        
+                .getCurrentInstance()
+                .getExternalContext()
+                .getSessionMap()
+                .get("currentUser");
+
         paginator.setDataSize(customerService.getFavoriteProductsCount(c.getId()));
         paginator.setCursor(0);
         products = customerService.viewMyFavoriteList(c, paginator.getCursor());

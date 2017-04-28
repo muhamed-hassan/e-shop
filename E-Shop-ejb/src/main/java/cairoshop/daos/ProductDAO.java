@@ -10,8 +10,7 @@ import java.util.*;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface ProductDAO extends Common
-{
+public interface ProductDAO extends Common {
 
     boolean insert(Product product);
 
@@ -22,17 +21,17 @@ public interface ProductDAO extends Common
     boolean update(Integer pID, Integer cID);
 
     Product get(Integer id);
-    
+
     byte[] getImage(Integer pID);
 
     Integer getCount(Object object);
 
     Integer getFavoriteCount(Integer custId);
-    
+
     List<Integer> getLikedProducts(Integer custId);
-    
+
     boolean delete(Integer pID);
-    
+
     List<Object[]> getAll(String pName);
 
     List<Object[]> getAll(Integer startPosition);
@@ -40,5 +39,5 @@ public interface ProductDAO extends Common
     List<Object[]> getAll(Object object, Integer startPosition);
 
     List<Object[]> getAll(SortCriteria sortCriteria, SortDirection sortDirection, Integer startPosition);
-    
+
 }

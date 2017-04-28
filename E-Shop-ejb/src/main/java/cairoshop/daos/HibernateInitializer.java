@@ -10,16 +10,13 @@ import javax.enterprise.event.*;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @ApplicationScoped
-public class HibernateInitializer
-{
+public class HibernateInitializer {
 
-    public void init(@Observes @Initialized(ApplicationScoped.class) Object init)
-    {
+    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
         HibernateUtil.getSessionFactory();
     }
 
-    public void destroy(@Observes @Destroyed(ApplicationScoped.class) Object dest)
-    {
+    public void destroy(@Observes @Destroyed(ApplicationScoped.class) Object dest) {
         HibernateUtil.getSessionFactory().close();
     }
 }

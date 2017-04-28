@@ -13,17 +13,15 @@ import javax.faces.validator.*;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @FacesValidator
-public class AddressValidator implements Validator
-{
+public class AddressValidator implements Validator {
+
     @Override
-    public void validate(FacesContext fc, UIComponent uic, Object o) throws ValidatorException
-    {
+    public void validate(FacesContext fc, UIComponent uic, Object o) throws ValidatorException {
         if (!Pattern.compile(
                 "^[\\w\\.,][\\s\\w\\.,]*$")
-                .matcher((String) o).matches())
-        {
+                .matcher((String) o).matches()) {
             throw new ValidatorException(new FacesMessage("Address should contain letter, numbers, and dots"));
         }
     }
-    
+
 }

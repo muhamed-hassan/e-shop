@@ -13,26 +13,22 @@ import static org.junit.Assert.*;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public class CustomerServiceTest
-{
+public class CustomerServiceTest {
 
     private EJBContainer container;
     private CustomerService customerService;
 
-    public CustomerServiceTest()
-    {
+    public CustomerServiceTest() {
     }
 
     @Before
-    public void init() throws Exception
-    {
+    public void init() throws Exception {
         container = EJBContainer.createEJBContainer();
         customerService = (CustomerService) container.getContext().lookup("java:global/classes/CustomerService");
     }
 
     @After
-    public void clean()
-    {
+    public void clean() {
         container.close();
     }
 
@@ -40,8 +36,7 @@ public class CustomerServiceTest
      * Test of viewCategories method, of class CustomerService.
      */
     @Test
-    public void testViewCategories()
-    {
+    public void testViewCategories() {
         Integer startPosition = 0;
         List<Category> result = customerService.viewCategories(startPosition);
         assertNotNull(result);
@@ -51,8 +46,7 @@ public class CustomerServiceTest
      * Test of getCategoriesCount method, of class CustomerService.
      */
     @Test
-    public void testGetCategoriesCount()
-    {
+    public void testGetCategoriesCount() {
         Integer expResult = -1;
         Integer result = customerService.getCategoriesCount();
         assertNotEquals(expResult, result);
@@ -62,8 +56,7 @@ public class CustomerServiceTest
      * Test of viewProductsIn method, of class CustomerService.
      */
     @Test
-    public void testViewProductsIn()
-    {
+    public void testViewProductsIn() {
         Integer startPosition = 0;
 //        Category c = new Category();
 //        c.setId(3);
@@ -79,8 +72,7 @@ public class CustomerServiceTest
      * Test of getProductsCount method, of class CustomerService.
      */
     @Test
-    public void testGetProductsCount_Object()
-    {
+    public void testGetProductsCount_Object() {
 //        Category c = new Category();
 //        c.setId(3);
 
@@ -96,8 +88,7 @@ public class CustomerServiceTest
      * Test of sortProducts method, of class CustomerService.
      */
     @Test
-    public void testSortProducts()
-    {
+    public void testSortProducts() {
         SortCriteria sortCriteria = SortCriteria.NAME;
         SortDirection sortDirection = SortDirection.DESC;
         Integer startPosition = 0;
@@ -110,8 +101,7 @@ public class CustomerServiceTest
      * Test of findProductByName method, of class CustomerService.
      */
     @Test
-    public void testFindProductByName()
-    {
+    public void testFindProductByName() {
         String pName = "galaxy";
         List result = customerService.findProductByName(pName);
         assertNotNull(result);
@@ -121,8 +111,7 @@ public class CustomerServiceTest
      * Test of getProductDetails method, of class CustomerService.
      */
     @Test
-    public void testGetProductDetails()
-    {
+    public void testGetProductDetails() {
         Integer pID = 4;
         Product result = customerService.getProductDetails(pID);
         assertNotNull(result);
@@ -132,8 +121,7 @@ public class CustomerServiceTest
      * Test of addProductToFavoriteList method, of class CustomerService.
      */
     @Test
-    public void testAddProductToFavoriteList()
-    {
+    public void testAddProductToFavoriteList() {
         Integer pID = 4;
         Integer cID = 3;
         boolean result = customerService.addProductToFavoriteList(pID, cID);
@@ -144,8 +132,7 @@ public class CustomerServiceTest
      * Test of viewMyFavoriteList method, of class CustomerService.
      */
     @Test
-    public void testViewMyFavoriteList()
-    {
+    public void testViewMyFavoriteList() {
         Customer customer = new Customer();
         customer.setId(3);
 
@@ -158,8 +145,7 @@ public class CustomerServiceTest
      * Test of getFavoriteProductsCount method, of class CustomerService.
      */
     @Test
-    public void testGetFavoriteProductsCount()
-    {
+    public void testGetFavoriteProductsCount() {
         Integer custId = 3;
         Integer expResult = -1;
         Integer result = customerService.getFavoriteProductsCount(custId);
@@ -170,8 +156,7 @@ public class CustomerServiceTest
      * Test of viewProducts method, of class CustomerService.
      */
     @Test
-    public void testViewProducts() throws Exception
-    {
+    public void testViewProducts() throws Exception {
         Integer startPosition = 0;
         List result = customerService.viewProducts(startPosition);
         assertNotNull(result);
@@ -181,8 +166,7 @@ public class CustomerServiceTest
      * Test of getProductsCount method, of class CustomerService.
      */
     @Test
-    public void testGetProductsCount()
-    {
+    public void testGetProductsCount() {
         Integer expResult = -1;
         Integer result = customerService.getProductsCount();
         assertNotEquals(expResult, result);
@@ -192,8 +176,7 @@ public class CustomerServiceTest
      * Test of getAllVendors method, of class CustomerService.
      */
     @Test
-    public void testGetAllVendors()
-    {
+    public void testGetAllVendors() {
         List<Vendor> result = customerService.getAllVendors();
         assertNotNull(result);
     }
@@ -202,8 +185,7 @@ public class CustomerServiceTest
      * Test of getAllCategories method, of class CustomerService.
      */
     @Test
-    public void testGetAllCategories() throws Exception
-    {
+    public void testGetAllCategories() throws Exception {
         List<Category> result = customerService.getAllCategories();
         assertNotNull(result);
     }
@@ -212,8 +194,7 @@ public class CustomerServiceTest
      * Test of getLikedProducts method, of class CustomerService.
      */
     @Test
-    public void testGetLikedProducts() throws Exception
-    {
+    public void testGetLikedProducts() throws Exception {
         Integer custId = 3;
         List<Integer> result = customerService.getLikedProducts(custId);
         assertNotNull(result);

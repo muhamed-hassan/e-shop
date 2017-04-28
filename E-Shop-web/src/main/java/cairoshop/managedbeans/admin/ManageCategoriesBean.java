@@ -17,8 +17,7 @@ import javax.faces.context.*;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class ManageCategoriesBean implements Serializable, NavigationRule
-{
+public class ManageCategoriesBean implements Serializable, NavigationRule {
 
     @EJB
     private AdminService adminService;
@@ -32,13 +31,11 @@ public class ManageCategoriesBean implements Serializable, NavigationRule
     // =========================================================================
     // =======> Add category
     // =========================================================================
-    public void createCategory()
-    {
+    public void createCategory() {
         category = new Category();
     }
 
-    public void addCategory()
-    {
+    public void addCategory() {
         int status = (adminService.addCategory(category) ? 1 : -1);
 
         Map<String, Object> sessionMap = FacesContext
@@ -60,38 +57,31 @@ public class ManageCategoriesBean implements Serializable, NavigationRule
     // =========================================================================
     // =======> Edit category
     // =========================================================================
-    public String onEdit(Category c)
-    {
+    public String onEdit(Category c) {
         Integer toEditId = c.getId();
         c.setOldValue(c.getName());
 
-        for (Category tmp : categories)
-        {
-            if (tmp.getId() == toEditId)
-            {
+        for (Category tmp : categories) {
+            if (tmp.getId() == toEditId) {
                 c.setCanEdit(true);
                 break;
             }
         }
-
+        
         return null; //stay on the same page
     }
 
-    public void editCategory(Category c)
-    {
+    public void editCategory(Category c) {
         Integer toEditId = c.getId();
 
-        for (Category tmp : categories)
-        {
-            if (tmp.getId() == toEditId)
-            {
+        for (Category tmp : categories) {
+            if (tmp.getId() == toEditId) {
                 c.setCanEdit(false); // for toggling purposes between input and output (text box)
                 break;
             }
         }
 
-        if (!c.getOldValue().equals(c.getName()))
-        {
+        if (!c.getOldValue().equals(c.getName())) {
             int status = (adminService.editCategory(c) ? 1 : -1);
 
             Map<String, Object> sessionMap = FacesContext
@@ -114,8 +104,7 @@ public class ManageCategoriesBean implements Serializable, NavigationRule
     // =========================================================================
     // =======> Delete categroy
     // =========================================================================
-    public void deleteCategory(Category c)
-    {
+    public void deleteCategory(Category c) {
         int status = (adminService.deleteCategory(c) ? 1 : -1);
 
         Map<String, Object> reqMap = FacesContext
@@ -129,8 +118,7 @@ public class ManageCategoriesBean implements Serializable, NavigationRule
 
         paginator.setDataSize(adminService.getCategoriesCount());
         categories = adminService.viewCategories(paginator.getCursor());
-        if (categories.isEmpty())
-        {
+        if (categories.isEmpty()) {
             previous();
         }
 
@@ -140,48 +128,39 @@ public class ManageCategoriesBean implements Serializable, NavigationRule
     // =========================================================================
     // =======> Pagination
     // =========================================================================
-    public Paginator getPaginator()
-    {
+    public Paginator getPaginator() {
         return paginator;
     }
 
-    public void setPaginator(Paginator paginator)
-    {
+    public void setPaginator(Paginator paginator) {
         this.paginator = paginator;
     }
 
-    public void next()
-    {
+    public void next() {
         categories = adminService.viewCategories(paginator.getCursor() + 5);
         paginator.setCursor(paginator.getCursor() + 5);
         paginator.setChunkSize(categories.size());
     }
 
-    public void previous()
-    {
+    public void previous() {
         categories = adminService.viewCategories(paginator.getCursor() - 5);
         paginator.setCursor(paginator.getCursor() - 5);
         paginator.setChunkSize(categories.size());
     }
 
-    public void first()
-    {
+    public void first() {
         paginator.setCursor(0);
         categories = adminService.viewCategories(paginator.getCursor());
         paginator.setChunkSize(categories.size());
     }
 
-    public void last()
-    {
+    public void last() {
         Integer dataSize = adminService.getCategoriesCount();
         Integer chunkSize = paginator.getChunkSize();
 
-        if ((dataSize % chunkSize) == 0)
-        {
+        if ((dataSize % chunkSize) == 0) {
             paginator.setCursor(dataSize - chunkSize);
-        }
-        else
-        {
+        } else {
             paginator.setCursor(dataSize - (dataSize % chunkSize));
         }
 
@@ -189,8 +168,7 @@ public class ManageCategoriesBean implements Serializable, NavigationRule
         paginator.setChunkSize(categories.size());
     }
 
-    public void resetPaginator()
-    {
+    public void resetPaginator() {
         paginator.setDataSize(adminService.getCategoriesCount());
         paginator.setCursor(0);
         categories = adminService.viewCategories(paginator.getCursor());
@@ -200,23 +178,19 @@ public class ManageCategoriesBean implements Serializable, NavigationRule
     // =========================================================================
     // =======> getters and setters
     // =========================================================================
-    public List<Category> getCategories()
-    {
+    public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories)
-    {
+    public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
 
-    public Category getCategory()
-    {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(Category category)
-    {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -224,18 +198,13 @@ public class ManageCategoriesBean implements Serializable, NavigationRule
     // =======> Navigation
     // =========================================================================
     @Override
-    public void navigate(String destination)
-    {
+    public void navigate(String destination) {
         String goTo = "/admin/";
 
-        if (destination.equals("addCategory"))
-        {
+        if (destination.equals("addCategory")) {
             goTo += "manage-categories/add-new-category.xhtml";
-        }
-        else
-        {
-            if (categories == null || categories.isEmpty())
-            {
+        } else {
+            if (categories == null || categories.isEmpty()) {
                 Map<String, Object> sessionMap = FacesContext
                         .getCurrentInstance()
                         .getExternalContext()
@@ -247,12 +216,9 @@ public class ManageCategoriesBean implements Serializable, NavigationRule
                 return;
             }
 
-            if (destination.equals("editCategory"))
-            {
+            if (destination.equals("editCategory")) {
                 goTo += "manage-categories/edit-category.xhtml";
-            }
-            else if (destination.equals("deleteCategory"))
-            {
+            } else if (destination.equals("deleteCategory")) {
                 goTo += "manage-categories/delete-category.xhtml";
             }
         }

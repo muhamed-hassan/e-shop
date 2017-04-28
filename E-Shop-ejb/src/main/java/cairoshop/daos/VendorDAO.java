@@ -9,8 +9,7 @@ import java.util.*;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface VendorDAO extends Common
-{
+public interface VendorDAO extends Common {
 
     boolean insert(Vendor vendor);
 

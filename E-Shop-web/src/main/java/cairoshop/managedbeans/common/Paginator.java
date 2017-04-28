@@ -11,40 +11,33 @@ import javax.faces.bean.*;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class Paginator implements Serializable
-{
+public class Paginator implements Serializable {
 
     private Integer cursor;
     private Integer dataSize;
     private Integer chunkSize;
 
-    public Integer getCursor()
-    {
+    public Integer getCursor() {
         return cursor;
     }
 
-    public void setCursor(Integer cursor)
-    {
+    public void setCursor(Integer cursor) {
         this.cursor = cursor;
     }
 
-    public Integer getDataSize()
-    {
+    public Integer getDataSize() {
         return dataSize;
     }
 
-    public void setDataSize(Integer dataSize)
-    {
+    public void setDataSize(Integer dataSize) {
         this.dataSize = dataSize;
     }
 
-    public Integer getChunkSize()
-    {
+    public Integer getChunkSize() {
         return chunkSize;
     }
 
-    public void setChunkSize(Integer chunkSize)
-    {
+    public void setChunkSize(Integer chunkSize) {
         this.chunkSize = chunkSize;
     }
 }

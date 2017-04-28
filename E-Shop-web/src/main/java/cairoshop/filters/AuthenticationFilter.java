@@ -11,39 +11,33 @@ import javax.servlet.http.*;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-@WebFilter(urlPatterns =
-{
-    "/customer/shop-home.jsf", "/admin/admin-home.jsf", "/login-pg.jsf"
-})
-public class AuthenticationFilter implements Filter
-{
+@WebFilter(urlPatterns
+        = {
+            "/customer/shop-home.jsf", "/admin/admin-home.jsf", "/login-pg.jsf"
+        })
+public class AuthenticationFilter implements Filter {
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException
-    {
+    public void init(FilterConfig filterConfig) throws ServletException {
 
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
-    {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpSession session = httpRequest.getSession();
         String requestPath = httpRequest.getServletPath();
 
-        switch (requestPath)
-        {
+        switch (requestPath) {
             case "/login-pg.jsf":
-                if (session.getAttribute("currentUser") != null)
-                {
+                if (session.getAttribute("currentUser") != null) {
                     httpRequest
                             .getRequestDispatcher("/WEB-INF/utils/forbidden.jsf")
                             .forward(request, response);
                 }
                 break;
             default:
-                if (session.getAttribute("currentUser") == null)
-                {
+                if (session.getAttribute("currentUser") == null) {
                     httpRequest
                             .getRequestDispatcher("/WEB-INF/utils/forbidden-access.jsf")
                             .forward(request, response);
@@ -54,8 +48,7 @@ public class AuthenticationFilter implements Filter
     }
 
     @Override
-    public void destroy()
-    {
+    public void destroy() {
 
     }
 

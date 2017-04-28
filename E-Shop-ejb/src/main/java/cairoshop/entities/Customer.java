@@ -33,19 +33,16 @@ import javax.persistence.*;
                     query = "SELECT p.id FROM Product p JOIN p.interestedUsers c WHERE c.id=:custId"
             )
         })
-public class Customer extends User
-{
+public class Customer extends User {
 
     @Embedded
     private ContactDetails contactDetails;
 
-    public ContactDetails getContactDetails()
-    {
+    public ContactDetails getContactDetails() {
         return contactDetails;
     }
 
-    public void setContactDetails(ContactDetails contactDetails)
-    {
+    public void setContactDetails(ContactDetails contactDetails) {
         this.contactDetails = contactDetails;
     }
 

@@ -24,16 +24,15 @@ import javax.persistence.*;
             @NamedQuery(
                     name = "Category.countProducts",
                     query = "SELECT COUNT(p.id) FROM Product p WHERE ((p.category.id=:cId) "
-                            + "AND (p.notDeleted=:flag))"
+                    + "AND (p.notDeleted=:flag))"
             ),
             @NamedQuery(
                     name = "Category.getProducts",
                     query = "SELECT p.id, p.name, p.price, p.quantity FROM Product p WHERE ((p.category.id=:catId) "
-                            + "AND (p.notDeleted=:flag))"
+                    + "AND (p.notDeleted=:flag))"
             )
         })
-public class Category implements Serializable
-{
+public class Category implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,78 +52,63 @@ public class Category implements Serializable
     @Transient
     private String oldValue;
 
-    public Category()
-    {
+    public Category() {
     }
 
-    public Category(String name)
-    {
+    public Category(String name) {
         this.name = name;
     }
 
-    public Integer getId()
-    {
+    public Integer getId() {
         return Id;
     }
 
-    public void setId(Integer Id)
-    {
+    public void setId(Integer Id) {
         this.Id = Id;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public Boolean getNotDeleted()
-    {
+    public Boolean getNotDeleted() {
         return notDeleted;
     }
 
-    public void setNotDeleted(Boolean notDeleted)
-    {
+    public void setNotDeleted(Boolean notDeleted) {
         this.notDeleted = notDeleted;
     }
 
-    public List<Product> getProducts()
-    {
+    public List<Product> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products)
-    {
+    public void setProducts(List<Product> products) {
         this.products = products;
     }
 
-    public Boolean getCanEdit()
-    {
+    public Boolean getCanEdit() {
         return canEdit;
     }
 
-    public void setCanEdit(Boolean canEdit)
-    {
+    public void setCanEdit(Boolean canEdit) {
         this.canEdit = canEdit;
     }
 
-    public String getOldValue()
-    {
+    public String getOldValue() {
         return oldValue;
     }
 
-    public void setOldValue(String oldValue)
-    {
+    public void setOldValue(String oldValue) {
         this.oldValue = oldValue;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Category{" + "Id=" + Id + ", name=" + name + ", notDeleted=" + notDeleted + '}';
     }
 }

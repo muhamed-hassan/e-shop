@@ -17,8 +17,7 @@ import javax.faces.context.*;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class FindProductBean implements Serializable
-{
+public class FindProductBean implements Serializable {
 
     @EJB
     private CustomerService customerService;
@@ -29,42 +28,36 @@ public class FindProductBean implements Serializable
     private String keyword;
     private List<Object[]> queryResult;
     private List<Object[]> ds;
-    
+
     // =========================================================================
     // =======> Getters and Setters
     // =========================================================================
-    public String getKeyword()
-    {
+    public String getKeyword() {
         return keyword;
     }
 
-    public List<Object[]> getQueryResult()
-    {
+    public List<Object[]> getQueryResult() {
         return queryResult;
     }
 
-    public void setQueryResult(List<Object[]> queryResult)
-    {
+    public void setQueryResult(List<Object[]> queryResult) {
         this.queryResult = queryResult;
     }
 
-    public void setKeyword(String keyword)
-    {
+    public void setKeyword(String keyword) {
         this.keyword = keyword;
     }
 
     // =========================================================================
     // =======> Navigation
     // =========================================================================
-    public void navigate()
-    {
+    public void navigate() {
         Map<String, Object> sessionMap = FacesContext
                 .getCurrentInstance()
                 .getExternalContext()
                 .getSessionMap();
 
-        if (ds == null || ds.isEmpty())
-        {
+        if (ds == null || ds.isEmpty()) {
             sessionMap.put("result", -2);
             sessionMap.put("msg", "No products found");
             sessionMap.put("content", "/sections/result.xhtml");
@@ -78,23 +71,19 @@ public class FindProductBean implements Serializable
     // =========================================================================
     // =======> Pagination
     // =========================================================================
-    public Paginator getPaginator()
-    {
+    public Paginator getPaginator() {
         return paginator;
     }
 
-    public void setPaginator(Paginator paginator)
-    {
+    public void setPaginator(Paginator paginator) {
         this.paginator = paginator;
     }
 
-    public void next()
-    {
+    public void next() {
         queryResult.clear();
         for (int startPosition = paginator.getCursor() + 5, iterator = 0;
-             iterator < 5 && startPosition < ds.size();
-             startPosition++, iterator++)
-        {
+                iterator < 5 && startPosition < ds.size();
+                startPosition++, iterator++) {
             queryResult.add(ds.get(startPosition));
         }
 
@@ -102,13 +91,11 @@ public class FindProductBean implements Serializable
         paginator.setChunkSize(queryResult.size());
     }
 
-    public void previous()
-    {
+    public void previous() {
         queryResult.clear();
         for (int startPosition = paginator.getCursor() - 5, iterator = 0;
-             iterator < 5 && startPosition < ds.size();
-             startPosition++, iterator++)
-        {
+                iterator < 5 && startPosition < ds.size();
+                startPosition++, iterator++) {
             queryResult.add(ds.get(startPosition));
         }
 
@@ -117,46 +104,38 @@ public class FindProductBean implements Serializable
 
     }
 
-    public void first()
-    {
+    public void first() {
         paginator.setCursor(0);
 
         queryResult.clear();
-        for (int startPosition = paginator.getCursor(); startPosition < 5; startPosition++)
-        {
+        for (int startPosition = paginator.getCursor(); startPosition < 5; startPosition++) {
             queryResult.add(ds.get(startPosition));
         }
 
         paginator.setChunkSize(queryResult.size());
     }
 
-    public void last()
-    {
+    public void last() {
         Integer dataSize = ds.size();
         Integer chunkSize = paginator.getChunkSize();
 
-        if ((dataSize % chunkSize) == 0)
-        {
+        if ((dataSize % chunkSize) == 0) {
             paginator.setCursor(dataSize - chunkSize);
-        }
-        else
-        {
+        } else {
             paginator.setCursor(dataSize - (dataSize % chunkSize));
         }
 
         queryResult.clear();
         for (int startPosition = paginator.getCursor(), iterator = 0;
-             iterator < 5 && startPosition < ds.size();
-             startPosition++, iterator++)
-        {
+                iterator < 5 && startPosition < ds.size();
+                startPosition++, iterator++) {
             queryResult.add(ds.get(startPosition));
         }
 
         paginator.setChunkSize(queryResult.size());
     }
 
-    public void resetPaginator()
-    {
+    public void resetPaginator() {
         ds = customerService.findProductByName(keyword);
 
         paginator.setDataSize(ds.size());
@@ -166,15 +145,13 @@ public class FindProductBean implements Serializable
 
         int limit = ((ds.size() > 5) ? 5 : ds.size());
 
-        for (int startPosition = paginator.getCursor(); startPosition < limit; startPosition++)
-        {
+        for (int startPosition = paginator.getCursor(); startPosition < limit; startPosition++) {
             queryResult.add(ds.get(startPosition));
         }
 
         paginator.setChunkSize(queryResult.size());
 
-        if (queryResult == null || queryResult.isEmpty())
-        {
+        if (queryResult == null || queryResult.isEmpty()) {
             Map<String, Object> sessionMap = FacesContext
                     .getCurrentInstance()
                     .getExternalContext()

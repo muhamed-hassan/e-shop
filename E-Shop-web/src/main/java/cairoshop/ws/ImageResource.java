@@ -1,11 +1,16 @@
 package cairoshop.ws;
 
 import cairoshop.daos.*;
-import java.util.regex.*;
+import com.cairoshop.logger.GlobalLogger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import javax.annotation.ManagedBean;
+import javax.annotation.PostConstruct;
 import javax.inject.*;
+import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import javax.ws.rs.core.Response.Status;
+import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 
  * Developed by: Mohamed Hassan	                                            *
@@ -14,11 +19,21 @@ import javax.ws.rs.core.Response.Status;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Path("/images")
-public class ImageResource
-{
+@ManagedBean
+public class ImageResource {
 
     @Inject
     private ProductDAO productDAO;
+
+    @Context
+    private ServletContext servletContext;
+
+    private GlobalLogger logger;
+
+    @PostConstruct
+    public void init() {
+        logger = GlobalLogger.getInstance();
+    }
 
     @GET
     @Path("/{id}")
@@ -26,17 +41,32 @@ public class ImageResource
             {
                 "image/jpg", "image/jpeg", "image/png"
             })
-    public Object getImage(@PathParam("id") String id)
-    {
-        if ((id == null) || (id.isEmpty()) || (!Pattern.compile(
-                "^[1-9][0-9]*$")
-                .matcher(id).matches()))
-        {
-            return Response.status(Status.BAD_REQUEST).build();
+    public Object getImage(@PathParam("id") String id) {
+
+        byte[] img = null;
+
+        try {
+            
+            img = productDAO.getImage(Integer.parseInt(id));
+                        
+            if ( img == null ) {
+                throw new RuntimeException("The default image will be loaded");
+            }
+
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "getImage failed" + " | " + ImageResource.class.getName() + "::getImage( )", ex);
+
+            java.nio.file.Path errPath = Paths.get(servletContext.getRealPath("/resources/img/empty.jpg"));
+
+            try {
+                img = Files.readAllBytes(errPath);
+            } catch (Exception e) {
+                logger.doLogging(Level.ERROR, "Error occured during reading default image" + " | " + ImageResource.class.getName() + "::getImage( )", ex);
+            }
         }
 
-        byte[] img = productDAO.getImage(Integer.parseInt(id));
-
-        return Response.ok(img).build();
+        return Response
+                .ok(img)
+                .build();
     }
 }

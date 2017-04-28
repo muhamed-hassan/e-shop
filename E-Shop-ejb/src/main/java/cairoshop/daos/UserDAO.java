@@ -9,8 +9,7 @@ import java.util.*;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface UserDAO extends Common
-{
+public interface UserDAO extends Common {
 
     boolean update(Integer userID, boolean flag);
 

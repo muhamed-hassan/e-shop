@@ -17,8 +17,7 @@ import javax.persistence.*;
         name = "User.find",
         query = "SELECT u FROM User u WHERE ((u.mail=:email) AND (u.password=:pwd) AND (u.active=:flag))"
 )
-public abstract class User implements Serializable
-{
+public abstract class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,79 +37,64 @@ public abstract class User implements Serializable
     @ManyToMany(mappedBy = "interestedUsers")
     private List<Product> favoriteProducts;
 
-    public Integer getId()
-    {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id)
-    {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getUserName()
-    {
+    public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName)
-    {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 
-    public String getMail()
-    {
+    public String getMail() {
         return mail;
     }
 
-    public void setMail(String mail)
-    {
+    public void setMail(String mail) {
         this.mail = mail;
     }
 
-    public Boolean getActive()
-    {
+    public Boolean getActive() {
         return active;
     }
 
-    public void setActive(Boolean active)
-    {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password)
-    {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public List<Product> getFavoriteProducts()
-    {
+    public List<Product> getFavoriteProducts() {
         return favoriteProducts;
     }
 
-    public void setFavoriteProducts(List<Product> favoriteProducts)
-    {
+    public void setFavoriteProducts(List<Product> favoriteProducts) {
         this.favoriteProducts = favoriteProducts;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "User{" + "id=" + id + ", name=" + name + ", userName=" + userName + ", mail=" + mail + ", active=" + active + '}';
     }
 

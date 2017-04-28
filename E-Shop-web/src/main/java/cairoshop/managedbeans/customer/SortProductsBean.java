@@ -17,15 +17,14 @@ import javax.faces.context.*;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class SortProductsBean implements Serializable
-{
+public class SortProductsBean implements Serializable {
 
     @EJB
     private CustomerService customerService;
-    
+
     @ManagedProperty("#{paginator}")
     private Paginator paginator;
-    
+
     private SortCriteria sortCriteria;
     private SortDirection sortDirection;
     private List<Object[]> products;
@@ -33,28 +32,24 @@ public class SortProductsBean implements Serializable
     // =========================================================================
     // =======> setters and getters
     // =========================================================================
-    public List<Object[]> getProducts()
-    {
+    public List<Object[]> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Object[]> products)
-    {
+    public void setProducts(List<Object[]> products) {
         this.products = products;
     }
 
     // =========================================================================
     // =======> Navigation
     // =========================================================================
-    public void navigate()
-    {
+    public void navigate() {
         Map<String, Object> sessionMap = FacesContext
-                    .getCurrentInstance()
-                    .getExternalContext()
-                    .getSessionMap();
-        
-        if (products == null || products.isEmpty())
-        {
+                .getCurrentInstance()
+                .getExternalContext()
+                .getSessionMap();
+
+        if (products == null || products.isEmpty()) {
             sessionMap.put("result", -2);
             sessionMap.put("msg", "No products to display");
             sessionMap.put("content", "/sections/result.xhtml");
@@ -64,52 +59,43 @@ public class SortProductsBean implements Serializable
 
         sessionMap.put("content", "/customer/sort-products.xhtml");
     }
-    
+
     // =========================================================================
     // =======> Pagination
     // =========================================================================
-    public Paginator getPaginator()
-    {
+    public Paginator getPaginator() {
         return paginator;
     }
 
-    public void setPaginator(Paginator paginator)
-    {
+    public void setPaginator(Paginator paginator) {
         this.paginator = paginator;
     }
 
-    public void next()
-    {
+    public void next() {
         products = customerService.sortProducts(sortCriteria, sortDirection, paginator.getCursor() + 5);
         paginator.setCursor(paginator.getCursor() + 5);
         paginator.setChunkSize(products.size());
     }
 
-    public void previous()
-    {
+    public void previous() {
         products = customerService.sortProducts(sortCriteria, sortDirection, paginator.getCursor() - 5);
         paginator.setCursor(paginator.getCursor() - 5);
         paginator.setChunkSize(products.size());
     }
 
-    public void first()
-    {
+    public void first() {
         paginator.setCursor(0);
         products = customerService.sortProducts(sortCriteria, sortDirection, paginator.getCursor());
         paginator.setChunkSize(products.size());
     }
 
-    public void last()
-    {
+    public void last() {
         Integer dataSize = customerService.getProductsCount();
         Integer chunkSize = paginator.getChunkSize();
 
-        if ((dataSize % chunkSize) == 0)
-        {
+        if ((dataSize % chunkSize) == 0) {
             paginator.setCursor(dataSize - chunkSize);
-        }
-        else
-        {
+        } else {
             paginator.setCursor(dataSize - (dataSize % chunkSize));
         }
 
@@ -117,20 +103,18 @@ public class SortProductsBean implements Serializable
         paginator.setChunkSize(products.size());
     }
 
-    
-    public void resetPaginator(String criteria, String direction)
-    {
+    public void resetPaginator(String criteria, String direction) {
         sortCriteria = ((criteria.equals("name")) ? SortCriteria.NAME : SortCriteria.PRICE);
         sortDirection = ((direction.equals("asc")) ? SortDirection.ASC : SortDirection.DESC);
-        
+
         Map<String, Object> sessionMap = FacesContext
-                    .getCurrentInstance()
-                    .getExternalContext()
-                    .getSessionMap();
-        
+                .getCurrentInstance()
+                .getExternalContext()
+                .getSessionMap();
+
         sessionMap.put("sortCriteria", criteria);
         sessionMap.put("sortDirection", direction.equals("asc") ? "an ascending" : "a descending");
-        
+
         paginator.setDataSize(customerService.getProductsCount());
         paginator.setCursor(0);
         products = customerService.sortProducts(sortCriteria, sortDirection, paginator.getCursor());

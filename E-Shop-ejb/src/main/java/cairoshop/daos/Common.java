@@ -6,8 +6,7 @@ package cairoshop.daos;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface Common
-{
+public interface Common {
 
     Integer getCount();
 

@@ -64,8 +64,7 @@ import javax.persistence.*;
                     + "FROM Product p WHERE p.id=:pId"
             )
         })
-public class Product implements Serializable
-{
+public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -106,119 +105,96 @@ public class Product implements Serializable
     @Transient
     private Boolean imgExist;
 
-    public Integer getId()
-    {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id)
-    {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public Double getPrice()
-    {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Double price)
-    {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public Integer getQuantity()
-    {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity)
-    {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description)
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public byte[] getImage()
-    {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(final byte[] image)
-    {
+    public void setImage(final byte[] image) {
         this.image = image;
     }
 
-    public Category getCategory()
-    {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(Category category)
-    {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
-    public Vendor getVendor()
-    {
+    public Vendor getVendor() {
         return vendor;
     }
 
-    public void setVendor(Vendor vendor)
-    {
+    public void setVendor(Vendor vendor) {
         this.vendor = vendor;
     }
 
-    public List<User> getInterestedUsers()
-    {
+    public List<User> getInterestedUsers() {
         return interestedUsers;
     }
 
-    public void setInterestedUsers(List<User> interestedUsers)
-    {
+    public void setInterestedUsers(List<User> interestedUsers) {
         this.interestedUsers = interestedUsers;
     }
 
-    public Boolean getNotDeleted()
-    {
+    public Boolean getNotDeleted() {
         return notDeleted;
     }
 
-    public void setNotDeleted(Boolean notDeleted)
-    {
+    public void setNotDeleted(Boolean notDeleted) {
         this.notDeleted = notDeleted;
     }
 
-    public Boolean getImgExist()
-    {
+    public Boolean getImgExist() {
         return imgExist;
     }
 
-    public void setImgExist(Boolean imgExist)
-    {
+    public void setImgExist(Boolean imgExist) {
         this.imgExist = imgExist;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Product{" + "id=" + id + ", name=" + name + ", price=" + price + ", quantity=" + quantity + '}';
     }
 }

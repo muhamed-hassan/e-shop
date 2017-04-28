@@ -12,20 +12,16 @@ import javax.inject.*;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Stateless
-@LocalBean
-public class UserService
-{
+public class UserService {
 
     @Inject
     private UserDAO userDAO;
 
-    public Object signIn(String email, String password)
-    {
+    public Object signIn(String email, String password) {
         return userDAO.find(email, password);
     }
 
-    public Object signUp(Customer customer)
-    {
-        return userDAO.insert(customer); 
+    public Object signUp(Customer customer) {
+        return userDAO.insert(customer);
     }
 }

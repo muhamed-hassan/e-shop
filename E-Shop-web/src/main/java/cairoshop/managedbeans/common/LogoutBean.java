@@ -11,18 +11,16 @@ import javax.faces.context.*;
  * ************************************************************************ */
 @ManagedBean
 @RequestScoped
-public class LogoutBean
-{
-    
-    public String logout()
-    {
+public class LogoutBean {
+
+    public String logout() {
         FacesContext
                 .getCurrentInstance()
                 .getExternalContext()
                 .getSessionMap()
                 .put("currentUser", null);
-        
+
         return "logout";
     }
-    
+
 }

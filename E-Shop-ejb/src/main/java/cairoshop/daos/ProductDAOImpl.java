@@ -2,9 +2,12 @@ package cairoshop.daos;
 
 import cairoshop.entities.*;
 import cairoshop.helpers.*;
+import com.cairoshop.logger.GlobalLogger;
 import java.util.*;
-import javax.inject.*;
+import javax.annotation.ManagedBean;
+import javax.annotation.PostConstruct;
 import org.hibernate.*;
+import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 
  * Developed by: Mohamed Hassan	                                            *
@@ -12,31 +15,31 @@ import org.hibernate.*;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-@Singleton
-public class ProductDAOImpl implements ProductDAO
-{
+@ManagedBean
+public class ProductDAOImpl implements ProductDAO {
+
+    private GlobalLogger logger;
+
+    @PostConstruct
+    public void init() {
+        logger = GlobalLogger.getInstance();
+    }
 
     @Override
-    public boolean insert(Product product)
-    {
+    public boolean insert(Product product) {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
-        try
-        {
+        try {
             session.getTransaction().begin();
 
             session.save(product);
 
             session.getTransaction().commit();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             session.getTransaction().rollback();
-            ex.printStackTrace();
+            logger.doLogging(Level.ERROR, "Product insertion failed" + " | " + ProductDAOImpl.class.getName() + "::insert(product)", ex);
             return false;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -44,13 +47,11 @@ public class ProductDAOImpl implements ProductDAO
     }
 
     @Override
-    public boolean update(Product p)
-    {
+    public boolean update(Product p) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         int affectedRows = -1;
 
-        try
-        {
+        try {
             session.getTransaction().begin();
 
             affectedRows = session.getNamedQuery("Product.update")
@@ -64,15 +65,11 @@ public class ProductDAOImpl implements ProductDAO
                     .executeUpdate();
 
             session.getTransaction().commit();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             session.getTransaction().rollback();
-            ex.printStackTrace();
+            logger.doLogging(Level.ERROR, "Product update failed" + " | " + ProductDAOImpl.class.getName() + "::update(product)", ex);
             return false;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -80,13 +77,11 @@ public class ProductDAOImpl implements ProductDAO
     }
 
     @Override
-    public boolean delete(Integer productID)
-    {
+    public boolean delete(Integer productID) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         int affectedRows = -1;
 
-        try
-        {
+        try {
             session.getTransaction().begin();
 
             affectedRows = session.createQuery("UPDATE Product p SET p.notDeleted=:flag WHERE p.id=:pID")
@@ -95,15 +90,11 @@ public class ProductDAOImpl implements ProductDAO
                     .executeUpdate();
 
             session.getTransaction().commit();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             session.getTransaction().rollback();
-            ex.printStackTrace();
+            logger.doLogging(Level.ERROR, "Product delete failed" + " | " + ProductDAOImpl.class.getName() + "::delete(productID)", ex);
             return false;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -111,15 +102,13 @@ public class ProductDAOImpl implements ProductDAO
     }
 
     @Override
-    public Product get(Integer id)
-    {
+    public Product get(Integer id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Product product = new Product();
         Object[] tmp = null;
         Integer imgFlag = null;
 
-        try
-        {
+        try {
             tmp = (Object[]) session.getNamedQuery("Product.loadInstance").setParameter("pId", id).uniqueResult();
 
             imgFlag = (Integer) session.getNamedQuery("Product.isExistImg").setParameter("pId", id).uniqueResult();
@@ -132,14 +121,10 @@ public class ProductDAOImpl implements ProductDAO
             product.setVendor((Vendor) tmp[5]);
             product.setCategory((Category) tmp[6]);
             product.setImgExist(imgFlag != null);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAOImpl.class.getName() + "::get(id)", ex);
             return null;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -147,15 +132,12 @@ public class ProductDAOImpl implements ProductDAO
     }
 
     @Override
-    public List<Object[]> getAll(Object object, Integer startPosition)
-    {
+    public List<Object[]> getAll(Object object, Integer startPosition) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Object[]> products = null;
 
-        try
-        {
-            if (object instanceof Vendor)
-            {
+        try {
+            if (object instanceof Vendor) {
                 products = (List<Object[]>) session
                         .getNamedQuery("Vendor.getProducts")
                         .setParameter("venId", ((Vendor) object).getId())
@@ -163,20 +145,16 @@ public class ProductDAOImpl implements ProductDAO
                         .setMaxResults(5)
                         .setFirstResult(startPosition)
                         .list();
-            }
-            else if (object instanceof Category)
-            {
+            } else if (object instanceof Product) {
                 products = (List<Object[]>) session
-                        .getNamedQuery("Category.getProducts")
+                        .getNamedQuery("Product.getProducts")
                         .setParameter("catId", ((Category) object).getId())
                         .setParameter("flag", true)
                         .setMaxResults(5)
                         .setFirstResult(startPosition)
                         .list();
 
-            }
-            else if (object instanceof Customer)
-            {
+            } else if (object instanceof Customer) {
                 products = (List<Object[]>) session
                         .getNamedQuery("Customer.getProducts")
                         .setParameter("custId", ((Customer) object).getId())
@@ -185,14 +163,10 @@ public class ProductDAOImpl implements ProductDAO
                         .list();
             }
 
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAOImpl.class.getName() + "::getAll(object, pos)", ex);
             return null;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -200,29 +174,23 @@ public class ProductDAOImpl implements ProductDAO
     }
 
     @Override
-    public List<Object[]> getAll(SortCriteria sortCriteria, SortDirection sortDirection, Integer startPosition)
-    {
+    public List<Object[]> getAll(SortCriteria sortCriteria, SortDirection sortDirection, Integer startPosition) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Object[]> products = new ArrayList<>();
         String sortCriteriaStr = (sortCriteria == SortCriteria.NAME) ? "Name" : "Price";
         String sortDirectionStr = (sortDirection == SortDirection.ASC) ? "ASC" : "DESC";
 
-        try
-        {
+        try {
             products = (List<Object[]>) session
                     .getNamedQuery("Product.sortBy" + sortCriteriaStr + sortDirectionStr)
                     .setParameter("flag", true)
                     .setMaxResults(5)
                     .setFirstResult(startPosition)
                     .list();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAOImpl.class.getName() + "::getAll(sortCriteria, sortDirection, pos)", ex);
             return null;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -230,21 +198,18 @@ public class ProductDAOImpl implements ProductDAO
     }
 
     @Override
-    public List<Object[]> getAll(String pName)
-    {
+    public List<Object[]> getAll(String pName) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Object[]> products = new ArrayList<>();
         List<Product> tmp = null;
 
-        try
-        {
+        try {
             tmp = (List<Product>) session
                     .getNamedQuery("Product.findByName")
                     .setParameter("pName", "%" + pName + "%")
                     .list();
 
-            for (Product p : tmp)
-            {
+            for (Product p : tmp) {
                 Object[] t = new Object[4];
                 t[0] = p.getId();
                 t[1] = p.getName();
@@ -252,14 +217,10 @@ public class ProductDAOImpl implements ProductDAO
                 t[3] = p.getQuantity();
                 products.add(t);
             }
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAOImpl.class.getName() + "::getAll(pName)", ex);
             return null;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -267,12 +228,10 @@ public class ProductDAOImpl implements ProductDAO
     }
 
     @Override
-    public boolean update(Integer pID, Integer cID)
-    {
+    public boolean update(Integer pID, Integer cID) {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
-        try
-        {
+        try {
             session.beginTransaction();
 
             // we load product first cause it is the owner of the relationship
@@ -284,15 +243,11 @@ public class ProductDAOImpl implements ProductDAO
             session.merge(c);
 
             session.getTransaction().commit();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             session.getTransaction().rollback();
-            ex.printStackTrace();
+            logger.doLogging(Level.ERROR, "Product update failed" + " | " + ProductDAOImpl.class.getName() + "::update(pID, cID)", ex);
             return false;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -300,27 +255,21 @@ public class ProductDAOImpl implements ProductDAO
     }
 
     @Override
-    public List<Object[]> getAll(Integer startPosition)
-    {
+    public List<Object[]> getAll(Integer startPosition) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Object[]> products = null;
 
-        try
-        {
+        try {
             products = (List<Object[]>) session
                     .getNamedQuery("Product.findAll")
                     .setFirstResult(startPosition)
                     .setMaxResults(5)
                     .setParameter("flag", true)
                     .list();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAOImpl.class.getName() + "::getAll(startPosition)", ex);
             return null;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -328,22 +277,16 @@ public class ProductDAOImpl implements ProductDAO
     }
 
     @Override
-    public Integer getCount()
-    {
+    public Integer getCount() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Long count = 0L;
 
-        try
-        {
+        try {
             count = (Long) session.getNamedQuery("Product.count").setParameter("flag", true).uniqueResult();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "Product getCount failed" + " | " + ProductDAOImpl.class.getName() + "::getCount()", ex);
             return -1;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -351,24 +294,18 @@ public class ProductDAOImpl implements ProductDAO
     }
 
     @Override
-    public byte[] getImage(Integer pID)
-    {
+    public byte[] getImage(Integer pID) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         byte[] img = null;
 
-        try
-        {
+        try {
             Query q = session.createQuery("SELECT p.image FROM Product p WHERE p.id=:id");
             q.setParameter("id", pID);
             img = (byte[]) q.uniqueResult();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "Product getImage failed" + " | " + ProductDAOImpl.class.getName() + "::getImage(pID)", ex);
             return null;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -376,13 +313,11 @@ public class ProductDAOImpl implements ProductDAO
     }
 
     @Override
-    public boolean update(byte[] imgStream, Integer pID)
-    {
+    public boolean update(byte[] imgStream, Integer pID) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         int rowsAffected = -1;
 
-        try
-        {
+        try {
             session.getTransaction().begin();
 
             rowsAffected = session.getNamedQuery("Product.updateImg")
@@ -391,14 +326,10 @@ public class ProductDAOImpl implements ProductDAO
                     .executeUpdate();
 
             session.getTransaction().commit();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "Product update failed" + " | " + ProductDAOImpl.class.getName() + "::update(imgStream, pID)", ex);
             return false;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -406,8 +337,7 @@ public class ProductDAOImpl implements ProductDAO
     }
 
     @Override
-    public Integer getCount(Object object)
-    {
+    public Integer getCount(Object object) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Long count = 0L;
 
@@ -415,34 +345,26 @@ public class ProductDAOImpl implements ProductDAO
         String param = "";
         String namedQuery = "";
 
-        if (object instanceof Vendor)
-        {
+        if (object instanceof Vendor) {
             id = ((Vendor) object).getId();
             param = "vId";
             namedQuery = "Vendor.countProducts";
-        }
-        else if (object instanceof Category)
-        {
-            id = ((Category) object).getId();
+        } else if (object instanceof Product) {
+            id = ((Product) object).getId();
             param = "cId";
-            namedQuery = "Category.countProducts";
+            namedQuery = "Product.countProducts";
         }
 
-        try
-        {
+        try {
             count = (Long) session
                     .getNamedQuery(namedQuery)
                     .setParameter(param, id)
                     .setParameter("flag", true)
                     .uniqueResult();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "Product getCount failed" + " | " + ProductDAOImpl.class.getName() + "::getCount(object)", ex);
             return -1;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -450,51 +372,39 @@ public class ProductDAOImpl implements ProductDAO
     }
 
     @Override
-    public Integer getFavoriteCount(Integer custId)
-    {
+    public Integer getFavoriteCount(Integer custId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        Long count = 0L;        
+        Long count = 0L;
 
-        try
-        {
+        try {
             count = (Long) session
                     .getNamedQuery("Customer.getFavoritesCount")
                     .setParameter("custId", custId)
                     .uniqueResult();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "Product getFavoriteCount failed" + " | " + ProductDAOImpl.class.getName() + "::getFavoriteCount(custId)", ex);
             return -1;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
-        return (Integer) count.intValue();        
+        return (Integer) count.intValue();
     }
 
     @Override
-    public List<Integer> getLikedProducts(Integer custId)
-    {
+    public List<Integer> getLikedProducts(Integer custId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Integer> pIds;        
+        List<Integer> pIds;
 
-        try
-        {
+        try {
             pIds = (List<Integer>) session
-                        .getNamedQuery("Customer.getLikedProducts")
-                        .setParameter("custId", custId)                        
-                        .list();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+                    .getNamedQuery("Customer.getLikedProducts")
+                    .setParameter("custId", custId)
+                    .list();
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "Product getLikedProducts failed" + " | " + ProductDAOImpl.class.getName() + "::getLikedProducts(custId)", ex);
             return null;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 

@@ -1,9 +1,12 @@
 package cairoshop.daos;
 
 import cairoshop.entities.*;
+import com.cairoshop.logger.GlobalLogger;
 import java.util.*;
-import javax.inject.*;
+import javax.annotation.ManagedBean;
+import javax.annotation.PostConstruct;
 import org.hibernate.*;
+import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 
  * Developed by: Mohamed Hassan	                                            *
@@ -11,18 +14,22 @@ import org.hibernate.*;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-@Singleton
-public class UserDAOImpl implements UserDAO
-{
+@ManagedBean
+public class UserDAOImpl implements UserDAO {
+
+    private GlobalLogger logger;
+
+    @PostConstruct
+    public void init() {
+        logger = GlobalLogger.getInstance();
+    }
 
     @Override
-    public boolean update(Integer userID, boolean flag)
-    {
+    public boolean update(Integer userID, boolean flag) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         int affectedRows = -1;
 
-        try
-        {
+        try {
             session.getTransaction().begin();
 
             affectedRows = session
@@ -32,15 +39,11 @@ public class UserDAOImpl implements UserDAO
                     .executeUpdate();
 
             session.getTransaction().commit();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             session.getTransaction().rollback();
-            ex.printStackTrace();
+            logger.doLogging(Level.ERROR, "User update failed" + " | " + UserDAOImpl.class.getName() + "::update(userID, flag)", ex);
             return false;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -48,26 +51,20 @@ public class UserDAOImpl implements UserDAO
     }
 
     @Override
-    public List<Customer> getAll(Integer startPosition)
-    {
+    public List<Customer> getAll(Integer startPosition) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Customer> customers = null;
 
-        try
-        {
+        try {
             customers = (List<Customer>) session
                     .getNamedQuery("Customer.findAll")
                     .setFirstResult(startPosition)
                     .setMaxResults(5)
                     .list();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "User retrieval failed" + " | " + UserDAOImpl.class.getName() + "::getAll(startPosition)", ex);
             return null;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -75,31 +72,24 @@ public class UserDAOImpl implements UserDAO
     }
 
     @Override
-    public Object find(String email, String password)
-    {
+    public Object find(String email, String password) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         User user;
 
-        try
-        {
+        try {
             user = (User) session.getNamedQuery("User.find")
                     .setParameter("email", email)
                     .setParameter("pwd", password)
                     .setParameter("flag", true)
                     .uniqueResult();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "User retrieval failed" + " | " + UserDAOImpl.class.getName() + "::find(email, password)", ex);
             return null; //exception occured
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
-        if (user == null)
-        {
+        if (user == null) {
             return "notFound"; //no such user found            
         }
 
@@ -107,13 +97,11 @@ public class UserDAOImpl implements UserDAO
     }
 
     @Override
-    public Object insert(Customer customer)
-    {
+    public Object insert(Customer customer) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Customer c = null;
 
-        try
-        {
+        try {
             session.getTransaction().begin();
 
             session.persist(customer);
@@ -126,21 +114,16 @@ public class UserDAOImpl implements UserDAO
                     .uniqueResult();
 
             session.getTransaction().commit();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             session.getTransaction().rollback();
 
-            if (ex instanceof org.hibernate.exception.ConstraintViolationException)
-            {
+            if (ex instanceof org.hibernate.exception.ConstraintViolationException) {
                 return "Duplicated values - please review your entries again.";
             }
 
-            ex.printStackTrace();
+            logger.doLogging(Level.ERROR, "User insertion failed" + " | " + UserDAOImpl.class.getName() + "::insert(customer)", ex);
             return null;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 
@@ -148,22 +131,16 @@ public class UserDAOImpl implements UserDAO
     }
 
     @Override
-    public Integer getCount()
-    {
+    public Integer getCount() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Long count = 0L;
 
-        try
-        {
+        try {
             count = (Long) session.getNamedQuery("Customer.count").uniqueResult();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            logger.doLogging(Level.ERROR, "User getCount failed" + " | " + UserDAOImpl.class.getName() + "::getCount()", ex);
             return -1;
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
 

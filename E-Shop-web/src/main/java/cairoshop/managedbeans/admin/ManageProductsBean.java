@@ -18,8 +18,7 @@ import javax.servlet.http.*;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class ManageProductsBean implements Serializable, NavigationRule
-{
+public class ManageProductsBean implements Serializable, NavigationRule {
 
     @EJB
     private AdminService adminService;
@@ -47,27 +46,21 @@ public class ManageProductsBean implements Serializable, NavigationRule
         categories = adminService.getAllCategories();
     }
 
-    public void addProduct()
-    {
-        if (imgData.getSize() > 0)
-        {
-            try
-            {
+    public void addProduct() {
+        if (imgData.getSize() > 0) {
+            try {
                 InputStream imgStream = imgData.getInputStream();
 
                 byte[] buffer = new byte[2048]; // 2 KB
                 int bytesRead;
                 ByteArrayOutputStream imgData = new ByteArrayOutputStream();
 
-                while ((bytesRead = imgStream.read(buffer)) != -1)
-                {
+                while ((bytesRead = imgStream.read(buffer)) != -1) {
                     imgData.write(buffer, 0, bytesRead);
                 }
 
                 product.setImage(imgData.toByteArray());
-            }
-            catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
@@ -95,23 +88,19 @@ public class ManageProductsBean implements Serializable, NavigationRule
     // =========================================================================
     // =======> Edit product
     // =========================================================================
-    public void loadTarget(Integer pID)
-    {
+    public void loadTarget(Integer pID) {
         product = adminService.getProduct(pID);
 
-        if (vendors == null)
-        {
+        if (vendors == null) {
             vendors = adminService.getAllVendors();
         }
 
-        if (categories == null)
-        {
+        if (categories == null) {
             categories = adminService.getAllCategories();
         }
     }
 
-    public void goToEdit()
-    {
+    public void goToEdit() {
         FacesContext
                 .getCurrentInstance()
                 .getExternalContext()
@@ -119,35 +108,28 @@ public class ManageProductsBean implements Serializable, NavigationRule
                 .put("content", "/admin/manage-products/edit-product-pg.xhtml");
     }
 
-    public void editProduct()
-    {
+    public void editProduct() {
         boolean flag1 = true, flag2 = false;
 
-        if (imgData.getSize() > 0)
-        {
-            try
-            {
+        if (imgData.getSize() > 0) {
+            try {
                 InputStream imgStream = imgData.getInputStream();
 
                 byte[] buffer = new byte[2048]; // 2 KB
                 int bytesRead;
                 ByteArrayOutputStream imgData = new ByteArrayOutputStream();
 
-                while ((bytesRead = imgStream.read(buffer)) != -1)
-                {
+                while ((bytesRead = imgStream.read(buffer)) != -1) {
                     imgData.write(buffer, 0, bytesRead);
                 }
 
                 flag1 = adminService.editProductImg(imgData.toByteArray(), product.getId());
-            }
-            catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
 
-        if (removeImg)
-        {
+        if (removeImg) {
             flag1 = adminService.editProductImg(null, product.getId());
         }
 
@@ -177,8 +159,7 @@ public class ManageProductsBean implements Serializable, NavigationRule
     // =========================================================================
     // =======> Delete product
     // =========================================================================
-    public void deleteProduct(Integer pID, String pName)
-    {
+    public void deleteProduct(Integer pID, String pName) {
         int status = (adminService.deleteProduct(pID) ? 1 : -1);
 
         Map<String, Object> reqMap = FacesContext
@@ -192,8 +173,7 @@ public class ManageProductsBean implements Serializable, NavigationRule
 
         paginator.setDataSize(adminService.getProductsCount());
         products = adminService.viewProducts(paginator.getCursor());
-        if (products.isEmpty())
-        {
+        if (products.isEmpty()) {
             previous();
         }
 
@@ -203,111 +183,90 @@ public class ManageProductsBean implements Serializable, NavigationRule
     // =========================================================================
     // =======> getters and setters
     // =========================================================================
-    public Part getImgData()
-    {
+    public Part getImgData() {
         return imgData;
     }
 
-    public void setImgData(Part imgData)
-    {
+    public void setImgData(Part imgData) {
         this.imgData = imgData;
     }
 
-    public Product getProduct()
-    {
+    public Product getProduct() {
         return product;
     }
 
-    public void setProduct(Product product)
-    {
+    public void setProduct(Product product) {
         this.product = product;
     }
 
-    public List<Vendor> getVendors()
-    {
+    public List<Vendor> getVendors() {
         return vendors;
     }
 
-    public void setVendors(List<Vendor> vendors)
-    {
+    public void setVendors(List<Vendor> vendors) {
         this.vendors = vendors;
     }
 
-    public List<Category> getCategories()
-    {
+    public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories)
-    {
+    public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
 
-    public List<Object[]> getProducts()
-    {
+    public List<Object[]> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Object[]> products)
-    {
+    public void setProducts(List<Object[]> products) {
         this.products = products;
     }
 
-    public Boolean getRemoveImg()
-    {
+    public Boolean getRemoveImg() {
         return removeImg;
     }
 
-    public void setRemoveImg(Boolean removeImg)
-    {
+    public void setRemoveImg(Boolean removeImg) {
         this.removeImg = removeImg;
     }
 
     // =========================================================================
     // =======> Pagination
     // =========================================================================
-    public Paginator getPaginator()
-    {
+    public Paginator getPaginator() {
         return paginator;
     }
 
-    public void setPaginator(Paginator paginator)
-    {
+    public void setPaginator(Paginator paginator) {
         this.paginator = paginator;
     }
 
-    public void next()
-    {
+    public void next() {
         products = adminService.viewProducts(paginator.getCursor() + 5);
         paginator.setCursor(paginator.getCursor() + 5);
         paginator.setChunkSize(products.size());
     }
 
-    public void previous()
-    {
+    public void previous() {
         products = adminService.viewProducts(paginator.getCursor() - 5);
         paginator.setCursor(paginator.getCursor() - 5);
         paginator.setChunkSize(products.size());
     }
 
-    public void first()
-    {
+    public void first() {
         paginator.setCursor(0);
         products = adminService.viewProducts(paginator.getCursor());
         paginator.setChunkSize(products.size());
     }
 
-    public void last()
-    {
+    public void last() {
         Integer dataSize = adminService.getProductsCount();
         Integer chunkSize = paginator.getChunkSize();
 
-        if ((dataSize % chunkSize) == 0)
-        {
+        if ((dataSize % chunkSize) == 0) {
             paginator.setCursor(dataSize - chunkSize);
-        }
-        else
-        {
+        } else {
             paginator.setCursor(dataSize - (dataSize % chunkSize));
         }
 
@@ -315,8 +274,7 @@ public class ManageProductsBean implements Serializable, NavigationRule
         paginator.setChunkSize(products.size());
     }
 
-    public void resetPaginator()
-    {
+    public void resetPaginator() {
         paginator.setDataSize(adminService.getProductsCount());
         paginator.setCursor(0);
         products = adminService.viewProducts(paginator.getCursor());
@@ -327,18 +285,13 @@ public class ManageProductsBean implements Serializable, NavigationRule
     // =======> Navigation
     // =========================================================================
     @Override
-    public void navigate(String destination)
-    {
+    public void navigate(String destination) {
         String goTo = "/admin/";
 
-        if (destination.equals("addProduct"))
-        {
+        if (destination.equals("addProduct")) {
             goTo += "manage-products/add-new-product.xhtml";
-        }
-        else
-        {
-            if (products == null || products.isEmpty())
-            {
+        } else {
+            if (products == null || products.isEmpty()) {
                 Map<String, Object> sessionMap = FacesContext
                         .getCurrentInstance()
                         .getExternalContext()
@@ -350,16 +303,13 @@ public class ManageProductsBean implements Serializable, NavigationRule
                 return;
             }
 
-            if (destination.equals("editProduct"))
-            {
+            if (destination.equals("editProduct")) {
                 goTo += "manage-products/edit-product-master.xhtml";
-            }
-            else if (destination.equals("deleteProduct"))
-            {
+            } else if (destination.equals("deleteProduct")) {
                 goTo += "manage-products/delete-product.xhtml";
             }
         }
-        
+
         FacesContext
                 .getCurrentInstance()
                 .getExternalContext()

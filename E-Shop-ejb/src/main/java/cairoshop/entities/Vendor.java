@@ -32,8 +32,7 @@ import javax.persistence.*;
                     + "AND (p.notDeleted=:flag))"
             )
         })
-public class Vendor implements Serializable
-{
+public class Vendor implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,78 +52,63 @@ public class Vendor implements Serializable
     @Transient
     private String oldValue;
 
-    public Vendor()
-    {
+    public Vendor() {
     }
 
-    public Vendor(String name)
-    {
+    public Vendor(String name) {
         this.name = name;
     }
 
-    public Integer getId()
-    {
+    public Integer getId() {
         return Id;
     }
 
-    public void setId(Integer Id)
-    {
+    public void setId(Integer Id) {
         this.Id = Id;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public Boolean getNotDeleted()
-    {
+    public Boolean getNotDeleted() {
         return notDeleted;
     }
 
-    public void setNotDeleted(Boolean notDeleted)
-    {
+    public void setNotDeleted(Boolean notDeleted) {
         this.notDeleted = notDeleted;
     }
 
-    public List<Product> getProducts()
-    {
+    public List<Product> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products)
-    {
+    public void setProducts(List<Product> products) {
         this.products = products;
     }
 
-    public Boolean getCanEdit()
-    {
+    public Boolean getCanEdit() {
         return canEdit;
     }
 
-    public void setCanEdit(Boolean canEdit)
-    {
+    public void setCanEdit(Boolean canEdit) {
         this.canEdit = canEdit;
     }
 
-    public String getOldValue()
-    {
+    public String getOldValue() {
         return oldValue;
     }
 
-    public void setOldValue(String oldValue)
-    {
+    public void setOldValue(String oldValue) {
         this.oldValue = oldValue;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Vendor{" + "Id=" + Id + ", name=" + name + ", notDeleted=" + notDeleted + '}';
     }
 
