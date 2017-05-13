@@ -35,10 +35,8 @@ public class GlobalLogger {
 
     public void doLogging(Level level, String msg, Throwable exception) {
 
-        synchronized (this) {
-            Logger logger = LogManager.getLogger(this.getClass());
-            logger.log(level, msg, exception);
-        }
+        Logger logger = LogManager.getLogger(this.getClass());
+        logger.log(level, msg, exception);
 
     }
 
