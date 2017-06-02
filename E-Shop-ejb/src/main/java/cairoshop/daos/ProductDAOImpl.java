@@ -1,5 +1,6 @@
 package cairoshop.daos;
 
+import cairoshop.configs.HibernateUtil;
 import cairoshop.entities.*;
 import cairoshop.helpers.*;
 import com.cairoshop.logger.GlobalLogger;
