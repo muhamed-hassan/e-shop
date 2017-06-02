@@ -41,7 +41,7 @@ public class ImageResource {
             {
                 "image/jpg", "image/jpeg", "image/png"
             })
-    public Object getImage(@PathParam("id") String id) {
+    public Response getImage(@PathParam("id") String id) {
 
         byte[] img = null;
 
