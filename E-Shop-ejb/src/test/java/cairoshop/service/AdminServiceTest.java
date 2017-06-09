@@ -165,8 +165,10 @@ public class AdminServiceTest {
      */
     @Test
     public void testActivate() {
-        Integer userID = 5;
-        boolean result = adminService.activate(userID);
+        User user = new Customer();
+        user.setId(5);
+        user.setActive(true);
+        boolean result = adminService.edit(user);
         assertTrue(result);
     }
 
@@ -175,8 +177,10 @@ public class AdminServiceTest {
      */
     @Test
     public void testDeactivate() {
-        Integer userID = 5;
-        boolean result = adminService.deactivate(userID);
+        User user = new Customer();
+        user.setId(5);
+        user.setActive(false);
+        boolean result = adminService.edit(user);
         assertTrue(result);
     }
 
@@ -185,7 +189,7 @@ public class AdminServiceTest {
      */
     @Test
     public void testViewCustomers() {
-        List<Customer> result = adminService.viewCustomers(0);
+        List<User> result = adminService.viewCustomers(0);        
         assertNotNull(result);
     }
 
