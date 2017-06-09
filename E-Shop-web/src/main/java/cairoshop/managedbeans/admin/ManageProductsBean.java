@@ -47,7 +47,7 @@ public class ManageProductsBean implements Serializable, NavigationRule {
     }
 
     public void addProduct() {
-        if (imgData.getSize() > 0) {
+        if (imgData != null && imgData.getSize() > 0) {
             try {
                 InputStream imgStream = imgData.getInputStream();
 
@@ -111,7 +111,7 @@ public class ManageProductsBean implements Serializable, NavigationRule {
     public void editProduct() {
         boolean flag1 = true, flag2 = false;
 
-        if (imgData.getSize() > 0) {
+        if (imgData != null && imgData.getSize() > 0) {
             try {
                 InputStream imgStream = imgData.getInputStream();
 

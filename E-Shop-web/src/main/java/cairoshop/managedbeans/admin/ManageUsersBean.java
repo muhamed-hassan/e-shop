@@ -41,7 +41,8 @@ public class ManageUsersBean implements Serializable, NavigationRule {
     public void activate(Customer c) {
         Integer cID = c.getId();
 
-        int status = (adminService.activate(cID) ? 1 : -1);
+        c.setActive(true);
+        int status = (adminService.edit(c) ? 1 : -1);
 
         if (status == 1) {
             for (Customer tmp : customers) {
@@ -64,7 +65,8 @@ public class ManageUsersBean implements Serializable, NavigationRule {
     public void deactivate(Customer c) {
         Integer cID = c.getId();
 
-        int status = (adminService.deactivate(cID) ? 1 : -1);
+        c.setActive(false);
+        int status = (adminService.edit(c) ? 1 : -1);
 
         if (status == 1) {
             for (Customer tmp : customers) {
@@ -96,20 +98,35 @@ public class ManageUsersBean implements Serializable, NavigationRule {
     }
 
     public void next() {
-        customers = adminService.viewCustomers(paginator.getCursor() + 5);
+        //customers = adminService.viewCustomers(paginator.getCursor() + 5);
+        List<User> data = adminService.viewCustomers(paginator.getCursor() + 5);
+        customers = new ArrayList<>(0);
+        for(User u : data) {
+            customers.add((Customer) u);
+        }
         paginator.setCursor(paginator.getCursor() + 5);
         paginator.setChunkSize(customers.size());
     }
 
     public void previous() {
-        customers = adminService.viewCustomers(paginator.getCursor() - 5);
+        //customers = adminService.viewCustomers(paginator.getCursor() - 5);
+        List<User> data = adminService.viewCustomers(paginator.getCursor() - 5);
+        customers = new ArrayList<>(0);
+        for(User u : data) {
+            customers.add((Customer) u);
+        }
         paginator.setCursor(paginator.getCursor() - 5);
         paginator.setChunkSize(customers.size());
     }
 
     public void first() {
         paginator.setCursor(0);
-        customers = adminService.viewCustomers(paginator.getCursor());
+//        customers = adminService.viewCustomers(paginator.getCursor());
+        List<User> data = adminService.viewCustomers(paginator.getCursor());
+        customers = new ArrayList<>(0);
+        for(User u : data) {
+            customers.add((Customer) u);
+        }
         paginator.setChunkSize(customers.size());
     }
 
@@ -123,14 +140,24 @@ public class ManageUsersBean implements Serializable, NavigationRule {
             paginator.setCursor(dataSize - (dataSize % chunkSize));
         }
 
-        customers = adminService.viewCustomers(paginator.getCursor());
+//        customers = adminService.viewCustomers(paginator.getCursor());
+List<User> data = adminService.viewCustomers(paginator.getCursor());
+        customers = new ArrayList<>(0);
+        for(User u : data) {
+            customers.add((Customer) u);
+        }
         paginator.setChunkSize(customers.size());
     }
 
     public void resetPaginator() {
         paginator.setDataSize(adminService.getCustomersCount());
         paginator.setCursor(0);
-        customers = adminService.viewCustomers(paginator.getCursor());
+//        customers = adminService.viewCustomers(paginator.getCursor());
+        List<User> data = adminService.viewCustomers(paginator.getCursor());
+        customers = new ArrayList<>(0);
+        for(User u : data) {
+            customers.add((Customer) u);
+        }
         paginator.setChunkSize(customers.size());
     }
 
