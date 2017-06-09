@@ -1,9 +1,9 @@
 package cairoshop.service;
 
-import cairoshop.daos.*;
-import cairoshop.entities.*;
-import javax.ejb.*;
-import javax.inject.*;
+import cairoshop.daos.UserDAO;
+import cairoshop.entities.Customer;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 /* ************************************************************************** 
  * Developed by: Mohamed Hassan	                                            *

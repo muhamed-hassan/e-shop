@@ -65,7 +65,7 @@ public class CustomerService {
     // ====== load product by id
     // =========================================================================
     public Product getProductDetails(Integer pID) {
-        return productDAO.get(pID);
+        return productDAO.find(pID);
     }
 
     // =========================================================================
@@ -90,7 +90,7 @@ public class CustomerService {
     // ====== helpers
     // =========================================================================
     public List<Object[]> viewProducts(Integer startPosition) {
-        return productDAO.getAll(startPosition);
+        return productDAO.findAll(startPosition);
     }
 
     public Integer getProductsCount() {

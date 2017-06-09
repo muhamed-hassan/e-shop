@@ -31,7 +31,7 @@ public class AdminService {
     // ====== manage categories
     // =========================================================================
     public boolean addCategory(Category category) {
-        return categoryDAO.insert(category);
+        return categoryDAO.insert(category) != null;
     }
 
     public boolean editCategory(Category category) {
@@ -39,7 +39,7 @@ public class AdminService {
     }
 
     public boolean deleteCategory(Category category) {
-        return categoryDAO.delete(category);
+        return categoryDAO.delete(category.getId());
     }
 
     public List<Category> viewCategories(Integer startPosition) {
@@ -58,7 +58,7 @@ public class AdminService {
     // ====== manage vendors
     // =========================================================================
     public boolean addVendor(Vendor vendor) {
-        return vendorDAO.insert(vendor);
+        return vendorDAO.insert(vendor) != null;
     }
 
     public boolean editVendor(Vendor vendor) {
@@ -66,7 +66,7 @@ public class AdminService {
     }
 
     public boolean deleteVendor(Vendor vendor) {
-        return vendorDAO.delete(vendor);
+        return vendorDAO.delete(vendor.getId());
     }
 
     public List<Vendor> viewVendors(Integer startPosition) {
@@ -84,15 +84,11 @@ public class AdminService {
     // =========================================================================
     // ====== manage users
     // =========================================================================
-    public boolean activate(Integer userID) {
-        return userDAO.update(userID, true);
+    public boolean edit(User user) {
+        return userDAO.update(user);
     }
 
-    public boolean deactivate(Integer userID) {
-        return userDAO.update(userID, false);
-    }
-
-    public List<Customer> viewCustomers(Integer startPosition) {
+    public List<User> viewCustomers(Integer startPosition) {
         return userDAO.getAll(startPosition);
     }
 
@@ -104,11 +100,11 @@ public class AdminService {
     // ====== manage products
     // =========================================================================
     public boolean addProduct(Product product) {
-        return productDAO.insert(product);
+        return productDAO.insert(product) != null;
     }
 
     public Product getProduct(Integer pID) {
-        return productDAO.get(pID);
+        return productDAO.find(pID);
     }
 
     public boolean editProduct(Product product) {
@@ -124,7 +120,7 @@ public class AdminService {
     }
 
     public List<Object[]> viewProducts(Integer startPosition) {
-        return productDAO.getAll(startPosition);
+        return productDAO.findAll(startPosition);
     }
 
     public Integer getProductsCount() {
