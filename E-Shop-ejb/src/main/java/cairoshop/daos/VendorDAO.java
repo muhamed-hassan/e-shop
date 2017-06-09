@@ -1,7 +1,7 @@
 package cairoshop.daos;
 
-import cairoshop.entities.*;
-import java.util.*;
+import cairoshop.entities.Vendor;
+import javax.annotation.ManagedBean;
 
 /* ************************************************************************** 
  * Developed by: Mohamed Hassan	                                            *
@@ -9,15 +9,11 @@ import java.util.*;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface VendorDAO extends Common {
+@ManagedBean
+public class VendorDAO extends AbstractDAO<Vendor> {
 
-    boolean insert(Vendor vendor);
+    public VendorDAO() {
+        super(Vendor.class);
+    }
 
-    boolean update(Vendor vendor);
-
-    boolean delete(Vendor vendor);
-
-    List<Vendor> getAll(Integer startPosition);
-
-    List<Vendor> getAll();
 }

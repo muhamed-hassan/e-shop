@@ -1,8 +1,13 @@
 package cairoshop.daos;
 
+import cairoshop.configs.HibernateUtil;
 import cairoshop.entities.*;
 import cairoshop.helpers.*;
 import java.util.*;
+import javax.annotation.ManagedBean;
+import org.apache.logging.log4j.Level;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
 /* ************************************************************************** 
  * Developed by: Mohamed Hassan	                                            *
@@ -10,34 +15,335 @@ import java.util.*;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface ProductDAO extends Common {
+@ManagedBean
+public class ProductDAO extends AbstractDAO<Product> {
 
-    boolean insert(Product product);
+    public ProductDAO() {
+        super(Product.class);
+    }
 
-    boolean update(Product product);
+    //**************************************************************************
+    @Override
+    public boolean update(Product p) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        int affectedRows = -1;
 
-    boolean update(byte[] imgStream, Integer pID);
+        try {
+            session.getTransaction().begin();
 
-    boolean update(Integer pID, Integer cID);
+            affectedRows = session.getNamedQuery("Product.update")
+                    .setParameter("catId", p.getCategory().getId())
+                    .setParameter("desc", p.getDescription())
+                    .setParameter("pName", p.getName())
+                    .setParameter("price", p.getPrice())
+                    .setParameter("quantity", p.getQuantity())
+                    .setParameter("vId", p.getVendor().getId())
+                    .setParameter("pId", p.getId())
+                    .executeUpdate();
 
-    Product get(Integer id);
+            session.getTransaction().commit();
+        } catch (Exception ex) {
+            session.getTransaction().rollback();
+            getLogger().doLogging(Level.ERROR, "Product update failed" + " | " + ProductDAO.class.getName() + "::update(product)", ex);
+            return false;
+        } finally {
+            session.close();
+        }
 
-    byte[] getImage(Integer pID);
+        return (affectedRows == 1);
+    }
 
-    Integer getCount(Object object);
+    //**************************************************************************
+    public boolean update(Integer pID, Integer cID) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
 
-    Integer getFavoriteCount(Integer custId);
+        try {
+            session.beginTransaction();
 
-    List<Integer> getLikedProducts(Integer custId);
+            // we load product first cause it is the owner of the relationship
+            Product p = (Product) session.get(Product.class, pID);
+            Customer c = (Customer) session.get(Customer.class, cID);
 
-    boolean delete(Integer pID);
+            p.getInterestedUsers().add(c);
 
-    List<Object[]> getAll(String pName);
+            session.merge(c);
 
-    List<Object[]> getAll(Integer startPosition);
+            session.getTransaction().commit();
+        } catch (Exception ex) {
+            session.getTransaction().rollback();
+            getLogger().doLogging(Level.ERROR, "Product update failed" + " | " + ProductDAO.class.getName() + "::update(pID, cID)", ex);
+            return false;
+        } finally {
+            session.close();
+        }
 
-    List<Object[]> getAll(Object object, Integer startPosition);
+        return true;
+    }
 
-    List<Object[]> getAll(SortCriteria sortCriteria, SortDirection sortDirection, Integer startPosition);
+    //**************************************************************************
+    public boolean update(byte[] imgStream, Integer pID) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        int rowsAffected = -1;
+
+        try {
+            session.getTransaction().begin();
+
+            rowsAffected = session.getNamedQuery("Product.updateImg")
+                    .setParameter("img", imgStream)
+                    .setParameter("pId", pID)
+                    .executeUpdate();
+
+            session.getTransaction().commit();
+        } catch (Exception ex) {
+            getLogger().doLogging(Level.ERROR, "Product update failed" + " | " + ProductDAO.class.getName() + "::update(imgStream, pID)", ex);
+            return false;
+        } finally {
+            session.close();
+        }
+
+        return (rowsAffected == 1);
+    }
+
+    //**************************************************************************
+    public List<Object[]> findAll(Integer startPosition) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Object[]> products = null;
+
+        try {
+            products = session
+                    .getNamedQuery("Product.findAll")
+                    .setFirstResult(startPosition)
+                    .setMaxResults(5)
+                    .setParameter("flag", true)
+                    .list();
+        } catch (Exception ex) {
+            getLogger().doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(startPosition)", ex);
+            return null;
+        } finally {
+            session.close();
+        }
+
+        return products;
+    }
+
+    //**************************************************************************
+    public List<Object[]> getAll(Object object, Integer startPosition) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Object[]> products = null;
+
+        try {
+            if (object instanceof Vendor) {
+                products = (List<Object[]>) session
+                        .getNamedQuery("Vendor.getProducts")
+                        .setParameter("venId", ((Vendor) object).getId())
+                        .setParameter("flag", true)
+                        .setMaxResults(5)
+                        .setFirstResult(startPosition)
+                        .list();
+            } else if (object instanceof Category) {
+                products = (List<Object[]>) session
+                        .getNamedQuery("Category.getProducts")
+                        .setParameter("catId", ((Category) object).getId())
+                        .setParameter("flag", true)
+                        .setMaxResults(5)
+                        .setFirstResult(startPosition)
+                        .list();
+
+            } else if (object instanceof Customer) {
+                products = (List<Object[]>) session
+                        .getNamedQuery("Customer.getProducts")
+                        .setParameter("custId", ((Customer) object).getId())
+                        .setMaxResults(5)
+                        .setFirstResult(startPosition)
+                        .list();
+            }
+
+        } catch (Exception ex) {
+            getLogger().doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(object, pos)", ex);
+            return null;
+        } finally {
+            session.close();
+        }
+
+        return products;
+    }
+
+    //**************************************************************************
+    public List<Object[]> getAll(SortCriteria sortCriteria, SortDirection sortDirection, Integer startPosition) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Object[]> products = new ArrayList<>();
+        String sortCriteriaStr = (sortCriteria == SortCriteria.NAME) ? "Name" : "Price";
+        String sortDirectionStr = (sortDirection == SortDirection.ASC) ? "ASC" : "DESC";
+
+        try {
+            products = (List<Object[]>) session
+                    .getNamedQuery("Product.sortBy" + sortCriteriaStr + sortDirectionStr)
+                    .setParameter("flag", true)
+                    .setMaxResults(5)
+                    .setFirstResult(startPosition)
+                    .list();
+        } catch (Exception ex) {
+            getLogger().doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(sortCriteria, sortDirection, pos)", ex);
+            return null;
+        } finally {
+            session.close();
+        }
+
+        return products;
+    }
+
+    //**************************************************************************
+    public List<Object[]> getAll(String pName) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Object[]> products = new ArrayList<>();
+        List<Product> tmp = null;
+
+        try {
+            tmp = (List<Product>) session
+                    .getNamedQuery("Product.findByName")
+                    .setParameter("pName", "%" + pName + "%")
+                    .list();
+
+            for (Product p : tmp) {
+                Object[] t = new Object[4];
+                t[0] = p.getId();
+                t[1] = p.getName();
+                t[2] = p.getPrice();
+                t[3] = p.getQuantity();
+                products.add(t);
+            }
+        } catch (Exception ex) {
+            getLogger().doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(pName)", ex);
+            return null;
+        } finally {
+            session.close();
+        }
+
+        return products;
+    }
+
+    //**************************************************************************
+    public Product find(Integer id) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Product product = new Product();
+        Object[] tmp = null;
+        Integer imgFlag = null;
+
+        try {
+            tmp = (Object[]) session.getNamedQuery("Product.loadInstance").setParameter("pId", id).uniqueResult();
+
+            imgFlag = (Integer) session.getNamedQuery("Product.isExistImg").setParameter("pId", id).uniqueResult();
+
+            product.setId((Integer) tmp[0]);
+            product.setName((String) tmp[1]);
+            product.setPrice((Double) tmp[2]);
+            product.setQuantity((Integer) tmp[3]);
+            product.setDescription((String) tmp[4]);
+            product.setVendor((Vendor) tmp[5]);
+            product.setCategory((Category) tmp[6]);
+            product.setImgExist(imgFlag != null);
+        } catch (Exception ex) {
+            getLogger().doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAO.class.getName() + "::get(id)", ex);
+            return null;
+        } finally {
+            session.close();
+        }
+
+        return product;
+    }
+
+    //**************************************************************************
+    public byte[] getImage(Integer pID) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        byte[] img = null;
+
+        try {
+            Query q = session.createQuery("SELECT p.image FROM Product p WHERE p.id=:id");
+            q.setParameter("id", pID);
+            img = (byte[]) q.uniqueResult();
+        } catch (Exception ex) {
+            getLogger().doLogging(Level.ERROR, "Product getImage failed" + " | " + ProductDAO.class.getName() + "::getImage(pID)", ex);
+            return null;
+        } finally {
+            session.close();
+        }
+
+        return img;
+    }
+
+    //**************************************************************************
+    public Integer getCount(Object object) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Long count = 0L;
+
+        Integer id = -1;
+        String param = null;
+        String namedQuery = null;
+
+        if (object instanceof Vendor) {
+            id = ((Vendor) object).getId();
+            param = "vId";
+            namedQuery = "Vendor.countProducts";
+        } else if (object instanceof Category) {
+            id = ((Category) object).getId();
+            param = "cId";
+            namedQuery = "Category.countProducts";
+        }
+
+        try {
+            count = (Long) session
+                    .getNamedQuery(namedQuery)
+                    .setParameter(param, id)
+                    .setParameter("flag", true)
+                    .uniqueResult();
+        } catch (Exception ex) {
+            getLogger().doLogging(Level.ERROR, "Product getCount failed" + " | " + ProductDAO.class.getName() + "::getCount(object)", ex);
+            return -1;
+        } finally {
+            session.close();
+        }
+
+        return (Integer) count.intValue();
+    }
+
+    //**************************************************************************
+    public Integer getFavoriteCount(Integer custId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Long count = 0L;
+
+        try {
+            count = (Long) session
+                    .getNamedQuery("Customer.getFavoritesCount")
+                    .setParameter("custId", custId)
+                    .uniqueResult();
+        } catch (Exception ex) {
+            getLogger().doLogging(Level.ERROR, "Product getFavoriteCount failed" + " | " + ProductDAO.class.getName() + "::getFavoriteCount(custId)", ex);
+            return -1;
+        } finally {
+            session.close();
+        }
+
+        return (Integer) count.intValue();
+    }
+
+    //**************************************************************************
+    public List<Integer> getLikedProducts(Integer custId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Integer> pIds;
+
+        try {
+            pIds = (List<Integer>) session
+                    .getNamedQuery("Customer.getLikedProducts")
+                    .setParameter("custId", custId)
+                    .list();
+        } catch (Exception ex) {
+            getLogger().doLogging(Level.ERROR, "Product getLikedProducts failed" + " | " + ProductDAO.class.getName() + "::getLikedProducts(custId)", ex);
+            return null;
+        } finally {
+            session.close();
+        }
+
+        return pIds;
+    }
 
 }

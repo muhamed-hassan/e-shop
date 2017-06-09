@@ -1,7 +1,7 @@
 package cairoshop.daos;
 
-import cairoshop.entities.*;
-import java.util.*;
+import cairoshop.entities.Category;
+import javax.annotation.ManagedBean;
 
 /* ************************************************************************** 
  * Developed by: Mohamed Hassan	                                            *
@@ -9,15 +9,10 @@ import java.util.*;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface CategoryDAO extends Common {
+@ManagedBean
+public class CategoryDAO extends AbstractDAO<Category> {
 
-    boolean insert(Category category);
-
-    boolean update(Category category);
-
-    boolean delete(Category category);
-
-    List<Category> getAll(Integer startPosition);
-
-    List<Category> getAll();
+    public CategoryDAO() {
+        super(Category.class);
+    }
 }
