@@ -14,14 +14,6 @@ import javax.persistence.*;
 @NamedQueries(
         {
             @NamedQuery(
-                    name = "Category.findAll",
-                    query = "SELECT c FROM Category c WHERE c.notDeleted=:flag"
-            ),
-            @NamedQuery(
-                    name = "Category.count",
-                    query = "SELECT COUNT(c.Id) FROM Category c WHERE c.notDeleted=:flag"
-            ),
-            @NamedQuery(
                     name = "Category.countProducts",
                     query = "SELECT COUNT(p.id) FROM Product p WHERE ((p.category.id=:cId) "
                     + "AND (p.notDeleted=:flag))"

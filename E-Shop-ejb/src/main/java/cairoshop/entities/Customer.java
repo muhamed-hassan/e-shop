@@ -17,10 +17,6 @@ import javax.persistence.*;
                     query = "SELECT c FROM Customer c"
             ),
             @NamedQuery(
-                    name = "Customer.count",
-                    query = "SELECT COUNT(c.id) FROM Customer c"
-            ),
-            @NamedQuery(
                     name = "Customer.getFavoritesCount",
                     query = "SELECT COUNT(*) FROM Product p JOIN p.interestedUsers c WHERE c.id=:custId"
             ),

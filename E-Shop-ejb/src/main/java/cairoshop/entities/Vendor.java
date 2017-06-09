@@ -18,10 +18,6 @@ import javax.persistence.*;
                     query = "SELECT v FROM Vendor v WHERE v.notDeleted=:flag"
             ),
             @NamedQuery(
-                    name = "Vendor.count",
-                    query = "SELECT COUNT(v.Id) FROM Vendor v WHERE v.notDeleted=:flag"
-            ),
-            @NamedQuery(
                     name = "Vendor.countProducts",
                     query = "SELECT COUNT(p.id) FROM Product p WHERE ((p.vendor.id=:vId) "
                     + "AND (p.notDeleted=:flag))"

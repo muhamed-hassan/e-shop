@@ -42,10 +42,6 @@ import javax.persistence.*;
                     query = "SELECT p FROM Product p WHERE p.name LIKE :pName"
             ),
             @NamedQuery(
-                    name = "Product.count",
-                    query = "SELECT COUNT(*) FROM Product p WHERE p.notDeleted=:flag"
-            ),
-            @NamedQuery(
                     name = "Product.update",
                     query = "UPDATE Product p SET p.category.Id=:catId, p.description=:desc, p.name=:pName, "
                     + "p.price=:price, p.quantity=:quantity, p.vendor.id=:vId WHERE p.id=:pId"
