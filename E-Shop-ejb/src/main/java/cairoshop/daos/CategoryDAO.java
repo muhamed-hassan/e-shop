@@ -4,7 +4,7 @@ import cairoshop.entities.Category;
 import javax.annotation.ManagedBean;
 
 /* ************************************************************************** 
- * Developed by: Mohamed Hassan	                                            *
+ * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */

@@ -4,7 +4,7 @@ import javax.enterprise.context.*;
 import javax.enterprise.event.*;
 
 /* ************************************************************************** 
- * Developed by: Mohamed Hassan	                                            *
+ * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
