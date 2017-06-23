@@ -13,7 +13,7 @@ import javax.ws.rs.core.*;
 import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 
- * Developed by: Mohamed Hassan	                                            *
+ * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */

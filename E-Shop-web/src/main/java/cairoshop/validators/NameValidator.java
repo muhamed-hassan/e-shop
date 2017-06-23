@@ -7,7 +7,7 @@ import javax.faces.context.*;
 import javax.faces.validator.*;
 
 /* ************************************************************************** 
- * Developed by: Mohamed Hassan	                                            *
+ * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
