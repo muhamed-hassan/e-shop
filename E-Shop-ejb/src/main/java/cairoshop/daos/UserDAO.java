@@ -49,7 +49,11 @@ public class UserDAO extends AbstractDAO<User> {
         Long count = 0L;
 
         try {
-            count = (Long) session.getNamedQuery("Customer.count").uniqueResult();
+            
+            count = (Long) session
+                    .getNamedQuery("Customer.count")
+                    .uniqueResult();
+            
         } catch (Exception ex) {
             getLogger().doLogging(Level.ERROR, "User getCount failed" + " | " + UserDAO.class.getName() + "::getCount()", ex);
             return -1;
@@ -67,11 +71,13 @@ public class UserDAO extends AbstractDAO<User> {
         List<User> customers = null;
 
         try {
-            customers = /*(List<Customer>)*/ session
+            
+            customers = session
                     .getNamedQuery("Customer.findAll")
                     .setFirstResult(startPosition)
                     .setMaxResults(5)
                     .list();
+            
         } catch (Exception ex) {
             getLogger().doLogging(Level.ERROR, "Customers retrieval failed" + " | " + UserDAO.class.getName() + "::getAll(startPosition)", ex);
             return null;
@@ -88,11 +94,13 @@ public class UserDAO extends AbstractDAO<User> {
         User user;
 
         try {
+            
             user = (User) session.getNamedQuery("User.find")
                     .setParameter("email", email)
                     .setParameter("pwd", password)
                     .setParameter("flag", true)
                     .uniqueResult();
+            
         } catch (Exception ex) {
             getLogger().doLogging(Level.ERROR, "User retrieval failed" + " | " + UserDAO.class.getName() + "::find(email, password)", ex);
             return null; //exception occured

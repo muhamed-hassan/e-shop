@@ -38,7 +38,7 @@ import javax.persistence.*;
             ),
             @NamedQuery(
                     name = "Product.findByName",
-                    query = "SELECT p FROM Product p WHERE p.name LIKE :pName"
+                    query = "SELECT p.id, p.name, p.price, p.quantity FROM Product p WHERE p.name LIKE :pName"
             ),
             @NamedQuery(
                     name = "Product.update",

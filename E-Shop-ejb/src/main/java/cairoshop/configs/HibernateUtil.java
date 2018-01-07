@@ -24,11 +24,11 @@ public class HibernateUtil {
 
             Configuration configuration = new AnnotationConfiguration();
 
-            Class[] entities = getClasses("cairoshop.entities");
+            List<Class> entities = getClasses("cairoshop.entities");
 
-            for (Class entity : entities) {
+            entities.forEach(entity -> {
                 configuration.addAnnotatedClass(entity);
-            }
+            });
 
             sessionFactory = configuration
                     .configure()
@@ -44,29 +44,37 @@ public class HibernateUtil {
         return sessionFactory;
     }
 
-    private static Class[] getClasses(String packageName)
+    private static List<Class> getClasses(String packageName)
             throws ClassNotFoundException, IOException {
+        
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        
         assert classLoader != null;
+        
         String path = packageName.replace('.', '/');
         Enumeration<URL> resources = classLoader.getResources(path);
         List<File> dirs = new ArrayList<>();
+        
         while (resources.hasMoreElements()) {
-            URL resource = resources.nextElement();
-            dirs.add(new File(resource.getFile()));
+            dirs.add(new File(resources.nextElement().getFile()));
         }
-        ArrayList<Class> classes = new ArrayList<>();
+        
+        List<Class> classes = new ArrayList<>();
         for (File directory : dirs) {
             classes.addAll(findClasses(directory, packageName));
         }
-        return classes.toArray(new Class[classes.size()]);
+        
+        return classes;
     }
 
-    private static List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException {
+    private static List<Class> findClasses(File directory, String packageName) 
+            throws ClassNotFoundException {
+        
         List<Class> classes = new ArrayList<>();
         if (!directory.exists()) {
             return classes;
         }
+        
         File[] files = directory.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
@@ -76,6 +84,7 @@ public class HibernateUtil {
                 classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
             }
         }
+        
         return classes;
     }
 

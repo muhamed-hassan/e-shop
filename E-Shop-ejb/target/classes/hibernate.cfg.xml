@@ -2,18 +2,16 @@
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
+        
         <property name="connection.datasource">jdbc/shopDS</property>
         <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
         
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
         
-        <mapping class="cairoshop.entities.Admin" />
-        <mapping class="cairoshop.entities.Customer" />
-        <mapping class="cairoshop.entities.Category" />
-        <mapping class="cairoshop.entities.User" />
-        <mapping class="cairoshop.entities.Vendor" />
-        <mapping class="cairoshop.entities.Product" />
-        <mapping class="cairoshop.entities.Role" />
+        <property name="hibernate.cache.use_second_level_cache">false</property>
+        <property name="hibernate.cache.use_query_cache">false</property>
+        <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property> 
+        
     </session-factory>
 </hibernate-configuration>

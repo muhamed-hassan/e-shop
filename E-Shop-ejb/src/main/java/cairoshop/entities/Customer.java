@@ -26,9 +26,13 @@ import javax.persistence.*;
             @NamedQuery(
                     name = "Customer.getLikedProducts",
                     query = "SELECT p.id FROM Product p JOIN p.interestedUsers c WHERE c.id=:custId"
+            ),
+            @NamedQuery(
+                    name = "Customer.count",
+                    query = "SELECT COUNT(*) FROM Customer c"
             )
         })
-public class Customer extends User {
+public class Customer extends User { //Customer.count
 
     @Embedded
     private ContactDetails contactDetails;

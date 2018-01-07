@@ -6,7 +6,6 @@ import cairoshop.helpers.*;
 import java.util.*;
 import javax.annotation.ManagedBean;
 import org.apache.logging.log4j.Level;
-import org.hibernate.Query;
 import org.hibernate.Session;
 
 /* ************************************************************************** 
@@ -28,6 +27,7 @@ public class ProductDAO extends AbstractDAO<Product> {
         int affectedRows = -1;
 
         try {
+            
             session.getTransaction().begin();
 
             affectedRows = session.getNamedQuery("Product.update")
@@ -41,6 +41,7 @@ public class ProductDAO extends AbstractDAO<Product> {
                     .executeUpdate();
 
             session.getTransaction().commit();
+            
         } catch (Exception ex) {
             session.getTransaction().rollback();
             getLogger().doLogging(Level.ERROR, "Product update failed" + " | " + ProductDAO.class.getName() + "::update(product)", ex);
@@ -57,6 +58,7 @@ public class ProductDAO extends AbstractDAO<Product> {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
+            
             session.beginTransaction();
 
             // we load product first cause it is the owner of the relationship
@@ -68,6 +70,7 @@ public class ProductDAO extends AbstractDAO<Product> {
             session.merge(c);
 
             session.getTransaction().commit();
+            
         } catch (Exception ex) {
             session.getTransaction().rollback();
             getLogger().doLogging(Level.ERROR, "Product update failed" + " | " + ProductDAO.class.getName() + "::update(pID, cID)", ex);
@@ -85,6 +88,7 @@ public class ProductDAO extends AbstractDAO<Product> {
         int rowsAffected = -1;
 
         try {
+            
             session.getTransaction().begin();
 
             rowsAffected = session.getNamedQuery("Product.updateImg")
@@ -93,6 +97,7 @@ public class ProductDAO extends AbstractDAO<Product> {
                     .executeUpdate();
 
             session.getTransaction().commit();
+            
         } catch (Exception ex) {
             getLogger().doLogging(Level.ERROR, "Product update failed" + " | " + ProductDAO.class.getName() + "::update(imgStream, pID)", ex);
             return false;
@@ -109,12 +114,14 @@ public class ProductDAO extends AbstractDAO<Product> {
         List<Object[]> products = null;
 
         try {
+            
             products = session
                     .getNamedQuery("Product.findAll")
                     .setFirstResult(startPosition)
                     .setMaxResults(5)
                     .setParameter("flag", true)
                     .list();
+            
         } catch (Exception ex) {
             getLogger().doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(startPosition)", ex);
             return null;
@@ -131,6 +138,7 @@ public class ProductDAO extends AbstractDAO<Product> {
         List<Object[]> products = null;
 
         try {
+            
             if (object instanceof Vendor) {
                 products = (List<Object[]>) session
                         .getNamedQuery("Vendor.getProducts")
@@ -175,12 +183,14 @@ public class ProductDAO extends AbstractDAO<Product> {
         String sortDirectionStr = (sortDirection == SortDirection.ASC) ? "ASC" : "DESC";
 
         try {
-            products = (List<Object[]>) session
+            
+            products = session
                     .getNamedQuery("Product.sortBy" + sortCriteriaStr + sortDirectionStr)
                     .setParameter("flag", true)
                     .setMaxResults(5)
                     .setFirstResult(startPosition)
                     .list();
+            
         } catch (Exception ex) {
             getLogger().doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(sortCriteria, sortDirection, pos)", ex);
             return null;
@@ -195,22 +205,14 @@ public class ProductDAO extends AbstractDAO<Product> {
     public List<Object[]> getAll(String pName) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Object[]> products = new ArrayList<>();
-        List<Product> tmp = null;
-
+        
         try {
-            tmp = (List<Product>) session
+            
+            products = session
                     .getNamedQuery("Product.findByName")
                     .setParameter("pName", "%" + pName + "%")
                     .list();
-
-            for (Product p : tmp) {
-                Object[] t = new Object[4];
-                t[0] = p.getId();
-                t[1] = p.getName();
-                t[2] = p.getPrice();
-                t[3] = p.getQuantity();
-                products.add(t);
-            }
+    
         } catch (Exception ex) {
             getLogger().doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(pName)", ex);
             return null;
@@ -229,9 +231,16 @@ public class ProductDAO extends AbstractDAO<Product> {
         Integer imgFlag = null;
 
         try {
-            tmp = (Object[]) session.getNamedQuery("Product.loadInstance").setParameter("pId", id).uniqueResult();
+            
+            tmp = (Object[]) session
+                    .getNamedQuery("Product.loadInstance")
+                    .setParameter("pId", id)
+                    .uniqueResult();
 
-            imgFlag = (Integer) session.getNamedQuery("Product.isExistImg").setParameter("pId", id).uniqueResult();
+            imgFlag = (Integer) session
+                    .getNamedQuery("Product.isExistImg")
+                    .setParameter("pId", id)
+                    .uniqueResult();
 
             product.setId((Integer) tmp[0]);
             product.setName((String) tmp[1]);
@@ -241,6 +250,7 @@ public class ProductDAO extends AbstractDAO<Product> {
             product.setVendor((Vendor) tmp[5]);
             product.setCategory((Category) tmp[6]);
             product.setImgExist(imgFlag != null);
+            
         } catch (Exception ex) {
             getLogger().doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAO.class.getName() + "::get(id)", ex);
             return null;
@@ -257,9 +267,12 @@ public class ProductDAO extends AbstractDAO<Product> {
         byte[] img = null;
 
         try {
-            Query q = session.createQuery("SELECT p.image FROM Product p WHERE p.id=:id");
-            q.setParameter("id", pID);
-            img = (byte[]) q.uniqueResult();
+            
+            img = (byte[]) session
+                    .createQuery("SELECT p.image FROM Product p WHERE p.id=:id")
+                    .setParameter("id", pID)
+                    .uniqueResult();
+            
         } catch (Exception ex) {
             getLogger().doLogging(Level.ERROR, "Product getImage failed" + " | " + ProductDAO.class.getName() + "::getImage(pID)", ex);
             return null;
@@ -290,11 +303,13 @@ public class ProductDAO extends AbstractDAO<Product> {
         }
 
         try {
+            
             count = (Long) session
                     .getNamedQuery(namedQuery)
                     .setParameter(param, id)
                     .setParameter("flag", true)
                     .uniqueResult();
+            
         } catch (Exception ex) {
             getLogger().doLogging(Level.ERROR, "Product getCount failed" + " | " + ProductDAO.class.getName() + "::getCount(object)", ex);
             return -1;
@@ -311,10 +326,12 @@ public class ProductDAO extends AbstractDAO<Product> {
         Long count = 0L;
 
         try {
+            
             count = (Long) session
                     .getNamedQuery("Customer.getFavoritesCount")
                     .setParameter("custId", custId)
                     .uniqueResult();
+            
         } catch (Exception ex) {
             getLogger().doLogging(Level.ERROR, "Product getFavoriteCount failed" + " | " + ProductDAO.class.getName() + "::getFavoriteCount(custId)", ex);
             return -1;
@@ -331,10 +348,12 @@ public class ProductDAO extends AbstractDAO<Product> {
         List<Integer> pIds;
 
         try {
+            
             pIds = (List<Integer>) session
                     .getNamedQuery("Customer.getLikedProducts")
                     .setParameter("custId", custId)
                     .list();
+            
         } catch (Exception ex) {
             getLogger().doLogging(Level.ERROR, "Product getLikedProducts failed" + " | " + ProductDAO.class.getName() + "::getLikedProducts(custId)", ex);
             return null;
