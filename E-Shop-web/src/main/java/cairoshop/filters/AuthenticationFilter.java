@@ -1,6 +1,10 @@
 package cairoshop.filters;
 
+import cairoshop.entities.Admin;
+import cairoshop.entities.Customer;
+import cairoshop.entities.User;
 import java.io.*;
+import javax.faces.application.ResourceHandler;
 import javax.servlet.*;
 import javax.servlet.annotation.*;
 import javax.servlet.http.*;
@@ -12,43 +16,49 @@ import javax.servlet.http.*;
  * ************************************************************************ */
 @WebFilter(urlPatterns
         = {
-            "/customer/shop-home.jsf", "/admin/admin-home.jsf", "/login-pg.jsf"
-        })
-public class AuthenticationFilter implements Filter {
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
+            "/customer/*", "/admin/*", "/login-pg.jsf"
+        }, filterName = "authFilter")
+public class AuthenticationFilter extends AbstractFilter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpSession session = httpRequest.getSession();
-        String requestPath = httpRequest.getServletPath();
 
-        switch (requestPath) {
-            case "/login-pg.jsf":
-                if (session.getAttribute("currentUser") != null) {
-                    httpRequest
-                            .getRequestDispatcher("/WEB-INF/utils/forbidden.jsf")
-                            .forward(request, response);
-                }
-                break;
-            default:
-                if (session.getAttribute("currentUser") == null) {
-                    httpRequest
-                            .getRequestDispatcher("/WEB-INF/utils/forbidden-access.jsf")
-                            .forward(request, response);
-                }
+        if (!httpRequest.getRequestURI().startsWith(httpRequest.getContextPath() + ResourceHandler.RESOURCE_IDENTIFIER)) {
+            HttpServletResponse httpResponse = (HttpServletResponse) response;
+            HttpSession session = httpRequest.getSession();
+            String requestPath = httpRequest.getServletPath();
+            String lastRequestSource = (String) session.getAttribute("lastRequestSource");
+
+            StringBuilder requestOrigin = new StringBuilder()
+                    .append(httpRequest.getScheme()).append("://")
+                    .append(httpRequest.getServerName()).append(":").append(httpRequest.getServerPort())
+                    .append(httpRequest.getContextPath()).append(lastRequestSource);
+
+            switch (requestPath) {
+                case "/login-pg.jsf":
+                    if (session.getAttribute("currentUser") != null) {
+                        httpResponse.sendRedirect(requestOrigin.toString());
+                    }
+                    break;
+                default:
+                    if (session.getAttribute("currentUser") == null) {
+                        httpRequest
+                                .getRequestDispatcher("/WEB-INF/utils/forbidden-access.jsf")
+                                .forward(request, response);
+                    } else {
+                        User currentUser = (User) session.getAttribute("currentUser");
+
+                        if ((requestPath.startsWith("/customer") && currentUser instanceof Admin)
+                                || (requestPath.startsWith("/admin") && currentUser instanceof Customer)) {
+                            httpResponse.sendRedirect(requestOrigin.toString());
+                        }
+                    }
+            }
+
         }
 
         chain.doFilter(request, response);
-    }
-
-    @Override
-    public void destroy() {
-
     }
 
 }
