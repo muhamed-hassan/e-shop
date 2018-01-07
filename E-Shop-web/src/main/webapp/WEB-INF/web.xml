@@ -2,7 +2,6 @@
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
-        <!--<param-value>Development</param-value>-->
         <param-value>Production</param-value>
     </context-param>
     
@@ -15,6 +14,16 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jsf</url-pattern>
     </servlet-mapping>
+    
+    <filter-mapping>
+        <filter-name>authFilter</filter-name>
+        <url-pattern />
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>requestSrcTracker</filter-name>
+        <url-pattern />
+    </filter-mapping>
+    
     <session-config>
         <session-timeout>
             30
@@ -50,11 +59,11 @@
         <location>/WEB-INF/utils/not-found.jsf</location>
     </error-page>
     <error-page>
-        <error-code>500</error-code>
-        <location>/WEB-INF/utils/error.jsf</location>
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <location>/WEB-INF/utils/session-expired.jsf</location>
     </error-page>
     <error-page>
-        <exception-type>java.lang.Throwable</exception-type>
+        <exception-type>java.lang.Exception</exception-type>
         <location>/WEB-INF/utils/error.jsf</location>
     </error-page>
 </web-app>
