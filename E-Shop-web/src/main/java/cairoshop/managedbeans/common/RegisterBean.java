@@ -2,11 +2,14 @@ package cairoshop.managedbeans.common;
 
 import cairoshop.entities.*;
 import cairoshop.service.*;
+import cairoshop.utils.PasswordEncryptor;
 import java.util.*;
+import javax.annotation.PostConstruct;
 import javax.ejb.*;
 import javax.faces.application.*;
 import javax.faces.bean.*;
 import javax.faces.context.*;
+import javax.inject.Inject;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -23,7 +26,10 @@ public class RegisterBean {
     private Customer customer;
     private ContactDetails contactDetails;
 
-    @javax.annotation.PostConstruct
+    @Inject
+    private PasswordEncryptor encryptor;
+    
+    @PostConstruct
     public void init() {
         customer = new Customer();
         contactDetails = new ContactDetails();
@@ -47,6 +53,7 @@ public class RegisterBean {
 
     public String register() {
         customer.setContactDetails(contactDetails);
+        customer.setPassword(encryptor.encrypt(customer.getPassword()));
         Object result = userService.signUp(customer);
 
         FacesContext context = FacesContext.getCurrentInstance();
