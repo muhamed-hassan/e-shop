@@ -2,11 +2,13 @@ package cairoshop.managedbeans.common;
 
 import cairoshop.entities.*;
 import cairoshop.service.*;
+import cairoshop.utils.PasswordEncryptor;
 import java.util.*;
 import javax.ejb.*;
 import javax.faces.application.*;
 import javax.faces.bean.*;
 import javax.faces.context.*;
+import javax.inject.Inject;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -22,6 +24,9 @@ public class LoginBean {
 
     private String email;
     private String password;
+    
+    @Inject
+    private PasswordEncryptor encryptor;
 
     public String getEmail() {
         return email;
@@ -45,7 +50,7 @@ public class LoginBean {
      */
     public String login() {
         //null | "notFound" | instanceof User
-        Object result = userService.signIn(email, password);
+        Object result = userService.signIn(email, encryptor.encrypt(password));
         FacesContext context = FacesContext.getCurrentInstance();
 
         if (result == null) {
@@ -64,13 +69,15 @@ public class LoginBean {
                     .getExternalContext()
                     .getSessionMap();
 
-            sessionMap.put("currentUser", user);
+            
             sessionMap.put("content", "/sections/initial-content.xhtml");
 
             if (user instanceof Admin) {
+                sessionMap.put("currentUser", (Admin) user);
                 return "admin";
             }
 
+            sessionMap.put("currentUser", (Customer) user);
             return "customer";
         }
 
