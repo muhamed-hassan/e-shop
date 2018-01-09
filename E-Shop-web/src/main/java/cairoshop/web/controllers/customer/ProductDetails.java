@@ -2,12 +2,17 @@ package cairoshop.web.controllers.customer;
 
 import cairoshop.entities.*;
 import cairoshop.service.*;
+import cairoshop.utils.CustomerContent;
+import cairoshop.utils.Messages;
+import cairoshop.utils.Scope;
+import cairoshop.web.controllers.common.ContentChanger;
 import java.io.*;
 import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.ejb.*;
 import javax.faces.bean.*;
 import javax.faces.context.*;
+import javax.inject.Inject;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -16,7 +21,8 @@ import javax.faces.context.*;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class ProductDetails implements Serializable {
+public class ProductDetails 
+        implements Serializable {
 
     @EJB
     private CustomerService customerService;
@@ -25,6 +31,9 @@ public class ProductDetails implements Serializable {
     private List<Integer> likedProducts;
     private Customer currentUser;
     private Boolean favorite;
+    
+    @Inject
+    private ContentChanger contentChanger;
 
     // =========================================================================
     // =======> helpers
@@ -88,13 +97,11 @@ public class ProductDetails implements Serializable {
         }
 
         if (product != null) {
-            sessionMap.put("content", "/customer/product-pg.xhtml");
+            sessionMap.put("content", CustomerContent.PRODUCT_PAGE);
             return;
         }
 
-        sessionMap.put("result", -1);
-        sessionMap.put("msg", "Something went wrong - please try again later.");
-        sessionMap.put("content", "/sections/result.xhtml");
+        contentChanger.displayContentWithMsg(Messages.SOMETHING_WENT_WRONG, -1, Scope.SESSION);
     }
 
     // =========================================================================

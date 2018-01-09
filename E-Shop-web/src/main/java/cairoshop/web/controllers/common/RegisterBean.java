@@ -3,6 +3,7 @@ package cairoshop.web.controllers.common;
 import cairoshop.entities.*;
 import cairoshop.service.*;
 import cairoshop.utils.PasswordEncryptor;
+import cairoshop.utils.SharedContent;
 import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.ejb.*;
@@ -72,7 +73,7 @@ public class RegisterBean {
                 .getSessionMap();
 
         sessionMap.put("currentUser", (Customer) result);
-        sessionMap.put("content", "/sections/initial-content.xhtml");
+        sessionMap.put("content", SharedContent.INITIAL_CONTEXT);
 
         return "done";
     }

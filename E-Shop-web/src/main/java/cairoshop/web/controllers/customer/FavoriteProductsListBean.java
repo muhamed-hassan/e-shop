@@ -1,16 +1,15 @@
 package cairoshop.web.controllers.customer;
 
-import cairoshop.web.controllers.common.pagination.PaginationControls;
-import cairoshop.web.controllers.common.CommonBean;
 import cairoshop.entities.*;
 import cairoshop.service.*;
-import cairoshop.utils.CustomerContent;
-import cairoshop.utils.CustomerMessages;
+import cairoshop.utils.*;
+import cairoshop.web.controllers.common.CommonBean;
 import java.io.*;
 import java.util.*;
 import javax.ejb.*;
 import javax.faces.bean.*;
 import javax.faces.context.*;
+import cairoshop.web.controllers.common.pagination.PlainPaginationControls;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -21,7 +20,7 @@ import javax.faces.context.*;
 @SessionScoped
 public class FavoriteProductsListBean 
         extends CommonBean 
-        implements Serializable, PaginationControls {
+        implements Serializable, PlainPaginationControls {
 
     @EJB
     private CustomerService customerService;
@@ -93,6 +92,7 @@ public class FavoriteProductsListBean
         getPaginator().setChunkSize(products.size());
     }
 
+    @Override
     public void resetPaginator() {
         c = (Customer) FacesContext
                 .getCurrentInstance()

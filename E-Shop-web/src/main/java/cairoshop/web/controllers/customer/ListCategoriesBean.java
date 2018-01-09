@@ -1,17 +1,16 @@
 package cairoshop.web.controllers.customer;
 
 import cairoshop.web.controllers.common.navigation.CustomerNavigation;
-import cairoshop.web.controllers.common.pagination.PaginationControls;
-import cairoshop.web.controllers.common.CommonBean;
 import cairoshop.entities.*;
 import cairoshop.service.*;
-import cairoshop.utils.CustomerContent;
-import cairoshop.utils.CustomerMessages;
+import cairoshop.utils.*;
+import cairoshop.web.controllers.common.CommonBean;
 import java.io.*;
 import java.util.*;
 import javax.ejb.*;
 import javax.faces.bean.*;
 import javax.faces.event.*;
+import cairoshop.web.controllers.common.pagination.PaginationControlsWithEvent;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -22,7 +21,7 @@ import javax.faces.event.*;
 @SessionScoped
 public class ListCategoriesBean 
         extends CommonBean 
-        implements Serializable, CustomerNavigation, PaginationControls {
+        implements Serializable, CustomerNavigation, PaginationControlsWithEvent {
 
     @EJB
     private CustomerService customerService;
@@ -79,6 +78,7 @@ public class ListCategoriesBean
         getPaginator().setChunkSize(categories.size());
     }
 
+    @Override
     public void resetPaginator(ActionEvent event) {
         Integer count = customerService.getCategoriesCount();
 
@@ -86,7 +86,6 @@ public class ListCategoriesBean
         getPaginator().setCursor(0);
         categories = customerService.viewCategories(getPaginator().getCursor());
         getPaginator().setChunkSize(categories.size());
-
     }
 
     // =========================================================================

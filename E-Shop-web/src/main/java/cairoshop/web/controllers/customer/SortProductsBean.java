@@ -1,17 +1,16 @@
 package cairoshop.web.controllers.customer;
 
 import cairoshop.web.controllers.common.navigation.CustomerNavigation;
-import cairoshop.web.controllers.common.pagination.PaginationControls;
-import cairoshop.web.controllers.common.CommonBean;
 import cairoshop.helpers.*;
 import cairoshop.service.*;
-import cairoshop.utils.CustomerContent;
-import cairoshop.utils.CustomerMessages;
+import cairoshop.utils.*;
+import cairoshop.web.controllers.common.CommonBean;
 import java.io.*;
 import java.util.*;
 import javax.ejb.*;
 import javax.faces.bean.*;
 import javax.faces.context.*;
+import cairoshop.web.controllers.common.pagination.PaginationControlsWithSorting;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -22,7 +21,7 @@ import javax.faces.context.*;
 @SessionScoped
 public class SortProductsBean 
         extends CommonBean 
-        implements Serializable, CustomerNavigation, PaginationControls {
+        implements Serializable, CustomerNavigation, PaginationControlsWithSorting {
 
     @EJB
     private CustomerService customerService;
@@ -94,6 +93,7 @@ public class SortProductsBean
         getPaginator().setChunkSize(products.size());
     }
 
+    @Override
     public void resetPaginator(String criteria, String direction) {
         sortCriteria = ((criteria.equals("name")) ? SortCriteria.NAME : SortCriteria.PRICE);
         sortDirection = ((direction.equals("asc")) ? SortDirection.ASC : SortDirection.DESC);

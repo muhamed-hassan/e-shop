@@ -1,14 +1,11 @@
 package cairoshop.web.controllers.admin;
 
 import cairoshop.web.controllers.common.navigation.AdminNavigation;
-import cairoshop.web.controllers.common.pagination.PaginationControls;
-import cairoshop.web.controllers.common.CommonBean;
 import cairoshop.entities.*;
 import cairoshop.service.*;
-import cairoshop.utils.AdminActions;
-import cairoshop.utils.AdminContent;
-import cairoshop.utils.AdminMessages;
-import cairoshop.utils.Scope;
+import cairoshop.utils.*;
+import cairoshop.web.controllers.common.*;
+import cairoshop.web.controllers.common.pagination.PlainPaginationControls;
 import java.io.*;
 import java.util.*;
 import javax.ejb.*;
@@ -23,7 +20,7 @@ import javax.faces.bean.*;
 @SessionScoped
 public class ManageVendorsBean 
         extends CommonBean 
-        implements Serializable, AdminNavigation, PaginationControls {
+        implements Serializable, AdminNavigation, PlainPaginationControls {
 
     @EJB
     private AdminService adminService;
@@ -41,7 +38,9 @@ public class ManageVendorsBean
     public void addVendor() {
         int status = (adminService.addVendor(vendor) ? 1 : -1);
 
-        String msg = ((status == 1) ? vendor.getName() + " added successfully." : "Something went wrong - please try again later.");
+        String msg = ((status == 1) ? 
+                vendor.getName() + Messages.ADDED_SUCCESSFULLY : 
+                Messages.SOMETHING_WENT_WRONG);
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
@@ -76,7 +75,9 @@ public class ManageVendorsBean
         if (!v.getOldValue().equals(v.getName())) {
             int status = (adminService.editVendor(v) ? 1 : -1);
 
-            String msg = ((status == 1) ? v.getName() + " edited successfully." : "Something went wrong - please try again later.");
+            String msg = ((status == 1) ? 
+                    v.getName() + Messages.EDITED_SUCCESSFULLY : 
+                    Messages.SOMETHING_WENT_WRONG);
             
             getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
         }
@@ -88,7 +89,9 @@ public class ManageVendorsBean
     public void deleteVendor(Vendor v) {
         int status = (adminService.deleteVendor(v) ? 1 : -1);
 
-        String msg = ((status == 1) ? v.getName() + " deleted successfully." : "Something went wrong - please try again later.");
+        String msg = ((status == 1) ? 
+                v.getName() + Messages.REMOVED_SUCCESSFULLY : 
+                Messages.SOMETHING_WENT_WRONG);
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
 
@@ -159,6 +162,7 @@ public class ManageVendorsBean
         getPaginator().setChunkSize(vendors.size());
     }
 
+    @Override
     public void resetPaginator() {
         getPaginator().setDataSize(adminService.getVendorsCount());
         getPaginator().setCursor(0);
