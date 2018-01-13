@@ -87,10 +87,11 @@ public class ManageCategoriesBean
     // =======> Delete categroy
     // =========================================================================
     public void deleteCategory(Category c) {
+        String currentCategoryName = c.getName();
         int status = (adminService.deleteCategory(c) ? 1 : -1);
 
         String msg = ((status == 1) ? 
-                category.getName() + Messages.REMOVED_SUCCESSFULLY : 
+                currentCategoryName + Messages.REMOVED_SUCCESSFULLY : 
                 Messages.SOMETHING_WENT_WRONG);
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);

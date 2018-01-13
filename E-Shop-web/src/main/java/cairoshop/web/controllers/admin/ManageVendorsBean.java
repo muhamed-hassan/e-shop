@@ -87,10 +87,11 @@ public class ManageVendorsBean
     // =======> Delete vendor
     // =========================================================================
     public void deleteVendor(Vendor v) {
+        String currentVendorName = v.getName();
         int status = (adminService.deleteVendor(v) ? 1 : -1);
 
         String msg = ((status == 1) ? 
-                v.getName() + Messages.REMOVED_SUCCESSFULLY : 
+                currentVendorName + Messages.REMOVED_SUCCESSFULLY : 
                 Messages.SOMETHING_WENT_WRONG);
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
