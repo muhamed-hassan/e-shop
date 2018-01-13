@@ -1,16 +1,22 @@
 package cairoshop.web.controllers.common;
 
 import cairoshop.web.controllers.common.pagination.Paginator;
+import com.cairoshop.logger.GlobalLogger;
 import javax.faces.bean.ManagedProperty;
 import javax.inject.Inject;
 
+/* ************************************************************************** 
+ * Developed by: Muhamed Hassan	                                            *
+ * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * GitHub      : https://github.com/muhamed-hassan                          *  
+ * ************************************************************************ */
 public class CommonBean {
-
-    @ManagedProperty("#{paginator}")
-    private Paginator paginator;
-
+    
     @Inject
     private ContentChanger contentChanger;
+    
+    @ManagedProperty("#{paginator}")
+    private Paginator paginator;
 
     public Paginator getPaginator() {
         return paginator;
@@ -19,9 +25,12 @@ public class CommonBean {
     public void setPaginator(Paginator paginator) {
         this.paginator = paginator;
     }
-
+    
+    public GlobalLogger getLogger() {
+        return GlobalLogger.getInstance();
+    }
+    
     public ContentChanger getContentChanger() {
         return contentChanger;
     }
-
 }

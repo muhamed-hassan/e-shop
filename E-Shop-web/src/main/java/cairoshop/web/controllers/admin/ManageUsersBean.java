@@ -1,17 +1,18 @@
 package cairoshop.web.controllers.admin;
 
 import cairoshop.web.controllers.common.navigation.AdminNavigation;
-import cairoshop.web.controllers.common.pagination.PaginationControls;
-import cairoshop.web.controllers.common.CommonBean;
 import cairoshop.entities.*;
 import cairoshop.service.*;
 import cairoshop.utils.AdminContent;
 import cairoshop.utils.AdminMessages;
+import cairoshop.utils.Messages;
 import cairoshop.utils.Scope;
+import cairoshop.web.controllers.common.CommonBean;
 import java.io.*;
 import java.util.*;
 import javax.ejb.*;
 import javax.faces.bean.*;
+import cairoshop.web.controllers.common.pagination.PlainPaginationControls;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -22,7 +23,7 @@ import javax.faces.bean.*;
 @SessionScoped
 public class ManageUsersBean 
         extends CommonBean 
-        implements Serializable, AdminNavigation, PaginationControls {
+        implements Serializable, AdminNavigation, PlainPaginationControls {
 
     @EJB
     private AdminService adminService;
@@ -54,7 +55,9 @@ public class ManageUsersBean
             }
         }
         
-        String msg = ((status == 1) ? c.getName() + " updated successfully." : "Something went wrong - please try again later.");
+        String msg = ((status == 1) ? 
+                c.getName() + Messages.EDITED_SUCCESSFULLY : 
+                Messages.SOMETHING_WENT_WRONG);
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
     }
@@ -74,7 +77,9 @@ public class ManageUsersBean
             }
         }
 
-        String msg = ((status == 1) ? c.getName() + " updated successfully." : "Something went wrong - please try again later.");
+        String msg = ((status == 1) ? 
+                c.getName() + Messages.EDITED_SUCCESSFULLY : 
+                Messages.SOMETHING_WENT_WRONG);
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
     }
@@ -134,6 +139,7 @@ public class ManageUsersBean
         getPaginator().setChunkSize(customers.size());
     }
 
+    @Override
     public void resetPaginator() {
         getPaginator().setDataSize(adminService.getCustomersCount());
         getPaginator().setCursor(0);

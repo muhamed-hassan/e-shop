@@ -3,6 +3,7 @@ package cairoshop.web.controllers.common;
 import cairoshop.entities.*;
 import cairoshop.service.*;
 import cairoshop.utils.PasswordEncryptor;
+import cairoshop.utils.SharedContent;
 import java.util.*;
 import javax.ejb.*;
 import javax.faces.application.*;
@@ -55,7 +56,7 @@ public class LoginBean {
 
         if (result == null) {
             ViewHandler viewHandler = context.getApplication().getViewHandler();
-            context.setViewRoot(viewHandler.createView(context, "/WEB-INF/utils/error.xhtml"));
+            context.setViewRoot(viewHandler.createView(context, SharedContent.ERROR));
             context.getPartialViewContext().setRenderAll(true);
             context.renderResponse();
         } else if (result instanceof String) { // not registered yet || wrong userName or password
@@ -68,7 +69,7 @@ public class LoginBean {
                     .getSessionMap();
 
             
-            sessionMap.put("content", "/sections/initial-content.xhtml");
+            sessionMap.put("content", SharedContent.INITIAL_CONTEXT);
 
             if (user instanceof Admin) {
                 sessionMap.put("currentUser", (Admin) user);

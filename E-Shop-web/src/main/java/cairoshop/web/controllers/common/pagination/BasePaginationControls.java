@@ -1,6 +1,6 @@
 package cairoshop.web.controllers.common.pagination;
 
-public interface PaginationControls {
+public interface BasePaginationControls {
     
     void next();
     

@@ -1,16 +1,14 @@
 package cairoshop.web.controllers.customer;
 
 import cairoshop.web.controllers.common.navigation.CustomerNavigation;
-import cairoshop.web.controllers.common.pagination.PaginationControls;
-import cairoshop.web.controllers.common.CommonBean;
 import cairoshop.service.*;
-import cairoshop.utils.CustomerContent;
-import cairoshop.utils.CustomerMessages;
+import cairoshop.utils.*;
+import cairoshop.web.controllers.common.CommonBean;
 import java.io.*;
 import java.util.*;
 import javax.ejb.*;
 import javax.faces.bean.*;
-import javax.faces.context.*;
+import cairoshop.web.controllers.common.pagination.PlainPaginationControls;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -21,7 +19,7 @@ import javax.faces.context.*;
 @SessionScoped
 public class FindProductBean 
         extends CommonBean 
-        implements Serializable, CustomerNavigation, PaginationControls {
+        implements Serializable, CustomerNavigation, PlainPaginationControls {
 
     @EJB
     private CustomerService customerService;
@@ -90,7 +88,6 @@ public class FindProductBean
 
         getPaginator().setCursor(getPaginator().getCursor() - 5);
         getPaginator().setChunkSize(queryResult.size());
-
     }
 
     @Override
@@ -126,6 +123,7 @@ public class FindProductBean
         getPaginator().setChunkSize(queryResult.size());
     }
 
+    @Override
     public void resetPaginator() {
         ds = customerService.findProductByName(keyword);
 
@@ -143,13 +141,7 @@ public class FindProductBean
         getPaginator().setChunkSize(queryResult.size());
 
         if (queryResult == null || queryResult.isEmpty()) {
-            Map<String, Object> sessionMap = FacesContext
-                    .getCurrentInstance()
-                    .getExternalContext()
-                    .getSessionMap();
-            sessionMap.put("result", -2);
-            sessionMap.put("msg", "No products to display");
-            sessionMap.put("content", "/sections/result.xhtml");
+            getContentChanger().displayNoDataFound(Messages.NO_PRODUCTS_TO_DISPLAY);
         }
     }
 

@@ -1,20 +1,15 @@
 package cairoshop.web.controllers.admin;
 
-import cairoshop.web.controllers.common.navigation.AdminNavigation;
-import cairoshop.web.controllers.common.pagination.PaginationControls;
 import cairoshop.web.controllers.common.CommonBean;
+import cairoshop.web.controllers.common.navigation.AdminNavigation;
 import cairoshop.entities.*;
 import cairoshop.service.*;
-import cairoshop.utils.AdminActions;
-import cairoshop.utils.AdminContent;
-import cairoshop.utils.AdminMessages;
-import cairoshop.utils.Scope;
-import com.cairoshop.logger.GlobalLogger;
+import cairoshop.utils.*;
+import cairoshop.web.controllers.common.pagination.*;
 import java.io.*;
 import java.util.*;
 import javax.ejb.*;
 import javax.faces.bean.*;
-import javax.faces.context.*;
 import javax.servlet.http.*;
 import org.apache.logging.log4j.Level;
 
@@ -27,7 +22,7 @@ import org.apache.logging.log4j.Level;
 @SessionScoped
 public class ManageProductsBean 
         extends CommonBean 
-        implements Serializable, AdminNavigation, PaginationControls {
+        implements Serializable, AdminNavigation, PlainPaginationControls {
 
     @EJB
     private AdminService adminService;
@@ -66,13 +61,15 @@ public class ManageProductsBean
 
                 product.setImage(imgData.toByteArray());
             } catch (IOException ex) {
-                GlobalLogger.getInstance().doLogging(Level.ERROR, "Failed to read the product's image -> ManageProductsBean::addProduct()", ex);
+                getLogger().doLogging(Level.ERROR, "Failed to read the product's image -> ManageProductsBean::addProduct()", ex);
             }
         }
 
         int status = (adminService.addProduct(product) ? 1 : -1);
 
-        String msg = ((status == 1) ? product.getName() + " added successfully." : "Something went wrong - please try again later.");
+        String msg = ((status == 1) ? 
+                product.getName() + Messages.ADDED_SUCCESSFULLY : 
+                Messages.SOMETHING_WENT_WRONG);
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
 
@@ -95,11 +92,7 @@ public class ManageProductsBean
     }
 
     public void goToEdit() {
-        FacesContext
-                .getCurrentInstance()
-                .getExternalContext()
-                .getSessionMap()
-                .put("content", "/admin/manage-products/edit-product-pg.xhtml");
+        getContentChanger().displayContent(AdminContent.EDIT_PRODUCT_DETAILS);
     }
 
     public void editProduct() {
@@ -119,7 +112,7 @@ public class ManageProductsBean
 
                 flag1 = adminService.editProductImg(imgData.toByteArray(), product.getId());
             } catch (IOException ex) {
-                GlobalLogger.getInstance().doLogging(Level.ERROR, "Failed to read the product's image -> ManageProductsBean::editProduct()", ex);
+                getLogger().doLogging(Level.ERROR, "Failed to read the product's image -> ManageProductsBean::editProduct()", ex);
             }
         }
 
@@ -131,7 +124,9 @@ public class ManageProductsBean
 
         int status = ((flag1 && flag2) ? 1 : -1);
 
-        String msg = ((status == 1) ? product.getName() + " edited successfully." : "Something went wrong - please try again later.");
+        String msg = ((status == 1) ? 
+                product.getName() + Messages.EDITED_SUCCESSFULLY : 
+                Messages.SOMETHING_WENT_WRONG);
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
 
@@ -146,7 +141,9 @@ public class ManageProductsBean
     public void deleteProduct(Integer pID, String pName) {
         int status = (adminService.deleteProduct(pID) ? 1 : -1);
 
-        String msg = ((status == 1) ? pName + " deleted successfully." : "Something went wrong - please try again later.");
+        String msg = ((status == 1) ? 
+                pName + Messages.REMOVED_SUCCESSFULLY : 
+                Messages.SOMETHING_WENT_WRONG);
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
 
@@ -250,6 +247,7 @@ public class ManageProductsBean
         getPaginator().setChunkSize(products.size());
     }
 
+    @Override
     public void resetPaginator() {
         getPaginator().setDataSize(adminService.getProductsCount());
         getPaginator().setCursor(0);
@@ -273,7 +271,7 @@ public class ManageProductsBean
 
             switch (destination) {
                 case AdminActions.EDIT_PRODUCT:
-                    getContentChanger().displayContent(AdminContent.EDIT_PRODUCT);
+                    getContentChanger().displayContent(AdminContent.EDIT_PRODUCT_MASTER);
                     break;
                 case AdminActions.DELETE_PRODUCT:
                     getContentChanger().displayContent(AdminContent.DELETE_PRODUCT);

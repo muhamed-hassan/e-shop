@@ -1,14 +1,11 @@
 package cairoshop.web.controllers.admin;
 
-import cairoshop.web.controllers.common.navigation.AdminNavigation;
-import cairoshop.web.controllers.common.pagination.PaginationControls;
 import cairoshop.web.controllers.common.CommonBean;
+import cairoshop.web.controllers.common.navigation.AdminNavigation;
 import cairoshop.entities.*;
 import cairoshop.service.*;
-import cairoshop.utils.AdminActions;
-import cairoshop.utils.AdminContent;
-import cairoshop.utils.AdminMessages;
-import cairoshop.utils.Scope;
+import cairoshop.utils.*;
+import cairoshop.web.controllers.common.pagination.*;
 import java.io.*;
 import java.util.*;
 import javax.ejb.*;
@@ -23,7 +20,7 @@ import javax.faces.bean.*;
 @SessionScoped
 public class ManageCategoriesBean 
         extends CommonBean 
-        implements Serializable, AdminNavigation, PaginationControls {
+        implements Serializable, AdminNavigation, PlainPaginationControls {
 
     @EJB
     private AdminService adminService;
@@ -41,7 +38,9 @@ public class ManageCategoriesBean
     public void addCategory() {
         int status = (adminService.addCategory(category) ? 1 : -1);
 
-        String msg = ((status == 1) ? category.getName() + " added successfully." : "Something went wrong - please try again later.");
+        String msg = ((status == 1) ? 
+                category.getName() + Messages.ADDED_SUCCESSFULLY : 
+                Messages.SOMETHING_WENT_WRONG);
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
@@ -76,7 +75,9 @@ public class ManageCategoriesBean
         if (!c.getOldValue().equals(c.getName())) {
             int status = (adminService.editCategory(c) ? 1 : -1);
 
-            String msg = ((status == 1) ? category.getName() + " edited successfully." : "Something went wrong - please try again later.");
+            String msg = ((status == 1) ? 
+                    category.getName() + Messages.EDITED_SUCCESSFULLY : 
+                    Messages.SOMETHING_WENT_WRONG);
             
             getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
         }
@@ -88,7 +89,9 @@ public class ManageCategoriesBean
     public void deleteCategory(Category c) {
         int status = (adminService.deleteCategory(c) ? 1 : -1);
 
-        String msg = ((status == 1) ? category.getName() + " removed successfully." : "Something went wrong - please try again later.");
+        String msg = ((status == 1) ? 
+                category.getName() + Messages.REMOVED_SUCCESSFULLY : 
+                Messages.SOMETHING_WENT_WRONG);
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
 
@@ -140,6 +143,7 @@ public class ManageCategoriesBean
         getPaginator().setChunkSize(categories.size());
     }
 
+    @Override
     public void resetPaginator() {
         getPaginator().setDataSize(adminService.getCategoriesCount());
         getPaginator().setCursor(0);

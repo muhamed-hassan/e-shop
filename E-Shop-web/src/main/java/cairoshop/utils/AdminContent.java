@@ -12,7 +12,8 @@ public class AdminContent extends SharedContent {
     public static final String DELETE_CATEGORY = "/admin/manage-categories/delete-category.xhtml";
     
     public static final String ADD_NEW_PRODUCT = "/admin/manage-products/add-new-product.xhtml";
-    public static final String EDIT_PRODUCT = "/admin/manage-products/edit-product-master.xhtml";
+    public static final String EDIT_PRODUCT_MASTER = "/admin/manage-products/edit-product-master.xhtml";
+    public static final String EDIT_PRODUCT_DETAILS = "/admin/manage-products/edit-product-pg.xhtml";
     public static final String DELETE_PRODUCT = "/admin/manage-products/delete-product.xhtml";
     
     public static final String ADD_NEW_VENDOR = "/admin/manage-vendors/add-new-vendor.xhtml";

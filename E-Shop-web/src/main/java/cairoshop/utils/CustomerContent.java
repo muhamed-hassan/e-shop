@@ -11,4 +11,7 @@ public class CustomerContent extends SharedContent {
     public static final String CATEGORIES_LIST = "/customer/categories-list.xhtml";
     public static final String SORT_PRODUCTS = "/customer/sort-products.xhtml";
     public static final String PRODUCTS_RESULT = "/customer/products-result.xhtml";
+    public static final String VIEW_PRODUCTS_IN = "/customer/view-products-in.xhtml";
+    public static final String PRODUCT_PAGE = "/customer/product-pg.xhtml";
+    
 }

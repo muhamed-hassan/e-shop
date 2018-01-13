@@ -1,8 +1,11 @@
 package cairoshop.web.controllers.customer;
 
-import cairoshop.web.controllers.common.pagination.Paginator;
+import cairoshop.web.controllers.common.pagination.*;
 import cairoshop.entities.*;
 import cairoshop.service.*;
+import cairoshop.utils.CustomerContent;
+import cairoshop.utils.CustomerMessages;
+import cairoshop.web.controllers.common.CommonBean;
 import java.io.*;
 import java.util.*;
 import javax.annotation.PostConstruct;
@@ -19,13 +22,11 @@ import javax.faces.event.*;
 @ManagedBean
 @SessionScoped
 public class ListProductsBean 
-        implements Serializable {
+        extends CommonBean
+        implements Serializable, PaginationControlsForType {
 
     @EJB
     private CustomerService customerService;
-
-    @ManagedProperty("#{paginator}")
-    private Paginator paginator;
 
     private List<Object[]> products;
     private List<Category> categories;
@@ -118,13 +119,16 @@ public class ListProductsBean
         resetPaginator(selectedCategory);
 
         if (products == null || products.isEmpty()) {
-            sessionMap.put("result", -2);
-            sessionMap.put("content", "/sections/result.xhtml");
-            sessionMap.put("msg", "Category (" + selectedCategory.getName() + ") has no products to display");
+            StringBuilder msg = new StringBuilder()
+                    .append(CustomerMessages.CATEGORY_OF)
+                    .append(selectedCategory.getName())
+                    .append(CustomerMessages.HAS_NO_PRODUCTS_TO_DISPLAY);
+                    
+            getContentChanger().displayNoDataFound(msg.toString());
             return;
         }
 
-        sessionMap.put("content", "/customer/view-products-in.xhtml");
+        sessionMap.put("content", CustomerContent.VIEW_PRODUCTS_IN);
         sessionMap.put("selected", "category");
     }
 
@@ -146,63 +150,75 @@ public class ListProductsBean
         resetPaginator(selectedVendor);
 
         if (products == null || products.isEmpty()) {
-            sessionMap.put("result", -2);
-            sessionMap.put("content", "/sections/result.xhtml");
-            sessionMap.put("msg", "Vendor (" + selectedVendor.getName() + ") has no products to display");
+            StringBuilder msg = new StringBuilder()
+                    .append(CustomerMessages.VENDOR_OF)
+                    .append(selectedVendor.getName())
+                    .append(CustomerMessages.HAS_NO_PRODUCTS_TO_DISPLAY);
+                    
+            getContentChanger().displayNoDataFound(msg.toString());
             return;
         }
 
-        sessionMap.put("content", "/customer/view-products-in.xhtml");
+        sessionMap.put("content", CustomerContent.VIEW_PRODUCTS_IN);
         sessionMap.put("selected", "vendor");
     }
 
     // =========================================================================
     // =======> Pagination
     // =========================================================================
-    public Paginator getPaginator() {
-        return paginator;
-    }
-
-    public void setPaginator(Paginator paginator) {
-        this.paginator = paginator;
-    }
-
+    @Override
     public void next(String selected) {
-        products = customerService.viewProductsIn(((selected.equals("vendor") ? selectedVendor : selectedCategory)), paginator.getCursor() + 5);
-        paginator.setCursor(paginator.getCursor() + 5);
-        paginator.setChunkSize(products.size());
+        products = customerService
+                .viewProductsIn(
+                        ((selected.equals("vendor") ? selectedVendor : selectedCategory)), 
+                            getPaginator().getCursor() + 5);
+        getPaginator().setCursor(getPaginator().getCursor() + 5);
+        getPaginator().setChunkSize(products.size());
     }
 
+    @Override
     public void previous(String selected) {
-        products = customerService.viewProductsIn(((selected.equals("vendor") ? selectedVendor : selectedCategory)), paginator.getCursor() - 5);
-        paginator.setCursor(paginator.getCursor() - 5);
-        paginator.setChunkSize(products.size());
+        products = customerService
+                .viewProductsIn(
+                        ((selected.equals("vendor") ? selectedVendor : selectedCategory)), 
+                            getPaginator().getCursor() - 5);
+        getPaginator().setCursor(getPaginator().getCursor() - 5);
+        getPaginator().setChunkSize(products.size());
     }
 
+    @Override
     public void first(String selected) {
-        paginator.setCursor(0);
-        products = customerService.viewProductsIn(((selected.equals("vendor") ? selectedVendor : selectedCategory)), paginator.getCursor());
-        paginator.setChunkSize(products.size());
+        getPaginator().setCursor(0);
+        products = customerService
+                .viewProductsIn(
+                        ((selected.equals("vendor") ? selectedVendor : selectedCategory)), 
+                            getPaginator().getCursor());
+        getPaginator().setChunkSize(products.size());
     }
 
+    @Override
     public void last(String selected) {
-        Integer dataSize = customerService.getProductsCount(((selected.equals("vendor") ? selectedVendor : selectedCategory)));
-        Integer chunkSize = paginator.getChunkSize();
+        Integer dataSize = customerService
+                .getProductsCount(((selected.equals("vendor") ? selectedVendor : selectedCategory)));
+        Integer chunkSize = getPaginator().getChunkSize();
 
         if ((dataSize % chunkSize) == 0) {
-            paginator.setCursor(dataSize - chunkSize);
+            getPaginator().setCursor(dataSize - chunkSize);
         } else {
-            paginator.setCursor(dataSize - (dataSize % chunkSize));
+            getPaginator().setCursor(dataSize - (dataSize % chunkSize));
         }
 
-        products = customerService.viewProductsIn(((selected.equals("vendor") ? selectedVendor : selectedCategory)), paginator.getCursor());
-        paginator.setChunkSize(products.size());
+        products = customerService.viewProductsIn(
+                ((selected.equals("vendor") ? selectedVendor : selectedCategory)), 
+                    getPaginator().getCursor());
+        getPaginator().setChunkSize(products.size());
     }
 
-    private void resetPaginator(Object object) {
-        paginator.setDataSize(customerService.getProductsCount(object));
-        paginator.setCursor(0);
-        products = customerService.viewProductsIn(object, paginator.getCursor());
-        paginator.setChunkSize(products.size());
+    @Override
+    public void resetPaginator(Object object) {
+        getPaginator().setDataSize(customerService.getProductsCount(object));
+        getPaginator().setCursor(0);
+        products = customerService.viewProductsIn(object, getPaginator().getCursor());
+        getPaginator().setChunkSize(products.size());
     }
 }
