@@ -43,6 +43,5 @@ public class GlobalLogger {
     protected void finalize() throws Throwable {
         super.finalize();
         globalLogger = null;
-        System.gc();
     }
 }
