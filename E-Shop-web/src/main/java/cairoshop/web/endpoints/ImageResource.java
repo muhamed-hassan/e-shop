@@ -5,7 +5,6 @@ import com.cairoshop.logger.GlobalLogger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import javax.annotation.ManagedBean;
-import javax.annotation.PostConstruct;
 import javax.inject.*;
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
@@ -27,13 +26,6 @@ public class ImageResource {
     @Context
     private ServletContext servletContext;
 
-    private GlobalLogger logger;
-
-    @PostConstruct
-    public void init() {
-        logger = GlobalLogger.getInstance();
-    }
-
     @GET
     @Path("/{id}")
     @Produces(
@@ -53,14 +45,14 @@ public class ImageResource {
             }
 
         } catch (Exception ex) {
-            logger.doLogging(Level.ERROR, "getImage failed" + " | " + ImageResource.class.getName() + "::getImage( )", ex);
+            GlobalLogger.getInstance().doLogging(Level.ERROR, "getImage failed" + " | " + ImageResource.class.getName() + "::getImage( )", ex);
 
             java.nio.file.Path errPath = Paths.get(servletContext.getRealPath("/resources/img/empty.jpg"));
 
             try {
                 img = Files.readAllBytes(errPath);
             } catch (Exception e) {
-                logger.doLogging(Level.ERROR, "Error occured during reading default image" + " | " + ImageResource.class.getName() + "::getImage( )", ex);
+                GlobalLogger.getInstance().doLogging(Level.ERROR, "Error occured during reading default image" + " | " + ImageResource.class.getName() + "::getImage( )", ex);
             }
         }
 
