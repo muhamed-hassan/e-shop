@@ -39,7 +39,13 @@ public class PasswordEncryptor {
             encryptedPassword = Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
             
         } catch (Exception ex) {
-            GlobalLogger.getInstance().doLogging(Level.ERROR, "Failed to encrypt the password -> PasswordEncryptor::encrypt()", ex);
+            GlobalLogger
+                    .getInstance()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Failed to encrypt the password -> PasswordEncryptor::encrypt()", 
+                            ex,
+                            this.getClass());
             return null;
         }
 

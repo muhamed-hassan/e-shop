@@ -60,8 +60,13 @@ public class ManageProductsBean
                 }
 
                 product.setImage(imgData.toByteArray());
-            } catch (IOException ex) {
-                getLogger().doLogging(Level.ERROR, "Failed to read the product's image -> ManageProductsBean::addProduct()", ex);
+            } catch (IOException ex) { 
+                getLogger()
+                        .doLogging(
+                                Level.ERROR, 
+                                "Failed to read the product's image -> ManageProductsBean::addProduct()", 
+                                ex,
+                                this.getClass());
             }
         }
 
@@ -112,7 +117,12 @@ public class ManageProductsBean
 
                 flag1 = adminService.editProductImg(imgData.toByteArray(), product.getId());
             } catch (IOException ex) {
-                getLogger().doLogging(Level.ERROR, "Failed to read the product's image -> ManageProductsBean::editProduct()", ex);
+                getLogger()
+                        .doLogging(
+                                Level.ERROR, 
+                                "Failed to read the product's image -> ManageProductsBean::editProduct()", 
+                                ex,
+                                this.getClass());
             }
         }
 

@@ -33,7 +33,12 @@ public class UserDAO extends AbstractDAO<User> {
                     .uniqueResult();
 
         } catch (Exception ex) {
-            getLogger().doLogging(Level.ERROR, "### retrival failed for entity -> Customer ###", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "### retrival failed for entity -> Customer ###", 
+                            ex,
+                            this.getClass());
             return null;
         } finally {
             session.close();
@@ -55,7 +60,12 @@ public class UserDAO extends AbstractDAO<User> {
                     .uniqueResult();
             
         } catch (Exception ex) {
-            getLogger().doLogging(Level.ERROR, "User getCount failed" + " | " + UserDAO.class.getName() + "::getCount()", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "User getCount failed" + " | " + UserDAO.class.getName() + "::getCount()", 
+                            ex,
+                            this.getClass());
             return -1;
         } finally {
             session.close();
@@ -79,7 +89,12 @@ public class UserDAO extends AbstractDAO<User> {
                     .list();
             
         } catch (Exception ex) {
-            getLogger().doLogging(Level.ERROR, "Customers retrieval failed" + " | " + UserDAO.class.getName() + "::getAll(startPosition)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Customers retrieval failed" + " | " + UserDAO.class.getName() + "::getAll(startPosition)", 
+                            ex,
+                            this.getClass());
             return null;
         } finally {
             session.close();
@@ -102,7 +117,12 @@ public class UserDAO extends AbstractDAO<User> {
                     .uniqueResult();
             
         } catch (Exception ex) {
-            getLogger().doLogging(Level.ERROR, "User retrieval failed" + " | " + UserDAO.class.getName() + "::find(email, password)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "User retrieval failed" + " | " + UserDAO.class.getName() + "::find(email, password)", 
+                            ex,
+                            this.getClass());
             return null; //exception occured
         } finally {
             session.close();

@@ -2,7 +2,6 @@ package com.cairoshop.logger;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -13,9 +12,7 @@ public class GlobalLogger {
 
     private volatile static GlobalLogger globalLogger;
 
-    private GlobalLogger() {
-
-    }
+    private GlobalLogger() { }
 
     public static GlobalLogger getInstance() {
 
@@ -32,16 +29,12 @@ public class GlobalLogger {
         return globalLogger;
     }
 
-    public void doLogging(Level level, String msg, Throwable exception) {
+    public void doLogging(Level level, String msg, Throwable exception, Class callingClass) {
 
-        Logger logger = LogManager.getLogger(this.getClass());
-        logger.log(level, msg, exception);
+        LogManager
+                .getLogger(callingClass)
+                .log(level, msg, exception);
 
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        globalLogger = null;
-    }
 }

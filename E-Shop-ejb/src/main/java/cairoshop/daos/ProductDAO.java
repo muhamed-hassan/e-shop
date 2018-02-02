@@ -44,7 +44,12 @@ public class ProductDAO extends AbstractDAO<Product> {
             
         } catch (Exception ex) {
             session.getTransaction().rollback();
-            getLogger().doLogging(Level.ERROR, "Product update failed" + " | " + ProductDAO.class.getName() + "::update(product)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Product update failed" + " | " + ProductDAO.class.getName() + "::update(product)", 
+                            ex,
+                            this.getClass());
             return false;
         } finally {
             session.close();
@@ -73,7 +78,12 @@ public class ProductDAO extends AbstractDAO<Product> {
             
         } catch (Exception ex) {
             session.getTransaction().rollback();
-            getLogger().doLogging(Level.ERROR, "Product update failed" + " | " + ProductDAO.class.getName() + "::update(pID, cID)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Product update failed" + " | " + ProductDAO.class.getName() + "::update(pID, cID)", 
+                            ex,
+                            this.getClass());
             return false;
         } finally {
             session.close();
@@ -99,7 +109,12 @@ public class ProductDAO extends AbstractDAO<Product> {
             session.getTransaction().commit();
             
         } catch (Exception ex) {
-            getLogger().doLogging(Level.ERROR, "Product update failed" + " | " + ProductDAO.class.getName() + "::update(imgStream, pID)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Product update failed" + " | " + ProductDAO.class.getName() + "::update(imgStream, pID)", 
+                            ex,
+                            this.getClass());
             return false;
         } finally {
             session.close();
@@ -123,7 +138,12 @@ public class ProductDAO extends AbstractDAO<Product> {
                     .list();
             
         } catch (Exception ex) {
-            getLogger().doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(startPosition)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(startPosition)", 
+                            ex,
+                            this.getClass());
             return null;
         } finally {
             session.close();
@@ -166,7 +186,12 @@ public class ProductDAO extends AbstractDAO<Product> {
             }
 
         } catch (Exception ex) {
-            getLogger().doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(object, pos)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(object, pos)", 
+                            ex,
+                            this.getClass());
             return null;
         } finally {
             session.close();
@@ -192,7 +217,12 @@ public class ProductDAO extends AbstractDAO<Product> {
                     .list();
             
         } catch (Exception ex) {
-            getLogger().doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(sortCriteria, sortDirection, pos)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(sortCriteria, sortDirection, pos)", 
+                            ex,
+                            this.getClass());
             return null;
         } finally {
             session.close();
@@ -214,7 +244,12 @@ public class ProductDAO extends AbstractDAO<Product> {
                     .list();
     
         } catch (Exception ex) {
-            getLogger().doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(pName)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Product retreival failed" + " | " + ProductDAO.class.getName() + "::getAll(pName)", 
+                            ex,
+                            this.getClass());
             return null;
         } finally {
             session.close();
@@ -252,7 +287,12 @@ public class ProductDAO extends AbstractDAO<Product> {
             product.setImgExist(imgFlag != null);
             
         } catch (Exception ex) {
-            getLogger().doLogging(Level.ERROR, "Product retreival failed" + " | " + ProductDAO.class.getName() + "::get(id)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Product retreival failed" + " | " + ProductDAO.class.getName() + "::get(id)", 
+                            ex,
+                            this.getClass());
             return null;
         } finally {
             session.close();
@@ -274,7 +314,12 @@ public class ProductDAO extends AbstractDAO<Product> {
                     .uniqueResult();
             
         } catch (Exception ex) {
-            getLogger().doLogging(Level.ERROR, "Product getImage failed" + " | " + ProductDAO.class.getName() + "::getImage(pID)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Product getImage failed" + " | " + ProductDAO.class.getName() + "::getImage(pID)", 
+                            ex,
+                            this.getClass());
             return null;
         } finally {
             session.close();
@@ -311,7 +356,12 @@ public class ProductDAO extends AbstractDAO<Product> {
                     .uniqueResult();
             
         } catch (Exception ex) {
-            getLogger().doLogging(Level.ERROR, "Product getCount failed" + " | " + ProductDAO.class.getName() + "::getCount(object)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Product getCount failed" + " | " + ProductDAO.class.getName() + "::getCount(object)", 
+                            ex,
+                            this.getClass());
             return -1;
         } finally {
             session.close();
@@ -333,7 +383,12 @@ public class ProductDAO extends AbstractDAO<Product> {
                     .uniqueResult();
             
         } catch (Exception ex) {
-            getLogger().doLogging(Level.ERROR, "Product getFavoriteCount failed" + " | " + ProductDAO.class.getName() + "::getFavoriteCount(custId)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Product getFavoriteCount failed" + " | " + ProductDAO.class.getName() + "::getFavoriteCount(custId)", 
+                            ex,
+                            this.getClass());
             return -1;
         } finally {
             session.close();
@@ -355,7 +410,12 @@ public class ProductDAO extends AbstractDAO<Product> {
                     .list();
             
         } catch (Exception ex) {
-            getLogger().doLogging(Level.ERROR, "Product getLikedProducts failed" + " | " + ProductDAO.class.getName() + "::getLikedProducts(custId)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Product getLikedProducts failed" + " | " + ProductDAO.class.getName() + "::getLikedProducts(custId)", 
+                            ex,
+                            this.getClass());
             return null;
         } finally {
             session.close();

@@ -45,14 +45,28 @@ public class ImageResource {
             }
 
         } catch (Exception ex) {
-            GlobalLogger.getInstance().doLogging(Level.ERROR, "getImage failed" + " | " + ImageResource.class.getName() + "::getImage( )", ex);
+            GlobalLogger
+                    .getInstance()
+                    .doLogging(
+                            Level.ERROR, 
+                            "getImage failed" + " | " + ImageResource.class.getName() + "::getImage( )", 
+                            ex,
+                            this.getClass());
 
             java.nio.file.Path errPath = Paths.get(servletContext.getRealPath("/resources/img/empty.jpg"));
 
             try {
+                
                 img = Files.readAllBytes(errPath);
+                
             } catch (Exception e) {
-                GlobalLogger.getInstance().doLogging(Level.ERROR, "Error occured during reading default image" + " | " + ImageResource.class.getName() + "::getImage( )", ex);
+                GlobalLogger
+                        .getInstance()
+                        .doLogging(
+                                Level.ERROR, 
+                                "Error occured during reading default image" + " | " + ImageResource.class.getName() + "::getImage( )", 
+                                ex,
+                                this.getClass());
             }
         }
 

@@ -14,15 +14,8 @@ import org.hibernate.criterion.Restrictions;
  * ************************************************************************ */
 public abstract class AbstractDAO<T> {
 
-    private static GlobalLogger logger;
-
-    public static GlobalLogger getLogger() {
-
-        if (logger == null) {
-            logger = GlobalLogger.getInstance();
-        }
-
-        return logger;
+    public GlobalLogger getLogger() {
+        return GlobalLogger.getInstance();
     }
 
     //**************************************************************************
@@ -58,7 +51,12 @@ public abstract class AbstractDAO<T> {
             errMsg.append(getEntityName());
             errMsg.append(" ###");
 
-            logger.doLogging(Level.ERROR, errMsg.toString(), ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            errMsg.toString(), 
+                            ex,
+                            this.getClass());
             return null;
         } finally {
             session.close();
@@ -87,7 +85,12 @@ public abstract class AbstractDAO<T> {
             errMsg.append(getEntityName());
             errMsg.append(" ###");
 
-            logger.doLogging(Level.ERROR, errMsg.toString(), ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            errMsg.toString(), 
+                            ex,
+                            this.getClass());
             return false;
         } finally {
             session.close();
@@ -124,7 +127,12 @@ public abstract class AbstractDAO<T> {
             errMsg.append(getEntityName());
             errMsg.append(" ###");
 
-            logger.doLogging(Level.ERROR, errMsg.toString(), ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            errMsg.toString(), 
+                            ex,
+                            this.getClass());
             return false;
         } finally {
             session.close();
@@ -150,7 +158,12 @@ public abstract class AbstractDAO<T> {
                     .setParameter("flag", true)
                     .uniqueResult();
         } catch (Exception ex) {
-            logger.doLogging(Level.ERROR, "getCount failed" + " | " + getEntityName() + "::getCount()", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "getCount failed" + " | " + getEntityName() + "::getCount()", 
+                            ex,
+                            this.getClass());
             return -1;
         } finally {
             session.close();
@@ -172,7 +185,12 @@ public abstract class AbstractDAO<T> {
                     .setFirstResult(startPosition)
                     .list();
         } catch (Exception ex) {
-            logger.doLogging(Level.ERROR, "Data retrieval failed" + " | " + getEntityName() + "::getAll(startPosition)", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Data retrieval failed" + " | " + getEntityName() + "::getAll(startPosition)", 
+                            ex,
+                            this.getClass());
             return null;
         } finally {
             session.close();
@@ -193,7 +211,12 @@ public abstract class AbstractDAO<T> {
                     .list();
 
         } catch (Exception ex) {
-            logger.doLogging(Level.ERROR, "Data retrieval failed" + " | " + getEntityName() + "::getAll()", ex);
+            getLogger()
+                    .doLogging(
+                            Level.ERROR, 
+                            "Data retrieval failed" + " | " + getEntityName() + "::getAll()", 
+                            ex,
+                            this.getClass());
             return null;
         } finally {
             session.close();
