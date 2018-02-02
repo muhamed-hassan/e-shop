@@ -4,3 +4,8 @@ Use those commands via GF asadmin:
 create-jdbc-connection-pool --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource --restype javax.sql.DataSource --property User=root:Password=root:ServerName=localhost:DatabaseName=cairoshop shopPool
 
 create-jdbc-resource --connectionpoolid shopPool jdbc/shopDS
+
+
+
+Will be found under this directory
+<glassfish-installation-dir>bin\asadmin.bat
