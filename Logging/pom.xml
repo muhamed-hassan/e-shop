@@ -4,8 +4,9 @@
     <parent>
         <groupId>com.cairoshop</groupId>
         <artifactId>E-Shop</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
+    
     <artifactId>Logging</artifactId>
     <packaging>jar</packaging>
     

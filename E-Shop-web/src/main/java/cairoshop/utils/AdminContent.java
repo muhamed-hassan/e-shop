@@ -5,7 +5,7 @@ package cairoshop.utils;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public class AdminContent extends SharedContent {
+public final class AdminContent extends SharedContent {
    
     public static final String ADD_NEW_CATEGORY = "/admin/manage-categories/add-new-category.xhtml";
     public static final String EDIT_CATEGORY = "/admin/manage-categories/edit-category.xhtml";

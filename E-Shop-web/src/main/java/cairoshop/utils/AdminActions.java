@@ -5,7 +5,7 @@ package cairoshop.utils;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public class AdminActions {
+public final class AdminActions {
  
     public static final String ADD_CATEGORY = "addCategory";
     public static final String EDIT_CATEGORY = "editCategory";

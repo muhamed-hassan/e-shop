@@ -5,7 +5,7 @@ package cairoshop.utils;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public class CustomerContent extends SharedContent {
+public final class CustomerContent extends SharedContent {
 
     public static final String FAVORITE_PRODUCTS = "/customer/favorite-products.xhtml";
     public static final String CATEGORIES_LIST = "/customer/categories-list.xhtml";

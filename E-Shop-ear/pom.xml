@@ -4,12 +4,10 @@
     <parent>
         <artifactId>E-Shop</artifactId>
         <groupId>com.cairoshop</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
-    <groupId>com.cairoshop</groupId>
     <artifactId>E-Shop-ear</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>ear</packaging>
 
     <name>E-Shop-ear</name>
@@ -25,7 +23,7 @@
                     <skinnyWars>true</skinnyWars>
                     <modules>
                         <webModule>
-                            <groupId>com.cairoshop</groupId>
+                            <groupId>${project.groupId}</groupId>
                             <artifactId>E-Shop-web</artifactId>
                             <contextRoot>/cairo-shop</contextRoot>
                         </webModule>
@@ -36,21 +34,21 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>com.cairoshop</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>E-Shop-ejb</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>ejb</type>
         </dependency>
         <dependency>
-            <groupId>com.cairoshop</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>E-Shop-web</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>war</type>
         </dependency> 
         <dependency>
-            <groupId>com.cairoshop</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>Logging</artifactId>
-            <version>1.0-SNAPSHOT</version>    
+            <version>${project.version}</version>
         </dependency>   
     </dependencies>
 </project>

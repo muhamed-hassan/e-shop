@@ -1,11 +1,10 @@
 package cairoshop.configs;
 
-import java.io.File;
-import java.io.IOException;
+import com.cairoshop.logger.GlobalLogger;
+import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
+import org.apache.logging.log4j.Level;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -25,7 +24,7 @@ public class HibernateUtil {
             Configuration configuration = new AnnotationConfiguration();
 
             List<Class> entities = getClasses("cairoshop.entities");
-
+            
             entities.forEach(entity -> {
                 configuration.addAnnotatedClass(entity);
             });
@@ -34,8 +33,10 @@ public class HibernateUtil {
                     .configure()
                     .buildSessionFactory();
 
-        } catch (Throwable ex) {
-            System.err.println("Initial SessionFactory creation failed." + ex);
+        } catch (Exception ex) {
+            GlobalLogger
+                    .getInstance()
+                    .doLogging(Level.FATAL, "Initial SessionFactory creation failed.", ex, HibernateUtil.class);
             throw new ExceptionInInitializerError(ex);
         }
     }
