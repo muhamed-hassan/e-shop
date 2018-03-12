@@ -7,7 +7,7 @@ import org.apache.logging.log4j.*;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public class GlobalLogger {
+public final class GlobalLogger {
 
     private volatile static GlobalLogger globalLogger;
 
@@ -28,7 +28,7 @@ public class GlobalLogger {
         return globalLogger;
     }
 
-    public void doLogging(Level level, String msg, Throwable exception, Class callingClass) {
+    private void doLogging(Level level, String msg, Throwable exception, Class callingClass) {
 
         LogManager
                 .getLogger(callingClass)
