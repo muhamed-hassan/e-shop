@@ -2,12 +2,13 @@ package cairoshop.configs;
 
 import com.cairoshop.logger.GlobalLogger;
 import java.io.*;
-import java.net.URL;
+import java.nio.file.*;
 import java.util.*;
+import static java.util.stream.Collectors.toList;
 import org.apache.logging.log4j.Level;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistryBuilder;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -21,17 +22,20 @@ public class HibernateUtil {
     static {
         try {
 
-            Configuration configuration = new AnnotationConfiguration();
-
+            Configuration configuration = new Configuration();
+            configuration.configure("hibernate.cfg.xml");
             List<Class> entities = getClasses("cairoshop.entities");
-            
+
             entities.forEach(entity -> {
                 configuration.addAnnotatedClass(entity);
             });
-
+            
             sessionFactory = configuration
-                    .configure()
-                    .buildSessionFactory();
+                    .buildSessionFactory(
+                            new ServiceRegistryBuilder()
+                            .applySettings(configuration.getProperties())
+                            .buildServiceRegistry()
+                    );
 
         } catch (Exception ex) {
             GlobalLogger
@@ -46,47 +50,27 @@ public class HibernateUtil {
     }
 
     private static List<Class> getClasses(String packageName)
-            throws ClassNotFoundException, IOException {
-        
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        
-        assert classLoader != null;
-        
-        String path = packageName.replace('.', '/');
-        Enumeration<URL> resources = classLoader.getResources(path);
-        List<File> dirs = new ArrayList<>();
-        
-        while (resources.hasMoreElements()) {
-            dirs.add(new File(resources.nextElement().getFile()));
-        }
-        
-        List<Class> classes = new ArrayList<>();
-        for (File directory : dirs) {
-            classes.addAll(findClasses(directory, packageName));
-        }
-        
-        return classes;
-    }
+            throws IOException {
 
-    private static List<Class> findClasses(File directory, String packageName) 
-            throws ClassNotFoundException {
-        
-        List<Class> classes = new ArrayList<>();
-        if (!directory.exists()) {
-            return classes;
-        }
-        
-        File[] files = directory.listFiles();
-        for (File file : files) {
-            if (file.isDirectory()) {
-                assert !file.getName().contains(".");
-                classes.addAll(findClasses(file, packageName + "." + file.getName()));
-            } else if (file.getName().endsWith(".class")) {
-                classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
-            }
-        }
-        
-        return classes;
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+        assert classLoader != null;
+
+        return Files.list(
+                Paths.get(new File(
+                        classLoader.getResources(packageName.replace('.', '/'))
+                        .nextElement()
+                        .getFile())
+                        .getAbsolutePath()))
+                .map(p -> {
+                    try {
+                        String currentFileName = p.toFile().getName();
+                        return Class.forName(packageName + '.' + currentFileName.substring(0, currentFileName.length() - 6));
+                    } catch (ClassNotFoundException ex) {
+                        throw new RuntimeException("Failed in reading .class file of " + ex);
+                    }
+                })
+                .collect(toList());
     }
 
 }

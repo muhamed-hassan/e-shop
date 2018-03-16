@@ -14,17 +14,21 @@ import javax.faces.validator.*;
 public class RequiredValidator implements Validator {
 
     @Override
-    public void validate(FacesContext fc, UIComponent uic, Object o) throws ValidatorException {
+    public void validate(FacesContext fc, UIComponent uic, Object o) 
+            throws ValidatorException {
+        
         if (o == null || ((String) o).isEmpty()) {
             String componentId = uic.getId();
-            if (componentId.equals("email")) {
-                throw new ValidatorException(new FacesMessage("Email is required."));
-            } else if (componentId.equals("password")) {
-                throw new ValidatorException(new FacesMessage("Password is required."));
-            } else if (componentId.equals("category")) {
-                throw new ValidatorException(new FacesMessage("Category name is required."));
+            switch (componentId) {
+                case "email":
+                    throw new ValidatorException(new FacesMessage("Email is required."));
+                case "password":
+                    throw new ValidatorException(new FacesMessage("Password is required."));
+                case "category":
+                    throw new ValidatorException(new FacesMessage("Category name is required."));
             }
         }
+        
     }
 
 }

@@ -15,12 +15,15 @@ import javax.faces.validator.*;
 public class EmailValidator implements Validator {
 
     @Override
-    public void validate(FacesContext fc, UIComponent uic, Object o) throws ValidatorException {
+    public void validate(FacesContext fc, UIComponent uic, Object o) 
+            throws ValidatorException {
+        
         if (!Pattern.compile(
                 "^[\\w\\.]+(@)[A-Za-z]+\\.([A-Za-z]{2,3})$")
                 .matcher((String) o).matches()) {
             throw new ValidatorException(new FacesMessage("Invalid email format"));
         }
+        
     }
 
 }

@@ -1,6 +1,5 @@
 package cairoshop.web.models.utils.validators;
 
-import java.util.*;
 import java.util.regex.*;
 import javax.faces.application.*;
 import javax.faces.component.*;
@@ -16,14 +15,17 @@ import javax.faces.validator.*;
 public class TypeNameValidator implements Validator {
 
     @Override
-    public void validate(FacesContext fc, UIComponent uic, Object o) throws ValidatorException {
+    public void validate(FacesContext fc, UIComponent uic, Object o)
+            throws ValidatorException {
+
         String componentId = uic.getId();
 
         if (o == null || ((String) o).isEmpty()) {
-            if (componentId.equals("category")) {
-                throw new ValidatorException(new FacesMessage("Category name is required."));
-            } else if (componentId.equals("vendor")) {
-                throw new ValidatorException(new FacesMessage("Vendor name is required."));
+            switch (componentId) {
+                case "category":
+                    throw new ValidatorException(new FacesMessage("Category name is required."));
+                case "vendor":
+                    throw new ValidatorException(new FacesMessage("Vendor name is required."));
             }
         } else {
             switch (componentId) {

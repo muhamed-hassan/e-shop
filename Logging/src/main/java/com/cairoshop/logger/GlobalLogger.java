@@ -28,7 +28,7 @@ public final class GlobalLogger {
         return globalLogger;
     }
 
-    private void doLogging(Level level, String msg, Throwable exception, Class callingClass) {
+    public void doLogging(Level level, String msg, Throwable exception, Class callingClass) {
 
         LogManager
                 .getLogger(callingClass)

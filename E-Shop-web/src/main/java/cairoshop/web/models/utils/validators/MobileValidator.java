@@ -15,12 +15,15 @@ import javax.faces.validator.*;
 public class MobileValidator implements Validator {
 
     @Override
-    public void validate(FacesContext fc, UIComponent uic, Object o) throws ValidatorException {
+    public void validate(FacesContext fc, UIComponent uic, Object o) 
+            throws ValidatorException {
+        
         if (!Pattern.compile(
                 "^(01)\\d{9}$")
                 .matcher((String) o).matches()) {
             throw new ValidatorException(new FacesMessage("Mobile number should contain 11 digits starting with \"01\""));
         }
+        
     }
 
 }

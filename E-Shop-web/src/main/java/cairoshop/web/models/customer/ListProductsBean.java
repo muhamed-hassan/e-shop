@@ -8,6 +8,7 @@ import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PaginationControlsForType;
 import java.io.*;
 import java.util.*;
+import static java.util.stream.Collectors.*;
 import javax.annotation.PostConstruct;
 import javax.ejb.*;
 import javax.faces.bean.*;
@@ -107,14 +108,13 @@ public class ListProductsBean
                 .getExternalContext()
                 .getSessionMap();
         selectedCategory.setId((Integer) e.getNewValue());
-
-        List<Category> categories = (List<Category>) sessionMap.get("categoriesList");
-        for (Category c : categories) {
-            if (selectedCategory.getId() == c.getId()) {
-                selectedCategory.setName(c.getName());
-                break;
-            }
-        }
+        
+        selectedCategory.setName(
+                ((List<Category>) sessionMap.get("categoriesList"))
+                .stream()
+                .filter(c -> c.getId() == selectedCategory.getId())
+                .map(Category::getName)
+                .collect(joining()));        
 
         resetPaginator(selectedCategory);
 
@@ -139,13 +139,12 @@ public class ListProductsBean
                 .getSessionMap();
         selectedVendor.setId((Integer) e.getNewValue());
 
-        List<Vendor> vendors = (List<Vendor>) sessionMap.get("vendorsList");
-        for (Vendor v : vendors) {
-            if (selectedVendor.getId() == v.getId()) {
-                selectedVendor.setName(v.getName());
-                break;
-            }
-        }
+        selectedVendor.setName(
+                ((List<Vendor>) sessionMap.get("vendorsList"))
+                .stream()
+                .filter(v -> v.getId() == selectedVendor.getId())
+                .map(Vendor::getName)
+                .collect(joining()));
 
         resetPaginator(selectedVendor);
 

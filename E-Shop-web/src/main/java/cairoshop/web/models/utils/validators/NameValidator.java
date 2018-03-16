@@ -15,10 +15,13 @@ import javax.faces.validator.*;
 public class NameValidator implements Validator {
 
     @Override
-    public void validate(FacesContext context, UIComponent uic, Object o) throws ValidatorException {
+    public void validate(FacesContext context, UIComponent uic, Object o) 
+            throws ValidatorException {
+        
         if (!Pattern.compile("^([A-Za-z]{4,10})([ ]?([A-Za-z]{4,10}))*$").matcher((String) o).matches()) {
             throw new ValidatorException(new FacesMessage("Name contains letters only"));
         }
+        
     }
 
 }

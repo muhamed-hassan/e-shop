@@ -1,8 +1,6 @@
 package cairoshop.web.filters;
 
-import cairoshop.entities.Admin;
-import cairoshop.entities.Customer;
-import cairoshop.entities.User;
+import cairoshop.entities.*;
 import java.io.*;
 import javax.faces.application.ResourceHandler;
 import javax.servlet.*;
@@ -18,10 +16,12 @@ import javax.servlet.http.*;
         = {
             "/customer/*", "/admin/*", "/login-pg.jsf"
         }, filterName = "authFilter")
-public class AuthenticationFilter extends AbstractFilter {
+public class AuthenticationFilter implements AbstractFilter {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 
+            throws IOException, ServletException {
+        
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
         if (!httpRequest.getRequestURI().startsWith(httpRequest.getContextPath() + ResourceHandler.RESOURCE_IDENTIFIER)) {

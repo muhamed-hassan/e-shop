@@ -15,13 +15,16 @@ import javax.faces.validator.*;
 public class PasswordValidator implements Validator {
 
     @Override
-    public void validate(FacesContext fc, UIComponent uic, Object o) throws ValidatorException {
+    public void validate(FacesContext fc, UIComponent uic, Object o) 
+            throws ValidatorException {
+        
         if (!Pattern.compile(
                 "^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].)(?=.*[a-z]).{8,}$")
                 .matcher((String) o).matches()) {
             throw new ValidatorException(new FacesMessage(
                     "Password should contain at least 8 characters including 1 capital case letter, 1 small case letter, 1 digit, and 1 special character at least"));
         }
+        
     }
 
 }
