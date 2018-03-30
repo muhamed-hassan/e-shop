@@ -15,7 +15,7 @@ import org.hibernate.service.ServiceRegistryBuilder;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public class HibernateUtil {
+public final class HibernateUtil {
 
     private static final SessionFactory sessionFactory;
 

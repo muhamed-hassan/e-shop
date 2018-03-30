@@ -1,7 +1,8 @@
 package cairoshop.utils;
 
-public final class Scope {
+public interface Scope {
     
-    public static final int REQUEST = 1;
-    public static final int SESSION = 2;
+    int REQUEST = 1;
+    int SESSION = 2;
+    
 }

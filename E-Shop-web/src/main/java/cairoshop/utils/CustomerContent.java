@@ -5,13 +5,13 @@ package cairoshop.utils;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public final class CustomerContent extends SharedContent {
+public interface CustomerContent extends SharedContent {
 
-    public static final String FAVORITE_PRODUCTS = "/customer/favorite-products.xhtml";
-    public static final String CATEGORIES_LIST = "/customer/categories-list.xhtml";
-    public static final String SORT_PRODUCTS = "/customer/sort-products.xhtml";
-    public static final String PRODUCTS_RESULT = "/customer/products-result.xhtml";
-    public static final String VIEW_PRODUCTS_IN = "/customer/view-products-in.xhtml";
-    public static final String PRODUCT_PAGE = "/customer/product-pg.xhtml";
+    String FAVORITE_PRODUCTS = "/customer/favorite-products.xhtml";
+    String CATEGORIES_LIST = "/customer/categories-list.xhtml";
+    String SORT_PRODUCTS = "/customer/sort-products.xhtml";
+    String PRODUCTS_RESULT = "/customer/products-result.xhtml";
+    String VIEW_PRODUCTS_IN = "/customer/view-products-in.xhtml";
+    String PRODUCT_PAGE = "/customer/product-pg.xhtml";
     
 }
