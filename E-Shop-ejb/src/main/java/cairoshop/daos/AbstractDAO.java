@@ -14,19 +14,17 @@ import org.hibernate.criterion.Restrictions;
  * ************************************************************************ */
 public abstract class AbstractDAO<T> {
 
-    public GlobalLogger getLogger() {
-        return GlobalLogger.getInstance();
+    private Class<T> entity;
+    private String entityName;
+    
+    public AbstractDAO(Class<T> entity) {
+        this.entity = entity;
+        entityName = entity.getSimpleName();
     }
 
     //**************************************************************************
-    private Class<T> entity;
-
-    public AbstractDAO(Class<T> entity) {
-        this.entity = entity;
-    }
-
-    public String getEntityName() {
-        return entity.getSimpleName();
+    public GlobalLogger getLogger() {
+        return GlobalLogger.getInstance();
     }
 
     //**************************************************************************
@@ -48,7 +46,7 @@ public abstract class AbstractDAO<T> {
 
             StringBuilder errMsg = new StringBuilder();
             errMsg.append("### insertion failed for entity -> ");
-            errMsg.append(getEntityName());
+            errMsg.append(entityName);
             errMsg.append(" ###");
 
             getLogger()
@@ -82,7 +80,7 @@ public abstract class AbstractDAO<T> {
 
             StringBuilder errMsg = new StringBuilder();
             errMsg.append("### update failed for entity -> ");
-            errMsg.append(getEntityName());
+            errMsg.append(entityName);
             errMsg.append(" ###");
 
             getLogger()
@@ -108,8 +106,8 @@ public abstract class AbstractDAO<T> {
             session.getTransaction().begin();
 
             StringBuilder query = new StringBuilder();
-            query.append("UPDATE " + getEntityName() + " obj ");
-            query.append("SET obj." + ("User".equals(getEntityName()) ? "active" : "notDeleted") + "=:flag ");
+            query.append("UPDATE " + entityName + " obj ");
+            query.append("SET obj." + ("User".equals(entityName) ? "active" : "notDeleted") + "=:flag ");
             query.append("WHERE obj.id=:id");
 
             result = (session
@@ -124,7 +122,7 @@ public abstract class AbstractDAO<T> {
 
             StringBuilder errMsg = new StringBuilder();
             errMsg.append("### delete failed for entity -> ");
-            errMsg.append(getEntityName());
+            errMsg.append(entityName);
             errMsg.append(" ###");
 
             getLogger()
@@ -150,7 +148,7 @@ public abstract class AbstractDAO<T> {
         try {
             StringBuilder query = new StringBuilder();
             query.append("SELECT COUNT(obj) ");
-            query.append("FROM " + getEntityName() + " obj ");
+            query.append("FROM " + entityName + " obj ");
             query.append("WHERE obj.notDeleted=:flag");
 
             count = (Long) session
@@ -161,7 +159,7 @@ public abstract class AbstractDAO<T> {
             getLogger()
                     .doLogging(
                             Level.ERROR, 
-                            "getCount failed" + " | " + getEntityName() + "::getCount()", 
+                            "getCount failed" + " | " + entityName + "::getCount()", 
                             ex,
                             this.getClass());
             return -1;
@@ -188,7 +186,7 @@ public abstract class AbstractDAO<T> {
             getLogger()
                     .doLogging(
                             Level.ERROR, 
-                            "Data retrieval failed" + " | " + getEntityName() + "::getAll(startPosition)", 
+                            "Data retrieval failed" + " | " + entityName + "::getAll(startPosition)", 
                             ex,
                             this.getClass());
             return null;
@@ -214,7 +212,7 @@ public abstract class AbstractDAO<T> {
             getLogger()
                     .doLogging(
                             Level.ERROR, 
-                            "Data retrieval failed" + " | " + getEntityName() + "::getAll()", 
+                            "Data retrieval failed" + " | " + entityName + "::getAll()", 
                             ex,
                             this.getClass());
             return null;
