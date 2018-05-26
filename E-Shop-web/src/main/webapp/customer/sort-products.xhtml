@@ -20,19 +20,19 @@
                 <f:facet name="header">
                     Name
                 </f:facet>
-                <h:outputText value="#{product[1]}" />
+                <h:outputText value="#{product.name}" />
             </h:column>
             <h:column>
                 <f:facet name="header">
                     Price
                 </f:facet>
-                <h:outputText value="#{product[2]}" />
+                <h:outputText value="#{product.price}" />
             </h:column>
             <h:column>
                 <f:facet name="header">
                     Quantity
                 </f:facet>
-                <h:outputText value="#{product[3]}" />
+                <h:outputText value="#{product.quantity}" />
             </h:column>
             <h:column>
                 <f:facet name="header">
@@ -40,7 +40,7 @@
                 </f:facet> 
                 <!-- load product details then go to product page -->
                 <h:commandButton value="details..." class="btn-link"
-                                 action="#{productDetails.getDetails(product[0])}"
+                                 action="#{productDetails.getDetails(product.id)}"
                                  />
             </h:column>                            
         </h:dataTable>        

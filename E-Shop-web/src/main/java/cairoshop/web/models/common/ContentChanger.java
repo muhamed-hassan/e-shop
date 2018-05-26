@@ -1,7 +1,6 @@
 package cairoshop.web.models.common;
 
-import cairoshop.utils.Scope;
-import cairoshop.utils.SharedContent;
+import cairoshop.utils.*;
 import java.util.Map;
 import javax.annotation.ManagedBean;
 import javax.faces.context.FacesContext;

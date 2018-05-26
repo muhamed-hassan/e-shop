@@ -2,7 +2,7 @@ package cairoshop.web.models.customer;
 
 import cairoshop.web.models.common.navigation.CustomerNavigation;
 import cairoshop.entities.*;
-import cairoshop.service.*;
+import cairoshop.service.interfaces.CustomerService;
 import cairoshop.utils.*;
 import cairoshop.web.models.common.CommonBean;
 import java.io.*;
@@ -101,4 +101,5 @@ public class ListCategoriesBean
         
         getContentChanger().displayContent(CustomerContent.CATEGORIES_LIST);
     }
+    
 }

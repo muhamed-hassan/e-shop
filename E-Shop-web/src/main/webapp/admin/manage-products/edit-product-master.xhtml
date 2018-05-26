@@ -17,38 +17,26 @@
                 <f:facet name="header">
                     Name
                 </f:facet>
-                <h:outputText value="#{product[1]}" />
+                <h:outputText value="#{product.name}" />
             </h:column>
             <h:column>
                 <f:facet name="header">
                     Price
                 </f:facet>
-                <h:outputText value="#{product[2]}" />
+                <h:outputText value="#{product.price}" />
             </h:column>
             <h:column>
                 <f:facet name="header">
                     Quantity
                 </f:facet>
-                <h:outputText value="#{product[3]}" />
-            </h:column>
-            <h:column>
-                <f:facet name="header">
-                    Category
-                </f:facet>
-                <h:outputText value="#{product[4]}" />
-            </h:column>
-            <h:column>
-                <f:facet name="header">
-                    Vendor
-                </f:facet>
-                <h:outputText value="#{product[5]}" />
+                <h:outputText value="#{product.quantity}" />
             </h:column>
             <h:column>
                 <f:facet name="header">
                     Action
                 </f:facet> <!-- pass product ID to goToEdit() -->
                 <h:commandButton value="Edit" class="btn-link"                                                                
-                                 action="#{manageProductsBean.loadTarget(product[0])}"
+                                 action="#{manageProductsBean.loadTarget(product.id)}"
                                  actionListener="#{manageProductsBean.goToEdit()}"/>                                                        
             </h:column>                
         </h:dataTable>

@@ -1,9 +1,9 @@
 package cairoshop.web.models.customer;
 
+import cairoshop.dtos.ProductModel;
 import cairoshop.entities.*;
-import cairoshop.service.*;
-import cairoshop.utils.CustomerContent;
-import cairoshop.utils.CustomerMessages;
+import cairoshop.service.interfaces.CustomerService;
+import cairoshop.utils.*;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PaginationControlsForType;
 import java.io.*;
@@ -29,7 +29,7 @@ public class ListProductsBean
     @EJB
     private CustomerService customerService;
 
-    private List<Object[]> products;
+    private List<ProductModel> products;
     private List<Category> categories;
     private List<Vendor> vendors;
     private Category selectedCategory;
@@ -59,28 +59,16 @@ public class ListProductsBean
     // =========================================================================
     // =======> getters and setters
     // =========================================================================
-    public List<Object[]> getProducts() {
+    public List<ProductModel> getProducts() {
         return products;
-    }
-
-    public void setProducts(List<Object[]> products) {
-        this.products = products;
     }
 
     public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
-    }
-
     public List<Vendor> getVendors() {
         return vendors;
-    }
-
-    public void setVendors(List<Vendor> vendors) {
-        this.vendors = vendors;
     }
 
     public Category getSelectedCategory() {
@@ -218,6 +206,6 @@ public class ListProductsBean
         getPaginator().setDataSize(customerService.getProductsCount(object));
         getPaginator().setCursor(0);
         products = customerService.viewProductsIn(object, getPaginator().getCursor());
-        getPaginator().setChunkSize(products.size());
+        getPaginator().setChunkSize(products == null ? 0 : products.size());
     }
 }

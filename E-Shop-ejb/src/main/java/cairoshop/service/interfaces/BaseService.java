@@ -1,11 +1,10 @@
-package cairoshop.helpers;
+package cairoshop.service.interfaces;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public enum SortDirection {
-
-    ASC, DESC
+public interface BaseService {
+    
 }

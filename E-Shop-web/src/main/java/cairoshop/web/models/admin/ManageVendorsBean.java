@@ -2,7 +2,7 @@ package cairoshop.web.models.admin;
 
 import cairoshop.web.models.common.navigation.AdminNavigation;
 import cairoshop.entities.*;
-import cairoshop.service.*;
+import cairoshop.service.interfaces.AdminService;
 import cairoshop.utils.*;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
@@ -48,7 +48,7 @@ public class ManageVendorsBean
     // =========================================================================
     // =======> Edit vendor
     // =========================================================================
-    public String onEdit(Vendor v) {
+    public void onEdit(Vendor v) {
         Integer toEditId = v.getId();
         v.setOldValue(v.getName());
 
@@ -58,8 +58,7 @@ public class ManageVendorsBean
                 break;
             }
         }
-
-        return null; //stay on the same page
+        
     }
 
     public void editVendor(Vendor v) {

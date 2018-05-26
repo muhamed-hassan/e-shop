@@ -1,8 +1,10 @@
 package cairoshop.web.models.customer;
 
+import cairoshop.dtos.ProductModel;
+import cairoshop.repositories.specs.OrderDirection;
 import cairoshop.web.models.common.navigation.CustomerNavigation;
 import cairoshop.helpers.*;
-import cairoshop.service.*;
+import cairoshop.service.interfaces.CustomerService;
 import cairoshop.utils.*;
 import cairoshop.web.models.common.CommonBean;
 import java.io.*;
@@ -26,18 +28,18 @@ public class SortProductsBean
     @EJB
     private CustomerService customerService;
 
-    private SortCriteria sortCriteria;
-    private SortDirection sortDirection;
-    private List<Object[]> products;
+    private String sortCriteria;
+    private String sortDirection;
+    private List<ProductModel> products;
 
     // =========================================================================
     // =======> setters and getters
     // =========================================================================
-    public List<Object[]> getProducts() {
+    public List<ProductModel> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Object[]> products) {
+    public void setProducts(List<ProductModel> products) {
         this.products = products;
     }
 
@@ -96,7 +98,7 @@ public class SortProductsBean
     @Override
     public void resetPaginator(String criteria, String direction) {
         sortCriteria = ((criteria.equals("name")) ? SortCriteria.NAME : SortCriteria.PRICE);
-        sortDirection = ((direction.equals("asc")) ? SortDirection.ASC : SortDirection.DESC);
+        sortDirection = ((direction.equals("asc")) ? OrderDirection.ASC : OrderDirection.DESC);
 
         Map<String, Object> sessionMap = FacesContext
                 .getCurrentInstance()

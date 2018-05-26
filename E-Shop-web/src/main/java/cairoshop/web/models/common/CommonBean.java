@@ -1,7 +1,6 @@
 package cairoshop.web.models.common;
 
 import cairoshop.web.models.common.pagination.Paginator;
-import com.cairoshop.logger.GlobalLogger;
 import javax.faces.bean.ManagedProperty;
 import javax.inject.Inject;
 
@@ -25,11 +24,7 @@ public class CommonBean {
     public void setPaginator(Paginator paginator) {
         this.paginator = paginator;
     }
-    
-    public GlobalLogger getLogger() {
-        return GlobalLogger.getInstance();
-    }
-    
+        
     public ContentChanger getContentChanger() {
         return contentChanger;
     }

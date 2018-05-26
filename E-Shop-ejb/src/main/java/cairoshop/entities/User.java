@@ -12,10 +12,6 @@ import javax.persistence.*;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "role")
-@NamedQuery(
-        name = "User.find",
-        query = "SELECT u FROM User u WHERE ((u.mail=:email) AND (u.password=:pwd) AND (u.active=:flag))"
-)
 public abstract class User implements Serializable {
 
     @Id
@@ -32,8 +28,13 @@ public abstract class User implements Serializable {
     private String password;
 
     private Boolean active = true;
-
-    @ManyToMany(mappedBy = "interestedUsers")
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "customer_fav_product",
+            joinColumns = @JoinColumn(name = "customer"),
+            inverseJoinColumns = @JoinColumn(name = "product")
+    )
     private List<Product> favoriteProducts;
 
     public Integer getId() {
@@ -92,6 +93,35 @@ public abstract class User implements Serializable {
         this.favoriteProducts = favoriteProducts;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 23 * hash + Objects.hashCode(this.id);
+        hash = 23 * hash + Objects.hashCode(this.userName);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final User other = (User) obj;
+        if (!Objects.equals(this.userName, other.userName)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }
+    
     @Override
     public String toString() {
         return "User{" + "id=" + id + ", name=" + name + ", userName=" + userName + ", mail=" + mail + ", active=" + active + '}';

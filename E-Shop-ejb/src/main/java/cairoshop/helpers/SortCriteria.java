@@ -5,7 +5,9 @@ package cairoshop.helpers;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public enum SortCriteria {
+public final class SortCriteria {
 
-    NAME, PRICE
+    public static final String NAME = "NAME";
+    public static final String PRICE = "PRICE";
+    
 }

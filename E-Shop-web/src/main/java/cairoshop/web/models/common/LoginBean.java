@@ -1,9 +1,8 @@
 package cairoshop.web.models.common;
 
 import cairoshop.entities.*;
-import cairoshop.service.*;
-import cairoshop.utils.PasswordEncryptor;
-import cairoshop.utils.SharedContent;
+import cairoshop.service.interfaces.UserService;
+import cairoshop.utils.*;
 import java.util.*;
 import javax.ejb.*;
 import javax.faces.application.*;
@@ -23,11 +22,11 @@ public class LoginBean {
     @EJB
     private UserService userService;
 
-    private String email;
-    private String password;
-    
     @Inject
     private PasswordEncryptor encryptor;
+
+    private String email;
+    private String password;
 
     public String getEmail() {
         return email;
@@ -51,36 +50,27 @@ public class LoginBean {
      */
     public String login() {
         //null | "notFound" | instanceof User
-        Object result = userService.signIn(email, encryptor.encrypt(password));
+        User user = userService.signIn(email, encryptor.encrypt(password));
         FacesContext context = FacesContext.getCurrentInstance();
 
-        if (result == null) {
-            ViewHandler viewHandler = context.getApplication().getViewHandler();
-            context.setViewRoot(viewHandler.createView(context, SharedContent.ERROR));
-            context.getPartialViewContext().setRenderAll(true);
-            context.renderResponse();
-        } else if (result instanceof String) { // not registered yet || wrong userName or password
+        if (user == null) { // not registered yet || wrong userName or password
             context.addMessage("login", new FacesMessage("Wrong email or password"));
-        } else if (result instanceof User) { //true: active user
-            User user = (User) result;
-
-            Map<String, Object> sessionMap = context
-                    .getExternalContext()
-                    .getSessionMap();
-
-            
-            sessionMap.put("content", SharedContent.INITIAL_CONTEXT);
-
-            if (user instanceof Admin) {
-                sessionMap.put("currentUser", (Admin) user);
-                return "admin";
-            }
-
-            sessionMap.put("currentUser", (Customer) user);
-            return "customer";
+            return null;
         }
 
-        return null;
+        Map<String, Object> sessionMap = context
+                .getExternalContext()
+                .getSessionMap();
+
+        sessionMap.put("content", SharedContent.INITIAL_CONTEXT);
+
+        if (user instanceof Admin) {
+            sessionMap.put("currentUser", (Admin) user);
+            return "admin";
+        }
+
+        sessionMap.put("currentUser", (Customer) user);
+        return "customer";
     }
 
 }

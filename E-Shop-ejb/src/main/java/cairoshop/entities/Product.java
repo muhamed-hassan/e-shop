@@ -1,7 +1,7 @@
 package cairoshop.entities;
 
 import java.io.*;
-import java.util.*;
+import java.util.Objects;
 import javax.persistence.*;
 
 /* ************************************************************************** 
@@ -10,55 +10,6 @@ import javax.persistence.*;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Entity
-@NamedQueries(
-        {
-            @NamedQuery(
-                    name = "Product.findAll",
-                    query = "SELECT p.id, p.name, p.price, p.quantity, p.category.name, p.vendor.name FROM Product p WHERE p.notDeleted=:flag"
-            ),
-            @NamedQuery(
-                    name = "Product.sortByNameASC",
-                    query = "SELECT p.id, p.name, p.price, p.quantity FROM Product p WHERE p.notDeleted=:flag "
-                    + "ORDER BY p.name ASC"
-            ),
-            @NamedQuery(
-                    name = "Product.sortByNameDESC",
-                    query = "SELECT p.id, p.name, p.price, p.quantity FROM Product p WHERE p.notDeleted=:flag "
-                    + "ORDER BY p.name DESC"
-            ),
-            @NamedQuery(
-                    name = "Product.sortByPriceASC",
-                    query = "SELECT p.id, p.name, p.price, p.quantity FROM Product p WHERE p.notDeleted=:flag "
-                    + "ORDER BY p.price ASC"
-            ),
-            @NamedQuery(
-                    name = "Product.sortByPriceDESC",
-                    query = "SELECT p.id, p.name, p.price, p.quantity FROM Product p WHERE p.notDeleted=:flag "
-                    + "ORDER BY p.price DESC"
-            ),
-            @NamedQuery(
-                    name = "Product.findByName",
-                    query = "SELECT p.id, p.name, p.price, p.quantity FROM Product p WHERE p.name LIKE :pName"
-            ),
-            @NamedQuery(
-                    name = "Product.update",
-                    query = "UPDATE Product p SET p.category.Id=:catId, p.description=:desc, p.name=:pName, "
-                    + "p.price=:price, p.quantity=:quantity, p.vendor.id=:vId WHERE p.id=:pId"
-            ),
-            @NamedQuery(
-                    name = "Product.updateImg",
-                    query = "UPDATE Product p SET p.image=:img WHERE p.id=:pId"
-            ),
-            @NamedQuery(
-                    name = "Product.isExistImg",
-                    query = "SELECT p.id FROM Product p WHERE ((p.id=:pId) AND (p.image IS NOT NULL))"
-            ),
-            @NamedQuery(
-                    name = "Product.loadInstance",
-                    query = "SELECT p.id, p.name, p.price, p.quantity, p.description, p.vendor, p.category "
-                    + "FROM Product p WHERE p.id=:pId"
-            )
-        })
 public class Product implements Serializable {
 
     @Id
@@ -88,17 +39,6 @@ public class Product implements Serializable {
     @ManyToOne
     @JoinColumn(name = "vendor")
     private Vendor vendor;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "customer_fav_product",
-            joinColumns = @JoinColumn(name = "product"),
-            inverseJoinColumns = @JoinColumn(name = "customer")
-    )
-    private List<User> interestedUsers;
-
-    @Transient
-    private Boolean imgExist;
 
     public Integer getId() {
         return id;
@@ -164,14 +104,6 @@ public class Product implements Serializable {
         this.vendor = vendor;
     }
 
-    public List<User> getInterestedUsers() {
-        return interestedUsers;
-    }
-
-    public void setInterestedUsers(List<User> interestedUsers) {
-        this.interestedUsers = interestedUsers;
-    }
-
     public Boolean getNotDeleted() {
         return notDeleted;
     }
@@ -180,12 +112,33 @@ public class Product implements Serializable {
         this.notDeleted = notDeleted;
     }
 
-    public Boolean getImgExist() {
-        return imgExist;
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.id);
+        hash = 53 * hash + Objects.hashCode(this.name);
+        return hash;
     }
 
-    public void setImgExist(Boolean imgExist) {
-        this.imgExist = imgExist;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Product other = (Product) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

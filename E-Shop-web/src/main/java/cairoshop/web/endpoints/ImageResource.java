@@ -1,7 +1,6 @@
 package cairoshop.web.endpoints;
 
-import cairoshop.daos.*;
-import com.cairoshop.logger.GlobalLogger;
+import cairoshop.repositories.interfaces.ProductRepository;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import javax.annotation.ManagedBean;
@@ -9,7 +8,6 @@ import javax.inject.*;
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -19,9 +17,9 @@ import org.apache.logging.log4j.Level;
 @Path("/images")
 @ManagedBean
 public class ImageResource {
-
+    
     @Inject
-    private ProductDAO productDAO;
+    private ProductRepository productRepository;
 
     @Context
     private ServletContext servletContext;
@@ -38,20 +36,13 @@ public class ImageResource {
 
         try {
             
-            img = productDAO.getImage(Integer.parseInt(id));
+            img = productRepository.getImage(Integer.parseInt(id));
                         
             if ( img == null ) {
                 throw new RuntimeException("The default image will be loaded");
             }
 
         } catch (Exception ex) {
-            GlobalLogger
-                    .getInstance()
-                    .doLogging(
-                            Level.ERROR, 
-                            "getImage failed" + " | " + ImageResource.class.getName() + "::getImage( )", 
-                            ex,
-                            this.getClass());
 
             java.nio.file.Path errPath = Paths.get(servletContext.getRealPath("/resources/img/empty.jpg"));
 
@@ -60,13 +51,6 @@ public class ImageResource {
                 img = Files.readAllBytes(errPath);
                 
             } catch (Exception e) {
-                GlobalLogger
-                        .getInstance()
-                        .doLogging(
-                                Level.ERROR, 
-                                "Error occured during reading default image" + " | " + ImageResource.class.getName() + "::getImage( )", 
-                                ex,
-                                this.getClass());
             }
         }
 

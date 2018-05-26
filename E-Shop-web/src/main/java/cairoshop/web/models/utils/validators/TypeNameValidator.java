@@ -31,7 +31,7 @@ public class TypeNameValidator implements Validator {
             switch (componentId) {
                 case "priceInput": {
                     boolean valid = Pattern.compile(
-                            "^[1-9][0-9]{2,4}(\\.[0-9]*)?$")
+                            "[1-9][0-9]{1,3}(\\.[0-9]*)?")
                             .matcher(o.toString()).matches();
 
                     if (!valid) {

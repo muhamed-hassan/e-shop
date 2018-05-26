@@ -10,23 +10,6 @@ import javax.persistence.*;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Entity
-@NamedQueries(
-        {
-            @NamedQuery(
-                    name = "Vendor.findAll",
-                    query = "SELECT v FROM Vendor v WHERE v.notDeleted=:flag"
-            ),
-            @NamedQuery(
-                    name = "Vendor.countProducts",
-                    query = "SELECT COUNT(p.id) FROM Product p WHERE ((p.vendor.id=:vId) "
-                    + "AND (p.notDeleted=:flag))"
-            ),
-            @NamedQuery(
-                    name = "Vendor.getProducts",
-                    query = "SELECT p.id, p.name, p.price, p.quantity FROM Product p WHERE ((p.vendor.id=:venId) "
-                    + "AND (p.notDeleted=:flag))"
-            )
-        })
 public class Vendor implements Serializable {
 
     @Id
@@ -46,13 +29,6 @@ public class Vendor implements Serializable {
 
     @Transient
     private String oldValue;
-
-    public Vendor() {
-    }
-
-    public Vendor(String name) {
-        this.name = name;
-    }
 
     public Integer getId() {
         return Id;
@@ -102,6 +78,35 @@ public class Vendor implements Serializable {
         this.oldValue = oldValue;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(this.Id);
+        hash = 23 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vendor other = (Vendor) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.Id, other.Id)) {
+            return false;
+        }
+        return true;
+    }
+    
     @Override
     public String toString() {
         return "Vendor{" + "Id=" + Id + ", name=" + name + ", notDeleted=" + notDeleted + '}';

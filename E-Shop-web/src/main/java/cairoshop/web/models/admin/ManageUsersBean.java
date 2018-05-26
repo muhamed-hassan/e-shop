@@ -2,11 +2,8 @@ package cairoshop.web.models.admin;
 
 import cairoshop.web.models.common.navigation.AdminNavigation;
 import cairoshop.entities.*;
-import cairoshop.service.*;
-import cairoshop.utils.AdminContent;
-import cairoshop.utils.AdminMessages;
-import cairoshop.utils.Messages;
-import cairoshop.utils.Scope;
+import cairoshop.service.interfaces.AdminService;
+import cairoshop.utils.*;
 import cairoshop.web.models.common.CommonBean;
 import java.io.*;
 import java.util.*;
@@ -44,7 +41,7 @@ public class ManageUsersBean
         Integer cID = c.getId();
 
         c.setActive(true);
-        int status = (adminService.edit(c) ? 1 : -1);
+        int status = (adminService.changeUserState(c) ? 1 : -1);
 
         if (status == 1) {
             for (Customer tmp : customers) {
@@ -66,7 +63,7 @@ public class ManageUsersBean
         Integer cID = c.getId();
 
         c.setActive(false);
-        int status = (adminService.edit(c) ? 1 : -1);
+        int status = (adminService.changeUserState(c) ? 1 : -1);
 
         if (status == 1) {
             for (Customer tmp : customers) {

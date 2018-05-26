@@ -10,19 +10,6 @@ import javax.persistence.*;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Entity
-@NamedQueries(
-        {
-            @NamedQuery(
-                    name = "Category.countProducts",
-                    query = "SELECT COUNT(p.id) FROM Product p WHERE ((p.category.id=:cId) "
-                    + "AND (p.notDeleted=:flag))"
-            ),
-            @NamedQuery(
-                    name = "Category.getProducts",
-                    query = "SELECT p.id, p.name, p.price, p.quantity FROM Product p WHERE ((p.category.id=:catId) "
-                    + "AND (p.notDeleted=:flag))"
-            )
-        })
 public class Category implements Serializable {
 
     @Id
@@ -43,8 +30,7 @@ public class Category implements Serializable {
     @Transient
     private String oldValue;
 
-    public Category() {
-    }
+    public Category() { }
 
     public Category(String name) {
         this.name = name;
@@ -96,6 +82,35 @@ public class Category implements Serializable {
 
     public void setOldValue(String oldValue) {
         this.oldValue = oldValue;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 61 * hash + Objects.hashCode(this.Id);
+        hash = 61 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Category other = (Category) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.Id, other.Id)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

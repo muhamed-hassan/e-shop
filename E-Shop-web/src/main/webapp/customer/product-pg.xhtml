@@ -80,11 +80,7 @@
                             <div class="col-xs-3 col-sm-3 col-md-3">
                                 <div class="form-group input-group" style="margin-bottom: -5px;">
                                     <span class="input-group-addon text-bold">Image:</span>
-                                    <h:graphicImage rendered="#{productDetails.product.imgExist}"
-                                                    value="/ws-api/images/#{productDetails.product.id}"                                                             
-                                                    width="130px" height="140px"/>
-                                    <h:graphicImage rendered="#{not productDetails.product.imgExist}"
-                                                    value="/ws-api/images/0"                                                     
+                                    <h:graphicImage value="/ws-api/images/#{productDetails.product.id}"                                                             
                                                     width="130px" height="140px"/>
                                 </div>                                
                             </div>

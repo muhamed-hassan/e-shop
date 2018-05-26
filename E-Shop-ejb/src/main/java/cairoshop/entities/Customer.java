@@ -9,30 +9,8 @@ import javax.persistence.*;
  * ************************************************************************ */
 @Entity
 @DiscriminatorValue(value = "1")
-@NamedQueries(
-        {
-            @NamedQuery(
-                    name = "Customer.findAll",
-                    query = "SELECT c FROM Customer c"
-            ),
-            @NamedQuery(
-                    name = "Customer.getFavoritesCount",
-                    query = "SELECT COUNT(*) FROM Product p JOIN p.interestedUsers c WHERE c.id=:custId"
-            ),
-            @NamedQuery(
-                    name = "Customer.getProducts",
-                    query = "SELECT p.id, p.name, p.price, p.quantity FROM Product p JOIN p.interestedUsers c WHERE c.id=:custId"
-            ),
-            @NamedQuery(
-                    name = "Customer.getLikedProducts",
-                    query = "SELECT p.id FROM Product p JOIN p.interestedUsers c WHERE c.id=:custId"
-            ),
-            @NamedQuery(
-                    name = "Customer.count",
-                    query = "SELECT COUNT(*) FROM Customer c"
-            )
-        })
-public class Customer extends User { //Customer.count
+public class Customer 
+        extends User { 
 
     @Embedded
     private ContactDetails contactDetails;
@@ -44,5 +22,5 @@ public class Customer extends User { //Customer.count
     public void setContactDetails(ContactDetails contactDetails) {
         this.contactDetails = contactDetails;
     }
-
+    
 }

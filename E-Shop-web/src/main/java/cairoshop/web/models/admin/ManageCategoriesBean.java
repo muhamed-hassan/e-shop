@@ -3,7 +3,7 @@ package cairoshop.web.models.admin;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.navigation.AdminNavigation;
 import cairoshop.entities.*;
-import cairoshop.service.*;
+import cairoshop.service.interfaces.AdminService;
 import cairoshop.utils.*;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
 import java.io.*;
@@ -48,7 +48,7 @@ public class ManageCategoriesBean
     // =========================================================================
     // =======> Edit category
     // =========================================================================
-    public String onEdit(Category c) {
+    public void onEdit(Category c) {
         Integer toEditId = c.getId();
         c.setOldValue(c.getName());
 
@@ -58,8 +58,7 @@ public class ManageCategoriesBean
                 break;
             }
         }
-        
-        return null; //stay on the same page
+                
     }
 
     public void editCategory(Category c) {

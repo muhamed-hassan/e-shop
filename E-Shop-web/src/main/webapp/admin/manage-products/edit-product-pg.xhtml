@@ -89,26 +89,12 @@
                             <div class="col-xs-3 col-sm-3 col-md-3">
                                 <div class="form-group input-group" style="margin-bottom: -5px;">
                                     <span class="input-group-addon text-bold">Image:</span>
-                                    <h:graphicImage rendered="#{manageProductsBean.product.imgExist}"
-                                                    value="/ws-api/images/#{manageProductsBean.product.id}"                                                             
-                                                    width="100px" height="100px"/>
-                                    <h:graphicImage rendered="#{not manageProductsBean.product.imgExist}"
-                                                    library="img"                                                    
-                                                    name="empty.jpg"                                                             
+                                    <h:graphicImage value="/ws-api/images/#{manageProductsBean.product.id}"                                                             
                                                     width="100px" height="100px"/>
                                 </div>
                                 <div class="form-group input-group" style="margin-left: -14px; margin-bottom: -5px; margin-top: -5px;">
                                     <h:inputFile id="imgUpload" value="#{manageProductsBean.imgData}"                                               
                                                  class="input-lg"/> 
-                                </div>
-                                <div class="form-group input-group" style="margin-left: 3px;margin-top: -5px;margin-bottom: -5px;">                                    
-                                    <h:selectBooleanCheckbox value="#{manageProductsBean.removeImg}"                                                                                                                                          
-                                                             id="remove"
-                                                             style="margin-right: 10px;"
-                                                             disabled="#{not manageProductsBean.product.imgExist}"
-                                                             />
-                                    <h:outputLabel for="remove" value="Remove image"
-                                                   class="text-bold text-danger"/>                                    
                                 </div>
                             </div>
 

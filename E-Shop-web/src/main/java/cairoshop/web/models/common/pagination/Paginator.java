@@ -39,4 +39,5 @@ public class Paginator implements Serializable {
     public void setChunkSize(Integer chunkSize) {
         this.chunkSize = chunkSize;
     }
+    
 }

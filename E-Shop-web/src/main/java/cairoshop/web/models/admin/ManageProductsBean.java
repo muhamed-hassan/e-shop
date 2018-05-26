@@ -1,17 +1,18 @@
 package cairoshop.web.models.admin;
 
+import cairoshop.dtos.ProductModel;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.navigation.AdminNavigation;
 import cairoshop.entities.*;
-import cairoshop.service.*;
+import cairoshop.service.interfaces.AdminService;
 import cairoshop.utils.*;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
 import java.io.*;
 import java.util.*;
 import javax.ejb.*;
 import javax.faces.bean.*;
+import javax.inject.Inject;
 import javax.servlet.http.*;
-import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -27,12 +28,14 @@ public class ManageProductsBean
     @EJB
     private AdminService adminService;
     
+    @Inject
+    private ImageStreamExtractor imageStreamExtractor;
+    
     private Product product;
     private Part imgData;
-    private Boolean removeImg = false;
-    private List<Object[]> products;
+    private List<ProductModel> products;
     private List<Vendor> vendors;
-    private List<Category> categories;
+    private List<Category> categories;    
 
     // =========================================================================
     // =======> Add product
@@ -46,28 +49,10 @@ public class ManageProductsBean
         categories = adminService.getAllCategories();
     }
 
-    public void addProduct() {
+    public void addProduct() throws IOException {
+        
         if (imgData != null && imgData.getSize() > 0) {
-            try {
-                InputStream imgStream = imgData.getInputStream();
-
-                byte[] buffer = new byte[2048]; // 2 KB
-                int bytesRead;
-                ByteArrayOutputStream imgData = new ByteArrayOutputStream();
-
-                while ((bytesRead = imgStream.read(buffer)) != -1) {
-                    imgData.write(buffer, 0, bytesRead);
-                }
-
-                product.setImage(imgData.toByteArray());
-            } catch (IOException ex) { 
-                getLogger()
-                        .doLogging(
-                                Level.ERROR, 
-                                "Failed to read the product's image -> ManageProductsBean::addProduct()", 
-                                ex,
-                                this.getClass());
-            }
+            product.setImage(imageStreamExtractor.extract(imgData.getInputStream()));
         }
 
         int status = (adminService.addProduct(product) ? 1 : -1);
@@ -84,8 +69,8 @@ public class ManageProductsBean
     // =========================================================================
     // =======> Edit product
     // =========================================================================
-    public void loadTarget(Integer pID) {
-        product = adminService.getProduct(pID);
+    public void loadTarget(Integer pId) {
+        product = adminService.getProduct(pId);
 
         if (vendors == null) {
             vendors = adminService.getAllVendors();
@@ -94,45 +79,20 @@ public class ManageProductsBean
         if (categories == null) {
             categories = adminService.getAllCategories();
         }
+        
     }
 
     public void goToEdit() {
         getContentChanger().displayContent(AdminContent.EDIT_PRODUCT_DETAILS);
     }
 
-    public void editProduct() {
-        boolean flag1 = true, flag2 = false;
+    public void editProduct() throws IOException {
 
-        if (imgData != null && imgData.getSize() > 0) {
-            try {
-                InputStream imgStream = imgData.getInputStream();
-
-                byte[] buffer = new byte[2048]; // 2 KB
-                int bytesRead;
-                ByteArrayOutputStream imgData = new ByteArrayOutputStream();
-
-                while ((bytesRead = imgStream.read(buffer)) != -1) {
-                    imgData.write(buffer, 0, bytesRead);
-                }
-
-                flag1 = adminService.editProductImg(imgData.toByteArray(), product.getId());
-            } catch (IOException ex) {
-                getLogger()
-                        .doLogging(
-                                Level.ERROR, 
-                                "Failed to read the product's image -> ManageProductsBean::editProduct()", 
-                                ex,
-                                this.getClass());
-            }
+        if (imgData != null && imgData.getSize() > 0) {            
+            product.setImage(imageStreamExtractor.extract(imgData.getInputStream()));
         }
 
-        if (removeImg) {
-            flag1 = adminService.editProductImg(null, product.getId());
-        }
-
-        flag2 = adminService.editProduct(product);
-
-        int status = ((flag1 && flag2) ? 1 : -1);
+        int status = (adminService.editProduct(product) ? 1 : -1);
 
         String msg = ((status == 1) ? 
                 product.getName() + Messages.EDITED_SUCCESSFULLY : 
@@ -140,16 +100,14 @@ public class ManageProductsBean
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
 
-
-        removeImg = false; //reset the flag
         product = null;
     }
 
     // =========================================================================
     // =======> Delete product
     // =========================================================================
-    public void deleteProduct(Integer pID, String pName) {
-        int status = (adminService.deleteProduct(pID) ? 1 : -1);
+    public void deleteProduct(Integer pId, String pName) {
+        int status = (adminService.deleteProduct(pId) ? 1 : -1);
 
         String msg = ((status == 1) ? 
                 pName + Messages.REMOVED_SUCCESSFULLY : 
@@ -157,10 +115,9 @@ public class ManageProductsBean
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
 
-
         getPaginator().setDataSize(adminService.getProductsCount());
         products = adminService.viewProducts(getPaginator().getCursor());
-        if (products.isEmpty()) {
+        if (products == null || products.isEmpty()) {
             previous();
         }
 
@@ -190,32 +147,12 @@ public class ManageProductsBean
         return vendors;
     }
 
-    public void setVendors(List<Vendor> vendors) {
-        this.vendors = vendors;
-    }
-
     public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
-    }
-
-    public List<Object[]> getProducts() {
+    public List<ProductModel> getProducts() {
         return products;
-    }
-
-    public void setProducts(List<Object[]> products) {
-        this.products = products;
-    }
-
-    public Boolean getRemoveImg() {
-        return removeImg;
-    }
-
-    public void setRemoveImg(Boolean removeImg) {
-        this.removeImg = removeImg;
     }
 
     // =========================================================================

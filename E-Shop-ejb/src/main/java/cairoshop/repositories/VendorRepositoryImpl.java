@@ -1,9 +1,8 @@
-package cairoshop.service;
+package cairoshop.repositories;
 
-import cairoshop.daos.UserDAO;
-import cairoshop.entities.Customer;
+import cairoshop.entities.Vendor;
+import cairoshop.repositories.interfaces.VendorRepository;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -11,16 +10,12 @@ import javax.inject.Inject;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Stateless
-public class UserService {
+public class VendorRepositoryImpl
+        extends BaseRepository<Vendor>
+        implements VendorRepository {
 
-    @Inject
-    private UserDAO userDAO;
-
-    public Object signIn(String email, String password) {
-        return userDAO.find(email, password);
+    public VendorRepositoryImpl() {
+        super(Vendor.class);
     }
 
-    public Object signUp(Customer customer) {
-        return userDAO.insert(customer);
-    }
 }

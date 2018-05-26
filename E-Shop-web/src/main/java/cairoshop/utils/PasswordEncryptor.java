@@ -1,13 +1,11 @@
 package cairoshop.utils;
 
-import com.cairoshop.logger.GlobalLogger;
 import java.security.MessageDigest;
 import java.util.*;
 import javax.annotation.ManagedBean;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Singleton;
-import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -35,16 +33,11 @@ public class PasswordEncryptor {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
-            encryptedPassword = Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
+            encryptedPassword = Base64
+                    .getEncoder()
+                    .encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
             
         } catch (Exception ex) {
-            GlobalLogger
-                    .getInstance()
-                    .doLogging(
-                            Level.ERROR, 
-                            "Failed to encrypt the password -> PasswordEncryptor::encrypt()", 
-                            ex,
-                            this.getClass());
             return null;
         }
 

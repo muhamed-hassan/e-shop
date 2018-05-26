@@ -1,14 +1,14 @@
 package cairoshop.web.models.customer;
 
+import cairoshop.dtos.ProductModel;
 import cairoshop.entities.*;
-import cairoshop.service.*;
-import cairoshop.utils.CustomerContent;
-import cairoshop.utils.Messages;
-import cairoshop.utils.Scope;
+import cairoshop.service.interfaces.CustomerService;
+import cairoshop.utils.*;
 import cairoshop.web.models.common.ContentChanger;
 import java.io.*;
 import java.util.*;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.*;
 import javax.faces.bean.*;
 import javax.faces.context.*;
@@ -28,10 +28,11 @@ public class ProductDetails
     private CustomerService customerService;
 
     private Product product;
-    private List<Integer> likedProducts;
+    private List<ProductModel> likedProducts;
     private Customer currentUser;
     private Boolean favorite;
-    
+    private Map<String, Object> sessionMap = null;
+            
     @Inject
     private ContentChanger contentChanger;
 
@@ -41,6 +42,17 @@ public class ProductDetails
     @PostConstruct
     public void init() {
         favorite = false;
+        
+        sessionMap = FacesContext
+                .getCurrentInstance()
+                .getExternalContext()
+                .getSessionMap();
+        
+        currentUser = (Customer) sessionMap
+                .get("currentUser");
+        
+        likedProducts = customerService
+                .getLikedProducts(currentUser.getId());
     }
 
     // =========================================================================
@@ -54,12 +66,8 @@ public class ProductDetails
         this.favorite = favorite;
     }
 
-    public List<Integer> getLikedProducts() {
+    public List<ProductModel> getLikedProducts() {
         return likedProducts;
-    }
-
-    public void setLikedProducts(List<Integer> likedProducts) {
-        this.likedProducts = likedProducts;
     }
 
     public Product getProduct() {
@@ -73,30 +81,23 @@ public class ProductDetails
     // =========================================================================
     // =======> load product based in id
     // =========================================================================
-    public void getDetails(Integer pID) {
-        product = customerService.getProductDetails(pID);
-
-        Map<String, Object> sessionMap = FacesContext
-                .getCurrentInstance()
-                .getExternalContext()
-                .getSessionMap();
-
-        currentUser = (Customer) sessionMap
-                .get("currentUser");
-
-        likedProducts = customerService
-                .getLikedProducts(currentUser.getId());
+    public void getDetails(Integer pId) {
+        product = customerService.getProductDetails(pId);
 
         Integer currentProductId = product.getId();
 
-        for (Integer pId : likedProducts) {
-            if (currentProductId == pId) {
-                favorite = true;
-                break;
-            }
-        }
+        favorite = (likedProducts
+                .stream()
+                .filter(p -> p.getId() == currentProductId)
+                .count()) == 1;
 
         if (product != null) {
+            if( sessionMap.size() == 0 ) {
+                sessionMap = FacesContext
+                .getCurrentInstance()
+                .getExternalContext()
+                .getSessionMap();
+            }
             sessionMap.put("content", CustomerContent.PRODUCT_PAGE);
             return;
         }
@@ -107,13 +108,24 @@ public class ProductDetails
     // =========================================================================
     // =======> like link toggling
     // =========================================================================
-    public String addToFavorites() {
-        favorite = customerService.addProductToFavoriteList(product.getId(), currentUser.getId());
+    public void addToFavorites() {
+        favorite = customerService.addProductToFavoriteList(product, currentUser);
 
-        likedProducts = customerService
-                .getLikedProducts(currentUser.getId());
-
-        return null;
+       if( favorite ) {
+            ProductModel productModel = new ProductModel();
+            productModel.setId(product.getId());
+            productModel.setName(product.getName());
+            productModel.setPrice(product.getPrice());
+            productModel.setQuantity(product.getQuantity());
+            
+            likedProducts.add(productModel);
+        }
+        
+    }
+    
+    @PreDestroy
+    public void clean() {
+        likedProducts = null;
     }
 
 }

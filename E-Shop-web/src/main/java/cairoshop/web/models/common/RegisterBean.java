@@ -1,9 +1,8 @@
 package cairoshop.web.models.common;
 
 import cairoshop.entities.*;
-import cairoshop.service.*;
-import cairoshop.utils.PasswordEncryptor;
-import cairoshop.utils.SharedContent;
+import cairoshop.service.interfaces.UserService;
+import cairoshop.utils.*;
 import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.ejb.*;
@@ -24,12 +23,12 @@ public class RegisterBean {
     @EJB
     private UserService userService;
 
-    private Customer customer;
-    private ContactDetails contactDetails;
-
     @Inject
     private PasswordEncryptor encryptor;
     
+    private Customer customer;
+    private ContactDetails contactDetails;
+
     @PostConstruct
     public void init() {
         customer = new Customer();
@@ -55,16 +54,12 @@ public class RegisterBean {
     public String register() {
         customer.setContactDetails(contactDetails);
         customer.setPassword(encryptor.encrypt(customer.getPassword()));
-        Object result = userService.signUp(customer);
+        User result = userService.signUp(customer);
 
         FacesContext context = FacesContext.getCurrentInstance();
 
-        if (result == null) // error in sign up - please try again later
-        {
+        if (result == null) { // error in sign up - please try again later
             context.addMessage("register", new FacesMessage("Something went wrong - try again later"));
-            return null;
-        } else if (result instanceof String) {
-            context.addMessage("register", new FacesMessage((String) result));
             return null;
         }
 

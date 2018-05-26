@@ -1,7 +1,8 @@
 package cairoshop.web.models.customer;
 
+import cairoshop.dtos.ProductModel;
 import cairoshop.web.models.common.navigation.CustomerNavigation;
-import cairoshop.service.*;
+import cairoshop.service.interfaces.CustomerService;
 import cairoshop.utils.*;
 import cairoshop.web.models.common.CommonBean;
 import java.io.*;
@@ -25,8 +26,8 @@ public class FindProductBean
     private CustomerService customerService;
 
     private String keyword;
-    private List<Object[]> queryResult;
-    private List<Object[]> ds;
+    private List<ProductModel> queryResult;
+    private List<ProductModel> ds;
     
     // =========================================================================
     // =======> Getters and Setters
@@ -35,12 +36,8 @@ public class FindProductBean
         return keyword;
     }
 
-    public List<Object[]> getQueryResult() {
+    public List<ProductModel> getQueryResult() {
         return queryResult;
-    }
-
-    public void setQueryResult(List<Object[]> queryResult) {
-        this.queryResult = queryResult;
     }
 
     public void setKeyword(String keyword) {
