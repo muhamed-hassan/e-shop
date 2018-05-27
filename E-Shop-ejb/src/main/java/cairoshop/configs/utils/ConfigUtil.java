@@ -1,10 +1,12 @@
 package cairoshop.configs.utils;
 
+import com.demo.GlobalLogger;
 import java.io.*;
 import java.nio.file.*;
 import java.util.List;
 import static java.util.stream.Collectors.toList;
-import javax.inject.Singleton;
+import javax.inject.*;
+import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -13,6 +15,9 @@ import javax.inject.Singleton;
  * ************************************************************************ */
 @Singleton
 public class ConfigUtil {
+    
+    @Inject
+    private GlobalLogger globalLogger;
 
     public List<Class> getClasses(String packageName)
             throws IOException {
@@ -34,6 +39,12 @@ public class ConfigUtil {
                                 .append(packageName).append(".")
                                 .append(currentFileName.substring(0, currentFileName.length() - 6)).toString());
                     } catch (ClassNotFoundException ex) {
+                        globalLogger.doLogging(
+                                    Level.FATAL, 
+                                    "An error occured during reading entities", 
+                                    getClass(), 
+                                    ex
+                                );
                         throw new RuntimeException("Failed in reading .class file of " + ex);
                     }
                 })

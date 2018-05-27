@@ -2,6 +2,8 @@ package cairoshop.service;
 
 import cairoshop.dtos.ProductModel;
 import cairoshop.entities.*;
+import cairoshop.repositories.exceptions.ModificationException;
+import cairoshop.repositories.exceptions.RetrievalException;
 import cairoshop.repositories.interfaces.*;
 import cairoshop.repositories.specs.*;
 import cairoshop.service.helpers.ProductModelFields;
@@ -10,6 +12,7 @@ import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.ejb.*;
 import javax.inject.*;
+import org.apache.logging.log4j.Level;
 import org.hibernate.criterion.Restrictions;
 
 /* ************************************************************************** 
@@ -65,9 +68,17 @@ public class CustomerServiceImpl
                 .addCriteria(criteria);
 
         try {
+            
             return productRepository.findAll(nativeQuerySpecs);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::viewProductsIn(Object productClassification, int startPosition)",
+                            getClass(),
+                            ex
+                    );
             return null;
         }
 
@@ -89,9 +100,17 @@ public class CustomerServiceImpl
         nativeQuerySpecs.setSortCriteria(orderBy, orderDirection);
 
         try {
+            
             return productRepository.findAll(nativeQuerySpecs);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::sortProducts(String orderBy, String orderDirection, int startPosition)",
+                            getClass(),
+                            ex
+                    );
             return null;
         }
         
@@ -115,9 +134,17 @@ public class CustomerServiceImpl
                 .addCriteria(criteria);
 
         try {
+            
             return productRepository.findAll(nativeQuerySpecs);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::findProductByName(String pName)",
+                            getClass(),
+                            ex
+                    );
             return null;
         }
         
@@ -127,9 +154,17 @@ public class CustomerServiceImpl
     public Product getProductDetails(int pId) {
        
         try {
+            
             return productRepository.find(new CriteriaQuerySpecs().addCriterion(Restrictions.eq("id", pId)));
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::getProductDetails(int pId)",
+                            getClass(),
+                            ex
+                    );
             return null;
         }
          
@@ -142,8 +177,15 @@ public class CustomerServiceImpl
             
             userRepository.update(customer, product);
             return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (ModificationException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::addProductToFavoriteList(Product product, Customer customer)",
+                            getClass(),
+                            ex
+                    );
             return false;
         }
 
@@ -175,9 +217,17 @@ public class CustomerServiceImpl
                 .startFrom(startPosition);
 
         try {
+            
             return productRepository.findAll(nativeQuerySpecs);
-        } catch (Exception ex) { 
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) { 
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::viewMyFavoriteList(int custId, int startPosition)",
+                            getClass(),
+                            ex
+                    );
             return null;
         }
         
@@ -211,9 +261,17 @@ public class CustomerServiceImpl
                 .having(having);
         
         try {
+            
             return productRepository.getCount(nativeQuerySpecs);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::getFavoriteProductsCount(int custId)",
+                            getClass(),
+                            ex
+                    );
             return -1;
         }
     }
@@ -243,9 +301,17 @@ public class CustomerServiceImpl
                 .addCriteria(criteria);
 
         try {
+            
             return productRepository.findAll(nativeQuerySpecs);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::getLikedProducts(int custId)",
+                            getClass(),
+                            ex
+                    );
             return null;
         }
     }
@@ -278,9 +344,17 @@ public class CustomerServiceImpl
                 .addCriteria(criteria);
 
         try {
+            
             return productRepository.getCount(nativeQuerySpecs);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::getProductsCount(Object productClassification)",
+                            getClass(),
+                            ex
+                    );
             return -1;
         }
 

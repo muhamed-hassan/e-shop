@@ -1,20 +1,20 @@
-package cairoshop.service.interfaces;
+package cairoshop.service;
 
-import cairoshop.entities.*;
-import java.util.List;
+import com.demo.GlobalLogger;
+import javax.inject.Inject;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface CommonRetrieval {
+public abstract class BaseService {
     
-    List<Category> viewCategories(int startPosition);    
-    List<Vendor> getAllVendors();
-    List<Category> getAllCategories();
-    int getCategoriesCount();
-    int getVendorsCount();
-    int getProductsCount();
+    @Inject
+    private GlobalLogger globalLogger;
+
+    protected GlobalLogger getGlobalLogger() {
+        return globalLogger;
+    }
     
 }

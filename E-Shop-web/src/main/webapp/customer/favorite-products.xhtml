@@ -44,28 +44,28 @@
         <br />
         <h:panelGrid columns="4" class="col-md-6 col-md-offset-3"> 
 
-            <h:commandButton value="First" action="#{findProductBean.first}" 
-                             disabled="#{findProductBean.paginator.cursor eq 0}"
+            <h:commandButton value="First" action="#{favoriteProductsListBean.first}" 
+                             disabled="#{favoriteProductsListBean.paginator.cursor eq 0}"
                              class="btn btn-primary btn-sm"/>
 
-            <h:commandButton value="Previous" action="#{findProductBean.previous}" 
-                             disabled="#{findProductBean.paginator.cursor eq 0}"
+            <h:commandButton value="Previous" action="#{favoriteProductsListBean.previous}" 
+                             disabled="#{favoriteProductsListBean.paginator.cursor eq 0}"
                              class="btn btn-primary btn-sm"/>
 
-            <h:commandButton value="Next" action="#{findProductBean.next}" 
-                             disabled="#{(findProductBean.paginator.cursor eq 
-                                         (findProductBean.paginator.dataSize - findProductBean.paginator.chunkSize))
+            <h:commandButton value="Next" action="#{favoriteProductsListBean.next}" 
+                             disabled="#{(favoriteProductsListBean.paginator.cursor eq 
+                                         (favoriteProductsListBean.paginator.dataSize - favoriteProductsListBean.paginator.chunkSize))
                                          or
-                                         (findProductBean.paginator.cursor eq 
-                                         ((findProductBean.paginator.dataSize - (findProductBean.paginator.dataSize % findProductBean.paginator.chunkSize))))}"
+                                         (favoriteProductsListBean.paginator.cursor eq 
+                                         ((favoriteProductsListBean.paginator.dataSize - (favoriteProductsListBean.paginator.dataSize % favoriteProductsListBean.paginator.chunkSize))))}"
                              class="btn btn-primary btn-sm"/>
 
-            <h:commandButton value="Last" action="#{findProductBean.last}" 
-                             disabled="#{(findProductBean.paginator.cursor eq 
-                                         (findProductBean.paginator.dataSize - findProductBean.paginator.chunkSize))
+            <h:commandButton value="Last" action="#{favoriteProductsListBean.last}" 
+                             disabled="#{(favoriteProductsListBean.paginator.cursor eq 
+                                         (favoriteProductsListBean.paginator.dataSize - favoriteProductsListBean.paginator.chunkSize))
                                          or
-                                         (findProductBean.paginator.cursor eq 
-                                         ((findProductBean.paginator.dataSize - (findProductBean.paginator.dataSize % findProductBean.paginator.chunkSize))))}"
+                                         (favoriteProductsListBean.paginator.cursor eq 
+                                         ((favoriteProductsListBean.paginator.dataSize - (favoriteProductsListBean.paginator.dataSize % favoriteProductsListBean.paginator.chunkSize))))}"
                              class="btn btn-primary btn-sm"/>
         </h:panelGrid>
 

@@ -1,9 +1,11 @@
 package cairoshop.configs;
 
 import cairoshop.configs.utils.ConfigUtil;
+import com.demo.GlobalLogger;
 import javax.annotation.*;
 import javax.ejb.*;
 import javax.inject.Inject;
+import org.apache.logging.log4j.Level;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.*;
@@ -23,11 +25,14 @@ public class HibernateConfigurator {
     private SessionFactory sessionFactory;
 
     private StandardServiceRegistry standardServiceRegistry;
-
+    
+    @Inject
+    private GlobalLogger globalLogger;
+    
     @PostConstruct
     public void init() {
         try {
-
+            
             standardServiceRegistry
                     = new StandardServiceRegistryBuilder()
                     .configure("hibernate.cfg.xml")
@@ -46,8 +51,13 @@ public class HibernateConfigurator {
                     .build();
 
         } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ExceptionInInitializerError(ex);
+            globalLogger
+                    .doLogging(
+                            Level.FATAL, 
+                            "An error occured during session factory initialization", 
+                            getClass(), 
+                            ex
+                    );
         }
     }
 

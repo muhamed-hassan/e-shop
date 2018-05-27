@@ -2,7 +2,6 @@ package cairoshop.web.models.common;
 
 import cairoshop.utils.*;
 import java.util.Map;
-import javax.annotation.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.inject.Singleton;
 
@@ -11,7 +10,6 @@ import javax.inject.Singleton;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-@ManagedBean
 @Singleton
 public class ContentChanger {
 

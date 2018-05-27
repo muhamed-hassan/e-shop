@@ -1,20 +1,23 @@
-package cairoshop.service.interfaces;
-
-import cairoshop.entities.*;
-import java.util.List;
+package cairoshop.repositories.exceptions;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface CommonRetrieval {
+public class RetrievalException 
+        extends Exception {
+
+    public RetrievalException() {
+        super(null, null);
+    }
     
-    List<Category> viewCategories(int startPosition);    
-    List<Vendor> getAllVendors();
-    List<Category> getAllCategories();
-    int getCategoriesCount();
-    int getVendorsCount();
-    int getProductsCount();
+    public RetrievalException(String msg) {
+        super(msg, null);
+    }
+    
+    public RetrievalException(String msg, Throwable exception) {
+        super(msg, exception);
+    }
     
 }

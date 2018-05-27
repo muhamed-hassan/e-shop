@@ -3,6 +3,7 @@ package cairoshop.repositories.interfaces;
 import cairoshop.dtos.ProductModel;
 import cairoshop.entities.Product;
 import cairoshop.repositories.*;
+import cairoshop.repositories.exceptions.RetrievalException;
 import cairoshop.repositories.specs.NativeQuerySpecs;
 import java.util.List;
 
@@ -14,8 +15,8 @@ import java.util.List;
 public interface ProductRepository 
         extends AbstractRepository<Product>, PagableRepository<Product> {
     
-    List<ProductModel> findAll(NativeQuerySpecs querySpecs);    
-    int getCount(NativeQuerySpecs querySpecs) throws Exception;    
-    byte[] getImage(Integer pId) throws Exception;
+    List<ProductModel> findAll(NativeQuerySpecs querySpecs) throws RetrievalException;    
+    int getCount(NativeQuerySpecs querySpecs) throws RetrievalException;    
+    byte[] getImage(int pId) throws RetrievalException;
     
 }

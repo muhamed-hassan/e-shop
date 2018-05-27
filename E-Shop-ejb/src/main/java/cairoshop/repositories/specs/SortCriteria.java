@@ -1,20 +1,13 @@
-package cairoshop.service.interfaces;
-
-import cairoshop.entities.*;
-import java.util.List;
+package cairoshop.repositories.specs;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface CommonRetrieval {
-    
-    List<Category> viewCategories(int startPosition);    
-    List<Vendor> getAllVendors();
-    List<Category> getAllCategories();
-    int getCategoriesCount();
-    int getVendorsCount();
-    int getProductsCount();
+public final class SortCriteria {
+
+    public static final String NAME = "NAME";
+    public static final String PRICE = "PRICE";
     
 }

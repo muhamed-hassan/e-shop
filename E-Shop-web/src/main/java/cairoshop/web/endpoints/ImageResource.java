@@ -23,7 +23,7 @@ public class ImageResource {
 
     @Context
     private ServletContext servletContext;
-
+    
     @GET
     @Path("/{id}")
     @Produces(

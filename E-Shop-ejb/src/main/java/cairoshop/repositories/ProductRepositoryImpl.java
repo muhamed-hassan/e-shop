@@ -2,11 +2,14 @@ package cairoshop.repositories;
 
 import cairoshop.dtos.ProductModel;
 import cairoshop.entities.Product;
+import cairoshop.helpers.msgs.RepositoryMessage;
+import cairoshop.repositories.exceptions.*;
 import cairoshop.repositories.interfaces.ProductRepository;
 import cairoshop.repositories.specs.NativeQuerySpecs;
 import java.math.BigInteger;
 import java.util.*;
 import javax.ejb.Stateless;
+import org.apache.logging.log4j.Level;
 import org.hibernate.Session;
 
 /* ************************************************************************** 
@@ -24,38 +27,49 @@ public class ProductRepositoryImpl
     }
 
     @Override
-    public List<ProductModel> findAll(NativeQuerySpecs querySpecs) {
-        Session session = getHibernateConfigurator().getSessionFactory().openSession();
+    public List<ProductModel> findAll(NativeQuerySpecs querySpecs)
+            throws RetrievalException {
+        
+        final List<ProductModel> data = new ArrayList<>(0);
+        try (Session session = getHibernateConfigurator().getSessionFactory().openSession()) {
 
-        List<Object[]> tmp = session.createSQLQuery(querySpecs.build()).list();
+            List<Object[]> tmp = session.createSQLQuery(querySpecs.build()).list();
 
-        final List<ProductModel> data = new ArrayList<>(0);;
-        if (tmp != null && !tmp.isEmpty()) {
+            if (tmp != null && !tmp.isEmpty()) {
 
-            tmp.forEach(
-                    record -> 
-                    data.add(
-                            new ProductModel(
-                                    (Integer) record[0], 
-                                    (String) record[1], 
-                                    (Double) record[2], 
-                                    (Integer) record[3])
-                    )
-            );
-            
+                tmp.forEach(
+                        record
+                        -> data.add(
+                                new ProductModel(
+                                        (Integer) record[0],
+                                        (String) record[1],
+                                        (Double) record[2],
+                                        (Integer) record[3])
+                        )
+                );
+
+            }
+
+        } catch (Exception ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL,
+                            getClass(),
+                            ex
+                    );
+            throw new RetrievalException(RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, ex);
         }
-
-        session.close();
 
         return data;
     }
 
     @Override
-    public int getCount(NativeQuerySpecs querySpecs) throws Exception {
-        Session session = getHibernateConfigurator().getSessionFactory().openSession();
+    public int getCount(NativeQuerySpecs querySpecs)
+            throws RetrievalException {
+        
         Integer count = null;
-
-        try { 
+        try (Session session = getHibernateConfigurator().getSessionFactory().openSession()) {
 
             Object tmp = session.createSQLQuery(querySpecs.build()).uniqueResult();
 
@@ -64,23 +78,27 @@ public class ProductRepositoryImpl
             } else {
                 count = ((BigInteger) ((Object[]) tmp)[0]).intValue();
             }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
 
-        session.close();
+        } catch (Exception ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            RepositoryMessage.AN_ERROR_OCCURED_DURING_COMPUTING_ENTITY_COUNT,
+                            getClass(),
+                            ex
+                    );
+            throw new RetrievalException(RepositoryMessage.AN_ERROR_OCCURED_DURING_COMPUTING_ENTITY_COUNT, ex);
+        }
 
         return count;
     }
 
     @Override
-    public byte[] getImage(Integer pId) throws Exception {
-        Session session = getHibernateConfigurator().getSessionFactory().openSession();
+    public byte[] getImage(int pId)
+            throws RetrievalException {
+        
         byte[] img = null;
-
-        try {
+        try (Session session = getHibernateConfigurator().getSessionFactory().openSession()) {
 
             img = (byte[]) session
                     .createQuery("SELECT p.image FROM Product p WHERE p.id=:id")
@@ -88,11 +106,15 @@ public class ProductRepositoryImpl
                     .uniqueResult();
 
         } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        } finally {
-            session.close();
-        }
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "An error occured during fetching product's image",
+                            getClass(),
+                            ex
+                    );
+            throw new RetrievalException("An error occured during fetching product's image", ex);
+        } 
 
         return img;
     }

@@ -10,7 +10,25 @@
     <artifactId>E-Shop-ear</artifactId>
     <packaging>ear</packaging>
 
-    <name>E-Shop-ear</name>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Logging</artifactId>
+            <version>1.0</version>    
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>E-Shop-ejb</artifactId>
+            <version>${project.version}</version>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>E-Shop-web</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>        
+    </dependencies>
 
     <build>
         <plugins>
@@ -32,18 +50,5 @@
             </plugin>
         </plugins>
     </build>
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>E-Shop-ejb</artifactId>
-            <version>${project.version}</version>
-            <type>ejb</type>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>E-Shop-web</artifactId>
-            <version>${project.version}</version>
-            <type>war</type>
-        </dependency>
-    </dependencies>
+        
 </project>

@@ -11,6 +11,7 @@ import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.ejb.*;
 import javax.inject.*;
+import org.apache.logging.log4j.Level;
 import org.hibernate.criterion.Restrictions;
 
 /* ************************************************************************** 
@@ -50,10 +51,18 @@ public class AdminServiceImpl
     public boolean addCategory(Category category) {
         
         try {
+            
             categoryRepository.add(category);
             return true;
+            
         } catch (InsertionException ex) {
-            ex.printStackTrace();
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::addCategory(Category category)",
+                            getClass(),
+                            ex
+                    );
             return false;
         }
         
@@ -63,10 +72,18 @@ public class AdminServiceImpl
     public boolean editCategory(Category category) {
         
         try {
+            
             categoryRepository.update(category);
             return true;
+            
         } catch (ModificationException ex) {
-            ex.printStackTrace();
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::editCategory(Category category)",
+                            getClass(),
+                            ex
+                    );
             return false;
         }
         
@@ -76,10 +93,18 @@ public class AdminServiceImpl
     public boolean deleteCategory(Category category) {
 
         try {
+            
             categoryRepository.remove(category.getId());
             return true;
+            
         } catch (DeletionException ex) {
-            ex.printStackTrace();
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::deleteCategory(Category category)",
+                            getClass(),
+                            ex
+                    );
             return false;
         }
         
@@ -92,10 +117,18 @@ public class AdminServiceImpl
     public boolean addVendor(Vendor vendor) {
 
         try {
+            
             vendorRepository.add(vendor);
             return true;
+            
         } catch (InsertionException ex) {
-            ex.printStackTrace();
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::addVendor(Vendor vendor)",
+                            getClass(),
+                            ex
+                    );
             return false;
         }
 
@@ -105,10 +138,18 @@ public class AdminServiceImpl
     public boolean editVendor(Vendor vendor) {
 
         try {
+            
             vendorRepository.update(vendor);
             return true;
+            
         } catch (ModificationException ex) {
-            ex.printStackTrace();
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::editVendor(Vendor vendor)",
+                            getClass(),
+                            ex
+                    );
             return false;
         }
 
@@ -118,10 +159,18 @@ public class AdminServiceImpl
     public boolean deleteVendor(Vendor vendor) {
 
         try {
+            
             vendorRepository.remove(vendor.getId());
             return true;
+            
         } catch (DeletionException ex) {
-            ex.printStackTrace();
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::deleteVendor(Vendor vendor)",
+                            getClass(),
+                            ex
+                    );
             return false;
         }
 
@@ -131,9 +180,17 @@ public class AdminServiceImpl
     public List<Vendor> viewVendors(int startPosition) {
         
         try {
+            
             return vendorRepository.findAll(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY, startPosition);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::viewVendors(int startPosition)",
+                            getClass(),
+                            ex
+                    );
             return null;
         }
         
@@ -146,10 +203,18 @@ public class AdminServiceImpl
     public boolean changeUserState(User user) {
         
         try {
+            
             userRepository.update(user);
             return true;
+            
         } catch (ModificationException ex) {
-            ex.printStackTrace();
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::changeUserState(User user)",
+                            getClass(),
+                            ex
+                    );
             return false;
         }
 
@@ -159,9 +224,17 @@ public class AdminServiceImpl
     public List<User> viewCustomers(int startPosition) {
         
         try {
+            
             return userRepository.findAll(null, startPosition);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::viewCustomers(int startPosition)",
+                            getClass(),
+                            ex
+                    );
             return null;
         }
         
@@ -171,9 +244,17 @@ public class AdminServiceImpl
     public int getCustomersCount() {
 
         try {
+            
             return userRepository.getCount(null);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::getCustomersCount",
+                            getClass(),
+                            ex
+                    );
             return -1;
         }
     }
@@ -185,10 +266,18 @@ public class AdminServiceImpl
     public boolean addProduct(Product product) {
         
         try {
+            
             productRepository.add(product);
             return true;
+            
         } catch (InsertionException ex) {
-            ex.printStackTrace();
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::addProduct(Product product)",
+                            getClass(),
+                            ex
+                    );
             return false;
         }
         
@@ -198,12 +287,20 @@ public class AdminServiceImpl
     public Product getProduct(int pId) {
         
         try {
+            
             return productRepository
                     .find(new CriteriaQuerySpecs()
                         .addCriterion(Restrictions.eq("id", pId))
                     );
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::getProduct(int pId)",
+                            getClass(),
+                            ex
+                    );
             return null;
         }
 
@@ -213,22 +310,39 @@ public class AdminServiceImpl
     public boolean editProduct(Product product) {
         
         try {
+            
             productRepository.update(product);
             return true;
+            
         } catch (ModificationException ex) {
-            ex.printStackTrace();
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::editProduct(Product product)",
+                            getClass(),
+                            ex
+                    );
             return false;
         }
+        
     }
 
     @Override
     public boolean deleteProduct(int pId) {
         
         try {
+            
             productRepository.remove(pId);
             return true;
+            
         } catch (DeletionException ex) {
-            ex.printStackTrace();
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::deleteProduct(int pId)",
+                            getClass(),
+                            ex
+                    );
             return false;
         }
         
@@ -248,9 +362,17 @@ public class AdminServiceImpl
                 .addCriteria(criteria);
 
         try {
+            
             return productRepository.findAll(nativeQuerySpecs);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::viewProducts(int startPosition)",
+                            getClass(),
+                            ex
+                    );
             return null;
         }
 
@@ -260,9 +382,17 @@ public class AdminServiceImpl
     public int getProductsCount() {
         
         try {
+            
             return productRepository.getCount(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::getProductsCount()",
+                            getClass(),
+                            ex
+                    );
             return -1;
         }
 

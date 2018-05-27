@@ -31,6 +31,12 @@
             <version>2.2.0</version>
             <scope>provided</scope>
         </dependency> 
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Logging</artifactId>
+            <version>1.0</version> 
+            <scope>provided</scope>   
+        </dependency>
     </dependencies>
 
     <build>

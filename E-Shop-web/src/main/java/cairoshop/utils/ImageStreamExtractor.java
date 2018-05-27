@@ -1,7 +1,9 @@
 package cairoshop.utils;
 
+import com.demo.GlobalLogger;
 import java.io.*;
-import javax.inject.Singleton;
+import javax.inject.*;
+import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -10,6 +12,9 @@ import javax.inject.Singleton;
  * ************************************************************************ */
 @Singleton
 public class ImageStreamExtractor {
+    
+    @Inject
+    private GlobalLogger globalLogger;
 
     public byte[] extract(InputStream imgStream) {
 
@@ -24,6 +29,13 @@ public class ImageStreamExtractor {
             }
 
         } catch (IOException ex) {
+            globalLogger
+                    .doLogging(
+                            Level.ERROR, 
+                            "Caller::extract(InputStream imgStream)", 
+                            getClass(), 
+                            ex
+                    );
             return null;
         }
 

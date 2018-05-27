@@ -10,7 +10,7 @@ import java.util.List;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public interface CustomerService 
-        extends BaseService, CommonRetrieval {
+        extends CommonRetrieval {
     
     List<ProductModel> viewProductsIn(Object productClassification, int startPosition);
     int getProductsCount(Object productClassification);

@@ -10,8 +10,6 @@
     <artifactId>E-Shop-ejb</artifactId>
     <packaging>ejb</packaging>
 
-    <name>E-Shop-ejb</name>
-
     <dependencies>
         <dependency>
             <groupId>javax</groupId>
@@ -35,6 +33,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.23</version>
         </dependency> 
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Logging</artifactId>
+            <version>1.0</version> 
+            <scope>provided</scope>   
+        </dependency>
     </dependencies>
 
     <build>

@@ -1,10 +1,12 @@
 package cairoshop.service;
 
 import cairoshop.entities.*;
+import cairoshop.repositories.exceptions.RetrievalException;
 import cairoshop.repositories.interfaces.UserRepository;
 import cairoshop.repositories.specs.CriteriaQuerySpecs;
 import cairoshop.service.interfaces.UserService;
 import javax.ejb.*;
+import org.apache.logging.log4j.Level;
 import org.hibernate.criterion.Restrictions;
 
 /* ************************************************************************** 
@@ -14,6 +16,7 @@ import org.hibernate.criterion.Restrictions;
  * ************************************************************************ */
 @Stateless
 public class UserServiceImpl
+        extends BaseService
         implements UserService {
 
     @EJB
@@ -30,8 +33,15 @@ public class UserServiceImpl
                         .addCriterion(Restrictions.eq("password", password))
                         .addCriterion(Restrictions.eq("active", true))
                     );
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::signIn(String email, String password)",
+                            getClass(),
+                            ex
+                    );
             return null;
         }
         
@@ -51,7 +61,13 @@ public class UserServiceImpl
                         .addCriterion(Restrictions.eq("active", true))
                     );
         } catch (Exception ex) {
-            ex.printStackTrace();
+            getGlobalLogger()
+                    .doLogging(
+                            Level.ERROR,
+                            "Caller::signUp(Customer customer)",
+                            getClass(),
+                            ex
+                    );
             return null;
         }
 

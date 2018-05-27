@@ -14,7 +14,7 @@ public interface AbstractRepository<T> {
     void add(T entity) throws InsertionException;    
     void update(T entity) throws ModificationException;    
     void remove(int id) throws DeletionException;    
-    T find(CriteriaQuerySpecs querySpecs) throws Exception;    
-    List<T> findAll(CriteriaQuerySpecs querySpecs) throws Exception;
+    T find(CriteriaQuerySpecs querySpecs) throws RetrievalException;    
+    List<T> findAll(CriteriaQuerySpecs querySpecs) throws RetrievalException;
         
 }

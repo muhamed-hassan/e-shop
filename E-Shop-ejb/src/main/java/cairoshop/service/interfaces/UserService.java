@@ -7,8 +7,7 @@ import cairoshop.entities.*;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface UserService 
-        extends BaseService {
+public interface UserService {
     
     User signIn(String email, String password);    
     User signUp(Customer customer);

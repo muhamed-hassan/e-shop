@@ -10,7 +10,7 @@ import java.util.List;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public interface AdminService 
-        extends CommonRetrieval, BaseService {
+        extends CommonRetrieval {
     
     boolean addCategory(Category category);
     boolean editCategory(Category category);

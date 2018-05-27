@@ -12,6 +12,7 @@
         <module>E-Shop-ear</module>
         <module>E-Shop-web</module>
         <module>E-Shop-ejb</module>
+        <module>Logging</module>
     </modules>
     
     <properties>
