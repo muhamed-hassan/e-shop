@@ -36,17 +36,18 @@ public class ProductRepositoryImpl
             List<Object[]> tmp = session.createSQLQuery(querySpecs.build()).list();
 
             if (tmp != null && !tmp.isEmpty()) {
-
-                tmp.forEach(
-                        record
-                        -> data.add(
-                                new ProductModel(
-                                        (Integer) record[0],
-                                        (String) record[1],
-                                        (Double) record[2],
-                                        (Integer) record[3])
-                        )
-                );
+                
+                final ProductModel productModel = new ProductModel();
+                tmp.forEach(record -> {
+                    
+                    productModel.setId((Integer) record[0]);
+                    productModel.setName((String) record[1]);
+                    productModel.setPrice((Double) record[2]);
+                    productModel.setQuantity((Integer) record[3]);
+                    
+                    data.add(productModel);
+                    
+                });
 
             }
 
