@@ -3,7 +3,7 @@
 <hibernate-configuration>
     <session-factory>
         
-        <property name="connection.datasource">jdbc/shopDS</property>
+        <property name="connection.datasource">java:global/jdbc/shopDS</property>
         <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
         
         <property name="hibernate.show_sql">true</property>
