@@ -1,20 +1,15 @@
-package cairoshop.service;
+package cairoshop.services.interfaces;
 
-import com.demo.GlobalLogger;
-import javax.inject.Inject;
+import cairoshop.entities.*;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public abstract class BaseService {
+public interface UserService {
     
-    @Inject
-    private GlobalLogger globalLogger;
-
-    protected GlobalLogger getGlobalLogger() {
-        return globalLogger;
-    }
-    
+    User signIn(String email, String password);    
+    User signUp(Customer customer);
+            
 }

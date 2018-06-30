@@ -7,9 +7,10 @@ import cairoshop.repositories.interfaces.UserRepository;
 import cairoshop.repositories.specs.CriteriaQuerySpecs;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.*;
 import org.apache.logging.log4j.Level;
 import org.hibernate.*;
-import org.hibernate.criterion.Projections;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -29,14 +30,20 @@ public class UserRepositoryImpl
     public List<User> findAll(CriteriaQuerySpecs querySpecs, int startPosition)
             throws RetrievalException {
         
+        EntityManager entityManager = null;
         List<User> data = null;
         try (Session session = getHibernateConfigurator().getSessionFactory().openSession()) {
 
-            Criteria criteria = session.createCriteria(Customer.class);
-            data = criteria
-                    .setFirstResult(startPosition)
-                    .setMaxResults(5)
-                    .list();
+            entityManager = session.getEntityManagerFactory().createEntityManager();
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);			
+	    Root<User> root = criteriaQuery.from(User.class);
+                                 
+            data = entityManager
+                        .createQuery(criteriaQuery.where(querySpecs.build(criteriaBuilder, root)))
+                        .setFirstResult(startPosition)
+                        .setMaxResults(5)
+                        .getResultList();
 
         } catch (Exception ex) {
             getGlobalLogger()
@@ -47,7 +54,11 @@ public class UserRepositoryImpl
                             ex
                     );
             throw new RetrievalException(RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, ex);
-        } 
+        } finally {
+            if( entityManager != null ) {
+                entityManager.close();
+            }
+        }
 
         return data;
     }
@@ -55,16 +66,18 @@ public class UserRepositoryImpl
     @Override
     public int getCount(CriteriaQuerySpecs querySpecs)
             throws RetrievalException {
-        
+        EntityManager entityManager = null;
         Integer count = null;
         try (Session session = getHibernateConfigurator().getSessionFactory().openSession()) {
 
-            Criteria criteria = session.createCriteria(Customer.class);
-
-            count = ((Long) criteria
-                        .setProjection(Projections.rowCount())
-                        .uniqueResult())
-                    .intValue();
+            entityManager = session.getEntityManagerFactory().createEntityManager();
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder(); 
+            CriteriaQuery<Long> criteriaQuery=criteriaBuilder.createQuery(Long.class);
+            Root<Customer> root = criteriaQuery.from(Customer.class);
+            count = entityManager
+                        .createQuery(criteriaQuery.select(criteriaBuilder.count(root)))
+                        .getSingleResult()
+                        .intValue();
 
         } catch (Exception ex) {
             getGlobalLogger()
@@ -75,7 +88,11 @@ public class UserRepositoryImpl
                             ex
                     );
             throw new RetrievalException(RepositoryMessage.AN_ERROR_OCCURED_DURING_COMPUTING_ENTITY_COUNT, ex);
-        } 
+        } finally {
+            if( entityManager != null ) {
+                entityManager.close();
+            }
+        }
 
         return count;
     }

@@ -2,7 +2,7 @@ package cairoshop.web.models.customer;
 
 import cairoshop.dtos.ProductModel;
 import cairoshop.entities.*;
-import cairoshop.service.interfaces.CustomerService;
+import cairoshop.services.interfaces.CustomerService;
 import cairoshop.utils.*;
 import cairoshop.web.models.common.ContentChanger;
 import java.io.*;

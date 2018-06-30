@@ -1,26 +1,15 @@
-package cairoshop.service.helpers;
+package cairoshop.services.helpers;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Singleton;
+import cairoshop.repositories.specs.*;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-@Singleton
-public class ProductModelFields {
+public class CommonQuerySpecs {
     
-    private final List<String> FIELDS = new ArrayList<String>(){{
-        add("ID");
-        add("NAME");
-        add("PRICE");
-        add("QUANTITY");
-    }};
-    
-    public List<String> getCommonFields() {
-        return FIELDS;
-    }
+    public static final CriteriaQuerySpecs FIND_NOT_DELETED_ITEMS_QUERY = new CriteriaQuerySpecs()
+            .addPredicate(new Condition("notDeleted", true));
     
 }

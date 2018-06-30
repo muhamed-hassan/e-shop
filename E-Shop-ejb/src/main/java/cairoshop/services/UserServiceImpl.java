@@ -1,13 +1,12 @@
-package cairoshop.service;
+package cairoshop.services;
 
 import cairoshop.entities.*;
 import cairoshop.repositories.exceptions.RetrievalException;
 import cairoshop.repositories.interfaces.UserRepository;
-import cairoshop.repositories.specs.CriteriaQuerySpecs;
-import cairoshop.service.interfaces.UserService;
+import cairoshop.repositories.specs.*;
+import cairoshop.services.interfaces.UserService;
 import javax.ejb.*;
 import org.apache.logging.log4j.Level;
-import org.hibernate.criterion.Restrictions;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -29,9 +28,9 @@ public class UserServiceImpl
 
             return userRepository
                     .find(new CriteriaQuerySpecs()
-                        .addCriterion(Restrictions.eq("mail", email))
-                        .addCriterion(Restrictions.eq("password", password))
-                        .addCriterion(Restrictions.eq("active", true))
+                        .addPredicate(new Condition("mail", email))
+                            .addPredicate(new Condition("password", password))
+                            .addPredicate(new Condition("active", true))
                     );
             
         } catch (RetrievalException ex) {
@@ -56,9 +55,9 @@ public class UserServiceImpl
 
             return userRepository
                     .find(new CriteriaQuerySpecs()
-                        .addCriterion(Restrictions.eq("mail", customer.getMail()))
-                        .addCriterion(Restrictions.eq("password", customer.getPassword()))
-                        .addCriterion(Restrictions.eq("active", true))
+                            .addPredicate(new Condition("mail", customer.getMail()))
+                            .addPredicate(new Condition("password", customer.getPassword()))
+                            .addPredicate(new Condition("active", true))
                     );
         } catch (Exception ex) {
             getGlobalLogger()

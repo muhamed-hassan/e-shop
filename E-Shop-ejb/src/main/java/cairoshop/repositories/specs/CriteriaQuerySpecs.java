@@ -1,8 +1,7 @@
 package cairoshop.repositories.specs;
 
 import java.util.*;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.*;
+import javax.persistence.criteria.*;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -12,47 +11,27 @@ import org.hibernate.criterion.*;
 public final class CriteriaQuerySpecs
         extends QuerySpecs {
 
-    private final List<Criterion> CRITERIA;
-    private final List<Projection> PROJECTIONS;
+    private final List<Condition> CONDITIONS;
 
     public CriteriaQuerySpecs() {
-        CRITERIA = new ArrayList<>(0);
-        PROJECTIONS = new ArrayList<>(0);
+        CONDITIONS = new ArrayList<>(0);
     }
 
-    public CriteriaQuerySpecs addCriterion(Criterion criterion) {
-        CRITERIA.add(criterion);
+    public CriteriaQuerySpecs addPredicate(Condition predicate) {
+        CONDITIONS.add(predicate);
         return this;
     }
 
-    public CriteriaQuerySpecs addProjection(Projection projection) {
-        PROJECTIONS.add(projection);
-        return this;
-    }
-
-    public Criteria build(Criteria criteria) {
-
-        CRITERIA.forEach(criterion -> criteria.add(criterion));
-        PROJECTIONS.forEach(projection -> criteria.setProjection(projection));
-
-        if (getOrderBy() != null && getOrderDirection() != null) {
-            Order order = null;
-
-            switch (getOrderDirection()) {
-                case OrderDirection.ASC:
-                    order = Order.asc(getOrderBy());
-                    break;
-                case OrderDirection.DESC:
-                    order = Order.desc(getOrderBy());
-                    break;
-                default:
-                    order = Order.asc(getOrderBy());
-            }
-
-            criteria.addOrder(order);
-        }
-
-        return criteria;
+    public Predicate build(CriteriaBuilder criteriaBuilder, Root entity) {
+        
+        List<Predicate> predicates = new ArrayList<>();
+        CONDITIONS.forEach(
+                condition -> predicates.add(criteriaBuilder.equal(entity.get(condition.getField()), condition.getValue()))
+        );
+        
+        return criteriaBuilder.and(
+                    predicates.toArray(new Predicate[0])
+                );
     }
 
 }

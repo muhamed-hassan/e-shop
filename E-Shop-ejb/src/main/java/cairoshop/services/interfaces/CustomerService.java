@@ -1,4 +1,4 @@
-package cairoshop.service.interfaces;
+package cairoshop.services.interfaces;
 
 import cairoshop.dtos.ProductModel;
 import cairoshop.entities.*;

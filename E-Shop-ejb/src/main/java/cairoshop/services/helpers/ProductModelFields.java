@@ -1,16 +1,25 @@
-package cairoshop.service.helpers;
+package cairoshop.services.helpers;
 
-import cairoshop.repositories.specs.CriteriaQuerySpecs;
-import org.hibernate.criterion.Restrictions;
+import java.util.*;
+import javax.inject.Singleton;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public class CommonQuerySpecs {
+@Singleton
+public class ProductModelFields {
     
-    public static final CriteriaQuerySpecs FIND_NOT_DELETED_ITEMS_QUERY = new CriteriaQuerySpecs()
-            .addCriterion(Restrictions.eq("notDeleted", true));
+    private final List<String> FIELDS = new ArrayList<String>(){{
+        add("ID");
+        add("NAME");
+        add("PRICE");
+        add("QUANTITY");
+    }};
+    
+    public List<String> getCommonFields() {
+        return FIELDS;
+    }
     
 }

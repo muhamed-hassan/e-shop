@@ -1,18 +1,17 @@
-package cairoshop.service;
+package cairoshop.services;
 
 import cairoshop.dtos.ProductModel;
 import cairoshop.entities.*;
 import cairoshop.repositories.exceptions.*;
 import cairoshop.repositories.interfaces.*;
 import cairoshop.repositories.specs.*;
-import cairoshop.service.helpers.*;
-import cairoshop.service.interfaces.AdminService;
+import cairoshop.services.helpers.*;
+import cairoshop.services.interfaces.AdminService;
 import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.ejb.*;
 import javax.inject.*;
 import org.apache.logging.log4j.Level;
-import org.hibernate.criterion.Restrictions;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -225,7 +224,7 @@ public class AdminServiceImpl
         
         try {
             
-            return userRepository.findAll(null, startPosition);
+            return userRepository.findAll(new CriteriaQuerySpecs().addPredicate(new Condition("role", 1)), startPosition);
             
         } catch (RetrievalException ex) {
             getGlobalLogger()
@@ -288,10 +287,7 @@ public class AdminServiceImpl
         
         try {
             
-            return productRepository
-                    .find(new CriteriaQuerySpecs()
-                        .addCriterion(Restrictions.eq("id", pId))
-                    );
+            return productRepository.find(new CriteriaQuerySpecs().addPredicate(new Condition("id", pId)));
             
         } catch (RetrievalException ex) {
             getGlobalLogger()
@@ -374,26 +370,6 @@ public class AdminServiceImpl
                             ex
                     );
             return null;
-        }
-
-    }
-
-    @Override
-    public int getProductsCount() {
-        
-        try {
-            
-            return productRepository.getCount(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY);
-            
-        } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getProductsCount()",
-                            getClass(),
-                            ex
-                    );
-            return -1;
         }
 
     }

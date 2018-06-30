@@ -1,6 +1,7 @@
-package cairoshop.service.interfaces;
+package cairoshop.repositories.interfaces;
 
-import cairoshop.entities.*;
+import cairoshop.repositories.exceptions.RetrievalException;
+import cairoshop.repositories.specs.CriteriaQuerySpecs;
 import java.util.List;
 
 /* ************************************************************************** 
@@ -8,13 +9,9 @@ import java.util.List;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface CommonRetrieval {
+public interface PagableRepository<T> {
     
-    List<Category> viewCategories(int startPosition);    
-    List<Vendor> getAllVendors();
-    List<Category> getAllCategories();
-    int getCategoriesCount();
-    int getVendorsCount();
-    int getProductsCount();
+    int getCount(CriteriaQuerySpecs querySpecs) throws RetrievalException;    
+    List<T> findAll(CriteriaQuerySpecs querySpecs, int startPosition) throws RetrievalException; 
     
 }

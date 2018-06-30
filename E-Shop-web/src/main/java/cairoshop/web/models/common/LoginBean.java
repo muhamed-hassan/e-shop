@@ -1,7 +1,7 @@
 package cairoshop.web.models.common;
 
 import cairoshop.entities.*;
-import cairoshop.service.interfaces.UserService;
+import cairoshop.services.interfaces.UserService;
 import cairoshop.utils.*;
 import java.util.*;
 import javax.ejb.*;

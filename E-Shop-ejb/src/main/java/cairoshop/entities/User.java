@@ -36,6 +36,9 @@ public abstract class User implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "product")
     )
     private List<Product> favoriteProducts;
+    
+    @Column(insertable=false, updatable=false)
+    private int role;
 
     public Integer getId() {
         return id;
@@ -93,6 +96,14 @@ public abstract class User implements Serializable {
         this.favoriteProducts = favoriteProducts;
     }
 
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;

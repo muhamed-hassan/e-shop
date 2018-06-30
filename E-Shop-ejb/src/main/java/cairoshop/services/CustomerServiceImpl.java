@@ -1,19 +1,17 @@
-package cairoshop.service;
+package cairoshop.services;
 
 import cairoshop.dtos.ProductModel;
 import cairoshop.entities.*;
-import cairoshop.repositories.exceptions.ModificationException;
-import cairoshop.repositories.exceptions.RetrievalException;
+import cairoshop.repositories.exceptions.*;
 import cairoshop.repositories.interfaces.*;
 import cairoshop.repositories.specs.*;
-import cairoshop.service.helpers.ProductModelFields;
-import cairoshop.service.interfaces.CustomerService;
+import cairoshop.services.helpers.ProductModelFields;
+import cairoshop.services.interfaces.CustomerService;
 import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.ejb.*;
 import javax.inject.*;
 import org.apache.logging.log4j.Level;
-import org.hibernate.criterion.Restrictions;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -155,7 +153,7 @@ public class CustomerServiceImpl
        
         try {
             
-            return productRepository.find(new CriteriaQuerySpecs().addCriterion(Restrictions.eq("id", pId)));
+            return productRepository.find(new CriteriaQuerySpecs().addPredicate(new Condition("id", pId)));
             
         } catch (RetrievalException ex) {
             getGlobalLogger()

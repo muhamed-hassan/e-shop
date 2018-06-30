@@ -1,10 +1,10 @@
-package cairoshop.service;
+package cairoshop.services;
 
 import cairoshop.entities.*;
 import cairoshop.repositories.exceptions.RetrievalException;
 import cairoshop.repositories.interfaces.*;
-import cairoshop.service.helpers.CommonQuerySpecs;
-import cairoshop.service.interfaces.CommonRetrieval;
+import cairoshop.services.helpers.CommonQuerySpecs;
+import cairoshop.services.interfaces.CommonRetrieval;
 import java.util.List;
 import org.apache.logging.log4j.Level;
 

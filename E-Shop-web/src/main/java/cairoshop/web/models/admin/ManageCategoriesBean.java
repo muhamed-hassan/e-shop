@@ -3,7 +3,7 @@ package cairoshop.web.models.admin;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.navigation.AdminNavigation;
 import cairoshop.entities.*;
-import cairoshop.service.interfaces.AdminService;
+import cairoshop.services.interfaces.AdminService;
 import cairoshop.utils.*;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
 import java.io.*;

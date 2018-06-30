@@ -1,4 +1,4 @@
-package cairoshop.repositories;
+package cairoshop.repositories.interfaces;
 
 import cairoshop.repositories.exceptions.*;
 import cairoshop.repositories.specs.CriteriaQuerySpecs;

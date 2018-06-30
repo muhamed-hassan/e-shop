@@ -1,5 +1,6 @@
 package cairoshop.repositories;
 
+import cairoshop.repositories.interfaces.*;
 import cairoshop.configs.HibernateConfigurator;
 import cairoshop.helpers.msgs.RepositoryMessage;
 import cairoshop.repositories.exceptions.*;
@@ -7,9 +8,11 @@ import cairoshop.repositories.specs.CriteriaQuerySpecs;
 import com.demo.GlobalLogger;
 import java.util.List;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.*;
+import javax.persistence.criteria.Root;
 import org.apache.logging.log4j.Level;
 import org.hibernate.*;
-import org.hibernate.criterion.Projections;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -142,13 +145,18 @@ public abstract class BaseRepository<T>
     public T find(CriteriaQuerySpecs querySpecs)
             throws RetrievalException {
         
+        EntityManager entityManager = null;
         T entity = null;
         try (Session session = hibernateConfigurator.getSessionFactory().openSession()) {
 
-            Criteria criteria = session.createCriteria(this.entity);
-            entity = (T) querySpecs
-                    .build(criteria)
-                    .uniqueResult();
+            entityManager = session.getEntityManagerFactory().createEntityManager();
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.entity);			
+            Root<T> root = criteriaQuery.from(this.entity);			
+            
+            entity = entityManager
+                        .createQuery(criteriaQuery.where(querySpecs.build(criteriaBuilder, root)))
+                        .getSingleResult();
 
         } catch (Exception ex) {
             getGlobalLogger()
@@ -159,7 +167,11 @@ public abstract class BaseRepository<T>
                             ex
                     );
             throw new RetrievalException(RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, ex);
-        } 
+        } finally {
+            if( entityManager != null ) {
+                entityManager.close();
+            }
+        }
 
         return entity;
     }
@@ -168,14 +180,19 @@ public abstract class BaseRepository<T>
     public List<T> findAll(CriteriaQuerySpecs querySpecs)
             throws RetrievalException {
         
+        EntityManager entityManager = null;
         List<T> data = null;
         try (Session session = hibernateConfigurator.getSessionFactory().openSession()) {
 
-            Criteria criteria = session.createCriteria(entity);
-            data = querySpecs
-                    .build(criteria)
-                    .list();
-
+            entityManager = session.getEntityManagerFactory().createEntityManager();
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.entity);			
+            Root<T> root = criteriaQuery.from(this.entity);
+                                 
+            data = entityManager
+                    .createQuery(criteriaQuery.where(querySpecs.build(criteriaBuilder, root)))
+                    .getResultList();
+                                 
         } catch (Exception ex) {
             getGlobalLogger()
                     .doLogging(
@@ -185,7 +202,11 @@ public abstract class BaseRepository<T>
                             ex
                     );
             throw new RetrievalException(RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, ex);
-        } 
+        } finally {
+            if( entityManager != null ) {
+                entityManager.close();
+            }
+        }
 
         return data;
     }
@@ -194,15 +215,20 @@ public abstract class BaseRepository<T>
     public List<T> findAll(CriteriaQuerySpecs querySpecs, int startPosition)
             throws RetrievalException {
         
+        EntityManager entityManager = null;
         List<T> data = null;
         try (Session session = hibernateConfigurator.getSessionFactory().openSession()) {
 
-            Criteria criteria = session.createCriteria(entity);
-            data = querySpecs
-                    .build(criteria)
+            entityManager = session.getEntityManagerFactory().createEntityManager();
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.entity);			
+            Root<T> root = criteriaQuery.from(this.entity);
+                                 
+            data = entityManager
+                    .createQuery(criteriaQuery.where(querySpecs.build(criteriaBuilder, root)))
                     .setFirstResult(startPosition)
                     .setMaxResults(5)
-                    .list();
+                    .getResultList();
 
         } catch (Exception ex) {
             getGlobalLogger()
@@ -213,7 +239,11 @@ public abstract class BaseRepository<T>
                             ex
                     );
             throw new RetrievalException(RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, ex);
-        } 
+        } finally {
+            if( entityManager != null ) {
+                entityManager.close();
+            }
+        }
 
         return data;
     }
@@ -222,15 +252,18 @@ public abstract class BaseRepository<T>
     public int getCount(CriteriaQuerySpecs querySpecs) 
             throws RetrievalException {
         
+        EntityManager entityManager = null;
         Integer count = null;
         try (Session session = hibernateConfigurator.getSessionFactory().openSession()) {
-            
-            Criteria criteria = session.createCriteria(entity);
-            count = ((Long) querySpecs
-                        .build(criteria)
-                        .setProjection(Projections.rowCount())
-                        .uniqueResult())
-                    .intValue();
+
+            entityManager = session.getEntityManagerFactory().createEntityManager();
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);			
+            Root<T> root = criteriaQuery.from(entity);
+            count = entityManager
+                        .createQuery(criteriaQuery.select(criteriaBuilder.count(root)).where(querySpecs.build(criteriaBuilder, root)))
+                        .getSingleResult()
+                        .intValue();
             
         } catch (Exception ex) {
             getGlobalLogger()
@@ -241,7 +274,11 @@ public abstract class BaseRepository<T>
                             ex
                     );
             throw new RetrievalException(RepositoryMessage.AN_ERROR_OCCURED_DURING_COMPUTING_ENTITY_COUNT, ex);
-        } 
+        } finally {
+            if( entityManager != null ) {
+                entityManager.close();
+            }
+        }
 
         return count;
     }

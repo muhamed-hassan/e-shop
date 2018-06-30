@@ -4,7 +4,7 @@ import cairoshop.repositories.specs.SortCriteria;
 import cairoshop.dtos.ProductModel;
 import cairoshop.repositories.specs.OrderDirection;
 import cairoshop.web.models.common.navigation.CustomerNavigation;
-import cairoshop.service.interfaces.CustomerService;
+import cairoshop.services.interfaces.CustomerService;
 import cairoshop.utils.*;
 import cairoshop.web.models.common.CommonBean;
 import java.io.*;

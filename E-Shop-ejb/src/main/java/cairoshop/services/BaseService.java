@@ -1,17 +1,20 @@
-package cairoshop.repositories;
+package cairoshop.services;
 
-import cairoshop.repositories.exceptions.RetrievalException;
-import cairoshop.repositories.specs.CriteriaQuerySpecs;
-import java.util.List;
+import com.demo.GlobalLogger;
+import javax.inject.Inject;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface PagableRepository<T> {
+public abstract class BaseService {
     
-    int getCount(CriteriaQuerySpecs querySpecs) throws RetrievalException;    
-    List<T> findAll(CriteriaQuerySpecs querySpecs, int startPosition) throws RetrievalException; 
+    @Inject
+    private GlobalLogger globalLogger;
+
+    protected GlobalLogger getGlobalLogger() {
+        return globalLogger;
+    }
     
 }
