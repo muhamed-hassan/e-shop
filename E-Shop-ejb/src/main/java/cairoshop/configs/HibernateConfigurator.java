@@ -39,10 +39,9 @@ public class HibernateConfigurator {
                     .build();
 
             MetadataSources sources = new MetadataSources(standardServiceRegistry);
-            configUtil.getClasses("cairoshop.entities")
-                    .forEach(entity -> {
-                        sources.addAnnotatedClass(entity);
-                    });
+            configUtil
+                    .getClasses("cairoshop.entities")
+                    .forEach(entity -> sources.addAnnotatedClass(entity));
 
             sessionFactory = sources
                     .getMetadataBuilder()

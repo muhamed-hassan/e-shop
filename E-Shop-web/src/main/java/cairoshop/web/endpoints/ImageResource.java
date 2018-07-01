@@ -1,12 +1,15 @@
 package cairoshop.web.endpoints;
 
 import cairoshop.repositories.interfaces.ProductRepository;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import cairoshop.web.endpoints.utils.MediaType;
+import java.nio.file.*;
 import javax.annotation.ManagedBean;
 import javax.inject.*;
 import javax.servlet.ServletContext;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.*;
 
 /* ************************************************************************** 
@@ -28,7 +31,7 @@ public class ImageResource {
     @Path("/{id}")
     @Produces(
             {
-                "image/jpg", "image/jpeg", "image/png"
+                MediaType.IMAGE_JPEG, MediaType.IMAGE_JPG, MediaType.IMAGE_PNG
             })
     public Response getImage(@PathParam("id") String id) {
 
