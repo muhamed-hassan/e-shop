@@ -1,7 +1,9 @@
 package cairoshop.services.interfaces;
 
-import cairoshop.dtos.ProductModel;
-import cairoshop.entities.*;
+import cairoshop.entities.Category;
+import cairoshop.entities.Product;
+import cairoshop.entities.User;
+import cairoshop.entities.Vendor;
 import java.util.List;
 
 /* ************************************************************************** 
@@ -9,23 +11,23 @@ import java.util.List;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface AdminService 
-        extends CommonRetrieval {
+public interface AdminService extends CommonRetrieval {
     
     boolean addCategory(Category category);
     boolean editCategory(Category category);
-    boolean deleteCategory(Category category);
+    boolean deleteCategory(int categoryId);
+    
     boolean addVendor(Vendor vendor);
     boolean editVendor(Vendor vendor);
-    boolean deleteVendor(Vendor vendor);
-    List<Vendor> viewVendors(int startPosition);
+    boolean deleteVendor(int vendorId);
+    
     boolean changeUserState(User user);
-    List<User> viewCustomers(int startPosition);
-    int getCustomersCount();
+    List<User> getCustomers(int startPosition);
+    int getCustomersCount();    
+    
     boolean addProduct(Product product);
     boolean editProduct(Product product);
     boolean deleteProduct(int pId);
-    List<ProductModel> viewProducts(int startPosition);
-    Product getProduct(int pId);
+    List<Product> getProducts(int startPosition);    
     
 }

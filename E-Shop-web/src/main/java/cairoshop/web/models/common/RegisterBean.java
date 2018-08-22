@@ -1,14 +1,18 @@
 package cairoshop.web.models.common;
 
-import cairoshop.entities.*;
+import cairoshop.entities.ContactDetails;
+import cairoshop.entities.Customer;
+import cairoshop.entities.User;
 import cairoshop.services.interfaces.UserService;
-import cairoshop.utils.*;
-import java.util.*;
+import cairoshop.utils.PasswordEncryptor;
+import cairoshop.utils.SharedContent;
+import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.ejb.*;
-import javax.faces.application.*;
-import javax.faces.bean.*;
-import javax.faces.context.*;
+import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 /* ************************************************************************** 

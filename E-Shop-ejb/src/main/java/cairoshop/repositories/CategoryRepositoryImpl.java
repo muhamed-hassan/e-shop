@@ -10,9 +10,7 @@ import javax.ejb.Stateless;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Stateless
-public class CategoryRepositoryImpl 
-        extends BaseRepository<Category> 
-        implements CategoryRepository {
+public class CategoryRepositoryImpl extends BaseRepository<Category> implements CategoryRepository {
     
     public CategoryRepositoryImpl() {
         super(Category.class );

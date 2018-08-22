@@ -1,16 +1,18 @@
 package cairoshop.web.models.customer;
 
+import cairoshop.entities.Category;
 import cairoshop.web.models.common.navigation.CustomerNavigation;
-import cairoshop.entities.*;
 import cairoshop.services.interfaces.CustomerService;
-import cairoshop.utils.*;
+import cairoshop.utils.CustomerContent;
+import cairoshop.utils.CustomerMessages;
 import cairoshop.web.models.common.CommonBean;
-import java.io.*;
-import java.util.*;
-import javax.ejb.*;
-import javax.faces.bean.*;
-import javax.faces.event.*;
 import cairoshop.web.models.common.pagination.PaginationControlsWithEvent;
+import java.io.Serializable;
+import java.util.List;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.event.ActionEvent;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -44,50 +46,40 @@ public class ListCategoriesBean
     // =========================================================================
     @Override
     public void next() {
-        categories = customerService.viewCategories(getPaginator().getCursor() + 5);
-        getPaginator().setCursor(getPaginator().getCursor() + 5);
-        getPaginator().setChunkSize(categories.size());
+        adjustPaginationControls(getPaginator().getCursor() + 5);
     }
 
     @Override
     public void previous() {
-        categories = customerService.viewCategories(getPaginator().getCursor() - 5);
-        getPaginator().setCursor(getPaginator().getCursor() - 5);
-        getPaginator().setChunkSize(categories.size());
+        adjustPaginationControls(getPaginator().getCursor() - 5);
     }
 
     @Override
     public void first() {
-        getPaginator().setCursor(0);
-        categories = customerService.viewCategories(getPaginator().getCursor());
-        getPaginator().setChunkSize(categories.size());
+        adjustPaginationControls(0);
     }
 
     @Override
     public void last() {
-        Integer dataSize = customerService.getCategoriesCount();
-        Integer chunkSize = getPaginator().getChunkSize();
-
-        if ((dataSize % chunkSize) == 0) {
-            getPaginator().setCursor(dataSize - chunkSize);
-        } else {
-            getPaginator().setCursor(dataSize - (dataSize % chunkSize));
-        }
-
-        categories = customerService.viewCategories(getPaginator().getCursor());
-        getPaginator().setChunkSize(categories.size());
+        int dataSize = customerService.getCategoriesCount();
+        int chunkSize = getPaginator().getChunkSize();
+        
+        adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator(ActionEvent event) {
-        Integer count = customerService.getCategoriesCount();
-
-        getPaginator().setDataSize(count);
-        getPaginator().setCursor(0);
-        categories = customerService.viewCategories(getPaginator().getCursor());
-        getPaginator().setChunkSize(categories.size());
+        getPaginator().setDataSize(customerService.getCategoriesCount());
+        
+        adjustPaginationControls(0);
     }
 
+    private void adjustPaginationControls(int cursor) {
+        categories = customerService.getCategories(cursor);
+        getPaginator().setCursor(cursor);
+        getPaginator().setChunkSize(categories.size());
+    }
+    
     // =========================================================================
     // =======> Navigation
     // =========================================================================

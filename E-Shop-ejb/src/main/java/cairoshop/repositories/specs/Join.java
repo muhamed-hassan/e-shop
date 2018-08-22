@@ -5,9 +5,16 @@ package cairoshop.repositories.specs;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public final class OrderDirection {
+public final class Join {
 
-    public final static String ASC = "asc";
-    public final static String DESC = "desc";
-            
+    private String joinAttribute;
+
+    public Join(String joinAttribute) {
+        this.joinAttribute = joinAttribute;
+    }
+
+    public String getJoinAttribute() {
+        return joinAttribute;
+    }
+
 }

@@ -1,6 +1,6 @@
 package cairoshop.entities;
 
-import java.io.*;
+import java.io.Serializable;
 import javax.persistence.Embeddable;
 
 /* ************************************************************************** 

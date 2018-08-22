@@ -5,8 +5,7 @@ package cairoshop.repositories.exceptions;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public class DeletionException 
-        extends Exception {
+public final class DeletionException extends Exception {
     
     public DeletionException() {
         super(null, null);

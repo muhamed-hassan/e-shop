@@ -1,16 +1,24 @@
 package cairoshop.services;
 
-import cairoshop.dtos.ProductModel;
-import cairoshop.entities.*;
-import cairoshop.repositories.exceptions.*;
-import cairoshop.repositories.interfaces.*;
-import cairoshop.repositories.specs.*;
-import cairoshop.services.helpers.ProductModelFields;
+import cairoshop.entities.Category;
+import cairoshop.entities.Customer;
+import cairoshop.entities.Product;
+import cairoshop.entities.Vendor;
+import cairoshop.repositories.exceptions.ModificationException;
+import cairoshop.repositories.exceptions.RetrievalException;
+import cairoshop.repositories.interfaces.CategoryRepository;
+import cairoshop.repositories.interfaces.ProductRepository;
+import cairoshop.repositories.interfaces.UserRepository;
+import cairoshop.repositories.interfaces.VendorRepository;
+import cairoshop.repositories.specs.Condition;
+import cairoshop.repositories.specs.ConditionConnector;
+import cairoshop.repositories.specs.Join;
+import cairoshop.repositories.specs.QuerySpecs;
 import cairoshop.services.interfaces.CustomerService;
-import java.util.*;
+import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.ejb.*;
-import javax.inject.*;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 
@@ -19,9 +27,7 @@ import org.apache.logging.log4j.Level;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Stateless
-public class CustomerServiceImpl
-        extends CommonRetrievalImpl
-        implements CustomerService {
+public class CustomerServiceImpl extends CommonRetrievalImpl implements CustomerService {
 
     @EJB
     private UserRepository userRepository;
@@ -35,45 +41,34 @@ public class CustomerServiceImpl
     @EJB
     private ProductRepository productRepository;
 
-    @Inject
-    private ProductModelFields productModelFields;
-
     @PostConstruct
     public void injectReposRefs() {
         setRepos(categoryRepository, vendorRepository, productRepository);
     }
 
     @Override
-    public List<ProductModel> viewProductsIn(Object productClassification, int startPosition) {
-        StringBuilder productClassificationCriterion = new StringBuilder();
+    public List<Product> getProductsIn(Object productClassification, int startPosition) {
 
+        Condition condition = null;
         if (productClassification instanceof Vendor) {
-            productClassificationCriterion.append("VENDOR=").append(((Vendor) productClassification).getId());
+            condition = new Condition("vendor.id", ConditionConnector.EQUAL,((Vendor) productClassification).getId());
         } else if (productClassification instanceof Category) {
-            productClassificationCriterion.append("CATEGORY=").append(((Category) productClassification).getId());
+            condition = new Condition("category.id", ConditionConnector.EQUAL,((Category) productClassification).getId());
         } 
-        
-        List<String> criteria = new ArrayList<String>() {
-            {
-                add("NOT_DELETED=1");
-                add("AND");
-                add(productClassificationCriterion.toString());
-            }
-        };
-        TableMetadata tableMetadata = new TableMetadata("PRODUCT", productModelFields.getCommonFields());
-        NativeQuerySpecs nativeQuerySpecs = new NativeQuerySpecs(tableMetadata)
-                .startFrom(startPosition)
-                .addCriteria(criteria);
 
         try {
             
-            return productRepository.findAll(nativeQuerySpecs);
+            return productRepository.findAll(
+                    new QuerySpecs()
+                        .addPredicate(condition)
+                        .addPredicate(new Condition("notDeleted", ConditionConnector.EQUAL,true))
+                    , startPosition);
             
         } catch (RetrievalException ex) {
             getGlobalLogger()
                     .doLogging(
                             Level.ERROR,
-                            "Caller::viewProductsIn(Object productClassification, int startPosition)",
+                            "Caller::getProductsIn(Object productClassification, int startPosition)",
                             getClass(),
                             ex
                     );
@@ -83,24 +78,15 @@ public class CustomerServiceImpl
     }
 
     @Override
-    public List<ProductModel> sortProducts(String orderBy, String orderDirection, int startPosition) {
-        
-        List<String> criteria = new ArrayList<String>() {
-            {
-                add("NOT_DELETED=1");
-            }
-        };
-        TableMetadata tableMetadata = new TableMetadata("PRODUCT", productModelFields.getCommonFields());
-        NativeQuerySpecs nativeQuerySpecs = new NativeQuerySpecs(tableMetadata)
-                .startFrom(startPosition)
-                .addCriteria(criteria);
-
-        nativeQuerySpecs.setSortCriteria(orderBy, orderDirection);
+    public List<Product> sortProducts(String orderBy, String orderDirection, int startPosition) {
 
         try {
             
-            return productRepository.findAll(nativeQuerySpecs);
-            
+            return productRepository.findAll(
+                    new QuerySpecs(orderBy, orderDirection)
+                        .addPredicate(new Condition("notDeleted", ConditionConnector.EQUAL,true))
+                    , startPosition);
+               
         } catch (RetrievalException ex) {
             getGlobalLogger()
                     .doLogging(
@@ -115,57 +101,27 @@ public class CustomerServiceImpl
     }
 
     @Override
-    public List<ProductModel> findProductByName(String pName) {
-
-        StringBuilder productNameCriterion = new StringBuilder()
-                .append("NAME LIKE ")
-                .append("'%").append(pName).append("%'");
-        List<String> criteria = new ArrayList<String>() {
-            {
-                add("NOT_DELETED=1");
-                add("AND");
-                add(productNameCriterion.toString());
-            }
-        };
-        TableMetadata tableMetadata = new TableMetadata("PRODUCT", productModelFields.getCommonFields());
-        NativeQuerySpecs nativeQuerySpecs = new NativeQuerySpecs(tableMetadata)
-                .addCriteria(criteria);
+    public List<Product> getProductsByName(String pName, int startPosition) {
 
         try {
             
-            return productRepository.findAll(nativeQuerySpecs);
-            
+            return productRepository.findAll(
+                    new QuerySpecs()
+                        .addPredicate(new Condition("name", ConditionConnector.LIKE, pName))
+                        .addPredicate(new Condition("notDeleted", ConditionConnector.EQUAL,true))
+                    , startPosition);
+
         } catch (RetrievalException ex) {
             getGlobalLogger()
                     .doLogging(
                             Level.ERROR,
-                            "Caller::findProductByName(String pName)",
+                            "Caller::getProductsByName(String pName)",
                             getClass(),
                             ex
                     );
             return null;
         }
         
-    }
-
-    @Override
-    public Product getProductDetails(int pId) {
-       
-        try {
-            
-            return productRepository.find(new CriteriaQuerySpecs().addPredicate(new Condition("id", pId)));
-            
-        } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getProductDetails(int pId)",
-                            getClass(),
-                            ex
-                    );
-            return null;
-        }
-         
     }
 
     @Override
@@ -190,39 +146,17 @@ public class CustomerServiceImpl
     }
 
     @Override
-    public List<ProductModel> viewMyFavoriteList(int custId, int startPosition) {
-        
-        TableMetadata productTable = new TableMetadata("PRODUCT", productModelFields.getCommonFields(), "ID");
-        TableMetadata customerFavProductTable = new TableMetadata("CUSTOMER_FAV_PRODUCT", null, "PRODUCT");
-
-        List<TableMetadata> tables = new ArrayList<TableMetadata>() {
-            {
-                add(productTable);
-                add(customerFavProductTable);
-            }
-        };
-
-        StringBuilder criterion = new StringBuilder()
-                .append("CUSTOMER_FAV_PRODUCT.CUSTOMER").append("=").append(custId);
-        List<String> criteria = new ArrayList<String>() {
-            {
-                add(criterion.toString());
-            }
-        };
-
-        NativeQuerySpecs nativeQuerySpecs = new NativeQuerySpecs(tables)
-                .addCriteria(criteria)
-                .startFrom(startPosition);
+    public List<Product> getMyFavoriteList(int custId, int startPosition) {
 
         try {
             
-            return productRepository.findAll(nativeQuerySpecs);
-            
+            return userRepository.findAll(custId, startPosition);
+             
         } catch (RetrievalException ex) { 
             getGlobalLogger()
                     .doLogging(
                             Level.ERROR,
-                            "Caller::viewMyFavoriteList(int custId, int startPosition)",
+                            "Caller::getMyFavoriteList(int custId, int startPosition)",
                             getClass(),
                             ex
                     );
@@ -234,33 +168,11 @@ public class CustomerServiceImpl
     @Override
     public int getFavoriteProductsCount(int custId) {
         
-        StringBuilder havingClause = new StringBuilder()
-                .append("CUSTOMER").append("=").append(custId);
-
-        List<String> fields = new ArrayList<String>() {
-            {
-                add("COUNT(*)");
-                add("CUSTOMER");
-            }
-        };
-        List<String> groupBy = new ArrayList<String>() {
-            {
-                add("CUSTOMER");
-            }
-        }; 
-        List<String> having = new ArrayList<String>() {
-            {
-                add(havingClause.toString());
-            }
-        }; 
-        TableMetadata tableMetadata = new TableMetadata("CUSTOMER_FAV_PRODUCT", fields);
-        NativeQuerySpecs nativeQuerySpecs = new NativeQuerySpecs(tableMetadata)
-                .groupBy(groupBy)
-                .having(having);
-        
         try {
             
-            return productRepository.getCount(nativeQuerySpecs);
+            return userRepository.getCount(
+                    new QuerySpecs(new Join("favoriteProducts"))
+                        .addPredicate(new Condition("id", ConditionConnector.EQUAL,custId)));
             
         } catch (RetrievalException ex) {
             getGlobalLogger()
@@ -275,32 +187,11 @@ public class CustomerServiceImpl
     }
 
     @Override
-    public List<ProductModel> getLikedProducts(int custId) {
+    public List<Integer> getLikedProducts(int custId) {
 
-        TableMetadata productTable = new TableMetadata("PRODUCT", productModelFields.getCommonFields(), "ID");
-        TableMetadata customerFavProductTable = new TableMetadata("CUSTOMER_FAV_PRODUCT", null, "PRODUCT");
-
-        List<TableMetadata> tables = new ArrayList<TableMetadata>() {
-            {
-                add(productTable);
-                add(customerFavProductTable);
-            }
-        };
-
-        StringBuilder criterion = new StringBuilder()
-                .append("CUSTOMER_FAV_PRODUCT.CUSTOMER").append("=").append(custId);
-        List<String> criteria = new ArrayList<String>() {
-            {
-                add(criterion.toString());
-            }
-        };
-
-        NativeQuerySpecs nativeQuerySpecs = new NativeQuerySpecs(tables)
-                .addCriteria(criteria);
-
-        try {
+        try {                   
             
-            return productRepository.findAll(nativeQuerySpecs);
+            return userRepository.findAll(custId);
             
         } catch (RetrievalException ex) {
             getGlobalLogger()
@@ -316,35 +207,23 @@ public class CustomerServiceImpl
 
     @Override
     public int getProductsCount(Object productClassification) {
-
-        StringBuilder productClassificationCriterion = new StringBuilder();
-
+        
+        Condition condition = null;
         if (productClassification instanceof Vendor) {
-            productClassificationCriterion.append("VENDOR=").append(((Vendor) productClassification).getId());
+            condition = new Condition("vendor.id", ConditionConnector.EQUAL,((Vendor) productClassification).getId());
         } else if (productClassification instanceof Category) {
-            productClassificationCriterion.append("CATEGORY=").append(((Category) productClassification).getId());
+            condition = new Condition("category.id", ConditionConnector.EQUAL,((Category) productClassification).getId());
+        } else if (productClassification instanceof String) {
+            condition = new Condition("name", ConditionConnector.LIKE,(String) productClassification);
         }
-
-        List<String> fields = new ArrayList<String>() {
-            {
-                add("COUNT(*)");
-            }
-        };
-        List<String> criteria = new ArrayList<String>() {
-            {
-                add("NOT_DELETED=1");
-                add("AND");
-                add(productClassificationCriterion.toString());
-            }
-        };
-        TableMetadata tableMetadata = new TableMetadata("PRODUCT", fields);
-        NativeQuerySpecs nativeQuerySpecs = new NativeQuerySpecs(tableMetadata)
-                .addCriteria(criteria);
 
         try {
             
-            return productRepository.getCount(nativeQuerySpecs);
-            
+            return productRepository.getCount(
+                    new QuerySpecs()
+                        .addPredicate(condition)
+                        .addPredicate(new Condition("notDeleted", ConditionConnector.EQUAL,true)));
+                        
         } catch (RetrievalException ex) {
             getGlobalLogger()
                     .doLogging(
@@ -355,7 +234,6 @@ public class CustomerServiceImpl
                     );
             return -1;
         }
-
     }
 
 }

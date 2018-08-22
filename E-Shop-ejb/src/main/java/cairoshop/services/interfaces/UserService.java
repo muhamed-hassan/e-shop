@@ -1,6 +1,7 @@
 package cairoshop.services.interfaces;
 
-import cairoshop.entities.*;
+import cairoshop.entities.Customer;
+import cairoshop.entities.User;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *

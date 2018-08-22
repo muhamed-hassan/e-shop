@@ -1,15 +1,20 @@
 package cairoshop.web.models.admin;
 
+import cairoshop.entities.Vendor;
 import cairoshop.web.models.common.navigation.AdminNavigation;
-import cairoshop.entities.*;
 import cairoshop.services.interfaces.AdminService;
-import cairoshop.utils.*;
+import cairoshop.utils.AdminActions;
+import cairoshop.utils.AdminContent;
+import cairoshop.utils.AdminMessages;
+import cairoshop.utils.Messages;
+import cairoshop.utils.Scope;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
-import java.io.*;
-import java.util.*;
-import javax.ejb.*;
-import javax.faces.bean.*;
+import java.io.Serializable;
+import java.util.List;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -18,8 +23,8 @@ import javax.faces.bean.*;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class ManageVendorsBean 
-        extends CommonBean 
+public class ManageVendorsBean
+        extends CommonBean
         implements Serializable, AdminNavigation, PlainPaginationControls {
 
     @EJB
@@ -27,7 +32,7 @@ public class ManageVendorsBean
 
     private Vendor vendor;
     private List<Vendor> vendors;
-    
+
     // =========================================================================
     // =======> Add vendor
     // =========================================================================
@@ -36,67 +41,47 @@ public class ManageVendorsBean
     }
 
     public void addVendor() {
-        int status = (adminService.addVendor(vendor) ? 1 : -1);
+        int status = adminService.addVendor(vendor) ? 1 : -1;
 
-        String msg = ((status == 1) ? 
-                vendor.getName() + Messages.ADDED_SUCCESSFULLY : 
-                Messages.SOMETHING_WENT_WRONG);
-        
+        String msg = ((status == 1)
+                ? vendor.getName() + Messages.ADDED_SUCCESSFULLY
+                : Messages.SOMETHING_WENT_WRONG);
+
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
 
     // =========================================================================
     // =======> Edit vendor
     // =========================================================================
-    public void onEdit(Vendor v) {
-        Integer toEditId = v.getId();
-        v.setOldValue(v.getName());
-
-        for (Vendor tmp : vendors) {
-            if (tmp.getId() == toEditId) {
-                v.setCanEdit(true);
-                break;
-            }
-        }
-        
+    public void onEdit(Vendor vendorToBeEdited) {
+        vendorToBeEdited.setUnderEdit(true);
     }
 
-    public void editVendor(Vendor v) {
-        Integer toEditId = v.getId();
+    public void editVendor(Vendor vendorToBeEdited) {
+        vendorToBeEdited.setUnderEdit(false);
+        int status = (adminService.editVendor(vendorToBeEdited) ? 1 : -1);
 
-        for (Vendor tmp : vendors) {
-            if (tmp.getId() == toEditId) {
-                v.setCanEdit(false); // for toggling purposes between input and output (text box)
-                break;
-            }
-        }
+        String msg = ((status == 1)
+                ? vendorToBeEdited.getName() + Messages.EDITED_SUCCESSFULLY
+                : Messages.SOMETHING_WENT_WRONG);
 
-        if (!v.getOldValue().equals(v.getName())) {
-            int status = (adminService.editVendor(v) ? 1 : -1);
-
-            String msg = ((status == 1) ? 
-                    v.getName() + Messages.EDITED_SUCCESSFULLY : 
-                    Messages.SOMETHING_WENT_WRONG);
-            
-            getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
-        }
+        getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
 
     // =========================================================================
     // =======> Delete vendor
     // =========================================================================
-    public void deleteVendor(Vendor v) {
-        String currentVendorName = v.getName();
-        int status = (adminService.deleteVendor(v) ? 1 : -1);
+    public void deleteVendor(Vendor vendorToBeDeleted) {
+        int status = adminService.deleteVendor(vendorToBeDeleted.getId()) ? 1 : -1;
 
-        String msg = ((status == 1) ? 
-                currentVendorName + Messages.REMOVED_SUCCESSFULLY : 
-                Messages.SOMETHING_WENT_WRONG);
-        
+        String msg = (status == 1)
+                ? vendorToBeDeleted.getName() + Messages.REMOVED_SUCCESSFULLY
+                : Messages.SOMETHING_WENT_WRONG;
+
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
 
         getPaginator().setDataSize(adminService.getVendorsCount());
-        vendors = adminService.viewVendors(getPaginator().getCursor());
+        vendors = adminService.getVendors(getPaginator().getCursor());
         if (vendors.isEmpty()) {
             previous();
         }
@@ -107,6 +92,10 @@ public class ManageVendorsBean
     // =========================================================================
     // =======> setters and getters
     // =========================================================================
+    public List<Vendor> getVendors() {
+        return vendors;
+    }
+
     public Vendor getVendor() {
         return vendor;
     }
@@ -115,58 +104,42 @@ public class ManageVendorsBean
         this.vendor = vendor;
     }
 
-    public List<Vendor> getVendors() {
-        return vendors;
-    }
-
-    public void setVendors(List<Vendor> vendors) {
-        this.vendors = vendors;
-    }
-
     // =========================================================================
     // =======> Pagination
     // =========================================================================
     @Override
     public void next() {
-        vendors = adminService.viewVendors(getPaginator().getCursor() + 5);
-        getPaginator().setCursor(getPaginator().getCursor() + 5);
-        getPaginator().setChunkSize(vendors.size());
+        adjustPaginationControls(getPaginator().getCursor() + 5);
     }
 
     @Override
     public void previous() {
-        vendors = adminService.viewVendors(getPaginator().getCursor() - 5);
-        getPaginator().setCursor(getPaginator().getCursor() - 5);
-        getPaginator().setChunkSize(vendors.size());
+        adjustPaginationControls(getPaginator().getCursor() - 5);
     }
 
     @Override
     public void first() {
-        getPaginator().setCursor(0);
-        vendors = adminService.viewVendors(getPaginator().getCursor());
-        getPaginator().setChunkSize(vendors.size());
+        adjustPaginationControls(0);
     }
 
     @Override
     public void last() {
-        Integer dataSize = adminService.getVendorsCount();
-        Integer chunkSize = getPaginator().getChunkSize();
+        int dataSize = adminService.getVendorsCount();
+        int chunkSize = getPaginator().getChunkSize();
 
-        if ((dataSize % chunkSize) == 0) {
-            getPaginator().setCursor(dataSize - chunkSize);
-        } else {
-            getPaginator().setCursor(dataSize - (dataSize % chunkSize));
-        }
-
-        vendors = adminService.viewVendors(getPaginator().getCursor());
-        getPaginator().setChunkSize(vendors.size());
+        adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
         getPaginator().setDataSize(adminService.getVendorsCount());
-        getPaginator().setCursor(0);
-        vendors = adminService.viewVendors(getPaginator().getCursor());
+
+        adjustPaginationControls(0);
+    }
+
+    private void adjustPaginationControls(int cursor) {
+        vendors = adminService.getVendors(cursor);
+        getPaginator().setCursor(cursor);
         getPaginator().setChunkSize(vendors.size());
     }
 

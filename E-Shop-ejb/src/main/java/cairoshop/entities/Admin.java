@@ -1,6 +1,7 @@
 package cairoshop.entities;
 
-import javax.persistence.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -9,7 +10,6 @@ import javax.persistence.*;
  * ************************************************************************ */
 @Entity
 @DiscriminatorValue(value = "2")
-public class Admin 
-        extends User {
+public class Admin extends User {
 
 }

@@ -36,7 +36,7 @@
                     Action
                 </f:facet> <!-- pass product ID to goToEdit() -->
                 <h:commandButton value="Edit" class="btn-link"                                                                
-                                 action="#{manageProductsBean.loadTarget(product.id)}"
+                                 action="#{manageProductsBean.loadTarget(product)}"
                                  actionListener="#{manageProductsBean.goToEdit()}"/>                                                        
             </h:column>                
         </h:dataTable>

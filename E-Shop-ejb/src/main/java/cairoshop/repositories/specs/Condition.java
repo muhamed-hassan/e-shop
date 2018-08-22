@@ -8,12 +8,14 @@ import java.util.Objects;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public final class Condition {
-    
-    private String field;
-    private Object value;
 
-    public Condition(String field, Object value) {
+    private final String field;
+    private final String operator;
+    private final Object value;
+
+    public Condition(String field, String operator, Object value) {
         this.field = field;
+        this.operator = operator;
         this.value = value;
     }
 
@@ -25,11 +27,16 @@ public final class Condition {
         return value;
     }
 
+    public String getOperator() {
+        return operator;
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 53 * hash + Objects.hashCode(this.field);
-        hash = 53 * hash + Objects.hashCode(this.value);
+        hash = 71 * hash + Objects.hashCode(this.field);
+        hash = 71 * hash + Objects.hashCode(this.operator);
+        hash = 71 * hash + Objects.hashCode(this.value);
         return hash;
     }
 
@@ -45,6 +52,9 @@ public final class Condition {
             return false;
         }
         final Condition other = (Condition) obj;
+        if (!Objects.equals(this.operator, other.operator)) {
+            return false;
+        }
         if (!Objects.equals(this.field, other.field)) {
             return false;
         }
@@ -52,6 +62,6 @@ public final class Condition {
             return false;
         }
         return true;
-    }    
-    
+    }
+
 }

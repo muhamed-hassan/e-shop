@@ -1,16 +1,26 @@
 package cairoshop.services;
 
-import cairoshop.dtos.ProductModel;
-import cairoshop.entities.*;
-import cairoshop.repositories.exceptions.*;
-import cairoshop.repositories.interfaces.*;
-import cairoshop.repositories.specs.*;
-import cairoshop.services.helpers.*;
+import cairoshop.entities.Category;
+import cairoshop.entities.Product;
+import cairoshop.entities.User;
+import cairoshop.entities.Vendor;
+import cairoshop.repositories.exceptions.DeletionException;
+import cairoshop.repositories.exceptions.InsertionException;
+import cairoshop.repositories.exceptions.ModificationException;
+import cairoshop.repositories.exceptions.RetrievalException;
+import cairoshop.repositories.interfaces.CategoryRepository;
+import cairoshop.repositories.interfaces.ProductRepository;
+import cairoshop.repositories.interfaces.UserRepository;
+import cairoshop.repositories.interfaces.VendorRepository;
+import cairoshop.repositories.specs.Condition;
+import cairoshop.repositories.specs.ConditionConnector;
+import cairoshop.repositories.specs.QuerySpecs;
+import cairoshop.services.helpers.CommonQuerySpecs;
 import cairoshop.services.interfaces.AdminService;
-import java.util.*;
+import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.ejb.*;
-import javax.inject.*;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 
@@ -19,9 +29,7 @@ import org.apache.logging.log4j.Level;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Stateless
-public class AdminServiceImpl
-        extends CommonRetrievalImpl
-        implements AdminService {
+public class AdminServiceImpl extends CommonRetrievalImpl implements AdminService {
 
     @EJB
     private CategoryRepository categoryRepository;
@@ -35,9 +43,7 @@ public class AdminServiceImpl
     @EJB
     private ProductRepository productRepository;
 
-    @Inject
-    private ProductModelFields productModelFields;
-
+    
     @PostConstruct
     public void injectReposRefs() {
         setRepos(categoryRepository, vendorRepository, productRepository);
@@ -89,11 +95,11 @@ public class AdminServiceImpl
     }
 
     @Override
-    public boolean deleteCategory(Category category) {
+    public boolean deleteCategory(int categoryId) {
 
         try {
             
-            categoryRepository.remove(category.getId());
+            categoryRepository.remove(categoryId);
             return true;
             
         } catch (DeletionException ex) {
@@ -108,6 +114,8 @@ public class AdminServiceImpl
         }
         
     }
+    
+     
 
     // =========================================================================
     // ====== manage vendors
@@ -155,11 +163,11 @@ public class AdminServiceImpl
     }
 
     @Override
-    public boolean deleteVendor(Vendor vendor) {
+    public boolean deleteVendor(int vendorId) {
 
         try {
             
-            vendorRepository.remove(vendor.getId());
+            vendorRepository.remove(vendorId);
             return true;
             
         } catch (DeletionException ex) {
@@ -174,26 +182,6 @@ public class AdminServiceImpl
         }
 
    }
-
-    @Override
-    public List<Vendor> viewVendors(int startPosition) {
-        
-        try {
-            
-            return vendorRepository.findAll(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY, startPosition);
-            
-        } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::viewVendors(int startPosition)",
-                            getClass(),
-                            ex
-                    );
-            return null;
-        }
-        
-    }
 
     // =========================================================================
     // ====== manage users
@@ -220,17 +208,18 @@ public class AdminServiceImpl
     }
 
     @Override
-    public List<User> viewCustomers(int startPosition) {
+    public List<User> getCustomers(int startPosition) {
         
         try {
             
-            return userRepository.findAll(new CriteriaQuerySpecs().addPredicate(new Condition("role", 1)), startPosition);
+            return userRepository.findAll(
+                    new QuerySpecs().addPredicate(new Condition("role", ConditionConnector.EQUAL, 1)), startPosition);
             
         } catch (RetrievalException ex) {
             getGlobalLogger()
                     .doLogging(
                             Level.ERROR,
-                            "Caller::viewCustomers(int startPosition)",
+                            "Caller::getCustomers(int startPosition)",
                             getClass(),
                             ex
                     );
@@ -244,13 +233,14 @@ public class AdminServiceImpl
 
         try {
             
-            return userRepository.getCount(null);
+            return userRepository.getCount(
+                    new QuerySpecs().addPredicate(new Condition("role", ConditionConnector.EQUAL,1)));
             
         } catch (RetrievalException ex) {
             getGlobalLogger()
                     .doLogging(
                             Level.ERROR,
-                            "Caller::getCustomersCount",
+                            "Caller::getCustomersCount()",
                             getClass(),
                             ex
                     );
@@ -280,26 +270,6 @@ public class AdminServiceImpl
             return false;
         }
         
-    }
-
-    @Override
-    public Product getProduct(int pId) {
-        
-        try {
-            
-            return productRepository.find(new CriteriaQuerySpecs().addPredicate(new Condition("id", pId)));
-            
-        } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getProduct(int pId)",
-                            getClass(),
-                            ex
-                    );
-            return null;
-        }
-
     }
 
     @Override
@@ -345,33 +315,23 @@ public class AdminServiceImpl
     }
 
     @Override
-    public List<ProductModel> viewProducts(int startPosition) {
-
-        List<String> criteria = new ArrayList<String>() {
-            {
-                add("NOT_DELETED=1");
-            }
-        };
-        TableMetadata tableMetadata = new TableMetadata("PRODUCT", productModelFields.getCommonFields());
-        NativeQuerySpecs nativeQuerySpecs = new NativeQuerySpecs(tableMetadata)
-                .startFrom(startPosition)
-                .addCriteria(criteria);
+    public List<Product> getProducts(int startPosition) {
 
         try {
             
-            return productRepository.findAll(nativeQuerySpecs);
+            return productRepository.findAll(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY, startPosition);
             
         } catch (RetrievalException ex) {
             getGlobalLogger()
                     .doLogging(
                             Level.ERROR,
-                            "Caller::viewProducts(int startPosition)",
+                            "Caller::getProducts(int startPosition)",
                             getClass(),
                             ex
                     );
             return null;
         }
 
-    }
+    }    
 
 }

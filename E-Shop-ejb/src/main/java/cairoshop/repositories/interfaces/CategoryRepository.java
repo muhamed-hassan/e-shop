@@ -1,6 +1,5 @@
 package cairoshop.repositories.interfaces;
 
-import cairoshop.repositories.*;
 import cairoshop.entities.Category;
 
 /* ************************************************************************** 
@@ -8,7 +7,6 @@ import cairoshop.entities.Category;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface CategoryRepository 
-        extends AbstractRepository<Category>, PagableRepository<Category> {
+public interface CategoryRepository extends AbstractRepository<Category>, PagableRepository<Category> {
 
 }

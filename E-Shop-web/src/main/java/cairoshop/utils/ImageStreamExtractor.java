@@ -1,8 +1,11 @@
 package cairoshop.utils;
 
 import com.demo.GlobalLogger;
-import java.io.*;
-import javax.inject.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 

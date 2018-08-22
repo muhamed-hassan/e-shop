@@ -7,8 +7,7 @@ import javax.faces.event.ActionEvent;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface PaginationControlsWithEvent 
-        extends BasePaginationControls {
+public interface PaginationControlsWithEvent extends BasePaginationControls {
     
     void resetPaginator(ActionEvent event);
     

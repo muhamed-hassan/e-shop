@@ -1,8 +1,15 @@
 package cairoshop.entities;
 
-import java.io.*;
-import java.util.*;
-import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -13,29 +20,33 @@ import javax.persistence.*;
 public class Vendor implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    @GeneratedValue(strategy = IDENTITY)
+    private int id;
 
     private String name;
 
     @Column(name = "not_deleted")
-    private Boolean notDeleted = true;
+    private boolean notDeleted;
 
     @OneToMany(mappedBy = "vendor")
     private List<Product> products;
 
     @Transient
-    private Boolean canEdit = false;
+    private boolean underEdit;
 
     @Transient
     private String oldValue;
 
-    public Integer getId() {
-        return Id;
+    public Vendor() {
+        notDeleted = true;
+    }
+    
+    public int getId() {
+        return id;
     }
 
-    public void setId(Integer Id) {
-        this.Id = Id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -46,11 +57,11 @@ public class Vendor implements Serializable {
         this.name = name;
     }
 
-    public Boolean getNotDeleted() {
+    public boolean getNotDeleted() {
         return notDeleted;
     }
 
-    public void setNotDeleted(Boolean notDeleted) {
+    public void setNotDeleted(boolean notDeleted) {
         this.notDeleted = notDeleted;
     }
 
@@ -62,12 +73,12 @@ public class Vendor implements Serializable {
         this.products = products;
     }
 
-    public Boolean getCanEdit() {
-        return canEdit;
+    public boolean isUnderEdit() {
+        return underEdit;
     }
 
-    public void setCanEdit(Boolean canEdit) {
-        this.canEdit = canEdit;
+    public void setUnderEdit(boolean underEdit) {
+        this.underEdit = underEdit;
     }
 
     public String getOldValue() {
@@ -80,9 +91,9 @@ public class Vendor implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 23 * hash + Objects.hashCode(this.Id);
-        hash = 23 * hash + Objects.hashCode(this.name);
+        int hash = 5;
+        hash = 73 * hash + this.id;
+        hash = 73 * hash + Objects.hashCode(this.name);
         return hash;
     }
 
@@ -98,18 +109,18 @@ public class Vendor implements Serializable {
             return false;
         }
         final Vendor other = (Vendor) obj;
-        if (!Objects.equals(this.name, other.name)) {
+        if (this.id != other.id) {
             return false;
         }
-        if (!Objects.equals(this.Id, other.Id)) {
+        if (!Objects.equals(this.name, other.name)) {
             return false;
         }
         return true;
     }
-    
+
     @Override
     public String toString() {
-        return "Vendor{" + "Id=" + Id + ", name=" + name + ", notDeleted=" + notDeleted + '}';
+        return "Vendor{" + "id=" + id + ", name=" + name + ", notDeleted=" + notDeleted + '}';
     }
 
 }

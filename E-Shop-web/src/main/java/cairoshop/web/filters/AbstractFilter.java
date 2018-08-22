@@ -1,6 +1,8 @@
 package cairoshop.web.filters;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *

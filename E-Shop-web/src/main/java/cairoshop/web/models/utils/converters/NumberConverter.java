@@ -1,8 +1,9 @@
 package cairoshop.web.models.utils.converters;
 
-import javax.faces.component.*;
-import javax.faces.context.*;
-import javax.faces.convert.*;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.FacesConverter;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *

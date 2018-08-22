@@ -1,15 +1,18 @@
 package cairoshop.web.models.customer;
 
-import cairoshop.dtos.ProductModel;
+import cairoshop.entities.Product;
 import cairoshop.web.models.common.navigation.CustomerNavigation;
 import cairoshop.services.interfaces.CustomerService;
-import cairoshop.utils.*;
+import cairoshop.utils.CustomerContent;
+import cairoshop.utils.CustomerMessages;
+import cairoshop.utils.Messages;
 import cairoshop.web.models.common.CommonBean;
-import java.io.*;
-import java.util.*;
-import javax.ejb.*;
-import javax.faces.bean.*;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
+import java.io.Serializable;
+import java.util.List;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -18,26 +21,25 @@ import cairoshop.web.models.common.pagination.PlainPaginationControls;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class FindProductBean 
-        extends CommonBean 
+public class FindProductBean
+        extends CommonBean
         implements Serializable, CustomerNavigation, PlainPaginationControls {
 
     @EJB
     private CustomerService customerService;
 
     private String keyword;
-    private List<ProductModel> queryResult;
-    private List<ProductModel> ds;
-    
+    private List<Product> queryResult;
+
     // =========================================================================
     // =======> Getters and Setters
     // =========================================================================
-    public String getKeyword() {
-        return keyword;
+    public List<Product> getQueryResult() {
+        return queryResult;
     }
 
-    public List<ProductModel> getQueryResult() {
-        return queryResult;
+    public String getKeyword() {
+        return keyword;
     }
 
     public void setKeyword(String keyword) {
@@ -49,9 +51,9 @@ public class FindProductBean
     // =========================================================================
     @Override
     public void navigate() {
-        if (ds == null || ds.isEmpty()) {
+        if (queryResult == null || queryResult.isEmpty()) {
             getContentChanger().displayNoDataFound(CustomerMessages.NO_PRODUCTS_TO_DISPLAY);
-            
+
             return;
         }
 
@@ -63,83 +65,42 @@ public class FindProductBean
     // =========================================================================
     @Override
     public void next() {
-        queryResult.clear();
-        for (int startPosition = getPaginator().getCursor() + 5, iterator = 0;
-                iterator < 5 && startPosition < ds.size();
-                startPosition++, iterator++) {
-            queryResult.add(ds.get(startPosition));
-        }
-
-        getPaginator().setCursor(getPaginator().getCursor() + 5);
-        getPaginator().setChunkSize(queryResult.size());
+        adjustPaginationControls(getPaginator().getCursor() + 5);
     }
 
     @Override
     public void previous() {
-        queryResult.clear();
-        for (int startPosition = getPaginator().getCursor() - 5, iterator = 0;
-                iterator < 5 && startPosition < ds.size();
-                startPosition++, iterator++) {
-            queryResult.add(ds.get(startPosition));
-        }
-
-        getPaginator().setCursor(getPaginator().getCursor() - 5);
-        getPaginator().setChunkSize(queryResult.size());
+        adjustPaginationControls(getPaginator().getCursor() - 5);
     }
 
     @Override
-    public void first() {
-        getPaginator().setCursor(0);
-
-        queryResult.clear();
-        for (int startPosition = getPaginator().getCursor(); startPosition < 5; startPosition++) {
-            queryResult.add(ds.get(startPosition));
-        }
-
-        getPaginator().setChunkSize(queryResult.size());
+    public void first() {        
+        adjustPaginationControls(0);
     }
 
     @Override
     public void last() {
-        Integer dataSize = ds.size();
-        Integer chunkSize = getPaginator().getChunkSize();
-
-        if ((dataSize % chunkSize) == 0) {
-            getPaginator().setCursor(dataSize - chunkSize);
-        } else {
-            getPaginator().setCursor(dataSize - (dataSize % chunkSize));
-        }
-
-        queryResult.clear();
-        for (int startPosition = getPaginator().getCursor(), iterator = 0;
-                iterator < 5 && startPosition < ds.size();
-                startPosition++, iterator++) {
-            queryResult.add(ds.get(startPosition));
-        }
-
-        getPaginator().setChunkSize(queryResult.size());
+        int dataSize = customerService.getProductsCount(keyword);
+        int chunkSize = getPaginator().getChunkSize();
+        
+        adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
-        ds = customerService.findProductByName(keyword);
-
-        getPaginator().setDataSize(ds.size());
-        getPaginator().setCursor(0);
-
-        queryResult = new ArrayList<>();
-
-        int limit = ((ds.size() > 5) ? 5 : ds.size());
-
-        for (int startPosition = getPaginator().getCursor(); startPosition < limit; startPosition++) {
-            queryResult.add(ds.get(startPosition));
-        }
-
-        getPaginator().setChunkSize(queryResult.size());
+        getPaginator().setDataSize(customerService.getProductsCount(keyword));
+        
+        adjustPaginationControls(0);
 
         if (queryResult == null || queryResult.isEmpty()) {
             getContentChanger().displayNoDataFound(Messages.NO_PRODUCTS_TO_DISPLAY);
         }
+    }
+    
+    private void adjustPaginationControls(int cursor) {
+        queryResult = customerService.getProductsByName(keyword, cursor);
+        getPaginator().setCursor(cursor);
+        getPaginator().setChunkSize(queryResult.size());
     }
 
 }

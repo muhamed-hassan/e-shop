@@ -5,8 +5,7 @@ package cairoshop.web.models.common.pagination;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface PlainPaginationControls 
-        extends BasePaginationControls {
+public interface PlainPaginationControls extends BasePaginationControls {
     
     void resetPaginator();
     

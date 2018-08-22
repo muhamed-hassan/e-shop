@@ -1,8 +1,20 @@
 package cairoshop.entities;
 
-import java.io.*;
-import java.util.*;
-import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
+import static javax.persistence.FetchType.LAZY;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import static javax.persistence.InheritanceType.SINGLE_TABLE;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -10,13 +22,13 @@ import javax.persistence.*;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "role")
 public abstract class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = IDENTITY)
+    private int id;
 
     private String name;
 
@@ -27,24 +39,24 @@ public abstract class User implements Serializable {
 
     private String password;
 
-    private Boolean active = true;
+    private boolean active;
     
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = LAZY)
     @JoinTable(
             name = "customer_fav_product",
             joinColumns = @JoinColumn(name = "customer"),
             inverseJoinColumns = @JoinColumn(name = "product")
     )
     private List<Product> favoriteProducts;
-    
+ 
     @Column(insertable=false, updatable=false)
     private int role;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -72,11 +84,11 @@ public abstract class User implements Serializable {
         this.mail = mail;
     }
 
-    public Boolean getActive() {
+    public boolean getActive() {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 
@@ -102,13 +114,13 @@ public abstract class User implements Serializable {
 
     public void setRole(int role) {
         this.role = role;
-    }
-    
+   }
+
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 23 * hash + Objects.hashCode(this.id);
-        hash = 23 * hash + Objects.hashCode(this.userName);
+        int hash = 7;
+        hash = 89 * hash + this.id;
+        hash = 89 * hash + Objects.hashCode(this.userName);
         return hash;
     }
 
@@ -124,14 +136,14 @@ public abstract class User implements Serializable {
             return false;
         }
         final User other = (User) obj;
+        if (this.id != other.id) {
+            return false;
+        }
         if (!Objects.equals(this.userName, other.userName)) {
             return false;
         }
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
         return true;
-    }
+    }  
     
     @Override
     public String toString() {

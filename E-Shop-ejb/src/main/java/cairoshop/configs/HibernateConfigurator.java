@@ -2,13 +2,16 @@ package cairoshop.configs;
 
 import cairoshop.configs.utils.ConfigUtil;
 import com.demo.GlobalLogger;
-import javax.annotation.*;
-import javax.ejb.*;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.inject.Inject;
 import org.apache.logging.log4j.Level;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.*;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *

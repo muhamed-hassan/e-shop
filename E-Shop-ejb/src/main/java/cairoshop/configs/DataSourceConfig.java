@@ -1,7 +1,8 @@
 package cairoshop.configs;
 
 import javax.annotation.sql.DataSourceDefinition;
-import javax.ejb.*;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -19,6 +20,4 @@ import javax.ejb.*;
         properties = {"res-type=javax.sql.DataSource"}
         
 )
-public class DataSourceConfig {
-        
-}
+public class DataSourceConfig { }

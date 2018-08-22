@@ -1,6 +1,5 @@
 package cairoshop.repositories.interfaces;
 
-import cairoshop.repositories.*;
 import cairoshop.entities.Vendor;
 
 /* ************************************************************************** 
@@ -8,7 +7,6 @@ import cairoshop.entities.Vendor;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface VendorRepository 
-        extends AbstractRepository<Vendor>, PagableRepository<Vendor> {
+public interface VendorRepository extends AbstractRepository<Vendor>, PagableRepository<Vendor> {
     
 }

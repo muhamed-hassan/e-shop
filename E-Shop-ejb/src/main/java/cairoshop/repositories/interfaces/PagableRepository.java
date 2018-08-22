@@ -1,7 +1,7 @@
 package cairoshop.repositories.interfaces;
 
 import cairoshop.repositories.exceptions.RetrievalException;
-import cairoshop.repositories.specs.CriteriaQuerySpecs;
+import cairoshop.repositories.specs.QuerySpecs;
 import java.util.List;
 
 /* ************************************************************************** 
@@ -11,7 +11,7 @@ import java.util.List;
  * ************************************************************************ */
 public interface PagableRepository<T> {
     
-    int getCount(CriteriaQuerySpecs querySpecs) throws RetrievalException;    
-    List<T> findAll(CriteriaQuerySpecs querySpecs, int startPosition) throws RetrievalException; 
+    int getCount(QuerySpecs querySpecs) throws RetrievalException;    
+    List<T> findAll(QuerySpecs querySpecs, int startPosition) throws RetrievalException; 
     
 }

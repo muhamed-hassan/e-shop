@@ -1,15 +1,20 @@
 package cairoshop.web.models.admin;
 
+import cairoshop.entities.Category;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.navigation.AdminNavigation;
-import cairoshop.entities.*;
 import cairoshop.services.interfaces.AdminService;
-import cairoshop.utils.*;
+import cairoshop.utils.AdminActions;
+import cairoshop.utils.AdminContent;
+import cairoshop.utils.AdminMessages;
+import cairoshop.utils.Messages;
+import cairoshop.utils.Scope;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
-import java.io.*;
-import java.util.*;
-import javax.ejb.*;
-import javax.faces.bean.*;
+import java.io.Serializable;
+import java.util.List;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -18,8 +23,8 @@ import javax.faces.bean.*;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class ManageCategoriesBean 
-        extends CommonBean 
+public class ManageCategoriesBean
+        extends CommonBean
         implements Serializable, AdminNavigation, PlainPaginationControls {
 
     @EJB
@@ -36,67 +41,48 @@ public class ManageCategoriesBean
     }
 
     public void addCategory() {
-        int status = (adminService.addCategory(category) ? 1 : -1);
+        int status = adminService.addCategory(category) ? 1 : -1;
 
-        String msg = ((status == 1) ? 
-                category.getName() + Messages.ADDED_SUCCESSFULLY : 
-                Messages.SOMETHING_WENT_WRONG);
-        
+        String msg = (status == 1)
+                ? category.getName() + Messages.ADDED_SUCCESSFULLY
+                : Messages.SOMETHING_WENT_WRONG;
+
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
 
     // =========================================================================
     // =======> Edit category
     // =========================================================================
-    public void onEdit(Category c) {
-        Integer toEditId = c.getId();
-        c.setOldValue(c.getName());
-
-        for (Category tmp : categories) {
-            if (tmp.getId() == toEditId) {
-                c.setCanEdit(true);
-                break;
-            }
-        }
-                
+    public void onEdit(Category categoryToBeEdited) {
+        categoryToBeEdited.setUnderEdit(true);
     }
 
-    public void editCategory(Category c) {
-        Integer toEditId = c.getId();
+    public void editCategory(Category categoryToBeEdited) {
+        categoryToBeEdited.setUnderEdit(false);
 
-        for (Category tmp : categories) {
-            if (tmp.getId() == toEditId) {
-                c.setCanEdit(false); // for toggling purposes between input and output (text box)
-                break;
-            }
-        }
+        int status = (adminService.editCategory(categoryToBeEdited) ? 1 : -1);
 
-        if (!c.getOldValue().equals(c.getName())) {
-            int status = (adminService.editCategory(c) ? 1 : -1);
+        String msg = ((status == 1)
+                ? categoryToBeEdited.getName() + Messages.EDITED_SUCCESSFULLY
+                : Messages.SOMETHING_WENT_WRONG);
 
-            String msg = ((status == 1) ? 
-                    category.getName() + Messages.EDITED_SUCCESSFULLY : 
-                    Messages.SOMETHING_WENT_WRONG);
-            
-            getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
-        }
+        getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
 
     // =========================================================================
     // =======> Delete categroy
     // =========================================================================
-    public void deleteCategory(Category c) {
-        String currentCategoryName = c.getName();
-        int status = (adminService.deleteCategory(c) ? 1 : -1);
+    public void deleteCategory(Category categoryToBeDeleted) {
+        int status = (adminService.deleteCategory(categoryToBeDeleted.getId()) ? 1 : -1);
 
-        String msg = ((status == 1) ? 
-                currentCategoryName + Messages.REMOVED_SUCCESSFULLY : 
-                Messages.SOMETHING_WENT_WRONG);
-        
+        String msg = (status == 1)
+                ? categoryToBeDeleted.getName() + Messages.REMOVED_SUCCESSFULLY
+                : Messages.SOMETHING_WENT_WRONG;
+
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
 
         getPaginator().setDataSize(adminService.getCategoriesCount());
-        categories = adminService.viewCategories(getPaginator().getCursor());
+        categories = adminService.getCategories(getPaginator().getCursor());
         if (categories.isEmpty()) {
             previous();
         }
@@ -109,45 +95,37 @@ public class ManageCategoriesBean
     // =========================================================================    
     @Override
     public void next() {
-        categories = adminService.viewCategories(getPaginator().getCursor() + 5);
-        getPaginator().setCursor(getPaginator().getCursor() + 5);
-        getPaginator().setChunkSize(categories.size());
+        adjustPaginationControls(getPaginator().getCursor() + 5);
     }
 
     @Override
     public void previous() {
-        categories = adminService.viewCategories(getPaginator().getCursor() - 5);
-        getPaginator().setCursor(getPaginator().getCursor() - 5);
-        getPaginator().setChunkSize(categories.size());
+        adjustPaginationControls(getPaginator().getCursor() - 5);
     }
 
     @Override
-    public void first() {
-        getPaginator().setCursor(0);
-        categories = adminService.viewCategories(getPaginator().getCursor());
-        getPaginator().setChunkSize(categories.size());
+    public void first() {        
+        adjustPaginationControls(0);
     }
 
     @Override
     public void last() {
-        Integer dataSize = adminService.getCategoriesCount();
-        Integer chunkSize = getPaginator().getChunkSize();
-
-        if ((dataSize % chunkSize) == 0) {
-            getPaginator().setCursor(dataSize - chunkSize);
-        } else {
-            getPaginator().setCursor(dataSize - (dataSize % chunkSize));
-        }
-
-        categories = adminService.viewCategories(getPaginator().getCursor());
-        getPaginator().setChunkSize(categories.size());
+        int dataSize = adminService.getCategoriesCount();
+        int chunkSize = getPaginator().getChunkSize();
+        
+        adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
         getPaginator().setDataSize(adminService.getCategoriesCount());
-        getPaginator().setCursor(0);
-        categories = adminService.viewCategories(getPaginator().getCursor());
+        
+        adjustPaginationControls(0);
+    }
+    
+    private void adjustPaginationControls(int cursor) {
+        categories = adminService.getCategories(cursor);
+        getPaginator().setCursor(cursor);
         getPaginator().setChunkSize(categories.size());
     }
 
@@ -156,10 +134,6 @@ public class ManageCategoriesBean
     // =========================================================================
     public List<Category> getCategories() {
         return categories;
-    }
-
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
     }
 
     public Category getCategory() {
@@ -193,7 +167,7 @@ public class ManageCategoriesBean
                     break;
             }
         }
-        
+
     }
 
 }

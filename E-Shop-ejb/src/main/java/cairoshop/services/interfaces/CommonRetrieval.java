@@ -1,6 +1,7 @@
 package cairoshop.services.interfaces;
 
-import cairoshop.entities.*;
+import cairoshop.entities.Category;
+import cairoshop.entities.Vendor;
 import java.util.List;
 
 /* ************************************************************************** 
@@ -10,11 +11,14 @@ import java.util.List;
  * ************************************************************************ */
 public interface CommonRetrieval {
     
-    List<Category> viewCategories(int startPosition);    
-    List<Vendor> getAllVendors();
-    List<Category> getAllCategories();
+    List<Category> getCategories();
+    List<Category> getCategories(int startPosition);
     int getCategoriesCount();
-    int getVendorsCount();
+    
+    List<Vendor> getVendors();
+    List<Vendor> getVendors(int startPosition);
+    int getVendorsCount();    
+    
     int getProductsCount();
     
 }

@@ -1,7 +1,8 @@
 package cairoshop.web.models.common;
 
-import javax.faces.bean.*;
-import javax.faces.context.*;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *

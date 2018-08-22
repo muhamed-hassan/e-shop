@@ -1,6 +1,8 @@
 package cairoshop.entities;
 
-import javax.persistence.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -9,9 +11,12 @@ import javax.persistence.*;
  * ************************************************************************ */
 @Entity
 @DiscriminatorValue(value = "1")
-public class Customer 
-        extends User { 
+public class Customer extends User { 
 
+    public Customer() {
+        setActive(true);
+    }
+    
     @Embedded
     private ContactDetails contactDetails;
 

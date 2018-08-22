@@ -2,10 +2,12 @@ package cairoshop.utils;
 
 import com.demo.GlobalLogger;
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import javax.inject.*;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 

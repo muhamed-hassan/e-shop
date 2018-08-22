@@ -1,15 +1,20 @@
 package cairoshop.web.models.admin;
 
+import cairoshop.entities.Customer;
 import cairoshop.web.models.common.navigation.AdminNavigation;
-import cairoshop.entities.*;
 import cairoshop.services.interfaces.AdminService;
-import cairoshop.utils.*;
+import cairoshop.utils.AdminContent;
+import cairoshop.utils.AdminMessages;
+import cairoshop.utils.Messages;
+import cairoshop.utils.Scope;
 import cairoshop.web.models.common.CommonBean;
-import java.io.*;
-import java.util.*;
-import javax.ejb.*;
-import javax.faces.bean.*;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
+import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -37,46 +42,26 @@ public class ManageUsersBean
     // =========================================================================
     // =======> Change users state
     // =========================================================================    
-    public void activate(Customer c) {
-        Integer cID = c.getId();
-
-        c.setActive(true);
-        int status = (adminService.changeUserState(c) ? 1 : -1);
-
-        if (status == 1) {
-            for (Customer tmp : customers) {
-                if (tmp.getId() == cID) {
-                    c.setActive(true);
-                    break;
-                }
-            }
-        }
+    public void activate(Customer customerToBeChanged) {
         
-        String msg = ((status == 1) ? 
-                c.getName() + Messages.EDITED_SUCCESSFULLY : 
-                Messages.SOMETHING_WENT_WRONG);
+        customerToBeChanged.setActive(true);
+        int status = adminService.changeUserState(customerToBeChanged) ? 1 : -1;
+
+        String msg = (status == 1) ? 
+                customerToBeChanged.getName() + Messages.EDITED_SUCCESSFULLY : 
+                Messages.SOMETHING_WENT_WRONG;
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
     }
 
-    public void deactivate(Customer c) {
-        Integer cID = c.getId();
+    public void deactivate(Customer customerToBeChanged) {
 
-        c.setActive(false);
-        int status = (adminService.changeUserState(c) ? 1 : -1);
-
-        if (status == 1) {
-            for (Customer tmp : customers) {
-                if (tmp.getId() == cID) {
-                    c.setActive(false);
-                    break;
-                }
-            }
-        }
-
-        String msg = ((status == 1) ? 
-                c.getName() + Messages.EDITED_SUCCESSFULLY : 
-                Messages.SOMETHING_WENT_WRONG);
+        customerToBeChanged.setActive(false);
+        int status = adminService.changeUserState(customerToBeChanged) ? 1 : -1;
+        
+        String msg = (status == 1) ? 
+                customerToBeChanged.getName() + Messages.EDITED_SUCCESSFULLY : 
+                Messages.SOMETHING_WENT_WRONG;
         
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
     }
@@ -86,68 +71,41 @@ public class ManageUsersBean
     // =========================================================================
     @Override
     public void next() {
-        List<User> data = adminService.viewCustomers(getPaginator().getCursor() + 5);
-        customers = new ArrayList<>(0);
-        data.forEach((u) -> {
-            customers.add((Customer) u);
-        });
-        getPaginator().setCursor(getPaginator().getCursor() + 5);
-        getPaginator().setChunkSize(customers.size());
+        adjustPaginationControls(getPaginator().getCursor() + 5);
     }
 
     @Override
-    public void previous() {
-        List<User> data = adminService.viewCustomers(getPaginator().getCursor() - 5);
-        customers = new ArrayList<>(0);
-        data.forEach((u) -> {
-            customers.add((Customer) u);
-        });
-        getPaginator().setCursor(getPaginator().getCursor() - 5);
-        getPaginator().setChunkSize(customers.size());
+    public void previous() {        
+        adjustPaginationControls(getPaginator().getCursor() - 5);
     }
 
     @Override
     public void first() {
-        getPaginator().setCursor(0);
-        List<User> data = adminService.viewCustomers(getPaginator().getCursor());
-        customers = new ArrayList<>(0);
-        data.forEach((u) -> {
-            customers.add((Customer) u);
-        });
-        getPaginator().setChunkSize(customers.size());
+        adjustPaginationControls(0);
     }
 
     @Override
     public void last() {
-        Integer dataSize = adminService.getCustomersCount();
-        Integer chunkSize = getPaginator().getChunkSize();
-
-        if ((dataSize % chunkSize) == 0) {
-            getPaginator().setCursor(dataSize - chunkSize);
-        } else {
-            getPaginator().setCursor(dataSize - (dataSize % chunkSize));
-        }
-
-        List<User> data = adminService.viewCustomers(getPaginator().getCursor());
-        customers = new ArrayList<>(0);
-        data.forEach((u) -> {
-            customers.add((Customer) u);
-        });
-        getPaginator().setChunkSize(customers.size());
+        int dataSize = adminService.getCustomersCount();
+        int chunkSize = getPaginator().getChunkSize();
+        
+        adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
         getPaginator().setDataSize(adminService.getCustomersCount());
-        getPaginator().setCursor(0);
-        List<User> data = adminService.viewCustomers(getPaginator().getCursor());
-        customers = new ArrayList<>(0);
-        data.forEach((u) -> {
-            customers.add((Customer) u);
-        });
-        getPaginator().setChunkSize(customers.size());
+        adjustPaginationControls(0);
     }
 
+    private void adjustPaginationControls(int cursor) {
+        customers = adminService.getCustomers(cursor)
+                .stream()
+                .map(user -> (Customer) user)
+                .collect(Collectors.toList());
+        getPaginator().setCursor(cursor);
+        getPaginator().setChunkSize(customers.size());
+    }
     // =========================================================================
     // =======> Navigation
     // =========================================================================

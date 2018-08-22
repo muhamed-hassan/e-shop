@@ -17,10 +17,10 @@
                     Name
                 </f:facet>
                 <h:outputText value="#{category.name}" 
-                              rendered="#{not category.canEdit}" />
+                              rendered="#{not category.underEdit}" />
 
                 <h:inputText value="#{category.name}" 
-                             rendered="#{category.canEdit}" 
+                             rendered="#{category.underEdit}" 
                              style="#{ (component.valid) ? 'border-color:black;' : 'border-color:red;'}"
                              required="true"
                              requiredMessage="">                                        
@@ -32,10 +32,10 @@
                     Action
                 </f:facet>
                 <h:commandButton value="Edit" class="btn-link"                               
-                                 rendered="#{not category.canEdit}"
+                                 rendered="#{not category.underEdit}"
                                  action="#{manageCategoriesBean.onEdit(category)}"/>                                        
                 <h:commandButton value="Done" class="btn-link"                               
-                                 rendered="#{category.canEdit}"
+                                 rendered="#{category.underEdit}"
                                  action="#{manageCategoriesBean.editCategory(category)}"/>                    
             </h:column>                
         </h:dataTable>

@@ -1,7 +1,7 @@
 package cairoshop.services.interfaces;
 
-import cairoshop.dtos.ProductModel;
-import cairoshop.entities.*;
+import cairoshop.entities.Customer;
+import cairoshop.entities.Product;
 import java.util.List;
 
 /* ************************************************************************** 
@@ -9,17 +9,15 @@ import java.util.List;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface CustomerService 
-        extends CommonRetrieval {
+public interface CustomerService extends CommonRetrieval {
     
-    List<ProductModel> viewProductsIn(Object productClassification, int startPosition);
+    List<Product> getProductsIn(Object productClassification, int startPosition);
     int getProductsCount(Object productClassification);
-    List<ProductModel> sortProducts(String orderBy, String orderDirection, int startPosition);
-    List<ProductModel> findProductByName(String pName);
-    Product getProductDetails(int pId);
+    List<Product> sortProducts(String orderBy, String orderDirection, int startPosition);
+    List<Product> getProductsByName(String pName, int startPosition);
     boolean addProductToFavoriteList(Product product, Customer customer);
-    List<ProductModel> viewMyFavoriteList(int custId, int startPosition);
+    List<Product> getMyFavoriteList(int custId, int startPosition);
     int getFavoriteProductsCount(int custId);
-    List<ProductModel> getLikedProducts(int custId);
+    List<Integer> getLikedProducts(int custId);
     
 }

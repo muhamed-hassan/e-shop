@@ -1,8 +1,15 @@
 package cairoshop.entities;
 
-import java.io.*;
-import java.util.*;
-import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -13,35 +20,33 @@ import javax.persistence.*;
 public class Category implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    @GeneratedValue(strategy = IDENTITY)
+    private int id;
 
     private String name;
 
     @Column(name = "not_deleted")
-    private Boolean notDeleted = true;
+    private boolean notDeleted;
 
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 
     @Transient
-    private Boolean canEdit = false;
+    private boolean underEdit;
 
     @Transient
     private String oldValue;
 
-    public Category() { }
-
-    public Category(String name) {
-        this.name = name;
+    public Category() {
+        notDeleted = true;
     }
 
-    public Integer getId() {
-        return Id;
+    public int getId() {
+        return id;
     }
 
-    public void setId(Integer Id) {
-        this.Id = Id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -52,11 +57,11 @@ public class Category implements Serializable {
         this.name = name;
     }
 
-    public Boolean getNotDeleted() {
+    public boolean getNotDeleted() {
         return notDeleted;
     }
 
-    public void setNotDeleted(Boolean notDeleted) {
+    public void setNotDeleted(boolean notDeleted) {
         this.notDeleted = notDeleted;
     }
 
@@ -68,13 +73,13 @@ public class Category implements Serializable {
         this.products = products;
     }
 
-    public Boolean getCanEdit() {
-        return canEdit;
+    public boolean isUnderEdit() {
+        return underEdit;
     }
 
-    public void setCanEdit(Boolean canEdit) {
-        this.canEdit = canEdit;
-    }
+    public void setUnderEdit(boolean underEdit) {
+        this.underEdit = underEdit;
+    }    
 
     public String getOldValue() {
         return oldValue;
@@ -86,9 +91,9 @@ public class Category implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 61 * hash + Objects.hashCode(this.Id);
-        hash = 61 * hash + Objects.hashCode(this.name);
+        int hash = 7;
+        hash = 79 * hash + this.id;
+        hash = 79 * hash + Objects.hashCode(this.name);
         return hash;
     }
 
@@ -104,10 +109,10 @@ public class Category implements Serializable {
             return false;
         }
         final Category other = (Category) obj;
-        if (!Objects.equals(this.name, other.name)) {
+        if (this.id != other.id) {
             return false;
         }
-        if (!Objects.equals(this.Id, other.Id)) {
+        if (!Objects.equals(this.name, other.name)) {
             return false;
         }
         return true;
@@ -115,6 +120,7 @@ public class Category implements Serializable {
 
     @Override
     public String toString() {
-        return "Category{" + "Id=" + Id + ", name=" + name + ", notDeleted=" + notDeleted + '}';
+        return "Category{" + "id=" + id + ", name=" + name + ", notDeleted=" + notDeleted + '}';
     }
+    
 }

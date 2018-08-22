@@ -15,8 +15,7 @@ import javax.faces.validator.*;
 public class PasswordValidator implements Validator {
 
     @Override
-    public void validate(FacesContext fc, UIComponent uic, Object o) 
-            throws ValidatorException {
+    public void validate(FacesContext fc, UIComponent uic, Object o) throws ValidatorException {
         
         if (!Pattern.compile(
                 "^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].)(?=.*[a-z]).{8,}$")

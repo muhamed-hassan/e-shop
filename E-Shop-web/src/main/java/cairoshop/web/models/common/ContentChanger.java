@@ -1,6 +1,7 @@
 package cairoshop.web.models.common;
 
-import cairoshop.utils.*;
+import cairoshop.utils.Scope;
+import cairoshop.utils.SharedContent;
 import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.inject.Singleton;
@@ -28,8 +29,7 @@ public class ContentChanger {
                 .getSessionMap();
 
         sessionMap.put("msg", msg);
-        sessionMap
-                .put("content", SharedContent.RESULT_CONTENT);
+        sessionMap.put("content", SharedContent.RESULT_CONTENT);
     }
 
     public void displayContentWithMsg(String msg, int status, int scope) {

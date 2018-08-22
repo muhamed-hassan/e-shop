@@ -1,17 +1,20 @@
 package cairoshop.web.models.customer;
 
-import cairoshop.dtos.ProductModel;
-import cairoshop.entities.*;
+import cairoshop.entities.Customer;
+import cairoshop.entities.Product;
 import cairoshop.services.interfaces.CustomerService;
-import cairoshop.utils.*;
+import cairoshop.utils.CustomerContent;
+import cairoshop.utils.CustomerMessages;
 import cairoshop.web.models.common.CommonBean;
-import java.io.*;
-import java.util.*;
-import javax.ejb.*;
-import javax.faces.bean.*;
-import javax.faces.context.*;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -27,8 +30,7 @@ public class FavoriteProductsListBean
     @EJB
     private CustomerService customerService;
 
-    private List<ProductModel> products;
-    private Map<String, Object> sessionMap = null;
+    private List<Product> products;
 
     private Customer c;
 
@@ -37,26 +39,19 @@ public class FavoriteProductsListBean
     // =========================================================================
     @PostConstruct
     public void init() {
-        sessionMap = FacesContext
+        Map<String, Object> sessionMap = FacesContext
                 .getCurrentInstance()
                 .getExternalContext()
                 .getSessionMap();
         
-        c = (Customer) FacesContext
-                .getCurrentInstance()
-                .getExternalContext()
-                .getSessionMap()
-                .get("currentUser");
-        
-        products = customerService
-                .getLikedProducts(c.getId());
-        
+        c = (Customer) sessionMap
+                .get("currentUser");        
     }
     
     // =========================================================================
     // =======> getters and setters
     // =========================================================================
-    public List<ProductModel> getProducts() {
+    public List<Product> getProducts() {
         return products;
     }
 
@@ -78,45 +73,37 @@ public class FavoriteProductsListBean
     // =========================================================================
     @Override
     public void next() {
-        products = customerService.viewMyFavoriteList(c.getId(), getPaginator().getCursor() + 5);
-        getPaginator().setCursor(getPaginator().getCursor() + 5);
-        getPaginator().setChunkSize(products.size());
+        adjustPaginationControls(getPaginator().getCursor() + 5);
     }
 
     @Override
     public void previous() {
-        products = customerService.viewMyFavoriteList(c.getId(), getPaginator().getCursor() - 5);
-        getPaginator().setCursor(getPaginator().getCursor() - 5);
-        getPaginator().setChunkSize(products.size());
+        adjustPaginationControls(getPaginator().getCursor() - 5);
     }
 
     @Override
     public void first() {
-        getPaginator().setCursor(0);
-        products = customerService.viewMyFavoriteList(c.getId(), getPaginator().getCursor());
-        getPaginator().setChunkSize(products.size());
+        adjustPaginationControls(0);
     }
 
     @Override
     public void last() {
-        Integer dataSize = customerService.getFavoriteProductsCount(c.getId());
-        Integer chunkSize = getPaginator().getChunkSize();
-
-        if ((dataSize % chunkSize) == 0) {
-            getPaginator().setCursor(dataSize - chunkSize);
-        } else {
-            getPaginator().setCursor(dataSize - (dataSize % chunkSize));
-        }
-
-        products = customerService.viewMyFavoriteList(c.getId(), getPaginator().getCursor());
-        getPaginator().setChunkSize(products.size());
+        int dataSize = customerService.getFavoriteProductsCount(c.getId());
+        int chunkSize = getPaginator().getChunkSize();
+        
+        adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
         getPaginator().setDataSize(customerService.getFavoriteProductsCount(c.getId()));
-        getPaginator().setCursor(0);
-        products = customerService.viewMyFavoriteList(c.getId(), getPaginator().getCursor());
+        
+        adjustPaginationControls(0);
+    }
+    
+    private void adjustPaginationControls(int cursor) {
+        products = customerService.getMyFavoriteList(c.getId(), cursor);
+        getPaginator().setCursor(cursor);
         getPaginator().setChunkSize(products.size());
     }
 

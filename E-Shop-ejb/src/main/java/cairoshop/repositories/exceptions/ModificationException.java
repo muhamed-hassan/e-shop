@@ -5,8 +5,7 @@ package cairoshop.repositories.exceptions;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public class ModificationException 
-        extends Exception {
+public final class ModificationException extends Exception {
 
     public ModificationException() {
         super(null, null);

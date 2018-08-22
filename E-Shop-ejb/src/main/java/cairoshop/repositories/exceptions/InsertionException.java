@@ -5,8 +5,7 @@ package cairoshop.repositories.exceptions;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public class InsertionException 
-        extends Exception {
+public final class InsertionException extends Exception {
 
     public InsertionException() {
         super(null, null);

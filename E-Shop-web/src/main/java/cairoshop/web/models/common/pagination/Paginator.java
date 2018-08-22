@@ -1,7 +1,8 @@
 package cairoshop.web.models.common.pagination;
 
-import java.io.*;
-import javax.faces.bean.*;
+import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *

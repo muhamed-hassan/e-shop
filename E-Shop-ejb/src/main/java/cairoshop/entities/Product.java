@@ -1,8 +1,15 @@
 package cairoshop.entities;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -13,8 +20,8 @@ import javax.persistence.*;
 public class Product implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = IDENTITY)
+    private int id;
 
     private String name;
 
@@ -30,7 +37,7 @@ public class Product implements Serializable {
     private byte[] image;
 
     @Column(name = "not_deleted")
-    private Boolean notDeleted = true;
+    private boolean notDeleted;
 
     @ManyToOne
     @JoinColumn(name = "category")
@@ -40,11 +47,15 @@ public class Product implements Serializable {
     @JoinColumn(name = "vendor")
     private Vendor vendor;
 
-    public Integer getId() {
+    public Product() {
+        notDeleted = true;
+    }
+    
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -104,19 +115,19 @@ public class Product implements Serializable {
         this.vendor = vendor;
     }
 
-    public Boolean getNotDeleted() {
+    public boolean getNotDeleted() {
         return notDeleted;
     }
 
-    public void setNotDeleted(Boolean notDeleted) {
+    public void setNotDeleted(boolean notDeleted) {
         this.notDeleted = notDeleted;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.id);
-        hash = 53 * hash + Objects.hashCode(this.name);
+        hash = 97 * hash + this.id;
+        hash = 97 * hash + Objects.hashCode(this.name);
         return hash;
     }
 
@@ -132,10 +143,10 @@ public class Product implements Serializable {
             return false;
         }
         final Product other = (Product) obj;
-        if (!Objects.equals(this.name, other.name)) {
+        if (this.id != other.id) {
             return false;
         }
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.name, other.name)) {
             return false;
         }
         return true;
@@ -145,4 +156,5 @@ public class Product implements Serializable {
     public String toString() {
         return "Product{" + "id=" + id + ", name=" + name + ", price=" + price + ", quantity=" + quantity + '}';
     }
+    
 }

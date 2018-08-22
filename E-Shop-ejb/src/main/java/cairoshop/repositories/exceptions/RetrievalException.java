@@ -5,8 +5,7 @@ package cairoshop.repositories.exceptions;
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public class RetrievalException 
-        extends Exception {
+public final class RetrievalException extends Exception {
 
     public RetrievalException() {
         super(null, null);

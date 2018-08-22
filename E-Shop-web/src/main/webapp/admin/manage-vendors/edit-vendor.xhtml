@@ -18,10 +18,10 @@
                     Name
                 </f:facet>
                 <h:outputText value="#{vendor.name}" 
-                              rendered="#{not vendor.canEdit}" />
+                              rendered="#{not vendor.underEdit}" />
 
                 <h:inputText id="vendor" value="#{vendor.name}" 
-                             rendered="#{vendor.canEdit}" 
+                             rendered="#{vendor.underEdit}" 
                              style="#{ (component.valid) ? 'border-color:black;' : 'border-color:red;'}"
                              required="true"
                              requiredMessage=""
@@ -34,10 +34,10 @@
                     Action
                 </f:facet>
                 <h:commandButton value="Edit" class="btn-link"                               
-                                 rendered="#{not vendor.canEdit}"
+                                 rendered="#{not vendor.underEdit}"
                                  action="#{manageVendorsBean.onEdit(vendor)}"/>                                        
                 <h:commandButton value="Done" class="btn-link"                               
-                                 rendered="#{vendor.canEdit}"
+                                 rendered="#{vendor.underEdit}"
                                  action="#{manageVendorsBean.editVendor(vendor)}"
                                  />                    
             </h:column>                

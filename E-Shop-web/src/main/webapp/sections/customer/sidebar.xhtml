@@ -30,7 +30,7 @@
                                              onchange="submit()"
                                              valueChangeListener="#{listProductsBean.loadProductsOfVendor}"
                                              title="Select a vendor">                                    
-                                <f:selectItems value="#{sessionScope.vendorsList}" var="vendor" 
+                                <f:selectItems value="#{listProductsBean.vendors}" var="vendor" 
                                                itemLabel="#{vendor.name}" itemValue="#{vendor.id}" />
                             </h:selectOneMenu>
                         </h:form>
@@ -42,7 +42,7 @@
                                              onchange="submit()"
                                              valueChangeListener="#{listProductsBean.loadProductsOfCategory}"
                                              title="Select a category">                                    
-                                <f:selectItems value="#{sessionScope.categoriesList}" var="category" 
+                                <f:selectItems value="#{listProductsBean.categories}" var="category" 
                                                itemLabel="#{category.name}" itemValue="#{category.id}" 
                                                />
                             </h:selectOneMenu>

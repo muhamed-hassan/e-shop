@@ -1,26 +1,30 @@
 package cairoshop.repositories;
 
-import cairoshop.repositories.interfaces.*;
 import cairoshop.configs.HibernateConfigurator;
 import cairoshop.helpers.msgs.RepositoryMessage;
-import cairoshop.repositories.exceptions.*;
-import cairoshop.repositories.specs.CriteriaQuerySpecs;
+import cairoshop.repositories.exceptions.DeletionException;
+import cairoshop.repositories.exceptions.InsertionException;
+import cairoshop.repositories.exceptions.ModificationException;
+import cairoshop.repositories.exceptions.RetrievalException;
+import cairoshop.repositories.interfaces.AbstractRepository;
+import cairoshop.repositories.interfaces.PagableRepository;
+import cairoshop.repositories.specs.QuerySpecs;
 import com.demo.GlobalLogger;
 import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import org.apache.logging.log4j.Level;
-import org.hibernate.*;
+import org.hibernate.Session;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public abstract class BaseRepository<T>
-        implements AbstractRepository<T>, PagableRepository<T> {
+public abstract class BaseRepository<T> implements AbstractRepository<T>, PagableRepository<T> {
 
     @Inject
     private HibernateConfigurator hibernateConfigurator;
@@ -47,8 +51,8 @@ public abstract class BaseRepository<T>
 
     //**************************************************************************
     @Override
-    public void add(T entity)
-            throws InsertionException {
+    public void add(T entity) throws InsertionException {
+        
         Session session = hibernateConfigurator.getSessionFactory().openSession();
 
         try {
@@ -76,8 +80,8 @@ public abstract class BaseRepository<T>
     }
 
     @Override
-    public void update(T entity)
-            throws ModificationException {
+    public void update(T entity) throws ModificationException {
+        
         Session session = hibernateConfigurator.getSessionFactory().openSession();
 
         try {
@@ -105,8 +109,8 @@ public abstract class BaseRepository<T>
     }
 
     @Override
-    public void remove(int id)
-            throws DeletionException {
+    public void remove(int id) throws DeletionException {
+        
         Session session = hibernateConfigurator.getSessionFactory().openSession();
 
         try {
@@ -142,11 +146,11 @@ public abstract class BaseRepository<T>
     }
 
     @Override
-    public T find(CriteriaQuerySpecs querySpecs)
-            throws RetrievalException {
+    public T find(QuerySpecs querySpecs) throws RetrievalException {
         
         EntityManager entityManager = null;
         T entity = null;
+        
         try (Session session = hibernateConfigurator.getSessionFactory().openSession()) {
 
             entityManager = session.getEntityManagerFactory().createEntityManager();
@@ -154,8 +158,8 @@ public abstract class BaseRepository<T>
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.entity);			
             Root<T> root = criteriaQuery.from(this.entity);			
             
-            entity = entityManager
-                        .createQuery(criteriaQuery.where(querySpecs.build(criteriaBuilder, root)))
+            entity = (T) entityManager
+                        .createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root))
                         .getSingleResult();
 
         } catch (Exception ex) {
@@ -177,11 +181,11 @@ public abstract class BaseRepository<T>
     }
 
     @Override
-    public List<T> findAll(CriteriaQuerySpecs querySpecs)
-            throws RetrievalException {
+    public List<T> findAll(QuerySpecs querySpecs) throws RetrievalException {
         
         EntityManager entityManager = null;
         List<T> data = null;
+        
         try (Session session = hibernateConfigurator.getSessionFactory().openSession()) {
 
             entityManager = session.getEntityManagerFactory().createEntityManager();
@@ -190,7 +194,7 @@ public abstract class BaseRepository<T>
             Root<T> root = criteriaQuery.from(this.entity);
                                  
             data = entityManager
-                    .createQuery(criteriaQuery.where(querySpecs.build(criteriaBuilder, root)))
+                    .createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root))
                     .getResultList();
                                  
         } catch (Exception ex) {
@@ -212,24 +216,24 @@ public abstract class BaseRepository<T>
     }
 
     @Override
-    public List<T> findAll(CriteriaQuerySpecs querySpecs, int startPosition)
-            throws RetrievalException {
+    public List<T> findAll(QuerySpecs querySpecs, int startPosition) throws RetrievalException {
         
         EntityManager entityManager = null;
         List<T> data = null;
+        
         try (Session session = hibernateConfigurator.getSessionFactory().openSession()) {
 
             entityManager = session.getEntityManagerFactory().createEntityManager();
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.entity);			
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.entity);            
             Root<T> root = criteriaQuery.from(this.entity);
                                  
             data = entityManager
-                    .createQuery(criteriaQuery.where(querySpecs.build(criteriaBuilder, root)))
+                    .createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root))
                     .setFirstResult(startPosition)
                     .setMaxResults(5)
                     .getResultList();
-
+            
         } catch (Exception ex) {
             getGlobalLogger()
                     .doLogging(
@@ -249,20 +253,27 @@ public abstract class BaseRepository<T>
     }
 
     @Override
-    public int getCount(CriteriaQuerySpecs querySpecs) 
-            throws RetrievalException {
+    public int getCount(QuerySpecs querySpecs) throws RetrievalException {
         
         EntityManager entityManager = null;
         Integer count = null;
+        
         try (Session session = hibernateConfigurator.getSessionFactory().openSession()) {
 
             entityManager = session.getEntityManagerFactory().createEntityManager();
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);			
             Root<T> root = criteriaQuery.from(entity);
-            count = entityManager
-                        .createQuery(criteriaQuery.select(criteriaBuilder.count(root)).where(querySpecs.build(criteriaBuilder, root)))
-                        .getSingleResult()
+            
+            if( querySpecs.getJoin() != null ) {
+                criteriaQuery = criteriaQuery.select(criteriaBuilder.count(root.join(querySpecs.getJoin().getJoinAttribute())));
+            } else {
+                criteriaQuery = criteriaQuery.select(criteriaBuilder.count(root));
+            }
+            
+            count = ((Long) entityManager
+                        .createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root))
+                        .getSingleResult())
                         .intValue();
             
         } catch (Exception ex) {

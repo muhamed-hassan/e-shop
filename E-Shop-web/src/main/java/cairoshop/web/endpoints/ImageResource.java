@@ -2,15 +2,16 @@ package cairoshop.web.endpoints;
 
 import cairoshop.repositories.interfaces.ProductRepository;
 import cairoshop.web.endpoints.utils.MediaType;
-import java.nio.file.*;
-import javax.annotation.ManagedBean;
-import javax.inject.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -18,7 +19,6 @@ import javax.ws.rs.core.*;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Path("/images")
-@ManagedBean
 public class ImageResource {
     
     @Inject
@@ -53,8 +53,7 @@ public class ImageResource {
                 
                 img = Files.readAllBytes(errPath);
                 
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { }
         }
 
         return Response

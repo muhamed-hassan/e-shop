@@ -1,18 +1,19 @@
 package cairoshop.web.models.customer;
 
-import cairoshop.repositories.specs.SortCriteria;
-import cairoshop.dtos.ProductModel;
-import cairoshop.repositories.specs.OrderDirection;
+import cairoshop.entities.Product;
 import cairoshop.web.models.common.navigation.CustomerNavigation;
 import cairoshop.services.interfaces.CustomerService;
-import cairoshop.utils.*;
+import cairoshop.utils.CustomerContent;
+import cairoshop.utils.CustomerMessages;
 import cairoshop.web.models.common.CommonBean;
-import java.io.*;
-import java.util.*;
-import javax.ejb.*;
-import javax.faces.bean.*;
-import javax.faces.context.*;
 import cairoshop.web.models.common.pagination.PaginationControlsWithSorting;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -30,17 +31,13 @@ public class SortProductsBean
 
     private String sortCriteria;
     private String sortDirection;
-    private List<ProductModel> products;
+    private List<Product> products;
 
     // =========================================================================
     // =======> setters and getters
     // =========================================================================
-    public List<ProductModel> getProducts() {
+    public List<Product> getProducts() {
         return products;
-    }
-
-    public void setProducts(List<ProductModel> products) {
-        this.products = products;
     }
 
     // =========================================================================
@@ -61,44 +58,31 @@ public class SortProductsBean
     // =========================================================================
     @Override
     public void next() {
-        products = customerService.sortProducts(sortCriteria, sortDirection, getPaginator().getCursor() + 5);
-        getPaginator().setCursor(getPaginator().getCursor() + 5);
-        getPaginator().setChunkSize(products.size());
+        adjustPaginationControls(getPaginator().getCursor() + 5);
     }
 
     @Override
     public void previous() {
-        products = customerService.sortProducts(sortCriteria, sortDirection, getPaginator().getCursor() - 5);
-        getPaginator().setCursor(getPaginator().getCursor() - 5);
-        getPaginator().setChunkSize(products.size());
+        adjustPaginationControls(getPaginator().getCursor() - 5);
     }
 
     @Override
     public void first() {
-        getPaginator().setCursor(0);
-        products = customerService.sortProducts(sortCriteria, sortDirection, getPaginator().getCursor());
-        getPaginator().setChunkSize(products.size());
+        adjustPaginationControls(0);
     }
 
     @Override
     public void last() {
-        Integer dataSize = customerService.getProductsCount();
-        Integer chunkSize = getPaginator().getChunkSize();
-
-        if ((dataSize % chunkSize) == 0) {
-            getPaginator().setCursor(dataSize - chunkSize);
-        } else {
-            getPaginator().setCursor(dataSize - (dataSize % chunkSize));
-        }
-
-        products = customerService.sortProducts(sortCriteria, sortDirection, getPaginator().getCursor());
-        getPaginator().setChunkSize(products.size());
+        int dataSize = customerService.getProductsCount();
+        int chunkSize = getPaginator().getChunkSize();
+        
+        adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator(String criteria, String direction) {
-        sortCriteria = ((criteria.equals("name")) ? SortCriteria.NAME : SortCriteria.PRICE);
-        sortDirection = ((direction.equals("asc")) ? OrderDirection.ASC : OrderDirection.DESC);
+        sortCriteria = criteria;
+        sortDirection = direction;
 
         Map<String, Object> sessionMap = FacesContext
                 .getCurrentInstance()
@@ -109,8 +93,12 @@ public class SortProductsBean
         sessionMap.put("sortDirection", direction.equals("asc") ? "an ascending" : "a descending");
 
         getPaginator().setDataSize(customerService.getProductsCount());
-        getPaginator().setCursor(0);
-        products = customerService.sortProducts(sortCriteria, sortDirection, getPaginator().getCursor());
+        adjustPaginationControls(0);
+    }
+    
+    private void adjustPaginationControls(int cursor) {
+        products = customerService.sortProducts(sortCriteria, sortDirection, cursor);
+        getPaginator().setCursor(cursor);
         getPaginator().setChunkSize(products.size());
     }
 
