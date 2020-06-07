@@ -1,12 +1,13 @@
 package cairoshop.web.models.common;
 
-import cairoshop.web.models.common.pagination.Paginator;
 import javax.faces.bean.ManagedProperty;
 import javax.inject.Inject;
 
+import cairoshop.web.models.common.pagination.Paginator;
+
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public class CommonBean {
@@ -28,4 +29,5 @@ public class CommonBean {
     public ContentChanger getContentChanger() {
         return contentChanger;
     }
+    
 }

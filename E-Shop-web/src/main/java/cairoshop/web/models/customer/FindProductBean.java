@@ -1,5 +1,12 @@
 package cairoshop.web.models.customer;
 
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
+import java.io.Serializable;
+import java.util.List;
+
 import cairoshop.entities.Product;
 import cairoshop.web.models.common.navigation.CustomerNavigation;
 import cairoshop.services.interfaces.CustomerService;
@@ -8,15 +15,10 @@ import cairoshop.utils.CustomerMessages;
 import cairoshop.utils.Messages;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
-import java.io.Serializable;
-import java.util.List;
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @ManagedBean

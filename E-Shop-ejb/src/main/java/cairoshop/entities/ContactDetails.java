@@ -1,11 +1,12 @@
 package cairoshop.entities;
 
-import java.io.Serializable;
 import javax.persistence.Embeddable;
+
+import java.io.Serializable;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Embeddable

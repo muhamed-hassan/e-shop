@@ -1,12 +1,13 @@
 package cairoshop.services.interfaces;
 
+import java.util.List;
+
 import cairoshop.entities.Customer;
 import cairoshop.entities.Product;
-import java.util.List;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public interface CustomerService extends CommonRetrieval {

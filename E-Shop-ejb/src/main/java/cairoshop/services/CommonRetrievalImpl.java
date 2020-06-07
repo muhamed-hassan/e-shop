@@ -1,5 +1,9 @@
 package cairoshop.services;
 
+import java.util.List;
+
+import org.apache.logging.log4j.Level;
+
 import cairoshop.entities.Category;
 import cairoshop.entities.Vendor;
 import cairoshop.repositories.exceptions.RetrievalException;
@@ -8,12 +12,10 @@ import cairoshop.repositories.interfaces.ProductRepository;
 import cairoshop.repositories.interfaces.VendorRepository;
 import cairoshop.services.helpers.CommonQuerySpecs;
 import cairoshop.services.interfaces.CommonRetrieval;
-import java.util.List;
-import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public class CommonRetrievalImpl extends BaseService implements CommonRetrieval {

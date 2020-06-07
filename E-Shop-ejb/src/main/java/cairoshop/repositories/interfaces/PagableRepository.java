@@ -1,12 +1,13 @@
 package cairoshop.repositories.interfaces;
 
+import java.util.List;
+
 import cairoshop.repositories.exceptions.RetrievalException;
 import cairoshop.repositories.specs.QuerySpecs;
-import java.util.List;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public interface PagableRepository<T> {

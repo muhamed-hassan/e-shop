@@ -2,10 +2,12 @@ package cairoshop.repositories.specs;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public final class ConditionConnector {
+    
+    private ConditionConnector() {}
     
     public static final String EQUAL = "equal";
     public static final String LIKE = "like";

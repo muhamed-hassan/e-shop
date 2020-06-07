@@ -1,5 +1,18 @@
 package cairoshop.web.models.customer;
 
+import static java.util.stream.Collectors.joining;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
 import cairoshop.entities.Category;
 import cairoshop.entities.Product;
 import cairoshop.entities.Vendor;
@@ -8,20 +21,10 @@ import cairoshop.utils.CustomerContent;
 import cairoshop.utils.CustomerMessages;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PaginationControlsForType;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import static java.util.stream.Collectors.joining;
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/               *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @ManagedBean

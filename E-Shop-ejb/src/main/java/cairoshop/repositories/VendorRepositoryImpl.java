@@ -1,12 +1,13 @@
 package cairoshop.repositories;
 
+import javax.ejb.Stateless;
+
 import cairoshop.entities.Vendor;
 import cairoshop.repositories.interfaces.VendorRepository;
-import javax.ejb.Stateless;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Stateless

@@ -1,14 +1,16 @@
 package cairoshop.web.models.common;
 
-import cairoshop.utils.Scope;
-import cairoshop.utils.SharedContent;
-import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.inject.Singleton;
 
+import java.util.Map;
+
+import cairoshop.utils.Scope;
+import cairoshop.utils.SharedContent;
+
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Singleton

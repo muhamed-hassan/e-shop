@@ -1,14 +1,15 @@
 package cairoshop.services.interfaces;
 
+import java.util.List;
+
 import cairoshop.entities.Category;
 import cairoshop.entities.Product;
 import cairoshop.entities.User;
 import cairoshop.entities.Vendor;
-import java.util.List;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public interface AdminService extends CommonRetrieval {

@@ -1,24 +1,26 @@
 package cairoshop.entities;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Objects;
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+import static javax.persistence.InheritanceType.SINGLE_TABLE;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
-import static javax.persistence.FetchType.LAZY;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
-import static javax.persistence.InheritanceType.SINGLE_TABLE;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
+
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Entity
@@ -42,10 +44,9 @@ public abstract class User implements Serializable {
     private boolean active;
     
     @ManyToMany(fetch = LAZY)
-    @JoinTable(
-            name = "customer_fav_product",
-            joinColumns = @JoinColumn(name = "customer"),
-            inverseJoinColumns = @JoinColumn(name = "product")
+    @JoinTable(name = "customer_fav_product",
+                joinColumns = @JoinColumn(name = "customer"),
+                inverseJoinColumns = @JoinColumn(name = "product")
     )
     private List<Product> favoriteProducts;
  

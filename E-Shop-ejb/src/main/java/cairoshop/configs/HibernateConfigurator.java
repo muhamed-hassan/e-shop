@@ -15,13 +15,13 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
-import com.demo.GlobalLogger;
+import com.cairoshop.GlobalLogger;
 
 import cairoshop.configs.utils.ConfigUtil;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Startup
@@ -48,10 +48,9 @@ public class HibernateConfigurator {
                                             .configure("hibernate.cfg.xml")
                                             .build();
 
-            MetadataSources sources = new MetadataSources(standardServiceRegistry)
-                                            .addPackage("cairoshop.entities");
-            /*configUtil.getClasses("cairoshop.entities")
-                        .forEach(entity -> sources.addAnnotatedClass(entity));*/
+            MetadataSources sources = new MetadataSources(standardServiceRegistry);            
+            configUtil.getClasses("cairoshop.entities")
+                        .forEach(entity -> sources.addAnnotatedClass(entity));
 
             sessionFactory = sources.getMetadataBuilder()
                                         .build()
@@ -64,13 +63,7 @@ public class HibernateConfigurator {
             flyway.setDataSource(dataSource);
             flyway.migrate();
         } catch (Exception ex) {
-            globalLogger
-                    .doLogging(
-                            Level.FATAL,
-                            "An error occured during session factory initialization",
-                            getClass(),
-                            ex
-                    );
+            globalLogger.doLogging(Level.FATAL, "An error occured during session factory initialization", getClass(), ex);
         }
     }
 

@@ -1,15 +1,17 @@
 package cairoshop.repositories;
 
-import cairoshop.entities.Product;
-import cairoshop.repositories.exceptions.RetrievalException;
-import cairoshop.repositories.interfaces.ProductRepository;
 import javax.ejb.Stateless;
+
 import org.apache.logging.log4j.Level;
 import org.hibernate.Session;
 
+import cairoshop.entities.Product;
+import cairoshop.repositories.exceptions.RetrievalException;
+import cairoshop.repositories.interfaces.ProductRepository;
+
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Stateless

@@ -1,5 +1,13 @@
 package cairoshop.services;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
+import java.util.List;
+
+import org.apache.logging.log4j.Level;
+
 import cairoshop.entities.Category;
 import cairoshop.entities.Product;
 import cairoshop.entities.User;
@@ -17,15 +25,10 @@ import cairoshop.repositories.specs.ConditionConnector;
 import cairoshop.repositories.specs.QuerySpecs;
 import cairoshop.services.helpers.CommonQuerySpecs;
 import cairoshop.services.interfaces.AdminService;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Stateless

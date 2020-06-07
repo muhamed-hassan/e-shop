@@ -1,8 +1,5 @@
 package cairoshop.repositories.specs;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
@@ -10,9 +7,13 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public final class QuerySpecs {
@@ -26,7 +27,7 @@ public final class QuerySpecs {
         CONDITIONS = new ArrayList<>(0);
     }
 
-    public QuerySpecs() { }
+    public QuerySpecs() {}
 
     public QuerySpecs(Join join) {
         this.join = join;
@@ -47,7 +48,6 @@ public final class QuerySpecs {
     }
 
     public CriteriaQuery build(CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder, Root entity) {
-
         List<Predicate> predicates = new ArrayList<>(0);
         
         CONDITIONS.forEach(

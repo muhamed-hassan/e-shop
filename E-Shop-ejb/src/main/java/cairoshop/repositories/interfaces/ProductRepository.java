@@ -5,7 +5,7 @@ import cairoshop.repositories.exceptions.RetrievalException;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public interface ProductRepository extends AbstractRepository<Product>, PagableRepository<Product> {

@@ -1,9 +1,5 @@
 package cairoshop.web.endpoints;
 
-import cairoshop.repositories.interfaces.ProductRepository;
-import cairoshop.web.endpoints.utils.MediaType;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
@@ -13,9 +9,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import cairoshop.repositories.interfaces.ProductRepository;
+import cairoshop.web.endpoints.utils.MediaType;
+
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Path("/images")

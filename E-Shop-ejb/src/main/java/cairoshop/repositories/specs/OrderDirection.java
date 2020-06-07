@@ -2,10 +2,12 @@ package cairoshop.repositories.specs;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public final class OrderDirection {
+    
+    private OrderDirection() {}
 
     public final static String ASC = "asc";
     public final static String DESC = "desc";

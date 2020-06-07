@@ -1,12 +1,5 @@
 package cairoshop.web.models.common;
 
-import cairoshop.entities.Admin;
-import cairoshop.entities.Customer;
-import cairoshop.entities.User;
-import cairoshop.services.interfaces.UserService;
-import cairoshop.utils.PasswordEncryptor;
-import cairoshop.utils.SharedContent;
-import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -14,9 +7,18 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
+import java.util.Map;
+
+import cairoshop.entities.Admin;
+import cairoshop.entities.Customer;
+import cairoshop.entities.User;
+import cairoshop.services.interfaces.UserService;
+import cairoshop.utils.PasswordEncryptor;
+import cairoshop.utils.SharedContent;
+
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @ManagedBean

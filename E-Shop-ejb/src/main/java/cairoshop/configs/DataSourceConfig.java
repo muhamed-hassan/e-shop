@@ -6,7 +6,7 @@ import javax.ejb.Startup;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Startup
@@ -20,4 +20,4 @@ import javax.ejb.Startup;
         properties = {"res-type=javax.sql.DataSource"}
         
 )
-public class DataSourceConfig { }
+public class DataSourceConfig {}

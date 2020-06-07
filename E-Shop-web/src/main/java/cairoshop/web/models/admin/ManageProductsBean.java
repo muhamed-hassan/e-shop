@@ -1,5 +1,15 @@
 package cairoshop.web.models.admin;
 
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.inject.Inject;
+import javax.servlet.http.Part;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+
 import cairoshop.entities.Category;
 import cairoshop.entities.Product;
 import cairoshop.entities.Vendor;
@@ -13,18 +23,10 @@ import cairoshop.utils.ImageStreamExtractor;
 import cairoshop.utils.Messages;
 import cairoshop.utils.Scope;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.inject.Inject;
-import javax.servlet.http.Part;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @ManagedBean

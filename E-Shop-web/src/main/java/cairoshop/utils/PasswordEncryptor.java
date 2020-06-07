@@ -1,18 +1,21 @@
 package cairoshop.utils;
 
-import com.demo.GlobalLogger;
-import java.security.MessageDigest;
-import java.util.Arrays;
-import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.Base64;
+
 import org.apache.logging.log4j.Level;
+
+import com.cairoshop.GlobalLogger;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Singleton

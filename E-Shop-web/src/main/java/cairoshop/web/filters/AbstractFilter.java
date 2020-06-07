@@ -6,15 +6,15 @@ import javax.servlet.ServletException;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public interface AbstractFilter extends Filter {
 
     @Override
-    default void init(FilterConfig filterConfig) throws ServletException { }
+    default void init(FilterConfig filterConfig) throws ServletException {}
 
     @Override
-    default void destroy() { }
+    default void destroy() {}
     
 }

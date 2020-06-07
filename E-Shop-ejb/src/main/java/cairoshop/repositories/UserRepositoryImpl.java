@@ -1,5 +1,17 @@
 package cairoshop.repositories;
 
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
+
+import java.util.List;
+
+import org.apache.logging.log4j.Level;
+import org.hibernate.Session;
+
 import cairoshop.entities.Customer;
 import cairoshop.entities.Product;
 import cairoshop.entities.User;
@@ -7,19 +19,10 @@ import cairoshop.helpers.msgs.RepositoryMessage;
 import cairoshop.repositories.exceptions.ModificationException;
 import cairoshop.repositories.exceptions.RetrievalException;
 import cairoshop.repositories.interfaces.UserRepository;
-import java.util.List;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
-import org.apache.logging.log4j.Level;
-import org.hibernate.Session;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Stateless

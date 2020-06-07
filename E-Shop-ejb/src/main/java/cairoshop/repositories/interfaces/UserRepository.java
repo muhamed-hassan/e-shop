@@ -1,15 +1,16 @@
 package cairoshop.repositories.interfaces;
 
+import java.util.List;
+
 import cairoshop.entities.Customer;
 import cairoshop.entities.Product;
 import cairoshop.entities.User;
 import cairoshop.repositories.exceptions.ModificationException;
 import cairoshop.repositories.exceptions.RetrievalException;
-import java.util.List;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public interface UserRepository extends AbstractRepository<User>, PagableRepository<User> {

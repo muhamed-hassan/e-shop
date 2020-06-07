@@ -1,5 +1,13 @@
 package cairoshop.web.models.admin;
 
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import cairoshop.entities.Customer;
 import cairoshop.web.models.common.navigation.AdminNavigation;
 import cairoshop.services.interfaces.AdminService;
@@ -9,16 +17,10 @@ import cairoshop.utils.Messages;
 import cairoshop.utils.Scope;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
-import java.io.Serializable;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @ManagedBean

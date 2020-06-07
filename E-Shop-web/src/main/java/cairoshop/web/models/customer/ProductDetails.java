@@ -1,15 +1,5 @@
 package cairoshop.web.models.customer;
 
-import cairoshop.entities.Customer;
-import cairoshop.entities.Product;
-import cairoshop.services.interfaces.CustomerService;
-import cairoshop.utils.CustomerContent;
-import cairoshop.utils.Messages;
-import cairoshop.utils.Scope;
-import cairoshop.web.models.common.ContentChanger;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -17,9 +7,21 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
+import cairoshop.entities.Customer;
+import cairoshop.entities.Product;
+import cairoshop.services.interfaces.CustomerService;
+import cairoshop.utils.CustomerContent;
+import cairoshop.utils.Messages;
+import cairoshop.utils.Scope;
+import cairoshop.web.models.common.ContentChanger;
+
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @ManagedBean

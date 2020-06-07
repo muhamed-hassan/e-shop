@@ -1,9 +1,5 @@
 package cairoshop.web.filters;
 
-import cairoshop.entities.Admin;
-import cairoshop.entities.Customer;
-import cairoshop.entities.User;
-import java.io.IOException;
 import javax.faces.application.ResourceHandler;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,9 +10,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import java.io.IOException;
+
+import cairoshop.entities.Admin;
+import cairoshop.entities.Customer;
+import cairoshop.entities.User;
+
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @WebFilter(urlPatterns

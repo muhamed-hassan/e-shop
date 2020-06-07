@@ -1,5 +1,18 @@
 package cairoshop.repositories;
 
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import java.util.List;
+
+import org.apache.logging.log4j.Level;
+import org.hibernate.Session;
+
+import com.cairoshop.GlobalLogger;
+
 import cairoshop.configs.HibernateConfigurator;
 import cairoshop.helpers.msgs.RepositoryMessage;
 import cairoshop.repositories.exceptions.DeletionException;
@@ -9,19 +22,10 @@ import cairoshop.repositories.exceptions.RetrievalException;
 import cairoshop.repositories.interfaces.AbstractRepository;
 import cairoshop.repositories.interfaces.PagableRepository;
 import cairoshop.repositories.specs.QuerySpecs;
-import com.demo.GlobalLogger;
-import java.util.List;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import org.apache.logging.log4j.Level;
-import org.hibernate.Session;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 public abstract class BaseRepository<T> implements AbstractRepository<T>, PagableRepository<T> {

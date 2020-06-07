@@ -1,5 +1,10 @@
 package cairoshop.services;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
+import org.apache.logging.log4j.Level;
+
 import cairoshop.entities.Customer;
 import cairoshop.entities.User;
 import cairoshop.repositories.exceptions.RetrievalException;
@@ -8,13 +13,10 @@ import cairoshop.repositories.specs.Condition;
 import cairoshop.repositories.specs.ConditionConnector;
 import cairoshop.repositories.specs.QuerySpecs;
 import cairoshop.services.interfaces.UserService;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import org.apache.logging.log4j.Level;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://eg.linkedin.com/in/muhamedhassanqotb               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Stateless
