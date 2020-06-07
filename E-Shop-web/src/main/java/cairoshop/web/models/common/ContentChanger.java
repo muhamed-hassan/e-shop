@@ -2,11 +2,13 @@ package cairoshop.web.models.common;
 
 import javax.faces.context.FacesContext;
 import javax.inject.Singleton;
+import javax.annotation.PostConstruct;
+import javax.faces.context.ExternalContext;
 
 import java.util.Map;
 
 import cairoshop.utils.Scope;
-import cairoshop.utils.SharedContent;
+import cairoshop.pages.SharedContent;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -16,53 +18,41 @@ import cairoshop.utils.SharedContent;
 @Singleton
 public class ContentChanger {
 
+    private ExternalContext externalContext;
+    
+    @PostConstruct
+    public void initExternalContext() {
+        externalContext = FacesContext.getCurrentInstance().getExternalContext();
+    }
+    
     public void displayContent(String contentLocation) {
-        FacesContext
-                .getCurrentInstance()
-                .getExternalContext()
-                .getSessionMap()
-                .put("content", contentLocation);
+        externalContext.getSessionMap()
+                        .put("content", contentLocation);
     }
 
     public void displayContentWithMsg(String msg) {
-        Map<String, Object> sessionMap = FacesContext
-                .getCurrentInstance()
-                .getExternalContext()
-                .getSessionMap();
-
+        Map<String, Object> sessionMap = externalContext.getSessionMap();
         sessionMap.put("msg", msg);
         sessionMap.put("content", SharedContent.RESULT_CONTENT);
     }
 
     public void displayContentWithMsg(String msg, int status, int scope) {
-
+        Map<String, Object> dataMap = null;
         switch (scope) {
             case Scope.REQUEST:
-                Map<String, Object> requestMap = FacesContext
-                        .getCurrentInstance()
-                        .getExternalContext()
-                        .getRequestMap();
-                requestMap.put("msg", msg);
-                requestMap.put("result", status);
+                dataMap = externalContext.getRequestMap();                
                 break;
             case Scope.SESSION:
-                Map<String, Object> sessionMap = FacesContext
-                        .getCurrentInstance()
-                        .getExternalContext()
-                        .getSessionMap();
-                sessionMap.put("msg", msg);
-                sessionMap.put("result", status);
-                sessionMap.put("content", SharedContent.RESULT_CONTENT);
+                dataMap = externalContext.getSessionMap();
+                dataMap.put("content", SharedContent.RESULT_CONTENT);
                 break;
         }
-
+        dataMap.put("msg", msg);
+        dataMap.put("result", status);
     }
 
     public void displayNoDataFound(String noDataFoundMsg) {
-        Map<String, Object> sessionMap = FacesContext
-                .getCurrentInstance()
-                .getExternalContext()
-                .getSessionMap();
+        Map<String, Object> sessionMap = externalContext.getSessionMap();
         sessionMap.put("result", -2);
         sessionMap.put("msg", noDataFoundMsg);
         sessionMap.put("content", SharedContent.RESULT_CONTENT);

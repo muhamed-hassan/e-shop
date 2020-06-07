@@ -51,166 +51,113 @@ public class CustomerServiceImpl extends CommonRetrievalImpl implements Customer
 
     @Override
     public List<Product> getProductsIn(Object productClassification, int startPosition) {
-
         Condition condition = null;
         if (productClassification instanceof Vendor) {
             condition = new Condition("vendor.id", ConditionConnector.EQUAL,((Vendor) productClassification).getId());
         } else if (productClassification instanceof Category) {
             condition = new Condition("category.id", ConditionConnector.EQUAL,((Category) productClassification).getId());
-        } 
-
-        try {
-            
-            return productRepository.findAll(
-                    new QuerySpecs()
-                        .addPredicate(condition)
-                        .addPredicate(new Condition("notDeleted", ConditionConnector.EQUAL,true))
-                    , startPosition);
-            
-        } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getProductsIn(Object productClassification, int startPosition)",
-                            getClass(),
-                            ex
-                    );
-            return null;
         }
 
+        List<Product> products = null;
+        try {
+            
+            products = productRepository.findAll(new QuerySpecs().addPredicate(condition)
+                                                                    .addPredicate(new Condition("notDeleted", ConditionConnector.EQUAL,true)), 
+                                                    startPosition);
+            
+        } catch (RetrievalException ex) {
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getProductsIn(Object productClassification, int startPosition)", getClass(), ex);
+        }
+        return products;
     }
 
     @Override
     public List<Product> sortProducts(String orderBy, String orderDirection, int startPosition) {
-
+        List<Product> products = null;
         try {
             
-            return productRepository.findAll(
-                    new QuerySpecs(orderBy, orderDirection)
-                        .addPredicate(new Condition("notDeleted", ConditionConnector.EQUAL,true))
-                    , startPosition);
+            products = productRepository.findAll(new QuerySpecs(orderBy, orderDirection)
+                                                        .addPredicate(new Condition("notDeleted", ConditionConnector.EQUAL,true)), 
+                                                    startPosition);
                
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::sortProducts(String orderBy, String orderDirection, int startPosition)",
-                            getClass(),
-                            ex
-                    );
-            return null;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::sortProducts(String orderBy, String orderDirection, int startPosition)", getClass(), ex);
         }
-        
+        return products;
     }
 
     @Override
     public List<Product> getProductsByName(String pName, int startPosition) {
-
+        List<Product> products = null;
         try {
             
-            return productRepository.findAll(
-                    new QuerySpecs()
-                        .addPredicate(new Condition("name", ConditionConnector.LIKE, pName))
-                        .addPredicate(new Condition("notDeleted", ConditionConnector.EQUAL,true))
-                    , startPosition);
+            products = productRepository.findAll(new QuerySpecs()
+                                                        .addPredicate(new Condition("name", ConditionConnector.LIKE, pName))
+                                                        .addPredicate(new Condition("notDeleted", ConditionConnector.EQUAL,true)), 
+                                                    startPosition);
 
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getProductsByName(String pName)",
-                            getClass(),
-                            ex
-                    );
-            return null;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getProductsByName(String pName)", getClass(), ex);
         }
-        
+        return products;
     }
 
     @Override
     public boolean addProductToFavoriteList(Product product, Customer customer) {
-        
+        boolean added = true;
         try {
             
             userRepository.update(customer, product);
-            return true;
             
         } catch (ModificationException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::addProductToFavoriteList(Product product, Customer customer)",
-                            getClass(),
-                            ex
-                    );
-            return false;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::addProductToFavoriteList(Product product, Customer customer)", getClass(), ex);
+            added = false;
         }
-
+        return added;
     }
 
     @Override
     public List<Product> getMyFavoriteList(int custId, int startPosition) {
-
+        List<Product> products = null;
         try {
             
-            return userRepository.findAll(custId, startPosition);
+            products = userRepository.findAll(custId, startPosition);
              
         } catch (RetrievalException ex) { 
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getMyFavoriteList(int custId, int startPosition)",
-                            getClass(),
-                            ex
-                    );
-            return null;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getMyFavoriteList(int custId, int startPosition)", getClass(), ex);
         }
-        
+        return products;
     }
 
     @Override
     public int getFavoriteProductsCount(int custId) {
-        
+        int count = -1;
         try {
             
-            return userRepository.getCount(
-                    new QuerySpecs(new Join("favoriteProducts"))
-                        .addPredicate(new Condition("id", ConditionConnector.EQUAL,custId)));
+            count = userRepository.getCount(new QuerySpecs(new Join("favoriteProducts"))
+                                                .addPredicate(new Condition("id", ConditionConnector.EQUAL,custId)));
             
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getFavoriteProductsCount(int custId)",
-                            getClass(),
-                            ex
-                    );
-            return -1;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getFavoriteProductsCount(int custId)", getClass(), ex);
         }
+        return count;
     }
 
     @Override
     public List<Integer> getLikedProducts(int custId) {
-
+        List<Integer> likedProducts = null;
         try {                   
             
-            return userRepository.findAll(custId);
+            likedProducts = userRepository.findAll(custId);
             
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getLikedProducts(int custId)",
-                            getClass(),
-                            ex
-                    );
-            return null;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getLikedProducts(int custId)", getClass(), ex);
         }
+        return likedProducts;
     }
 
     @Override
-    public int getProductsCount(Object productClassification) {
-        
+    public int getProductsCount(Object productClassification) {        
         Condition condition = null;
         if (productClassification instanceof Vendor) {
             condition = new Condition("vendor.id", ConditionConnector.EQUAL,((Vendor) productClassification).getId());
@@ -220,23 +167,17 @@ public class CustomerServiceImpl extends CommonRetrievalImpl implements Customer
             condition = new Condition("name", ConditionConnector.LIKE,(String) productClassification);
         }
 
+        int count = -1;
         try {
             
-            return productRepository.getCount(
-                    new QuerySpecs()
-                        .addPredicate(condition)
-                        .addPredicate(new Condition("notDeleted", ConditionConnector.EQUAL,true)));
+            count =  productRepository.getCount(new QuerySpecs()
+                                                    .addPredicate(condition)
+                                                    .addPredicate(new Condition("notDeleted", ConditionConnector.EQUAL,true)));
                         
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getProductsCount(Object productClassification)",
-                            getClass(),
-                            ex
-                    );
-            return -1;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getProductsCount(Object productClassification)", getClass(), ex);
         }
+        return count;
     }
 
 }

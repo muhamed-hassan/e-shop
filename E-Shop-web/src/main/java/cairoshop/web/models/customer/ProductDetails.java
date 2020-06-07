@@ -4,8 +4,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,10 +12,10 @@ import java.util.Map;
 import cairoshop.entities.Customer;
 import cairoshop.entities.Product;
 import cairoshop.services.interfaces.CustomerService;
-import cairoshop.utils.CustomerContent;
-import cairoshop.utils.Messages;
+import cairoshop.pages.CustomerContent;
+import cairoshop.messages.Messages;
 import cairoshop.utils.Scope;
-import cairoshop.web.models.common.ContentChanger;
+import cairoshop.web.models.common.CommonBean;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -26,7 +24,7 @@ import cairoshop.web.models.common.ContentChanger;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class ProductDetails implements Serializable {
+public class ProductDetails extends CommonBean implements Serializable {
 
     @EJB
     private CustomerService customerService;
@@ -36,24 +34,14 @@ public class ProductDetails implements Serializable {
     private Customer currentUser;
     private boolean favorite;
 
-    @Inject
-    private ContentChanger contentChanger;
-
     // =========================================================================
     // =======> helpers
     // =========================================================================
     @PostConstruct
     public void init() {
-        Map<String, Object> sessionMap = FacesContext
-                .getCurrentInstance()
-                .getExternalContext()
-                .getSessionMap();
-
-        currentUser = (Customer) sessionMap
-                .get("currentUser");
-
-        likedProducts = customerService
-                .getLikedProducts(currentUser.getId());
+        Map<String, Object> sessionMap = getSessionMap();
+        currentUser = (Customer) sessionMap.get("currentUser");
+        likedProducts = customerService.getLikedProducts(currentUser.getId());
     }
 
     // =========================================================================
@@ -80,23 +68,18 @@ public class ProductDetails implements Serializable {
     // =========================================================================
     public void getDetails(Product product) {
         this.product = product;
-
         if (likedProducts != null && !likedProducts.isEmpty()) {
-            favorite = likedProducts
-                    .stream()
-                    .anyMatch(likedProductId -> likedProductId == product.getId());
+            favorite = likedProducts.stream()
+                                        .anyMatch(likedProductId -> likedProductId == product.getId());
         }
 
         if (this.product != null) {
-            Map<String, Object> sessionMap = FacesContext
-                    .getCurrentInstance()
-                    .getExternalContext()
-                    .getSessionMap();
+            Map<String, Object> sessionMap = getSessionMap();
             sessionMap.put("content", CustomerContent.PRODUCT_PAGE);
             return;
         }
-
-        contentChanger.displayContentWithMsg(Messages.SOMETHING_WENT_WRONG, -1, Scope.SESSION);
+        
+        getContentChanger().displayContentWithMsg(Messages.SOMETHING_WENT_WRONG, -1, Scope.SESSION);
     }
 
     // =========================================================================
@@ -104,11 +87,9 @@ public class ProductDetails implements Serializable {
     // =========================================================================
     public void addToFavorites() {
         favorite = customerService.addProductToFavoriteList(product, currentUser);
-
         if (favorite) {
             likedProducts.add(product.getId());
         }
-
     }
 
 }

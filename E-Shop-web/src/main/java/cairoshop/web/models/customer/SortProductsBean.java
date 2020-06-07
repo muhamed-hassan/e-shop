@@ -12,8 +12,8 @@ import java.util.Map;
 import cairoshop.entities.Product;
 import cairoshop.web.models.common.navigation.CustomerNavigation;
 import cairoshop.services.interfaces.CustomerService;
-import cairoshop.utils.CustomerContent;
-import cairoshop.utils.CustomerMessages;
+import cairoshop.pages.CustomerContent;
+import cairoshop.messages.CustomerMessages;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PaginationControlsWithSorting;
 
@@ -24,9 +24,7 @@ import cairoshop.web.models.common.pagination.PaginationControlsWithSorting;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class SortProductsBean 
-        extends CommonBean 
-        implements Serializable, CustomerNavigation, PaginationControlsWithSorting {
+public class SortProductsBean extends CommonBean implements Serializable, CustomerNavigation, PaginationControlsWithSorting {
 
     @EJB
     private CustomerService customerService;
@@ -51,7 +49,6 @@ public class SortProductsBean
             getContentChanger().displayNoDataFound(CustomerMessages.NO_PRODUCTS_TO_DISPLAY);
             return;
         }
-
         getContentChanger().displayContent(CustomerContent.SORT_PRODUCTS);
     }
 
@@ -76,8 +73,7 @@ public class SortProductsBean
     @Override
     public void last() {
         int dataSize = customerService.getProductsCount();
-        int chunkSize = getPaginator().getChunkSize();
-        
+        int chunkSize = getPaginator().getChunkSize();        
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
@@ -86,11 +82,7 @@ public class SortProductsBean
         sortCriteria = criteria;
         sortDirection = direction;
 
-        Map<String, Object> sessionMap = FacesContext
-                .getCurrentInstance()
-                .getExternalContext()
-                .getSessionMap();
-
+        Map<String, Object> sessionMap = getSessionMap();
         sessionMap.put("sortCriteria", criteria);
         sessionMap.put("sortDirection", direction.equals("asc") ? "an ascending" : "a descending");
 

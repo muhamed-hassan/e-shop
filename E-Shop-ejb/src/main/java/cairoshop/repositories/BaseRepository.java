@@ -55,94 +55,62 @@ public abstract class BaseRepository<T> implements AbstractRepository<T>, Pagabl
 
     //**************************************************************************
     @Override
-    public void add(T entity) throws InsertionException {
-        
+    public void add(T entity) throws InsertionException {        
         Session session = hibernateConfigurator.getSessionFactory().openSession();
-
         try {
 
             session.getTransaction().begin();
-
             session.save(entity);
-
             session.getTransaction().commit();
 
         } catch (Exception ex) {
             session.getTransaction().rollback();
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_ADDING,
-                            getClass(),
-                            ex
-                    );
+            getGlobalLogger().doLogging(Level.ERROR, RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_ADDING, getClass(), ex);
             throw new InsertionException(RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_ADDING, ex);
         } finally {
             session.close();
         }
-
     }
 
     @Override
-    public void update(T entity) throws ModificationException {
-        
+    public void update(T entity) throws ModificationException {        
         Session session = hibernateConfigurator.getSessionFactory().openSession();
 
         try {
 
             session.getTransaction().begin();
-
             session.update(entity);
-
             session.getTransaction().commit();
 
         } catch (Exception ex) {
             session.getTransaction().rollback();
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_MODIFICATION,
-                            getClass(),
-                            ex
-                    );
+            getGlobalLogger().doLogging(Level.ERROR, RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_MODIFICATION, getClass(), ex);
             throw new ModificationException(RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_MODIFICATION, ex);
         } finally {
             session.close();
         }
-
     }
 
     @Override
-    public void remove(int id) throws DeletionException {
-        
+    public void remove(int id) throws DeletionException {        
         Session session = hibernateConfigurator.getSessionFactory().openSession();
 
         try {
 
             session.getTransaction().begin();
-
             StringBuilder hql = new StringBuilder()
                     .append("UPDATE " + entityName + " obj ")
                     .append("SET obj." + ("User".equals(entityName) ? "active" : "notDeleted") + "=:flag ")
                     .append("WHERE obj.id=:id");
-
-            session
-                    .createQuery(hql.toString())
+            session.createQuery(hql.toString())
                     .setParameter("flag", false)
                     .setParameter("id", id)
                     .executeUpdate();
-
             session.getTransaction().commit();
 
         } catch (Exception ex) {
             session.getTransaction().rollback();
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_REMOVAL,
-                            getClass(),
-                            ex
-                    );
+            getGlobalLogger().doLogging(Level.ERROR, RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_REMOVAL, getClass(), ex);
             throw new DeletionException(RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_REMOVAL, ex);
         } finally {
             session.close();
@@ -150,8 +118,7 @@ public abstract class BaseRepository<T> implements AbstractRepository<T>, Pagabl
     }
 
     @Override
-    public T find(QuerySpecs querySpecs) throws RetrievalException {
-        
+    public T find(QuerySpecs querySpecs) throws RetrievalException {        
         EntityManager entityManager = null;
         T entity = null;
         
@@ -160,33 +127,22 @@ public abstract class BaseRepository<T> implements AbstractRepository<T>, Pagabl
             entityManager = session.getEntityManagerFactory().createEntityManager();
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.entity);			
-            Root<T> root = criteriaQuery.from(this.entity);			
-            
-            entity = (T) entityManager
-                        .createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root))
-                        .getSingleResult();
+            Root<T> root = criteriaQuery.from(this.entity);           
+            entity = (T) entityManager.createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root)).getSingleResult();
 
         } catch (Exception ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL,
-                            getClass(),
-                            ex
-                    );
+            getGlobalLogger().doLogging(Level.ERROR, RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, getClass(), ex);
             throw new RetrievalException(RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, ex);
         } finally {
-            if( entityManager != null ) {
+            if (entityManager != null) {
                 entityManager.close();
             }
         }
-
         return entity;
     }
 
     @Override
-    public List<T> findAll(QuerySpecs querySpecs) throws RetrievalException {
-        
+    public List<T> findAll(QuerySpecs querySpecs) throws RetrievalException {        
         EntityManager entityManager = null;
         List<T> data = null;
         
@@ -195,33 +151,22 @@ public abstract class BaseRepository<T> implements AbstractRepository<T>, Pagabl
             entityManager = session.getEntityManagerFactory().createEntityManager();
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.entity);			
-            Root<T> root = criteriaQuery.from(this.entity);
-                                 
-            data = entityManager
-                    .createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root))
-                    .getResultList();
+            Root<T> root = criteriaQuery.from(this.entity);                                 
+            data = entityManager.createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root)).getResultList();
                                  
         } catch (Exception ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL,
-                            getClass(),
-                            ex
-                    );
+            getGlobalLogger().doLogging(Level.ERROR, RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, getClass(), ex);
             throw new RetrievalException(RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, ex);
         } finally {
-            if( entityManager != null ) {
+            if (entityManager != null) {
                 entityManager.close();
             }
         }
-
         return data;
     }
 
     @Override
-    public List<T> findAll(QuerySpecs querySpecs, int startPosition) throws RetrievalException {
-        
+    public List<T> findAll(QuerySpecs querySpecs, int startPosition) throws RetrievalException {        
         EntityManager entityManager = null;
         List<T> data = null;
         
@@ -230,35 +175,25 @@ public abstract class BaseRepository<T> implements AbstractRepository<T>, Pagabl
             entityManager = session.getEntityManagerFactory().createEntityManager();
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.entity);            
-            Root<T> root = criteriaQuery.from(this.entity);
-                                 
-            data = entityManager
-                    .createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root))
-                    .setFirstResult(startPosition)
-                    .setMaxResults(5)
-                    .getResultList();
+            Root<T> root = criteriaQuery.from(this.entity);                                 
+            data = entityManager.createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root))
+                                    .setFirstResult(startPosition)
+                                    .setMaxResults(5)
+                                    .getResultList();
             
         } catch (Exception ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL,
-                            getClass(),
-                            ex
-                    );
+            getGlobalLogger().doLogging(Level.ERROR, RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, getClass(), ex);
             throw new RetrievalException(RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, ex);
         } finally {
-            if( entityManager != null ) {
+            if (entityManager != null) {
                 entityManager.close();
             }
         }
-
         return data;
     }
 
     @Override
-    public int getCount(QuerySpecs querySpecs) throws RetrievalException {
-        
+    public int getCount(QuerySpecs querySpecs) throws RetrievalException {        
         EntityManager entityManager = null;
         Integer count = null;
         
@@ -267,34 +202,22 @@ public abstract class BaseRepository<T> implements AbstractRepository<T>, Pagabl
             entityManager = session.getEntityManagerFactory().createEntityManager();
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);			
-            Root<T> root = criteriaQuery.from(entity);
-            
-            if( querySpecs.getJoin() != null ) {
+            Root<T> root = criteriaQuery.from(entity);            
+            if (querySpecs.getJoin() != null) {
                 criteriaQuery = criteriaQuery.select(criteriaBuilder.count(root.join(querySpecs.getJoin().getJoinAttribute())));
             } else {
                 criteriaQuery = criteriaQuery.select(criteriaBuilder.count(root));
-            }
-            
-            count = ((Long) entityManager
-                        .createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root))
-                        .getSingleResult())
-                        .intValue();
+            }            
+            count = ((Long) entityManager.createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root)).getSingleResult()).intValue();
             
         } catch (Exception ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            RepositoryMessage.AN_ERROR_OCCURED_DURING_COMPUTING_ENTITY_COUNT,
-                            getClass(),
-                            ex
-                    );
+            getGlobalLogger().doLogging(Level.ERROR, RepositoryMessage.AN_ERROR_OCCURED_DURING_COMPUTING_ENTITY_COUNT, getClass(), ex);
             throw new RetrievalException(RepositoryMessage.AN_ERROR_OCCURED_DURING_COMPUTING_ENTITY_COUNT, ex);
         } finally {
-            if( entityManager != null ) {
+            if (entityManager != null) {
                 entityManager.close();
             }
         }
-
         return count;
     }
 

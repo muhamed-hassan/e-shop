@@ -9,7 +9,7 @@ import javax.servlet.ServletException;
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface AbstractFilter extends Filter {
+public interface BaseFilter extends Filter {
 
     @Override
     default void init(FilterConfig filterConfig) throws ServletException {}

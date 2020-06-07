@@ -1,13 +1,15 @@
-package cairoshop.utils;
+package cairoshop.messages;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface AdminMessages extends Messages {
+public final class AdminMessages extends Messages {
+    
+    private AdminMessages() {}
 
-    String NO_VENDORS_TO_DISPLAY = "No vendors to display";
-    String NO_CUSTOMERS_TO_DISPLAY = "No customers to display";
+    public static final String NO_VENDORS_TO_DISPLAY = "No vendors to display";
+    public static final String NO_CUSTOMERS_TO_DISPLAY = "No customers to display";
     
 }

@@ -2,6 +2,7 @@ package cairoshop.web.models.common;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 /* ************************************************************************** 
@@ -14,17 +15,9 @@ import javax.faces.context.FacesContext;
 public class LogoutBean {
 
     public String logout() {
-        FacesContext
-                .getCurrentInstance()
-                .getExternalContext()
-                .getSessionMap()
-                .clear();
-        
-        FacesContext
-                .getCurrentInstance()
-                .getExternalContext()
-                .invalidateSession();        
-
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        externalContext.getSessionMap().clear();        
+        externalContext.invalidateSession();
         return "logout";
     }
 

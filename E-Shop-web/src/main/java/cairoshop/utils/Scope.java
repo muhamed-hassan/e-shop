@@ -5,9 +5,11 @@ package cairoshop.utils;
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface Scope {
+public final class Scope {
     
-    int REQUEST = 1;
-    int SESSION = 2;
+    private Scope() {}
+    
+    public static final int REQUEST = 1;
+    public static final int SESSION = 2;
     
 }

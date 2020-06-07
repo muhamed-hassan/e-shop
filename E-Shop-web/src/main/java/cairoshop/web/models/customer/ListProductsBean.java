@@ -6,7 +6,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 
 import java.io.Serializable;
@@ -17,21 +16,19 @@ import cairoshop.entities.Category;
 import cairoshop.entities.Product;
 import cairoshop.entities.Vendor;
 import cairoshop.services.interfaces.CustomerService;
-import cairoshop.utils.CustomerContent;
-import cairoshop.utils.CustomerMessages;
+import cairoshop.pages.CustomerContent;
+import cairoshop.messages.CustomerMessages;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PaginationControlsForType;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/               *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped 
-public class ListProductsBean 
-        extends CommonBean
-        implements Serializable, PaginationControlsForType {
+public class ListProductsBean extends CommonBean implements Serializable, PaginationControlsForType {
 
     @EJB
     private CustomerService customerService;
@@ -50,8 +47,7 @@ public class ListProductsBean
         if (categories == null || vendors == null) {
             categories = customerService.getCategories();
             vendors = customerService.getVendors();
-        }
-        
+        }        
         selectedCategory = new Category();
         selectedVendor = new Vendor();
     }
@@ -90,62 +86,48 @@ public class ListProductsBean
     // =========================================================================
     // =======> onSelect 
     // =========================================================================
-    public void loadProductsOfCategory(ValueChangeEvent e) {
-        Map<String, Object> sessionMap = FacesContext
-                .getCurrentInstance()
-                .getExternalContext()
-                .getSessionMap();
-        selectedCategory.setId((Integer) e.getNewValue());
-        
-        selectedCategory.setName(
-                categories
-                .stream()
-                .filter(c -> c.getId() == selectedCategory.getId())
-                .map(Category::getName)
-                .collect(joining()));        
+    public void loadProductsOfCategory(ValueChangeEvent e) {        
+        selectedCategory.setId((Integer) e.getNewValue());        
+        selectedCategory.setName(categories.stream()
+                                            .filter(c -> c.getId() == selectedCategory.getId())
+                                            .map(Category::getName)
+                                            .collect(joining()));        
 
         resetPaginator(selectedCategory);
 
         if (products == null || products.isEmpty()) {
             StringBuilder msg = new StringBuilder()
-                    .append(CustomerMessages.CATEGORY_OF)
-                    .append(selectedCategory.getName())
-                    .append(CustomerMessages.HAS_NO_PRODUCTS_TO_DISPLAY);
-                    
+                                        .append(CustomerMessages.CATEGORY_OF)
+                                        .append(selectedCategory.getName())
+                                        .append(CustomerMessages.HAS_NO_PRODUCTS_TO_DISPLAY);                    
             getContentChanger().displayNoDataFound(msg.toString());
             return;
         }
 
+        Map<String, Object> sessionMap = getSessionMap();
         sessionMap.put("content", CustomerContent.VIEW_PRODUCTS_IN);
         sessionMap.put("selected", "category");
     }
 
     public void loadProductsOfVendor(ValueChangeEvent e) {
-        Map<String, Object> sessionMap = FacesContext
-                .getCurrentInstance()
-                .getExternalContext()
-                .getSessionMap();
         selectedVendor.setId((Integer) e.getNewValue());
-
-        selectedVendor.setName(
-                vendors
-                .stream()
-                .filter(v -> v.getId() == selectedVendor.getId())
-                .map(Vendor::getName)
-                .collect(joining()));
+        selectedVendor.setName(vendors.stream()
+                                        .filter(v -> v.getId() == selectedVendor.getId())
+                                        .map(Vendor::getName)
+                                        .collect(joining()));
 
         resetPaginator(selectedVendor);
 
         if (products == null || products.isEmpty()) {
             StringBuilder msg = new StringBuilder()
-                    .append(CustomerMessages.VENDOR_OF)
-                    .append(selectedVendor.getName())
-                    .append(CustomerMessages.HAS_NO_PRODUCTS_TO_DISPLAY);
-                    
+                                        .append(CustomerMessages.VENDOR_OF)
+                                        .append(selectedVendor.getName())
+                                        .append(CustomerMessages.HAS_NO_PRODUCTS_TO_DISPLAY);                    
             getContentChanger().displayNoDataFound(msg.toString());
             return;
         }
 
+        Map<String, Object> sessionMap = getSessionMap();
         sessionMap.put("content", CustomerContent.VIEW_PRODUCTS_IN);
         sessionMap.put("selected", "vendor");
     }
@@ -170,17 +152,14 @@ public class ListProductsBean
 
     @Override
     public void last(String selected) {
-        int dataSize = customerService
-                .getProductsCount(((selected.equals("vendor") ? selectedVendor : selectedCategory)));
-        int chunkSize = getPaginator().getChunkSize();
-        
+        int dataSize = customerService.getProductsCount(((selected.equals("vendor") ? selectedVendor : selectedCategory)));
+        int chunkSize = getPaginator().getChunkSize();        
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)), selected.equals("vendor") ? selectedVendor : selectedCategory);
     }
 
     @Override
     public void resetPaginator(Object object) {
-        getPaginator().setDataSize(customerService.getProductsCount(object));
-        
+        getPaginator().setDataSize(customerService.getProductsCount(object));        
         adjustPaginationControls(0, object);
     }
     

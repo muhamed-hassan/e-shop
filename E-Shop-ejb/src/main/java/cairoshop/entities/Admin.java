@@ -10,6 +10,4 @@ import javax.persistence.Entity;
  * ************************************************************************ */
 @Entity
 @DiscriminatorValue(value = "2")
-public class Admin extends User {
-
-}
+public class Admin extends User {}

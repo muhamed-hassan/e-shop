@@ -7,8 +7,6 @@ import javax.faces.validator.FacesValidator;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
-import java.util.regex.Pattern;
-
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
@@ -19,7 +17,7 @@ public class EmailValidator implements Validator {
 
     @Override
     public void validate(FacesContext fc, UIComponent uic, Object o) throws ValidatorException {        
-        if (!Pattern.compile("^[\\w\\.]+(@)[A-Za-z]+\\.([A-Za-z]{2,3})$").matcher((String) o).matches()) {
+        if (!Patterns.EMAIL_PATTERN.matcher((String) o).matches()) {
             throw new ValidatorException(new FacesMessage("Invalid email format"));
         }        
     }

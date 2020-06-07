@@ -7,6 +7,8 @@ package cairoshop.helpers.msgs;
  * ************************************************************************ */
 public final class RepositoryMessage {
     
+    private RepositoryMessage() {}
+    
     public static final String AN_ERROR_OCCURED_DURING_ENTITY_ADDING = "An error occured during entity adding";
     public static final String AN_ERROR_OCCURED_DURING_ENTITY_MODIFICATION = "An error occured during entity modification";
     public static final String AN_ERROR_OCCURED_DURING_ENTITY_REMOVAL = "An error occured during entity removal";

@@ -7,8 +7,6 @@ import javax.faces.validator.FacesValidator;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
-import java.util.regex.Pattern;
-
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
@@ -31,25 +29,25 @@ public class TypeNameValidator implements Validator {
         } else {
             switch (componentId) {
                 case "priceInput": {
-                    if (!Pattern.compile("[1-9][0-9]{1,3}(\\.[0-9]*)?").matcher(o.toString()).matches()) {
+                    if (!Patterns.PRICE_PATTERN.matcher(o.toString()).matches()) {
                         throw new ValidatorException(new FacesMessage(""));
                     }
                     break;
                 }
                 case "quantityInput": {
-                    if (!Pattern.compile("^[1-9][0-9]*$").matcher(o.toString()).matches()) {
+                    if (!Patterns.QUANTITY_PATTERN.matcher(o.toString()).matches()) {
                         throw new ValidatorException(new FacesMessage(""));
                     }
                     break;
                 }
                 case "pNameInput": {
-                    if (!Pattern.compile("^([A-Za-z0-9\\.])([ ]?[A-Za-z0-9\\.])*$").matcher(o.toString()).matches()) {
+                    if (!Patterns.PRODUCT_NAME_PATTERN.matcher(o.toString()).matches()) {
                         throw new ValidatorException(new FacesMessage(""));
                     }
                     break;
                 }
                 default: {
-                    if (!Pattern.compile("^[A-Za-z]{2,50}$").matcher(o.toString()).matches()) {
+                    if (!Patterns.DEFAULT_PATTERN.matcher(o.toString()).matches()) {
                         if (componentId.equals("category") || componentId.equals("vendor")) {
                             throw new ValidatorException(new FacesMessage("Letters only allowed"));
                         }

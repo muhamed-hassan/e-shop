@@ -1,4 +1,4 @@
-package cairoshop.web.endpoints;
+package cairoshop.rest;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -11,9 +11,11 @@ import javax.ws.rs.core.Response;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.io.IOException;
 
 import cairoshop.repositories.interfaces.ProductRepository;
-import cairoshop.web.endpoints.utils.MediaType;
+import cairoshop.utils.MediaType;
+import cairoshop.repositories.exceptions.RetrievalException;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -31,35 +33,24 @@ public class ImageResource {
     
     @GET
     @Path("/{id}")
-    @Produces(
-            {
-                MediaType.IMAGE_JPEG, MediaType.IMAGE_JPG, MediaType.IMAGE_PNG
-            })
+    @Produces({MediaType.IMAGE_JPEG, MediaType.IMAGE_JPG, MediaType.IMAGE_PNG})
     public Response getImage(@PathParam("id") String id) {
-
         byte[] img = null;
-
         try {
             
             img = productRepository.getImage(Integer.parseInt(id));
                         
-            if ( img == null ) {
+            if (img == null) {
                 throw new RuntimeException("The default image will be loaded");
             }
 
-        } catch (Exception ex) {
-
+        } catch (RetrievalException retrievalException) {
             java.nio.file.Path errPath = Paths.get(servletContext.getRealPath("/resources/img/empty.jpg"));
-
             try {
-                
                 img = Files.readAllBytes(errPath);
-                
-            } catch (Exception e) { }
+            } catch (IOException ioe) {}
         }
-
-        return Response
-                .ok(img)
-                .build();
+        return Response.ok(img).build();
     }
+    
 }

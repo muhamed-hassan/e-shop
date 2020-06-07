@@ -7,8 +7,6 @@ import javax.faces.validator.FacesValidator;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
-import java.util.regex.Pattern;
-
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
@@ -16,10 +14,10 @@ import java.util.regex.Pattern;
  * ************************************************************************ */
 @FacesValidator
 public class AddressValidator implements Validator {
-
+    
     @Override
     public void validate(FacesContext fc, UIComponent uic, Object o) throws ValidatorException {        
-        if (!Pattern.compile("^[\\w\\.,][\\s\\w\\.,]*$").matcher((String) o).matches()) {
+        if (!Patterns.ADDRESS_PATTERN.matcher((String) o).matches()) {
             throw new ValidatorException(new FacesMessage("Address should contain letter, numbers, and dots"));
         }        
     }

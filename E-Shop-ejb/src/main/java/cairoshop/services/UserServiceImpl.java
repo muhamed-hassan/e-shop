@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Level;
 
 import cairoshop.entities.Customer;
 import cairoshop.entities.User;
+import cairoshop.repositories.exceptions.InsertionException;
 import cairoshop.repositories.exceptions.RetrievalException;
 import cairoshop.repositories.interfaces.UserRepository;
 import cairoshop.repositories.specs.Condition;
@@ -27,52 +28,34 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     public User signIn(String email, String password) {
-
+        User user = null;
         try {
 
-            return userRepository
-                    .find(
-                            new QuerySpecs()
-                                .addPredicate(new Condition("mail", ConditionConnector.EQUAL, email))
-                                .addPredicate(new Condition("password", ConditionConnector.EQUAL, password))
-                                .addPredicate(new Condition("active", ConditionConnector.EQUAL, true))
-                    );
+            user = userRepository.find(new QuerySpecs()
+                                            .addPredicate(new Condition("mail", ConditionConnector.EQUAL, email))
+                                            .addPredicate(new Condition("password", ConditionConnector.EQUAL, password))
+                                            .addPredicate(new Condition("active", ConditionConnector.EQUAL, true)));
             
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::signIn(String email, String password)",
-                            getClass(),
-                            ex
-                    );
-            return null;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::signIn(String email, String password)", getClass(), ex);
         }
-        
+        return user;
     }
 
     @Override
     public User signUp(Customer customer) {
-        
+        User user = null;
         try {
             
             userRepository.add(customer);
-
-            return userRepository
-                    .find(new QuerySpecs()
-                            .addPredicate(new Condition("mail", ConditionConnector.EQUAL, customer.getMail()))
-                            .addPredicate(new Condition("password", ConditionConnector.EQUAL, customer.getPassword()))
-                            .addPredicate(new Condition("active", ConditionConnector.EQUAL, true))
-                    );
-        } catch (Exception ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::signUp(Customer customer)",
-                            getClass(),
-                            ex
-                    );
-            return null;
+            user = userRepository.find(new QuerySpecs()
+                                            .addPredicate(new Condition("mail", ConditionConnector.EQUAL, customer.getMail()))
+                                            .addPredicate(new Condition("password", ConditionConnector.EQUAL, customer.getPassword()))
+                                            .addPredicate(new Condition("active", ConditionConnector.EQUAL, true)));
+            
+        } catch (InsertionException | RetrievalException ex) {
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::signUp(Customer customer)", getClass(), ex);
         }
+        return user;
     }
 }

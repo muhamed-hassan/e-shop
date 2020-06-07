@@ -10,9 +10,9 @@ import java.util.List;
 import cairoshop.entities.Product;
 import cairoshop.web.models.common.navigation.CustomerNavigation;
 import cairoshop.services.interfaces.CustomerService;
-import cairoshop.utils.CustomerContent;
-import cairoshop.utils.CustomerMessages;
-import cairoshop.utils.Messages;
+import cairoshop.pages.CustomerContent;
+import cairoshop.messages.CustomerMessages;
+import cairoshop.messages.Messages;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
 
@@ -23,9 +23,7 @@ import cairoshop.web.models.common.pagination.PlainPaginationControls;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class FindProductBean
-        extends CommonBean
-        implements Serializable, CustomerNavigation, PlainPaginationControls {
+public class FindProductBean extends CommonBean implements Serializable, CustomerNavigation, PlainPaginationControls {
 
     @EJB
     private CustomerService customerService;
@@ -55,10 +53,8 @@ public class FindProductBean
     public void navigate() {
         if (queryResult == null || queryResult.isEmpty()) {
             getContentChanger().displayNoDataFound(CustomerMessages.NO_PRODUCTS_TO_DISPLAY);
-
             return;
         }
-
         getContentChanger().displayContent(CustomerContent.PRODUCTS_RESULT);
     }
 
@@ -83,17 +79,14 @@ public class FindProductBean
     @Override
     public void last() {
         int dataSize = customerService.getProductsCount(keyword);
-        int chunkSize = getPaginator().getChunkSize();
-        
+        int chunkSize = getPaginator().getChunkSize();        
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
-        getPaginator().setDataSize(customerService.getProductsCount(keyword));
-        
+        getPaginator().setDataSize(customerService.getProductsCount(keyword));        
         adjustPaginationControls(0);
-
         if (queryResult == null || queryResult.isEmpty()) {
             getContentChanger().displayNoDataFound(Messages.NO_PRODUCTS_TO_DISPLAY);
         }

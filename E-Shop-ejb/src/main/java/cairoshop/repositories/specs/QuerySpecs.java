@@ -8,6 +8,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -18,14 +19,10 @@ import java.util.StringTokenizer;
  * ************************************************************************ */
 public final class QuerySpecs {
 
-    private final List<Condition> CONDITIONS;
+    private final List<Condition> CONDITIONS = new ArrayList<>(0);
     private String orderBy;
-    public String orderDirection;
+    private String orderDirection;
     private Join join;
-
-    {
-        CONDITIONS = new ArrayList<>(0);
-    }
 
     public QuerySpecs() {}
 
@@ -48,35 +45,28 @@ public final class QuerySpecs {
     }
 
     public CriteriaQuery build(CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder, Root entity) {
-        List<Predicate> predicates = new ArrayList<>(0);
-        
-        CONDITIONS.forEach(
-                (Condition condition) -> {
-                    
-                    StringTokenizer stringTokenizer = new StringTokenizer(condition.getField(), ".");
-                    Path path = entity.get(stringTokenizer.nextToken());
-                    while (stringTokenizer.hasMoreTokens()) {
-                        path = path.get(stringTokenizer.nextToken());
-                    }
+        List<Predicate> predicates = new LinkedList<>();        
+        for (Condition condition : CONDITIONS) {
+            StringTokenizer stringTokenizer = new StringTokenizer(condition.getField(), ".");
+            Path path = entity.get(stringTokenizer.nextToken());
+            while (stringTokenizer.hasMoreTokens()) {
+                path = path.get(stringTokenizer.nextToken());
+            }
 
-                    switch (condition.getOperator()) {
-                        case ConditionConnector.EQUAL:
-                            predicates.add(criteriaBuilder.equal(path, condition.getValue()));
-                            break;
-                        case ConditionConnector.LIKE:
-                            predicates.add(
-                                    criteriaBuilder.like(
-                                            path,
-                                            new StringBuilder("%").append(condition.getValue()).append("%").toString()));
-                            break;
-                    }
+            switch (condition.getOperator()) {
+                case ConditionConnector.EQUAL:
+                    predicates.add(criteriaBuilder.equal(path, condition.getValue()));
+                    break;
+                case ConditionConnector.LIKE:
+                    predicates.add(
+                            criteriaBuilder.like(
+                                    path,
+                                    new StringBuilder("%").append(condition.getValue()).append("%").toString()));
+                    break;
+            }
+        }
 
-                }
-        );
-
-        criteriaQuery = criteriaQuery.where(criteriaBuilder.and(
-                predicates.toArray(new Predicate[0])
-        ));
+        criteriaQuery = criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
 
         Order order = null;
         if (orderBy != null && !orderBy.trim().isEmpty() && orderDirection != null && !orderDirection.trim().isEmpty()) {

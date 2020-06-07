@@ -22,28 +22,19 @@ public class ProductRepositoryImpl extends BaseRepository<Product> implements Pr
     }
 
     @Override
-    public byte[] getImage(int pId) throws RetrievalException {
-        
+    public byte[] getImage(int pId) throws RetrievalException {        
         byte[] img = null;
         
         try (Session session = getHibernateConfigurator().getSessionFactory().openSession()) {
 
-            img = (byte[]) session
-                    .createQuery("SELECT p.image FROM Product p WHERE p.id=:id")
-                    .setParameter("id", pId)
-                    .uniqueResult();
+            img = (byte[]) session.createQuery("SELECT p.image FROM Product p WHERE p.id=:id")
+                                    .setParameter("id", pId)
+                                    .uniqueResult();
 
         } catch (Exception ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "An error occured during fetching product's image",
-                            getClass(),
-                            ex
-                    );
+            getGlobalLogger().doLogging(Level.ERROR, "An error occured during fetching product's image", getClass(), ex);
             throw new RetrievalException("An error occured during fetching product's image", ex);
         } 
-
         return img;
     }
 

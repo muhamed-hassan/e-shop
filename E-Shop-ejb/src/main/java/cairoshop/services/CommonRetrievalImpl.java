@@ -26,155 +26,101 @@ public class CommonRetrievalImpl extends BaseService implements CommonRetrieval 
 
     private ProductRepository productRepository;
 
-    public void setRepos(
-            CategoryRepository categoryRepository,
-            VendorRepository vendorRepository,
-            ProductRepository productRepository) {
-
+    public void setRepos(CategoryRepository categoryRepository, VendorRepository vendorRepository, ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
         this.vendorRepository = vendorRepository;
         this.productRepository = productRepository;
-
     }
     
      @Override
     public List<Category> getCategories() {
-
+        List<Category> categories = null;
         try {
 
-            return categoryRepository.findAll(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY);
+            categories = categoryRepository.findAll(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY);
 
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getCategories()",
-                            getClass(),
-                            ex
-                    );
-            return null;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getCategories()", getClass(), ex);
         }
-
+        return categories;
     }
     
      @Override
     public List<Category> getCategories(int startPosition) {
-
+        List<Category> categories = null;
         try {
 
-            return categoryRepository.findAll(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY, startPosition);
+            categories = categoryRepository.findAll(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY, startPosition);
 
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getCategories(int startPosition)",
-                            getClass(),
-                            ex
-                    );
-            return null;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getCategories(int startPosition)", getClass(), ex);
         }
-
+        return categories;
     }
     
     @Override
     public int getCategoriesCount() {
-
+        int count = -1;
         try {
             
-            return categoryRepository.getCount(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY);
+            count = categoryRepository.getCount(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY);
             
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getCategoriesCount()",
-                            getClass(),
-                            ex
-                    );
-            return -1;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getCategoriesCount()", getClass(), ex);
         }
-
+        return count;
     }
     
     @Override
     public List<Vendor> getVendors() {
-
+        List<Vendor> vendors = null;
         try {
 
-            return vendorRepository.findAll(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY);
+            vendors = vendorRepository.findAll(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY);
 
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getVendors()",
-                            getClass(),
-                            ex
-                    );
-            return null;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getVendors()", getClass(), ex);
         }
-
+        return vendors;
     }
 
     @Override
     public List<Vendor> getVendors(int startPosition) {
-
+        List<Vendor> vendors = null;
         try {
 
-            return vendorRepository.findAll(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY, startPosition);
+            vendors = vendorRepository.findAll(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY, startPosition);
 
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getVendors(int startPosition)",
-                            getClass(),
-                            ex
-                    );
-            return null;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getVendors(int startPosition)", getClass(), ex);
         }
-
+        return vendors;
     }
 
     @Override
     public int getVendorsCount() {
-
+        int count = -1;
         try {
             
-            return vendorRepository.getCount(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY);
+            count = vendorRepository.getCount(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY);
             
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getVendorsCount()",
-                            getClass(),
-                            ex
-                    );
-            return -1;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getVendorsCount()", getClass(), ex);
         }
-
+        return count;
     }
 
     @Override
     public int getProductsCount() {
-
+        int count = -1;
         try {
             
-            return productRepository.getCount(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY);
+            count = productRepository.getCount(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY);
             
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getProductsCount()",
-                            getClass(),
-                            ex
-                    );
-            return -1;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getProductsCount()", getClass(), ex);
         }
-
+        return count;
     }
 
 }

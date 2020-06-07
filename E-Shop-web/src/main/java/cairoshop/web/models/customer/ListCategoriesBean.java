@@ -11,8 +11,8 @@ import java.util.List;
 import cairoshop.entities.Category;
 import cairoshop.web.models.common.navigation.CustomerNavigation;
 import cairoshop.services.interfaces.CustomerService;
-import cairoshop.utils.CustomerContent;
-import cairoshop.utils.CustomerMessages;
+import cairoshop.pages.CustomerContent;
+import cairoshop.messages.CustomerMessages;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PaginationControlsWithEvent;
 
@@ -23,9 +23,7 @@ import cairoshop.web.models.common.pagination.PaginationControlsWithEvent;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class ListCategoriesBean 
-        extends CommonBean 
-        implements Serializable, CustomerNavigation, PaginationControlsWithEvent {
+public class ListCategoriesBean extends CommonBean implements Serializable, CustomerNavigation, PaginationControlsWithEvent {
 
     @EJB
     private CustomerService customerService;
@@ -64,15 +62,13 @@ public class ListCategoriesBean
     @Override
     public void last() {
         int dataSize = customerService.getCategoriesCount();
-        int chunkSize = getPaginator().getChunkSize();
-        
+        int chunkSize = getPaginator().getChunkSize();        
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator(ActionEvent event) {
-        getPaginator().setDataSize(customerService.getCategoriesCount());
-        
+        getPaginator().setDataSize(customerService.getCategoriesCount());        
         adjustPaginationControls(0);
     }
 
@@ -88,11 +84,9 @@ public class ListCategoriesBean
     @Override
     public void navigate() {
         if (categories == null || categories.isEmpty()) {
-            getContentChanger().displayNoDataFound(CustomerMessages.NO_CATEGORIES_TO_DISPLAY);
-            
+            getContentChanger().displayNoDataFound(CustomerMessages.NO_CATEGORIES_TO_DISPLAY);            
             return;
-        }
-        
+        }        
         getContentChanger().displayContent(CustomerContent.CATEGORIES_LIST);
     }
     

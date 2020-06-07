@@ -21,16 +21,11 @@ import cairoshop.entities.User;
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-@WebFilter(urlPatterns
-        = {
-            "/customer/*", "/admin/*", "/login-pg.jsf"
-        }, filterName = "authFilter")
-public class AuthenticationFilter implements AbstractFilter {
+@WebFilter(urlPatterns = {"/customer/*", "/admin/*", "/login-pg.jsf"}, filterName = "authFilter")
+public class AuthenticationFilter implements BaseFilter {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 
-            throws IOException, ServletException {
-        
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {        
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
         if (!httpRequest.getRequestURI().startsWith(httpRequest.getContextPath() + ResourceHandler.RESOURCE_IDENTIFIER)) {
@@ -40,9 +35,9 @@ public class AuthenticationFilter implements AbstractFilter {
             String lastRequestSource = (String) session.getAttribute("lastRequestSource");
 
             StringBuilder requestOrigin = new StringBuilder()
-                    .append(httpRequest.getScheme()).append("://")
-                    .append(httpRequest.getServerName()).append(":").append(httpRequest.getServerPort())
-                    .append(httpRequest.getContextPath()).append(lastRequestSource);
+                                                .append(httpRequest.getScheme()).append("://")
+                                                .append(httpRequest.getServerName()).append(":").append(httpRequest.getServerPort())
+                                                .append(httpRequest.getContextPath()).append(lastRequestSource);
 
             switch (requestPath) {
                 case "/login-pg.jsf":
@@ -52,21 +47,17 @@ public class AuthenticationFilter implements AbstractFilter {
                     break;
                 default:
                     if (session.getAttribute("currentUser") == null) {
-                        httpRequest
-                                .getRequestDispatcher("/WEB-INF/utils/forbidden-access.jsf")
-                                .forward(request, response);
+                        httpRequest.getRequestDispatcher("/WEB-INF/utils/forbidden-access.jsf")
+                                    .forward(request, response);
                     } else {
                         User currentUser = (User) session.getAttribute("currentUser");
-
                         if ((requestPath.startsWith("/customer") && currentUser instanceof Admin)
                                 || (requestPath.startsWith("/admin") && currentUser instanceof Customer)) {
                             httpResponse.sendRedirect(requestOrigin.toString());
                         }
                     }
             }
-
         }
-
         chain.doFilter(request, response);
     }
 

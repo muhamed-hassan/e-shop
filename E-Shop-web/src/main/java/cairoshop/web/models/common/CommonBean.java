@@ -2,6 +2,9 @@ package cairoshop.web.models.common;
 
 import javax.faces.bean.ManagedProperty;
 import javax.inject.Inject;
+import javax.faces.context.FacesContext;
+
+import java.util.Map;
 
 import cairoshop.web.models.common.pagination.Paginator;
 
@@ -28,6 +31,10 @@ public class CommonBean {
         
     public ContentChanger getContentChanger() {
         return contentChanger;
+    }
+    
+    protected Map<String, Object> getSessionMap() {
+        return FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
     }
     
 }

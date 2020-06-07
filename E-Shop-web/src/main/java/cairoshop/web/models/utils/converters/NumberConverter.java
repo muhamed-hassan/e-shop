@@ -16,7 +16,7 @@ public class NumberConverter implements Converter {
     // from presentation to model
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        return value.toString();
+        return value;
     }
 
     // from model to presentation

@@ -7,6 +7,4 @@ import cairoshop.entities.Vendor;
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface VendorRepository extends AbstractRepository<Vendor>, PagableRepository<Vendor> {
-    
-}
+public interface VendorRepository extends AbstractRepository<Vendor>, PagableRepository<Vendor> {}

@@ -7,7 +7,7 @@ package cairoshop.repositories.specs;
  * ************************************************************************ */
 public final class Join {
 
-    private String joinAttribute;
+    private final String joinAttribute;
 
     public Join(String joinAttribute) {
         this.joinAttribute = joinAttribute;

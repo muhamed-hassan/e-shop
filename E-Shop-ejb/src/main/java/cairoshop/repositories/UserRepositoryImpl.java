@@ -33,38 +33,27 @@ public class UserRepositoryImpl extends BaseRepository<User> implements UserRepo
     }
 
     @Override
-    public void update(Customer customer, Product favoriteProduct) throws ModificationException {
-        
+    public void update(Customer customer, Product favoriteProduct) throws ModificationException {        
         Session session = getHibernateConfigurator().getSessionFactory().openSession();
 
         try {
 
             session.getTransaction().begin();
-
             session.refresh(customer);
             customer.getFavoriteProducts().add(favoriteProduct);
-
             session.getTransaction().commit();
 
         } catch (Exception ex) {
             session.getTransaction().rollback();
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_MODIFICATION,
-                            getClass(),
-                            ex
-                    );
+            getGlobalLogger().doLogging(Level.ERROR, RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_MODIFICATION, getClass(), ex);
             throw new ModificationException(RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_MODIFICATION, ex);
         } finally {
             session.close();
         }
-
     }
     
     @Override
-    public List<Integer> findAll(int custId) throws RetrievalException {
-        
+    public List<Integer> findAll(int custId) throws RetrievalException {        
         EntityManager entityManager = null;
         List<Integer> likedProductsIds = null;
         
@@ -75,35 +64,25 @@ public class UserRepositoryImpl extends BaseRepository<User> implements UserRepo
             CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
             Root<Customer> customer = criteriaQuery.from(Customer.class);
             criteriaQuery.where(criteriaBuilder.equal( customer.get("id"), custId ));            
-            Join<Customer, Product> likedProducts = customer.join("favoriteProducts");
-            
-            likedProductsIds = entityManager
-                    .createQuery( criteriaQuery.multiselect(likedProducts.get("id")))
-                    .getResultList();
+            Join<Customer, Product> likedProducts = customer.join("favoriteProducts");            
+            likedProductsIds = entityManager.createQuery(criteriaQuery.multiselect(likedProducts.get("id"))).getResultList();
             
         } catch (Exception ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL,
-                            getClass(),
-                            ex
-                    );
+            getGlobalLogger().doLogging(Level.ERROR, RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, getClass(), ex);
             throw new RetrievalException(RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, ex);
         } finally {
-            if( entityManager != null ) {
+            if (entityManager != null) {
                 entityManager.close();
             }
         }
-
         return likedProductsIds;
     }
     
     @Override
-    public List<Product> findAll(int custId, int startPosition) throws RetrievalException {
-            
+    public List<Product> findAll(int custId, int startPosition) throws RetrievalException {            
         EntityManager entityManager = null;
         List<Product> result = null;
+        
         try (Session session = getHibernateConfigurator().getSessionFactory().openSession()) {
 
             entityManager = session.getEntityManagerFactory().createEntityManager();
@@ -111,29 +90,20 @@ public class UserRepositoryImpl extends BaseRepository<User> implements UserRepo
             CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
             Root<Customer> customer = criteriaQuery.from(Customer.class);
             criteriaQuery.where(criteriaBuilder.equal( customer.get("id"), custId ));            
-            Join<Customer, Product> likedProducts = customer.join("favoriteProducts");
-            
-            result = entityManager
-                    .createQuery( criteriaQuery.select(likedProducts) )
-                    .setFirstResult(startPosition)
-                    .setMaxResults(5)
-                    .getResultList();
+            Join<Customer, Product> likedProducts = customer.join("favoriteProducts");            
+            result = entityManager.createQuery( criteriaQuery.select(likedProducts) )
+                                    .setFirstResult(startPosition)
+                                    .setMaxResults(5)
+                                    .getResultList();
             
         } catch (Exception ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL,
-                            getClass(),
-                            ex
-                    );
+            getGlobalLogger().doLogging(Level.ERROR, RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, getClass(), ex);
             throw new RetrievalException(RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, ex);
         } finally {
-            if( entityManager != null ) {
+            if (entityManager != null) {
                 entityManager.close();
             }
         }
-
         return result;
     }
     

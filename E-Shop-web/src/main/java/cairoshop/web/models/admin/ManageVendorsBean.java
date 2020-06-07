@@ -10,10 +10,10 @@ import java.util.List;
 import cairoshop.entities.Vendor;
 import cairoshop.web.models.common.navigation.AdminNavigation;
 import cairoshop.services.interfaces.AdminService;
-import cairoshop.utils.AdminActions;
-import cairoshop.utils.AdminContent;
-import cairoshop.utils.AdminMessages;
-import cairoshop.utils.Messages;
+import cairoshop.actions.AdminActions;
+import cairoshop.pages.AdminContent;
+import cairoshop.messages.AdminMessages;
+import cairoshop.messages.Messages;
 import cairoshop.utils.Scope;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
@@ -25,9 +25,7 @@ import cairoshop.web.models.common.pagination.PlainPaginationControls;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class ManageVendorsBean
-        extends CommonBean
-        implements Serializable, AdminNavigation, PlainPaginationControls {
+public class ManageVendorsBean extends CommonBean implements Serializable, AdminNavigation, PlainPaginationControls {
 
     @EJB
     private AdminService adminService;
@@ -44,11 +42,7 @@ public class ManageVendorsBean
 
     public void addVendor() {
         int status = adminService.addVendor(vendor) ? 1 : -1;
-
-        String msg = ((status == 1)
-                ? vendor.getName() + Messages.ADDED_SUCCESSFULLY
-                : Messages.SOMETHING_WENT_WRONG);
-
+        String msg = (status == 1) ? vendor.getName() + Messages.ADDED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
 
@@ -61,12 +55,8 @@ public class ManageVendorsBean
 
     public void editVendor(Vendor vendorToBeEdited) {
         vendorToBeEdited.setUnderEdit(false);
-        int status = (adminService.editVendor(vendorToBeEdited) ? 1 : -1);
-
-        String msg = ((status == 1)
-                ? vendorToBeEdited.getName() + Messages.EDITED_SUCCESSFULLY
-                : Messages.SOMETHING_WENT_WRONG);
-
+        int status = adminService.editVendor(vendorToBeEdited) ? 1 : -1;
+        String msg = (status == 1) ? vendorToBeEdited.getName() + Messages.EDITED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
 
@@ -75,19 +65,13 @@ public class ManageVendorsBean
     // =========================================================================
     public void deleteVendor(Vendor vendorToBeDeleted) {
         int status = adminService.deleteVendor(vendorToBeDeleted.getId()) ? 1 : -1;
-
-        String msg = (status == 1)
-                ? vendorToBeDeleted.getName() + Messages.REMOVED_SUCCESSFULLY
-                : Messages.SOMETHING_WENT_WRONG;
-
+        String msg = (status == 1) ? vendorToBeDeleted.getName() + Messages.REMOVED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
-
         getPaginator().setDataSize(adminService.getVendorsCount());
         vendors = adminService.getVendors(getPaginator().getCursor());
         if (vendors.isEmpty()) {
             previous();
         }
-
         getPaginator().setChunkSize(vendors.size());
     }
 
@@ -128,14 +112,12 @@ public class ManageVendorsBean
     public void last() {
         int dataSize = adminService.getVendorsCount();
         int chunkSize = getPaginator().getChunkSize();
-
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
         getPaginator().setDataSize(adminService.getVendorsCount());
-
         adjustPaginationControls(0);
     }
 
@@ -155,10 +137,8 @@ public class ManageVendorsBean
         } else {
             if (vendors == null || vendors.isEmpty()) {
                 getContentChanger().displayNoDataFound(AdminMessages.NO_VENDORS_TO_DISPLAY);
-
                 return;
             }
-
             switch (destination) {
                 case AdminActions.EDIT_VENDOR:
                     getContentChanger().displayContent(AdminContent.EDIT_VENDOR);
@@ -168,7 +148,6 @@ public class ManageVendorsBean
                     break;
             }
         }
-
     }
 
 }

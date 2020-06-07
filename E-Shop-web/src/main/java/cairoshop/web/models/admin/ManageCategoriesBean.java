@@ -11,13 +11,12 @@ import cairoshop.entities.Category;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.navigation.AdminNavigation;
 import cairoshop.services.interfaces.AdminService;
-import cairoshop.utils.AdminActions;
-import cairoshop.utils.AdminContent;
-import cairoshop.utils.AdminMessages;
-import cairoshop.utils.Messages;
+import cairoshop.actions.AdminActions;
+import cairoshop.pages.AdminContent;
+import cairoshop.messages.AdminMessages;
+import cairoshop.messages.Messages;
 import cairoshop.utils.Scope;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
-
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -26,9 +25,7 @@ import cairoshop.web.models.common.pagination.PlainPaginationControls;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class ManageCategoriesBean
-        extends CommonBean
-        implements Serializable, AdminNavigation, PlainPaginationControls {
+public class ManageCategoriesBean extends CommonBean implements Serializable, AdminNavigation, PlainPaginationControls {
 
     @EJB
     private AdminService adminService;
@@ -45,11 +42,7 @@ public class ManageCategoriesBean
 
     public void addCategory() {
         int status = adminService.addCategory(category) ? 1 : -1;
-
-        String msg = (status == 1)
-                ? category.getName() + Messages.ADDED_SUCCESSFULLY
-                : Messages.SOMETHING_WENT_WRONG;
-
+        String msg = (status == 1) ? category.getName() + Messages.ADDED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
 
@@ -62,13 +55,8 @@ public class ManageCategoriesBean
 
     public void editCategory(Category categoryToBeEdited) {
         categoryToBeEdited.setUnderEdit(false);
-
-        int status = (adminService.editCategory(categoryToBeEdited) ? 1 : -1);
-
-        String msg = ((status == 1)
-                ? categoryToBeEdited.getName() + Messages.EDITED_SUCCESSFULLY
-                : Messages.SOMETHING_WENT_WRONG);
-
+        int status = adminService.editCategory(categoryToBeEdited) ? 1 : -1;
+        String msg = (status == 1) ? categoryToBeEdited.getName() + Messages.EDITED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
 
@@ -76,20 +64,14 @@ public class ManageCategoriesBean
     // =======> Delete categroy
     // =========================================================================
     public void deleteCategory(Category categoryToBeDeleted) {
-        int status = (adminService.deleteCategory(categoryToBeDeleted.getId()) ? 1 : -1);
-
-        String msg = (status == 1)
-                ? categoryToBeDeleted.getName() + Messages.REMOVED_SUCCESSFULLY
-                : Messages.SOMETHING_WENT_WRONG;
-
+        int status = adminService.deleteCategory(categoryToBeDeleted.getId()) ? 1 : -1;
+        String msg = (status == 1) ? categoryToBeDeleted.getName() + Messages.REMOVED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
-
         getPaginator().setDataSize(adminService.getCategoriesCount());
         categories = adminService.getCategories(getPaginator().getCursor());
         if (categories.isEmpty()) {
             previous();
         }
-
         getPaginator().setChunkSize(categories.size());
     }
 
@@ -114,15 +96,13 @@ public class ManageCategoriesBean
     @Override
     public void last() {
         int dataSize = adminService.getCategoriesCount();
-        int chunkSize = getPaginator().getChunkSize();
-        
+        int chunkSize = getPaginator().getChunkSize();        
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
-        getPaginator().setDataSize(adminService.getCategoriesCount());
-        
+        getPaginator().setDataSize(adminService.getCategoriesCount());        
         adjustPaginationControls(0);
     }
     
@@ -157,10 +137,8 @@ public class ManageCategoriesBean
         } else {
             if (categories == null || categories.isEmpty()) {
                 getContentChanger().displayNoDataFound(AdminMessages.NO_CATEGORIES_TO_DISPLAY);
-
                 return;
             }
-
             switch (destination) {
                 case AdminActions.EDIT_CATEGORY:
                     getContentChanger().displayContent(AdminContent.EDIT_CATEGORY);
@@ -170,7 +148,6 @@ public class ManageCategoriesBean
                     break;
             }
         }
-
     }
 
 }

@@ -4,7 +4,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,8 +12,8 @@ import java.util.Map;
 import cairoshop.entities.Customer;
 import cairoshop.entities.Product;
 import cairoshop.services.interfaces.CustomerService;
-import cairoshop.utils.CustomerContent;
-import cairoshop.utils.CustomerMessages;
+import cairoshop.pages.CustomerContent;
+import cairoshop.messages.CustomerMessages;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
 
@@ -25,9 +24,7 @@ import cairoshop.web.models.common.pagination.PlainPaginationControls;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class FavoriteProductsListBean 
-        extends CommonBean 
-        implements Serializable, PlainPaginationControls {
+public class FavoriteProductsListBean extends CommonBean implements Serializable, PlainPaginationControls {
 
     @EJB
     private CustomerService customerService;
@@ -41,13 +38,8 @@ public class FavoriteProductsListBean
     // =========================================================================
     @PostConstruct
     public void init() {
-        Map<String, Object> sessionMap = FacesContext
-                .getCurrentInstance()
-                .getExternalContext()
-                .getSessionMap();
-        
-        c = (Customer) sessionMap
-                .get("currentUser");        
+        Map<String, Object> sessionMap = getSessionMap();
+        c = (Customer) sessionMap.get("currentUser");        
     }
     
     // =========================================================================
@@ -62,11 +54,9 @@ public class FavoriteProductsListBean
     // =========================================================================
     public void navigate() {
         if (products == null || products.isEmpty()) {
-            getContentChanger().displayNoDataFound(CustomerMessages.YOU_HAVE_NO_PRODUCTS_IN_YOUR_FAVORITE_LIST);
-            
+            getContentChanger().displayNoDataFound(CustomerMessages.YOU_HAVE_NO_PRODUCTS_IN_YOUR_FAVORITE_LIST);            
             return;
         }
-
         getContentChanger().displayContent(CustomerContent.FAVORITE_PRODUCTS);
     }
 
@@ -92,14 +82,12 @@ public class FavoriteProductsListBean
     public void last() {
         int dataSize = customerService.getFavoriteProductsCount(c.getId());
         int chunkSize = getPaginator().getChunkSize();
-        
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
-        getPaginator().setDataSize(customerService.getFavoriteProductsCount(c.getId()));
-        
+        getPaginator().setDataSize(customerService.getFavoriteProductsCount(c.getId()));        
         adjustPaginationControls(0);
     }
     

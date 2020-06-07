@@ -15,7 +15,7 @@ import cairoshop.entities.Customer;
 import cairoshop.entities.User;
 import cairoshop.services.interfaces.UserService;
 import cairoshop.utils.PasswordEncryptor;
-import cairoshop.utils.SharedContent;
+import cairoshop.pages.SharedContent;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -69,13 +69,9 @@ public class RegisterBean {
             return null;
         }
 
-        Map<String, Object> sessionMap = context
-                .getExternalContext()
-                .getSessionMap();
-
+        Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
         sessionMap.put("currentUser", (Customer) result);
         sessionMap.put("content", SharedContent.INITIAL_CONTEXT);
-
         return "done";
     }
 

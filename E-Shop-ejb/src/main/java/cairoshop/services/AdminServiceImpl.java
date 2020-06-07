@@ -57,133 +57,89 @@ public class AdminServiceImpl extends CommonRetrievalImpl implements AdminServic
     // =========================================================================
     @Override
     public boolean addCategory(Category category) {
-        
+        boolean added = true;        
         try {
             
             categoryRepository.add(category);
-            return true;
             
         } catch (InsertionException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::addCategory(Category category)",
-                            getClass(),
-                            ex
-                    );
-            return false;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::addCategory(Category category)", getClass(), ex);
+            added =  false;
         }
-        
+        return added;
     }
 
     @Override
     public boolean editCategory(Category category) {
-        
+        boolean edited = true;        
         try {
             
             categoryRepository.update(category);
-            return true;
             
         } catch (ModificationException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::editCategory(Category category)",
-                            getClass(),
-                            ex
-                    );
-            return false;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::editCategory(Category category)", getClass(), ex);
+            edited = false;
         }
-        
+        return edited;
     }
 
     @Override
     public boolean deleteCategory(int categoryId) {
-
+        boolean deleted = true;        
         try {
             
             categoryRepository.remove(categoryId);
-            return true;
             
         } catch (DeletionException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::deleteCategory(Category category)",
-                            getClass(),
-                            ex
-                    );
-            return false;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::deleteCategory(Category category)", getClass(), ex);
+            deleted = false;
         }
-        
+        return deleted;
     }
-    
-     
-
+   
     // =========================================================================
     // ====== manage vendors
     // =========================================================================
     @Override
     public boolean addVendor(Vendor vendor) {
-
+        boolean added = true;        
         try {
             
             vendorRepository.add(vendor);
-            return true;
             
         } catch (InsertionException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::addVendor(Vendor vendor)",
-                            getClass(),
-                            ex
-                    );
-            return false;
-        }
-
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::addVendor(Vendor vendor)", getClass(), ex);
+            added =  false;
+        }        
+        return added;
     }
 
     @Override
     public boolean editVendor(Vendor vendor) {
-
+        boolean edited = true;        
         try {
             
             vendorRepository.update(vendor);
-            return true;
             
         } catch (ModificationException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::editVendor(Vendor vendor)",
-                            getClass(),
-                            ex
-                    );
-            return false;
-        }
-
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::editVendor(Vendor vendor)", getClass(), ex);
+            edited = false;
+        }        
+        return edited;
     }
 
     @Override
     public boolean deleteVendor(int vendorId) {
-
+        boolean deleted = true;        
         try {
             
             vendorRepository.remove(vendorId);
-            return true;
             
         } catch (DeletionException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::deleteVendor(Vendor vendor)",
-                            getClass(),
-                            ex
-                    );
-            return false;
-        }
-
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::deleteVendor(Vendor vendor)", getClass(), ex);
+            deleted = false;
+        }        
+        return deleted;
    }
 
     // =========================================================================
@@ -191,64 +147,42 @@ public class AdminServiceImpl extends CommonRetrievalImpl implements AdminServic
     // =========================================================================
     @Override
     public boolean changeUserState(User user) {
-        
+        boolean updated = true;
         try {
             
             userRepository.update(user);
-            return true;
             
         } catch (ModificationException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::changeUserState(User user)",
-                            getClass(),
-                            ex
-                    );
-            return false;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::changeUserState(User user)", getClass(), ex);
+            updated = false;
         }
-
+        return updated;
     }
 
     @Override
     public List<User> getCustomers(int startPosition) {
-        
+        List<User> users = null;        
         try {
             
-            return userRepository.findAll(
-                    new QuerySpecs().addPredicate(new Condition("role", ConditionConnector.EQUAL, 1)), startPosition);
+            users = userRepository.findAll(new QuerySpecs().addPredicate(new Condition("role", ConditionConnector.EQUAL, 1)), startPosition);
             
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getCustomers(int startPosition)",
-                            getClass(),
-                            ex
-                    );
-            return null;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getCustomers(int startPosition)", getClass(), ex);
         }
-        
+        return users;
     }
 
     @Override
     public int getCustomersCount() {
-
+        int count = -1;
         try {
             
-            return userRepository.getCount(
-                    new QuerySpecs().addPredicate(new Condition("role", ConditionConnector.EQUAL,1)));
+            count = userRepository.getCount(new QuerySpecs().addPredicate(new Condition("role", ConditionConnector.EQUAL,1)));
             
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getCustomersCount()",
-                            getClass(),
-                            ex
-                    );
-            return -1;
-        }
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getCustomersCount()", getClass(), ex);
+        }        
+        return count;
     }
 
     // =========================================================================
@@ -256,85 +190,57 @@ public class AdminServiceImpl extends CommonRetrievalImpl implements AdminServic
     // =========================================================================
     @Override
     public boolean addProduct(Product product) {
-        
+        boolean added = true;        
         try {
             
             productRepository.add(product);
-            return true;
             
         } catch (InsertionException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::addProduct(Product product)",
-                            getClass(),
-                            ex
-                    );
-            return false;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::addProduct(Product product)", getClass(), ex);
+            added = false;
         }
-        
+        return added;
     }
 
     @Override
     public boolean editProduct(Product product) {
-        
+        boolean edited = true;        
         try {
             
             productRepository.update(product);
-            return true;
             
         } catch (ModificationException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::editProduct(Product product)",
-                            getClass(),
-                            ex
-                    );
-            return false;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::editProduct(Product product)", getClass(), ex);
+            edited = false;
         }
-        
+        return edited;
     }
 
     @Override
     public boolean deleteProduct(int pId) {
-        
+        boolean deleted = true;        
         try {
             
             productRepository.remove(pId);
-            return true;
             
         } catch (DeletionException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::deleteProduct(int pId)",
-                            getClass(),
-                            ex
-                    );
-            return false;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::deleteProduct(int pId)", getClass(), ex);
+            deleted = false;
         }
-        
+        return deleted;
     }
 
     @Override
     public List<Product> getProducts(int startPosition) {
-
+        List<Product> products = null;        
         try {
             
-            return productRepository.findAll(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY, startPosition);
+            products = productRepository.findAll(CommonQuerySpecs.FIND_NOT_DELETED_ITEMS_QUERY, startPosition);
             
         } catch (RetrievalException ex) {
-            getGlobalLogger()
-                    .doLogging(
-                            Level.ERROR,
-                            "Caller::getProducts(int startPosition)",
-                            getClass(),
-                            ex
-                    );
-            return null;
+            getGlobalLogger().doLogging(Level.ERROR, "Caller::getProducts(int startPosition)", getClass(), ex);
         }
-
+        return products;
     }    
 
 }

@@ -16,11 +16,11 @@ import cairoshop.entities.Vendor;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.navigation.AdminNavigation;
 import cairoshop.services.interfaces.AdminService;
-import cairoshop.utils.AdminActions;
-import cairoshop.utils.AdminContent;
-import cairoshop.utils.AdminMessages;
+import cairoshop.actions.AdminActions;
+import cairoshop.pages.AdminContent;
+import cairoshop.messages.AdminMessages;
 import cairoshop.utils.ImageStreamExtractor;
-import cairoshop.utils.Messages;
+import cairoshop.messages.Messages;
 import cairoshop.utils.Scope;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
 
@@ -31,9 +31,7 @@ import cairoshop.web.models.common.pagination.PlainPaginationControls;
  * ************************************************************************ */
 @ManagedBean
 @SessionScoped
-public class ManageProductsBean 
-        extends CommonBean 
-        implements Serializable, AdminNavigation, PlainPaginationControls {
+public class ManageProductsBean extends CommonBean implements Serializable, AdminNavigation, PlainPaginationControls {
 
     @EJB
     private AdminService adminService;
@@ -54,23 +52,16 @@ public class ManageProductsBean
         product = new Product();
         product.setCategory(new Category());
         product.setVendor(new Vendor());
-
         vendors = adminService.getVendors();
         categories = adminService.getCategories();
     }
 
-    public void addProduct() throws IOException {
-        
+    public void addProduct() throws IOException {        
         if (imgData != null && imgData.getSize() > 0) {
             product.setImage(imageStreamExtractor.extract(imgData.getInputStream()));
         }
-
         int status = adminService.addProduct(product) ? 1 : -1;
-
-        String msg = (status == 1) ? 
-                product.getName() + Messages.ADDED_SUCCESSFULLY : 
-                Messages.SOMETHING_WENT_WRONG;
-        
+        String msg = (status == 1) ? product.getName() + Messages.ADDED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;        
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
 
@@ -79,15 +70,12 @@ public class ManageProductsBean
     // =========================================================================
     public void loadTarget(Product product) {
         this.product = product;
-
         if (vendors == null) {
-            vendors = adminService.getVendors();
+            vendors = adminService.getVendors();            
         }
-
         if (categories == null) {
-            categories = adminService.getCategories();
-        }
-        
+            categories = adminService.getCategories();            
+        }        
     }
 
     public void goToEdit() {
@@ -95,17 +83,11 @@ public class ManageProductsBean
     }
 
     public void editProduct() throws IOException {
-
         if (imgData != null && imgData.getSize() > 0) {            
             product.setImage(imageStreamExtractor.extract(imgData.getInputStream()));
         }
-
         int status = adminService.editProduct(product) ? 1 : -1;
-
-        String msg = (status == 1) ? 
-                product.getName() + Messages.EDITED_SUCCESSFULLY : 
-                Messages.SOMETHING_WENT_WRONG;
-        
+        String msg = (status == 1) ? product.getName() + Messages.EDITED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;        
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
 
@@ -114,19 +96,13 @@ public class ManageProductsBean
     // =========================================================================
     public void deleteProduct(Product productToBeDeleted) {
         int status = adminService.deleteProduct(productToBeDeleted.getId()) ? 1 : -1;
-
-        String msg = (status == 1) ? 
-                productToBeDeleted.getName() + Messages.REMOVED_SUCCESSFULLY : 
-                Messages.SOMETHING_WENT_WRONG;
-        
+        String msg = (status == 1) ? productToBeDeleted.getName() + Messages.REMOVED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;        
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
-
         getPaginator().setDataSize(adminService.getProductsCount());
         products = adminService.getProducts(getPaginator().getCursor());
         if (products == null || products.isEmpty()) {
             previous();
         }
-
         getPaginator().setChunkSize(products.size());
     }
 
@@ -182,15 +158,13 @@ public class ManageProductsBean
     @Override
     public void last() {
         int dataSize = adminService.getProductsCount();
-        int chunkSize = getPaginator().getChunkSize();
-        
+        int chunkSize = getPaginator().getChunkSize();        
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
-        getPaginator().setDataSize(adminService.getProductsCount());
-        
+        getPaginator().setDataSize(adminService.getProductsCount());        
         adjustPaginationControls(0);
     }
     
@@ -205,25 +179,24 @@ public class ManageProductsBean
     // =========================================================================
     @Override
     public void navigate(String destination) {
-        if (destination.equals(AdminActions.ADD_PRODUCT)) {
-            getContentChanger().displayContent(AdminContent.ADD_NEW_PRODUCT);
-        } else {
-            if (products == null || products.isEmpty()) {
-                getContentChanger().displayNoDataFound(AdminMessages.NO_PRODUCTS_TO_DISPLAY);
-
-                return;
-            }
-
-            switch (destination) {
-                case AdminActions.EDIT_PRODUCT:
-                    getContentChanger().displayContent(AdminContent.EDIT_PRODUCT_MASTER);
-                    break;
-                case AdminActions.DELETE_PRODUCT:
-                    getContentChanger().displayContent(AdminContent.DELETE_PRODUCT);
-                    break;
-            }
+        switch (destination) {
+            case AdminActions.ADD_PRODUCT:
+                getContentChanger().displayContent(AdminContent.ADD_NEW_PRODUCT);
+                break;
+            default:
+                if (products == null || products.isEmpty()) {
+                    getContentChanger().displayNoDataFound(AdminMessages.NO_PRODUCTS_TO_DISPLAY);
+                    return;
+                }   
+                switch (destination) {
+                    case AdminActions.EDIT_PRODUCT:
+                        getContentChanger().displayContent(AdminContent.EDIT_PRODUCT_MASTER);
+                        break;
+                    case AdminActions.DELETE_PRODUCT:
+                        getContentChanger().displayContent(AdminContent.DELETE_PRODUCT);
+                        break;
+                }
         }
-
     }
 
 }
