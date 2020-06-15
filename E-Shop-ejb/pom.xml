@@ -51,7 +51,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>Logging</artifactId>
+            <artifactId>Commons</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>   
         </dependency>

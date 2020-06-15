@@ -1,30 +1,20 @@
-package cairoshop.web.dtos;
+package com.cairoshop.dtos;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public class BaseCustomerDTO {
+public class NewCustomerStatusDTO {
 
-    private String name;
+    private boolean active;
 
-    private String email;
-
-    public String getName() {
-        return name;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setActive(boolean active) {
+        this.active = active;
     }
     
 }

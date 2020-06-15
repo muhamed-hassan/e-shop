@@ -2,21 +2,15 @@ package cairoshop.rest;
 
 import cairoshop.entities.Customer;
 import cairoshop.entities.User;
-import cairoshop.repositories.exceptions.RetrievalException;
 import cairoshop.services.interfaces.AdminService;
 import cairoshop.services.interfaces.UserService;
 import cairoshop.utils.MediaType;
 import cairoshop.utils.PasswordEncryptor;
-import cairoshop.web.dtos.NewCustomerDTO;
-import cairoshop.web.dtos.NewCustomerStatusDTO;
-import cairoshop.web.dtos.SavedCustomerDTO;
-import cairoshop.web.dtos.SavedCustomersDTO;
+import com.cairoshop.dtos.NewCustomerDTO;
+import com.cairoshop.dtos.NewCustomerStatusDTO;
+import com.cairoshop.dtos.SavedCustomerDTO;
+import com.cairoshop.dtos.SavedCustomersDTO;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -32,7 +26,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 

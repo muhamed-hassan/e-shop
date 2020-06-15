@@ -1,4 +1,4 @@
-package cairoshop.web.dtos;
+package com.cairoshop.dtos;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *

@@ -1,4 +1,4 @@
-package cairoshop.web.dtos;
+package com.cairoshop.dtos;
 
 import java.util.LinkedList;
 import java.util.List;

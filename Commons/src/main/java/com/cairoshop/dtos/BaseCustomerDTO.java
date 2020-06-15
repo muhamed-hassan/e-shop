@@ -1,14 +1,30 @@
-package cairoshop.web.dtos;
+package com.cairoshop.dtos;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public class CredentialsDTO {
-    
+public class BaseCustomerDTO {
+
+    private String name;
+
     private String email;
-    
-    private String password;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     
 }
