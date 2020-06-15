@@ -1,7 +1,6 @@
 package cairoshop.services.interfaces;
 
 import java.util.List;
-import java.util.Map;
 
 import cairoshop.repositories.exceptions.DeletionException;
 import cairoshop.repositories.exceptions.InsertionException;
@@ -14,11 +13,11 @@ import cairoshop.repositories.specs.QuerySpecs;
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface BaseService<T> {
+public interface BaseService<DTO> {
     
-    Integer add(T entity) throws InsertionException;
+    Integer add(DTO dto) throws InsertionException;
 
-    void update(int id, Map<String, Object> fields) throws ModificationException;
+    void update(DTO dto) throws ModificationException;
 
     void remove(int id) throws DeletionException;
 

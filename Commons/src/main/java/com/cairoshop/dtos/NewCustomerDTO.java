@@ -1,11 +1,13 @@
 package com.cairoshop.dtos;
 
-/* ************************************************************************** 
+/* **************************************************************************
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
- * GitHub      : https://github.com/muhamed-hassan                          *  
+ * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *
+ * GitHub      : https://github.com/muhamed-hassan                          *
  * ************************************************************************ */
-public class NewCustomerDTO extends BaseCustomerDTO {
+public class NewCustomerDTO extends BaseDTO {
+
+    private String email;
 
     private String username;
 
@@ -14,6 +16,14 @@ public class NewCustomerDTO extends BaseCustomerDTO {
     private String address;
 
     private String phone;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getUsername() {
         return username;
