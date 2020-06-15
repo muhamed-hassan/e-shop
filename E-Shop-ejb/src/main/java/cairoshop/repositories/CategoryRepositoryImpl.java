@@ -14,7 +14,7 @@ import cairoshop.repositories.interfaces.CategoryRepository;
 public class CategoryRepositoryImpl extends BaseRepositoryImpl<Category> implements CategoryRepository {
     
     public CategoryRepositoryImpl() {
-        super(Category.class );
+        super(Category.class);
     }
     
 }

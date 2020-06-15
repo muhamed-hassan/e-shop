@@ -2,16 +2,12 @@ package cairoshop.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import javax.persistence.Column;
+import java.io.Serializable;
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.Objects;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -27,21 +23,7 @@ public class Category implements Serializable {
 
     private String name;
 
-    @Column(name = "not_deleted")
-    private boolean notDeleted;
-
-    @OneToMany(mappedBy = "category")
-    private List<Product> products;
-
-    @Transient
-    private boolean underEdit;
-
-    @Transient
-    private String oldValue;
-
-    public Category() {
-        notDeleted = true;
-    }
+    private boolean active;
 
     public int getId() {
         return id;
@@ -59,70 +41,35 @@ public class Category implements Serializable {
         this.name = name;
     }
 
-    public boolean getNotDeleted() {
-        return notDeleted;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setNotDeleted(boolean notDeleted) {
-        this.notDeleted = notDeleted;
+    public void setActive(final boolean active) {
+        this.active = active;
     }
 
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
-
-    public boolean isUnderEdit() {
-        return underEdit;
-    }
-
-    public void setUnderEdit(boolean underEdit) {
-        this.underEdit = underEdit;
-    }    
-
-    public String getOldValue() {
-        return oldValue;
-    }
-
-    public void setOldValue(String oldValue) {
-        this.oldValue = oldValue;
+    @Override
+    public boolean equals(Object object) {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        Category that = (Category) object;
+        return new EqualsBuilder()
+                        .append(id, that.id)
+                        .append(active, that.active)
+                        .append(name, that.name)
+                    .isEquals();
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + this.id;
-        hash = 79 * hash + Objects.hashCode(this.name);
-        return hash;
+        return new HashCodeBuilder(17, 37)
+                        .append(id)
+                        .append(name)
+                        .append(active)
+                    .toHashCode();
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Category other = (Category) obj;
-        if (this.id != other.id) {
-            return false;
-        }
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Category{" + "id=" + id + ", name=" + name + ", notDeleted=" + notDeleted + '}';
-    }
-    
 }

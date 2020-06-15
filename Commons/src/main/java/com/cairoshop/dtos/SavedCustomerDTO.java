@@ -30,30 +30,21 @@ public class SavedCustomerDTO extends BaseCustomerDTO {
         this.active = active;
     }
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder()
-                        .append(getId())
-                        .append(getEmail())
-                    .toHashCode();
+    public boolean equals(Object object) {
+        if (this == object)
+            return true;
+        if (!(object instanceof SavedCustomerDTO))
+            return false;
+        SavedCustomerDTO that = (SavedCustomerDTO) object;
+        return new EqualsBuilder()
+                        .append(id, that.id)
+                    .isEquals();
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (obj == this) {
-            return true;
-        }
-        if (obj.getClass() != getClass()) {
-            return false;
-        }
-        SavedCustomerDTO rhs = (SavedCustomerDTO) obj;
-        return new EqualsBuilder()
-                        .append(getId(), rhs.getId())
-                        .append(getEmail(), rhs.getEmail())
-                    .isEquals();
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+            .append(id)
+            .toHashCode();
     }
 
 }

@@ -29,7 +29,7 @@ import cairoshop.repositories.specs.QuerySpecs;
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
+public class BaseRepositoryImpl<T> implements BaseRepository<T> {
 
     @Inject
     private HibernateConfigurator hibernateConfigurator;

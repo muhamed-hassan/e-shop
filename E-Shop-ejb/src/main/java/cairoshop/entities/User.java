@@ -119,37 +119,26 @@ public abstract class User implements Serializable {
    }
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + this.id;
-        hash = 89 * hash + Objects.hashCode(this.username);
-        return hash;
+    public boolean equals(Object object) {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        User that = (User) object;
+        return new EqualsBuilder()
+                    .append(id, that.id)
+                    .append(active, that.active)
+                    .append(name, that.name)
+                .isEquals();
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final User other = (User) obj;
-        if (this.id != other.id) {
-            return false;
-        }
-        if (!Objects.equals(this.username, other.username)) {
-            return false;
-        }
-        return true;
-    }  
-    
-    @Override
-    public String toString() {
-        return "User{" + "id=" + id + ", name=" + name + ", userName=" + username + ", mail=" + email + ", active=" + active + '}';
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                    .append(id)
+                    .append(name)
+                    .append(active)
+                .toHashCode();
     }
 
 }

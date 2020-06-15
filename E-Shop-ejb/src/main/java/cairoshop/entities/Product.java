@@ -2,6 +2,9 @@ package cairoshop.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,9 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-
-import java.io.Serializable;
-import java.util.Objects;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -38,8 +38,7 @@ public class Product implements Serializable {
     @Column(length = 200000)
     private byte[] image;
 
-    @Column(name = "not_deleted")
-    private boolean notDeleted;
+    private boolean active;
 
     @ManyToOne
     @JoinColumn(name = "category")
@@ -49,10 +48,6 @@ public class Product implements Serializable {
     @JoinColumn(name = "vendor")
     private Vendor vendor;
 
-    public Product() {
-        notDeleted = true;
-    }
-    
     public int getId() {
         return id;
     }
@@ -117,46 +112,35 @@ public class Product implements Serializable {
         this.vendor = vendor;
     }
 
-    public boolean getNotDeleted() {
-        return notDeleted;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setNotDeleted(boolean notDeleted) {
-        this.notDeleted = notDeleted;
+    public void setActive(final boolean active) {
+        this.active = active;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        Product that = (Product) object;
+        return new EqualsBuilder()
+                    .append(id, that.id)
+                    .append(active, that.active)
+                    .append(name, that.name)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + this.id;
-        hash = 97 * hash + Objects.hashCode(this.name);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Product other = (Product) obj;
-        if (this.id != other.id) {
-            return false;
-        }
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Product{" + "id=" + id + ", name=" + name + ", price=" + price + ", quantity=" + quantity + '}';
+        return new HashCodeBuilder(17, 37)
+                    .append(id)
+                    .append(name)
+                    .append(active)
+                .toHashCode();
     }
     
 }
