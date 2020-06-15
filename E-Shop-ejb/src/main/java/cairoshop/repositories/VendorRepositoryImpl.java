@@ -11,7 +11,7 @@ import cairoshop.repositories.interfaces.VendorRepository;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Stateless
-public class VendorRepositoryImpl extends BaseRepository<Vendor> implements VendorRepository {
+public class VendorRepositoryImpl extends BaseRepositoryImpl<Vendor> implements VendorRepository {
 
     public VendorRepositoryImpl() {
         super(Vendor.class);

@@ -7,4 +7,4 @@ import cairoshop.entities.Category;
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface CategoryRepository extends AbstractRepository<Category>, PagableRepository<Category> {}
+public interface CategoryRepository extends BaseRepository<Category> {}

@@ -15,7 +15,7 @@ import cairoshop.repositories.interfaces.ProductRepository;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Stateless
-public class ProductRepositoryImpl extends BaseRepository<Product> implements ProductRepository {
+public class ProductRepositoryImpl extends BaseRepositoryImpl<Product> implements ProductRepository {
 
     public ProductRepositoryImpl() {
         super(Product.class);

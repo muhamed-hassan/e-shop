@@ -13,10 +13,12 @@ import cairoshop.repositories.exceptions.RetrievalException;
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface UserRepository extends AbstractRepository<User>, PagableRepository<User> {
+public interface UserRepository extends BaseRepository<User> {
 
     void update(Customer customer, Product favoriteProduct) throws ModificationException;
-    List<Integer> findAll(int custId) throws RetrievalException; 
+
+    List<Integer> findAll(int custId) throws RetrievalException;
+
     List<Product> findAll(int custId, int startPosition) throws RetrievalException; 
     
 }

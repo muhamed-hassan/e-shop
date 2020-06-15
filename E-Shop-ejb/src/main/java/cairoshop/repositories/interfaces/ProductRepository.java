@@ -8,7 +8,7 @@ import cairoshop.repositories.exceptions.RetrievalException;
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public interface ProductRepository extends AbstractRepository<Product>, PagableRepository<Product> {
+public interface ProductRepository extends BaseRepository<Product> {
     
     byte[] getImage(int pId) throws RetrievalException;
     

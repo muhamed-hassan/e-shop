@@ -26,7 +26,7 @@ import cairoshop.repositories.interfaces.UserRepository;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Stateless
-public class UserRepositoryImpl extends BaseRepository<User> implements UserRepository {
+public class UserRepositoryImpl extends BaseRepositoryImpl<User> implements UserRepository {
 
     public UserRepositoryImpl() {
         super(User.class);
