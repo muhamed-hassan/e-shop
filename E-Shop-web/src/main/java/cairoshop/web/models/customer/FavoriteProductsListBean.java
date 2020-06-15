@@ -1,19 +1,17 @@
 package cairoshop.web.models.customer;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import cairoshop.entities.Customer;
 import cairoshop.entities.Product;
-import cairoshop.services.interfaces.CustomerService;
-import cairoshop.pages.CustomerContent;
 import cairoshop.messages.CustomerMessages;
+import cairoshop.pages.CustomerContent;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
 
@@ -26,8 +24,8 @@ import cairoshop.web.models.common.pagination.PlainPaginationControls;
 @SessionScoped
 public class FavoriteProductsListBean extends CommonBean implements Serializable, PlainPaginationControls {
 
-    @EJB
-    private CustomerService customerService;
+    /*@EJB
+    private CustomerService customerService;*/
 
     private List<Product> products;
 
@@ -80,19 +78,19 @@ public class FavoriteProductsListBean extends CommonBean implements Serializable
 
     @Override
     public void last() {
-        int dataSize = customerService.getFavoriteProductsCount(c.getId());
+        int dataSize = 0;//customerService.getFavoriteProductsCount(c.getId());
         int chunkSize = getPaginator().getChunkSize();
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
-        getPaginator().setDataSize(customerService.getFavoriteProductsCount(c.getId()));        
+        //getPaginator().setDataSize(customerService.getFavoriteProductsCount(c.getId()));
         adjustPaginationControls(0);
     }
     
     private void adjustPaginationControls(int cursor) {
-        products = customerService.getMyFavoriteList(c.getId(), cursor);
+        //products = customerService.getMyFavoriteList(c.getId(), cursor);
         getPaginator().setCursor(cursor);
         getPaginator().setChunkSize(products.size());
     }

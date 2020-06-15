@@ -1,14 +1,14 @@
 package cairoshop.web.models.common;
 
-import javax.faces.context.FacesContext;
-import javax.inject.Singleton;
-import javax.annotation.PostConstruct;
-import javax.faces.context.ExternalContext;
-
 import java.util.Map;
 
-import cairoshop.utils.Scope;
+import javax.annotation.PostConstruct;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.inject.Singleton;
+
 import cairoshop.pages.SharedContent;
+import cairoshop.utils.Scope;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *

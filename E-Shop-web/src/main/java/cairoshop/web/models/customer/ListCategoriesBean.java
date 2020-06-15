@@ -1,19 +1,17 @@
 package cairoshop.web.models.customer;
 
-import javax.ejb.EJB;
+import java.io.Serializable;
+import java.util.List;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
 
-import java.io.Serializable;
-import java.util.List;
-
 import cairoshop.entities.Category;
-import cairoshop.web.models.common.navigation.CustomerNavigation;
-import cairoshop.services.interfaces.CustomerService;
-import cairoshop.pages.CustomerContent;
 import cairoshop.messages.CustomerMessages;
+import cairoshop.pages.CustomerContent;
 import cairoshop.web.models.common.CommonBean;
+import cairoshop.web.models.common.navigation.CustomerNavigation;
 import cairoshop.web.models.common.pagination.PaginationControlsWithEvent;
 
 /* ************************************************************************** 
@@ -25,8 +23,8 @@ import cairoshop.web.models.common.pagination.PaginationControlsWithEvent;
 @SessionScoped
 public class ListCategoriesBean extends CommonBean implements Serializable, CustomerNavigation, PaginationControlsWithEvent {
 
-    @EJB
-    private CustomerService customerService;
+    /*@EJB
+    private CustomerService customerService;*/
 
     private List<Category> categories;
 
@@ -61,19 +59,19 @@ public class ListCategoriesBean extends CommonBean implements Serializable, Cust
 
     @Override
     public void last() {
-        int dataSize = customerService.getCategoriesCount();
+        int dataSize = 0;//customerService.getCategoriesCount();
         int chunkSize = getPaginator().getChunkSize();        
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator(ActionEvent event) {
-        getPaginator().setDataSize(customerService.getCategoriesCount());        
+        //getPaginator().setDataSize(customerService.getCategoriesCount());
         adjustPaginationControls(0);
     }
 
     private void adjustPaginationControls(int cursor) {
-        categories = customerService.getCategories(cursor);
+        //categories = customerService.getCategories(cursor);
         getPaginator().setCursor(cursor);
         getPaginator().setChunkSize(categories.size());
     }

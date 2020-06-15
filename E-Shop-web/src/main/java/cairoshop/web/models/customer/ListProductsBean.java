@@ -2,22 +2,20 @@ package cairoshop.web.models.customer;
 
 import static java.util.stream.Collectors.joining;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.event.ValueChangeEvent;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.event.ValueChangeEvent;
+
 import cairoshop.entities.Category;
 import cairoshop.entities.Product;
 import cairoshop.entities.Vendor;
-import cairoshop.services.interfaces.CustomerService;
-import cairoshop.pages.CustomerContent;
 import cairoshop.messages.CustomerMessages;
+import cairoshop.pages.CustomerContent;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.pagination.PaginationControlsForType;
 
@@ -30,8 +28,8 @@ import cairoshop.web.models.common.pagination.PaginationControlsForType;
 @SessionScoped 
 public class ListProductsBean extends CommonBean implements Serializable, PaginationControlsForType {
 
-    @EJB
-    private CustomerService customerService;
+    /*@EJB
+    private CustomerService customerService;*/
 
     private List<Product> products;
     private List<Category> categories;
@@ -45,8 +43,8 @@ public class ListProductsBean extends CommonBean implements Serializable, Pagina
     @PostConstruct
     public void init() {
         if (categories == null || vendors == null) {
-            categories = customerService.getCategories();
-            vendors = customerService.getVendors();
+            //categories = customerService.getCategories();
+            //vendors = customerService.getVendors();
         }        
         selectedCategory = new Category();
         selectedVendor = new Vendor();
@@ -152,19 +150,19 @@ public class ListProductsBean extends CommonBean implements Serializable, Pagina
 
     @Override
     public void last(String selected) {
-        int dataSize = customerService.getProductsCount(((selected.equals("vendor") ? selectedVendor : selectedCategory)));
+        int dataSize = 0;//customerService.getProductsCount(((selected.equals("vendor") ? selectedVendor : selectedCategory)));
         int chunkSize = getPaginator().getChunkSize();        
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)), selected.equals("vendor") ? selectedVendor : selectedCategory);
     }
 
     @Override
     public void resetPaginator(Object object) {
-        getPaginator().setDataSize(customerService.getProductsCount(object));        
+        //getPaginator().setDataSize(customerService.getProductsCount(object));
         adjustPaginationControls(0, object);
     }
     
     private void adjustPaginationControls(int cursor, Object classifiedBy) {
-        products = customerService.getProductsIn(classifiedBy, cursor);
+        //products = customerService.getProductsIn(classifiedBy, cursor);
         getPaginator().setCursor(cursor);
         getPaginator().setChunkSize(products == null ? 0 : products.size());
     }

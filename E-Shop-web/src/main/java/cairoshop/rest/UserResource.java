@@ -1,19 +1,7 @@
 package cairoshop.rest;
 
-import cairoshop.entities.Customer;
-import cairoshop.entities.User;
-import cairoshop.services.interfaces.AdminService;
-import cairoshop.services.interfaces.UserService;
-import cairoshop.utils.MediaType;
-import cairoshop.utils.PasswordEncryptor;
-import com.cairoshop.dtos.NewCustomerDTO;
-import com.cairoshop.dtos.NewCustomerStatusDTO;
-import com.cairoshop.dtos.SavedCustomerDTO;
-import com.cairoshop.dtos.SavedCustomersDTO;
-
 import java.util.List;
 
-import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +17,16 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import com.cairoshop.dtos.NewCustomerDTO;
+import com.cairoshop.dtos.NewCustomerStatusDTO;
+import com.cairoshop.dtos.SavedCustomerDTO;
+import com.cairoshop.dtos.SavedCustomersDTO;
+
+import cairoshop.entities.Customer;
+import cairoshop.entities.User;
+import cairoshop.utils.MediaType;
+import cairoshop.utils.PasswordEncryptor;
+
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
@@ -38,11 +36,11 @@ import javax.ws.rs.core.UriBuilder;
 @Path("/users")
 public class UserResource {
     
-    @EJB
-    private AdminService adminService;
+    /*@EJB
+    private AdminService adminService;*/
     
-    @EJB
-    private UserService userService;
+    /*@EJB
+    private UserService userService;*/
 
     @Inject
     private PasswordEncryptor encryptor;
@@ -50,7 +48,7 @@ public class UserResource {
     // Not logged user
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response signUp(NewCustomerDTO newCustomerDTO, @Context HttpServletRequest request) {        
+    public Response signUp(NewCustomerDTO newCustomerDTO, @Context HttpServletRequest request) {
         Customer customer = new Customer.Builder(newCustomerDTO.getName(), newCustomerDTO.getEmail())
                                             .active(true)
                                             .withUsername(encryptor.encrypt(newCustomerDTO.getUsername()))
@@ -58,9 +56,9 @@ public class UserResource {
                                             .withContactDetails(newCustomerDTO.getAddress(), newCustomerDTO.getPhone())
                                         .build();        
         
-        User registeredCustomer = userService.signUp(customer);
+        User registeredCustomer = null;//userService.signUp(customer);
         
-        UriBuilder builder = UriBuilder.fromPath(request.getRequestURI())  
+        UriBuilder builder = UriBuilder.fromPath(request.getRequestURI())
                                         .path(UserResource.class, "getUser");
         
         return Response.created(builder.build(registeredCustomer.getId())).build();
@@ -81,8 +79,8 @@ public class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUsers(@QueryParam("start-position") int startPosition) {
-        List<User> customers = adminService.getCustomers(startPosition);
-        int allCustomersCount = adminService.getCustomersCount();
+        List<User> customers = null;//adminService.getCustomers(startPosition);
+        int allCustomersCount = 0;//adminService.getCustomersCount();
 
         SavedCustomersDTO savedCustomersDTO = new SavedCustomersDTO();
         for (User customer : customers) {
@@ -106,7 +104,7 @@ public class UserResource {
         User user = new Customer();
         user.setId(id);
         user.setActive(newCustomerStatus.isActive());
-        adminService.changeUserState(user);
+        //adminService.changeUserState(user);
         return Response.noContent().build();
     }
         

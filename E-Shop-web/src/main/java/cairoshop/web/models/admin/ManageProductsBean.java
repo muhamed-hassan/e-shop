@@ -1,27 +1,25 @@
 package cairoshop.web.models.admin;
 
-import javax.ejb.EJB;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
 import javax.servlet.http.Part;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
-
+import cairoshop.actions.AdminActions;
 import cairoshop.entities.Category;
 import cairoshop.entities.Product;
 import cairoshop.entities.Vendor;
+import cairoshop.messages.AdminMessages;
+import cairoshop.messages.Messages;
+import cairoshop.pages.AdminContent;
+import cairoshop.utils.ImageStreamExtractor;
+import cairoshop.utils.Scope;
 import cairoshop.web.models.common.CommonBean;
 import cairoshop.web.models.common.navigation.AdminNavigation;
-import cairoshop.services.interfaces.AdminService;
-import cairoshop.actions.AdminActions;
-import cairoshop.pages.AdminContent;
-import cairoshop.messages.AdminMessages;
-import cairoshop.utils.ImageStreamExtractor;
-import cairoshop.messages.Messages;
-import cairoshop.utils.Scope;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
 
 /* ************************************************************************** 
@@ -33,8 +31,8 @@ import cairoshop.web.models.common.pagination.PlainPaginationControls;
 @SessionScoped
 public class ManageProductsBean extends CommonBean implements Serializable, AdminNavigation, PlainPaginationControls {
 
-    @EJB
-    private AdminService adminService;
+    /*@EJB
+    private AdminService adminService;*/
     
     @Inject
     private ImageStreamExtractor imageStreamExtractor;
@@ -52,15 +50,15 @@ public class ManageProductsBean extends CommonBean implements Serializable, Admi
         product = new Product();
         product.setCategory(new Category());
         product.setVendor(new Vendor());
-        vendors = adminService.getVendors();
-        categories = adminService.getCategories();
+        /*vendors = adminService.getVendors();
+        categories = adminService.getCategories();*/
     }
 
     public void addProduct() throws IOException {        
         if (imgData != null && imgData.getSize() > 0) {
             product.setImage(imageStreamExtractor.extract(imgData.getInputStream()));
         }
-        int status = adminService.addProduct(product) ? 1 : -1;
+        int status = 0;//adminService.addProduct(product) ? 1 : -1;
         String msg = (status == 1) ? product.getName() + Messages.ADDED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;        
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
@@ -71,10 +69,10 @@ public class ManageProductsBean extends CommonBean implements Serializable, Admi
     public void loadTarget(Product product) {
         this.product = product;
         if (vendors == null) {
-            vendors = adminService.getVendors();            
+            //vendors = adminService.getVendors();
         }
         if (categories == null) {
-            categories = adminService.getCategories();            
+            //categories = adminService.getCategories();
         }        
     }
 
@@ -86,7 +84,7 @@ public class ManageProductsBean extends CommonBean implements Serializable, Admi
         if (imgData != null && imgData.getSize() > 0) {            
             product.setImage(imageStreamExtractor.extract(imgData.getInputStream()));
         }
-        int status = adminService.editProduct(product) ? 1 : -1;
+        int status = 0;//adminService.editProduct(product) ? 1 : -1;
         String msg = (status == 1) ? product.getName() + Messages.EDITED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;        
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
@@ -95,11 +93,11 @@ public class ManageProductsBean extends CommonBean implements Serializable, Admi
     // =======> Delete product
     // =========================================================================
     public void deleteProduct(Product productToBeDeleted) {
-        int status = adminService.deleteProduct(productToBeDeleted.getId()) ? 1 : -1;
+        int status = 0;//adminService.deleteProduct(productToBeDeleted.getId()) ? 1 : -1;
         String msg = (status == 1) ? productToBeDeleted.getName() + Messages.REMOVED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;        
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
-        getPaginator().setDataSize(adminService.getProductsCount());
-        products = adminService.getProducts(getPaginator().getCursor());
+        //getPaginator().setDataSize(adminService.getProductsCount());
+        //products = adminService.getProducts(getPaginator().getCursor());
         if (products == null || products.isEmpty()) {
             previous();
         }
@@ -157,19 +155,19 @@ public class ManageProductsBean extends CommonBean implements Serializable, Admi
 
     @Override
     public void last() {
-        int dataSize = adminService.getProductsCount();
+        int dataSize = 0;//adminService.getProductsCount();
         int chunkSize = getPaginator().getChunkSize();        
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
-        getPaginator().setDataSize(adminService.getProductsCount());        
+        //getPaginator().setDataSize(adminService.getProductsCount());
         adjustPaginationControls(0);
     }
     
     private void adjustPaginationControls(int cursor) {
-        products = adminService.getProducts(cursor);
+        //products = adminService.getProducts(cursor);
         getPaginator().setCursor(cursor);
         getPaginator().setChunkSize(products.size());
     }

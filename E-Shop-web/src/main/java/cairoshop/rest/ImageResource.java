@@ -1,5 +1,9 @@
 package cairoshop.rest;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.ServletContext;
@@ -10,13 +14,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.io.IOException;
-
+import cairoshop.repositories.exceptions.RetrievalException;
 import cairoshop.repositories.interfaces.ProductRepository;
 import cairoshop.utils.MediaType;
-import cairoshop.repositories.exceptions.RetrievalException;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *

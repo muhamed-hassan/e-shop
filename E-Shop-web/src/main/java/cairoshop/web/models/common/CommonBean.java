@@ -1,10 +1,10 @@
 package cairoshop.web.models.common;
 
-import javax.faces.bean.ManagedProperty;
-import javax.inject.Inject;
-import javax.faces.context.FacesContext;
-
 import java.util.Map;
+
+import javax.faces.bean.ManagedProperty;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 
 import cairoshop.web.models.common.pagination.Paginator;
 

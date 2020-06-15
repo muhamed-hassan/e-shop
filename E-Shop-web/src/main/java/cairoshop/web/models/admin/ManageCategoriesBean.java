@@ -1,21 +1,19 @@
 package cairoshop.web.models.admin;
 
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-
 import java.io.Serializable;
 import java.util.List;
 
-import cairoshop.entities.Category;
-import cairoshop.web.models.common.CommonBean;
-import cairoshop.web.models.common.navigation.AdminNavigation;
-import cairoshop.services.interfaces.AdminService;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import cairoshop.actions.AdminActions;
-import cairoshop.pages.AdminContent;
+import cairoshop.entities.Category;
 import cairoshop.messages.AdminMessages;
 import cairoshop.messages.Messages;
+import cairoshop.pages.AdminContent;
 import cairoshop.utils.Scope;
+import cairoshop.web.models.common.CommonBean;
+import cairoshop.web.models.common.navigation.AdminNavigation;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
 
 /* ************************************************************************** 
@@ -27,8 +25,8 @@ import cairoshop.web.models.common.pagination.PlainPaginationControls;
 @SessionScoped
 public class ManageCategoriesBean extends CommonBean implements Serializable, AdminNavigation, PlainPaginationControls {
 
-    @EJB
-    private AdminService adminService;
+    /*@EJB
+    private AdminService adminService;*/
 
     private Category category;
     private List<Category> categories;
@@ -41,7 +39,7 @@ public class ManageCategoriesBean extends CommonBean implements Serializable, Ad
     }
 
     public void addCategory() {
-        int status = adminService.addCategory(category) ? 1 : -1;
+        int status = 0;//adminService.addCategory(category) ? 1 : -1;
         String msg = (status == 1) ? category.getName() + Messages.ADDED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
@@ -50,12 +48,12 @@ public class ManageCategoriesBean extends CommonBean implements Serializable, Ad
     // =======> Edit category
     // =========================================================================
     public void onEdit(Category categoryToBeEdited) {
-        categoryToBeEdited.setUnderEdit(true);
+        //categoryToBeEdited.setUnderEdit(true);
     }
 
     public void editCategory(Category categoryToBeEdited) {
-        categoryToBeEdited.setUnderEdit(false);
-        int status = adminService.editCategory(categoryToBeEdited) ? 1 : -1;
+        //categoryToBeEdited.setUnderEdit(false);
+        int status = 0;//adminService.editCategory(categoryToBeEdited) ? 1 : -1;
         String msg = (status == 1) ? categoryToBeEdited.getName() + Messages.EDITED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
@@ -64,11 +62,11 @@ public class ManageCategoriesBean extends CommonBean implements Serializable, Ad
     // =======> Delete categroy
     // =========================================================================
     public void deleteCategory(Category categoryToBeDeleted) {
-        int status = adminService.deleteCategory(categoryToBeDeleted.getId()) ? 1 : -1;
+        int status = 0;//adminService.deleteCategory(categoryToBeDeleted.getId()) ? 1 : -1;
         String msg = (status == 1) ? categoryToBeDeleted.getName() + Messages.REMOVED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
-        getPaginator().setDataSize(adminService.getCategoriesCount());
-        categories = adminService.getCategories(getPaginator().getCursor());
+        //getPaginator().setDataSize(adminService.getCategoriesCount());
+        //categories = adminService.getCategories(getPaginator().getCursor());
         if (categories.isEmpty()) {
             previous();
         }
@@ -95,19 +93,19 @@ public class ManageCategoriesBean extends CommonBean implements Serializable, Ad
 
     @Override
     public void last() {
-        int dataSize = adminService.getCategoriesCount();
+        int dataSize = 0;//adminService.getCategoriesCount();
         int chunkSize = getPaginator().getChunkSize();        
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
-        getPaginator().setDataSize(adminService.getCategoriesCount());        
+        //getPaginator().setDataSize(adminService.getCategoriesCount());
         adjustPaginationControls(0);
     }
     
     private void adjustPaginationControls(int cursor) {
-        categories = adminService.getCategories(cursor);
+        //categories = adminService.getCategories(cursor);
         getPaginator().setCursor(cursor);
         getPaginator().setChunkSize(categories.size());
     }

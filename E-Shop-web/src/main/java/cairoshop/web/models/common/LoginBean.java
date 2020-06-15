@@ -1,5 +1,7 @@
 package cairoshop.web.models.common;
 
+import java.util.Map;
+
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -7,14 +9,12 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
-import java.util.Map;
-
 import cairoshop.entities.Admin;
 import cairoshop.entities.Customer;
 import cairoshop.entities.User;
+import cairoshop.pages.SharedContent;
 import cairoshop.services.interfaces.UserService;
 import cairoshop.utils.PasswordEncryptor;
-import cairoshop.pages.SharedContent;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -56,7 +56,7 @@ public class LoginBean {
      */
     public String login() {
         //null | "notFound" | instanceof User
-        User user = userService.signIn(email, encryptor.encrypt(password));
+        User user = null;// userService.signIn(email, encryptor.encrypt(password));
         FacesContext context = FacesContext.getCurrentInstance();
 
         if (user == null) { // not registered yet || wrong userName or password

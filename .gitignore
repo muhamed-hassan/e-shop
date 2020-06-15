@@ -2,3 +2,11 @@
 /E-Shop-ejb/target/
 /E-Shop-web/target/
 /Commons/target/
+
+.idea/
+E-Shop.iml
+E-Shop-ear/E-Shop-ear.iml
+E-Shop-ejb/E-Shop-ejb.iml
+E-Shop-web/E-Shop-web.iml
+Commons/Commons.iml
+

@@ -1,19 +1,17 @@
 package cairoshop.web.models.customer;
 
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-
 import java.io.Serializable;
 import java.util.List;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import cairoshop.entities.Product;
-import cairoshop.web.models.common.navigation.CustomerNavigation;
-import cairoshop.services.interfaces.CustomerService;
-import cairoshop.pages.CustomerContent;
 import cairoshop.messages.CustomerMessages;
 import cairoshop.messages.Messages;
+import cairoshop.pages.CustomerContent;
 import cairoshop.web.models.common.CommonBean;
+import cairoshop.web.models.common.navigation.CustomerNavigation;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
 
 /* ************************************************************************** 
@@ -25,8 +23,8 @@ import cairoshop.web.models.common.pagination.PlainPaginationControls;
 @SessionScoped
 public class FindProductBean extends CommonBean implements Serializable, CustomerNavigation, PlainPaginationControls {
 
-    @EJB
-    private CustomerService customerService;
+    /*@EJB
+    private CustomerService customerService;*/
 
     private String keyword;
     private List<Product> queryResult;
@@ -78,14 +76,14 @@ public class FindProductBean extends CommonBean implements Serializable, Custome
 
     @Override
     public void last() {
-        int dataSize = customerService.getProductsCount(keyword);
+        int dataSize = 0;//customerService.getProductsCount(keyword);
         int chunkSize = getPaginator().getChunkSize();        
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
-        getPaginator().setDataSize(customerService.getProductsCount(keyword));        
+        //getPaginator().setDataSize(customerService.getProductsCount(keyword));
         adjustPaginationControls(0);
         if (queryResult == null || queryResult.isEmpty()) {
             getContentChanger().displayNoDataFound(Messages.NO_PRODUCTS_TO_DISPLAY);
@@ -93,7 +91,7 @@ public class FindProductBean extends CommonBean implements Serializable, Custome
     }
     
     private void adjustPaginationControls(int cursor) {
-        queryResult = customerService.getProductsByName(keyword, cursor);
+        //queryResult = customerService.getProductsByName(keyword, cursor);
         getPaginator().setCursor(cursor);
         getPaginator().setChunkSize(queryResult.size());
     }

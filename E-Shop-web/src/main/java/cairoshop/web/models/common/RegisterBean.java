@@ -1,5 +1,7 @@
 package cairoshop.web.models.common;
 
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -8,14 +10,12 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
-import java.util.Map;
-
 import cairoshop.entities.ContactDetails;
 import cairoshop.entities.Customer;
 import cairoshop.entities.User;
+import cairoshop.pages.SharedContent;
 import cairoshop.services.interfaces.UserService;
 import cairoshop.utils.PasswordEncryptor;
-import cairoshop.pages.SharedContent;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -60,7 +60,7 @@ public class RegisterBean {
     public String register() {
         customer.setContactDetails(contactDetails);
         customer.setPassword(encryptor.encrypt(customer.getPassword()));
-        User result = userService.signUp(customer);
+        User result = null;//userService.signUp(customer);
 
         FacesContext context = FacesContext.getCurrentInstance();
 

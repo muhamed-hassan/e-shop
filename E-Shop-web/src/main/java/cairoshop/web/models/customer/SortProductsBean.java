@@ -1,20 +1,17 @@
 package cairoshop.web.models.customer;
 
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import cairoshop.entities.Product;
-import cairoshop.web.models.common.navigation.CustomerNavigation;
-import cairoshop.services.interfaces.CustomerService;
-import cairoshop.pages.CustomerContent;
 import cairoshop.messages.CustomerMessages;
+import cairoshop.pages.CustomerContent;
 import cairoshop.web.models.common.CommonBean;
+import cairoshop.web.models.common.navigation.CustomerNavigation;
 import cairoshop.web.models.common.pagination.PaginationControlsWithSorting;
 
 /* ************************************************************************** 
@@ -26,8 +23,8 @@ import cairoshop.web.models.common.pagination.PaginationControlsWithSorting;
 @SessionScoped
 public class SortProductsBean extends CommonBean implements Serializable, CustomerNavigation, PaginationControlsWithSorting {
 
-    @EJB
-    private CustomerService customerService;
+    /*@EJB
+    private CustomerService customerService;*/
 
     private String sortCriteria;
     private String sortDirection;
@@ -72,7 +69,7 @@ public class SortProductsBean extends CommonBean implements Serializable, Custom
 
     @Override
     public void last() {
-        int dataSize = customerService.getProductsCount();
+        int dataSize = 0;//customerService.getProductsCount();
         int chunkSize = getPaginator().getChunkSize();        
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
@@ -86,12 +83,12 @@ public class SortProductsBean extends CommonBean implements Serializable, Custom
         sessionMap.put("sortCriteria", criteria);
         sessionMap.put("sortDirection", direction.equals("asc") ? "an ascending" : "a descending");
 
-        getPaginator().setDataSize(customerService.getProductsCount());
+        //getPaginator().setDataSize(customerService.getProductsCount());
         adjustPaginationControls(0);
     }
     
     private void adjustPaginationControls(int cursor) {
-        products = customerService.sortProducts(sortCriteria, sortDirection, cursor);
+        //products = customerService.sortProducts(sortCriteria, sortDirection, cursor);
         getPaginator().setCursor(cursor);
         getPaginator().setChunkSize(products.size());
     }

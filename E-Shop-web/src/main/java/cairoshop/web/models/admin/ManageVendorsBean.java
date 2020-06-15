@@ -1,21 +1,19 @@
 package cairoshop.web.models.admin;
 
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-
 import java.io.Serializable;
 import java.util.List;
 
-import cairoshop.entities.Vendor;
-import cairoshop.web.models.common.navigation.AdminNavigation;
-import cairoshop.services.interfaces.AdminService;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import cairoshop.actions.AdminActions;
-import cairoshop.pages.AdminContent;
+import cairoshop.entities.Vendor;
 import cairoshop.messages.AdminMessages;
 import cairoshop.messages.Messages;
+import cairoshop.pages.AdminContent;
 import cairoshop.utils.Scope;
 import cairoshop.web.models.common.CommonBean;
+import cairoshop.web.models.common.navigation.AdminNavigation;
 import cairoshop.web.models.common.pagination.PlainPaginationControls;
 
 /* ************************************************************************** 
@@ -27,8 +25,8 @@ import cairoshop.web.models.common.pagination.PlainPaginationControls;
 @SessionScoped
 public class ManageVendorsBean extends CommonBean implements Serializable, AdminNavigation, PlainPaginationControls {
 
-    @EJB
-    private AdminService adminService;
+    /*@EJB
+    private AdminService adminService;*/
 
     private Vendor vendor;
     private List<Vendor> vendors;
@@ -41,7 +39,7 @@ public class ManageVendorsBean extends CommonBean implements Serializable, Admin
     }
 
     public void addVendor() {
-        int status = adminService.addVendor(vendor) ? 1 : -1;
+        int status = 0;//adminService.addVendor(vendor) ? 1 : -1;
         String msg = (status == 1) ? vendor.getName() + Messages.ADDED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
@@ -50,12 +48,12 @@ public class ManageVendorsBean extends CommonBean implements Serializable, Admin
     // =======> Edit vendor
     // =========================================================================
     public void onEdit(Vendor vendorToBeEdited) {
-        vendorToBeEdited.setUnderEdit(true);
+        //vendorToBeEdited.setUnderEdit(true);
     }
 
     public void editVendor(Vendor vendorToBeEdited) {
-        vendorToBeEdited.setUnderEdit(false);
-        int status = adminService.editVendor(vendorToBeEdited) ? 1 : -1;
+        //vendorToBeEdited.setUnderEdit(false);
+        int status = 0;//adminService.editVendor(vendorToBeEdited) ? 1 : -1;
         String msg = (status == 1) ? vendorToBeEdited.getName() + Messages.EDITED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;
         getContentChanger().displayContentWithMsg(msg, status, Scope.SESSION);
     }
@@ -64,11 +62,11 @@ public class ManageVendorsBean extends CommonBean implements Serializable, Admin
     // =======> Delete vendor
     // =========================================================================
     public void deleteVendor(Vendor vendorToBeDeleted) {
-        int status = adminService.deleteVendor(vendorToBeDeleted.getId()) ? 1 : -1;
+        int status = 0;//adminService.deleteVendor(vendorToBeDeleted.getId()) ? 1 : -1;
         String msg = (status == 1) ? vendorToBeDeleted.getName() + Messages.REMOVED_SUCCESSFULLY : Messages.SOMETHING_WENT_WRONG;
         getContentChanger().displayContentWithMsg(msg, status, Scope.REQUEST);
-        getPaginator().setDataSize(adminService.getVendorsCount());
-        vendors = adminService.getVendors(getPaginator().getCursor());
+        //getPaginator().setDataSize(adminService.getVendorsCount());
+        //vendors = adminService.getVendors(getPaginator().getCursor());
         if (vendors.isEmpty()) {
             previous();
         }
@@ -110,19 +108,19 @@ public class ManageVendorsBean extends CommonBean implements Serializable, Admin
 
     @Override
     public void last() {
-        int dataSize = adminService.getVendorsCount();
+        int dataSize = 0;//adminService.getVendorsCount();
         int chunkSize = getPaginator().getChunkSize();
         adjustPaginationControls(((dataSize % chunkSize) == 0) ? (dataSize - chunkSize) : (dataSize - (dataSize % chunkSize)));
     }
 
     @Override
     public void resetPaginator() {
-        getPaginator().setDataSize(adminService.getVendorsCount());
+        //getPaginator().setDataSize(adminService.getVendorsCount());
         adjustPaginationControls(0);
     }
 
     private void adjustPaginationControls(int cursor) {
-        vendors = adminService.getVendors(cursor);
+        //vendors = adminService.getVendors(cursor);
         getPaginator().setCursor(cursor);
         getPaginator().setChunkSize(vendors.size());
     }

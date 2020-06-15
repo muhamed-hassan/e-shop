@@ -20,7 +20,6 @@
         <jsf.version>2.2.0</jsf.version>
         <jersey.container-servlet.version>2.31</jersey.container-servlet.version>
         <jersey.media-json-jackson.version>2.31</jersey.media-json-jackson.version>
-        <commons-lang3.version>3.10</commons-lang3.version>
     </properties>
 
     <dependencies>

@@ -1,19 +1,17 @@
 package cairoshop.web.models.customer;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import cairoshop.entities.Customer;
 import cairoshop.entities.Product;
-import cairoshop.services.interfaces.CustomerService;
-import cairoshop.pages.CustomerContent;
 import cairoshop.messages.Messages;
+import cairoshop.pages.CustomerContent;
 import cairoshop.utils.Scope;
 import cairoshop.web.models.common.CommonBean;
 
@@ -26,8 +24,8 @@ import cairoshop.web.models.common.CommonBean;
 @SessionScoped
 public class ProductDetails extends CommonBean implements Serializable {
 
-    @EJB
-    private CustomerService customerService;
+    /*@EJB
+    private CustomerService customerService;*/
 
     private Product product;
     private List<Integer> likedProducts;
@@ -41,7 +39,7 @@ public class ProductDetails extends CommonBean implements Serializable {
     public void init() {
         Map<String, Object> sessionMap = getSessionMap();
         currentUser = (Customer) sessionMap.get("currentUser");
-        likedProducts = customerService.getLikedProducts(currentUser.getId());
+        //likedProducts = customerService.getLikedProducts(currentUser.getId());
     }
 
     // =========================================================================
@@ -86,7 +84,7 @@ public class ProductDetails extends CommonBean implements Serializable {
     // =======> like link toggling
     // =========================================================================
     public void addToFavorites() {
-        favorite = customerService.addProductToFavoriteList(product, currentUser);
+        //favorite = customerService.addProductToFavoriteList(product, currentUser);
         if (favorite) {
             likedProducts.add(product.getId());
         }
