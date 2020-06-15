@@ -3,10 +3,13 @@ package cairoshop.repositories;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Root;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.hibernate.Session;
@@ -55,12 +58,13 @@ public abstract class BaseRepository<T> implements AbstractRepository<T>, Pagabl
 
     //**************************************************************************
     @Override
-    public void add(T entity) throws InsertionException {        
+    public Integer add(T entity) throws InsertionException {
+        Integer id = null;
         Session session = hibernateConfigurator.getSessionFactory().openSession();
         try {
 
             session.getTransaction().begin();
-            session.save(entity);
+            id = (Integer) session.save(entity);
             session.getTransaction().commit();
 
         } catch (Exception ex) {
@@ -70,18 +74,30 @@ public abstract class BaseRepository<T> implements AbstractRepository<T>, Pagabl
         } finally {
             session.close();
         }
+        return id;
     }
 
     @Override
-    public void update(T entity) throws ModificationException {        
+    public void update(int id, Map<String, Object> fields) throws ModificationException {
+        EntityManager entityManager = null;
         Session session = hibernateConfigurator.getSessionFactory().openSession();
-
         try {
+            entityManager = session.getEntityManagerFactory().createEntityManager();
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaUpdate<T> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(entity);
+            Root<T> root = criteriaUpdate.from(entity);
+            for (Map.Entry<String, Object> entry : fields.entrySet()) {
+                criteriaUpdate.set(root.get(entry.getKey()), entry.getValue());
+            }
+            criteriaUpdate.where(criteriaBuilder.equal(root.get("id"), id));
 
-            session.getTransaction().begin();
-            session.update(entity);
+            entityManager.getTransaction().begin();
+            int affectedRows = entityManager.createQuery(criteriaUpdate).executeUpdate();
             session.getTransaction().commit();
 
+            if (affectedRows == 0) {
+                throw new ModificationException("No rows updated");
+            }
         } catch (Exception ex) {
             session.getTransaction().rollback();
             getGlobalLogger().doLogging(Level.ERROR, RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_MODIFICATION, getClass(), ex);
@@ -92,22 +108,23 @@ public abstract class BaseRepository<T> implements AbstractRepository<T>, Pagabl
     }
 
     @Override
-    public void remove(int id) throws DeletionException {        
+    public void remove(int id) throws DeletionException {
+        EntityManager entityManager = null;
         Session session = hibernateConfigurator.getSessionFactory().openSession();
-
         try {
+            entityManager = session.getEntityManagerFactory().createEntityManager();
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaUpdate<T> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(entity);
+            Root<T> root = criteriaUpdate.from(entity);
 
-            session.getTransaction().begin();
-            StringBuilder hql = new StringBuilder()
-                    .append("UPDATE " + entityName + " obj ")
-                    .append("SET obj." + ("User".equals(entityName) ? "active" : "notDeleted") + "=:flag ")
-                    .append("WHERE obj.id=:id");
-            session.createQuery(hql.toString())
-                    .setParameter("flag", false)
-                    .setParameter("id", id)
-                    .executeUpdate();
-            session.getTransaction().commit();
-
+            criteriaUpdate.set(root.get("active"), false)
+                            .where(criteriaBuilder.equal(root.get("id"), id));
+            entityManager.getTransaction().begin();
+            int affectedRows = entityManager.createQuery(criteriaUpdate).executeUpdate();
+            entityManager.getTransaction().commit();
+            if (affectedRows == 0) {
+                throw new DeletionException("No rows deleted");
+            }
         } catch (Exception ex) {
             session.getTransaction().rollback();
             getGlobalLogger().doLogging(Level.ERROR, RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_REMOVAL, getClass(), ex);
@@ -118,17 +135,19 @@ public abstract class BaseRepository<T> implements AbstractRepository<T>, Pagabl
     }
 
     @Override
-    public T find(QuerySpecs querySpecs) throws RetrievalException {        
+    public Object[] find(QuerySpecs querySpecs) throws RetrievalException {
         EntityManager entityManager = null;
-        T entity = null;
-        
+        Object[] record = null;
         try (Session session = hibernateConfigurator.getSessionFactory().openSession()) {
 
             entityManager = session.getEntityManagerFactory().createEntityManager();
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.entity);			
-            Root<T> root = criteriaQuery.from(this.entity);           
-            entity = (T) entityManager.createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root)).getSingleResult();
+            CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
+            Root<T> root = criteriaQuery.from(entity);
+            criteriaQuery.multiselect(root.get("id"), root.get("name"));
+            criteriaQuery = querySpecs.build(criteriaQuery, criteriaBuilder, root);
+            record = entityManager.createQuery(criteriaQuery)
+                .getSingleResult();
 
         } catch (Exception ex) {
             getGlobalLogger().doLogging(Level.ERROR, RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, getClass(), ex);
@@ -138,21 +157,23 @@ public abstract class BaseRepository<T> implements AbstractRepository<T>, Pagabl
                 entityManager.close();
             }
         }
-        return entity;
+        return record;
     }
 
     @Override
-    public List<T> findAll(QuerySpecs querySpecs) throws RetrievalException {        
+    public List<Object[]> findAll(QuerySpecs querySpecs) throws RetrievalException {
         EntityManager entityManager = null;
-        List<T> data = null;
+        List<Object[]> records = null;
         
         try (Session session = hibernateConfigurator.getSessionFactory().openSession()) {
 
             entityManager = session.getEntityManagerFactory().createEntityManager();
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.entity);			
-            Root<T> root = criteriaQuery.from(this.entity);                                 
-            data = entityManager.createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root)).getResultList();
+            CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
+            Root<T> root = criteriaQuery.from(this.entity);
+            criteriaQuery.multiselect(root.get("id"), root.get("name"));
+            criteriaQuery = querySpecs.build(criteriaQuery, criteriaBuilder, root);
+            records = entityManager.createQuery(criteriaQuery).getResultList();
                                  
         } catch (Exception ex) {
             getGlobalLogger().doLogging(Level.ERROR, RepositoryMessage.AN_ERROR_OCCURED_DURING_ENTITY_RETRIEVAL, getClass(), ex);
@@ -162,21 +183,23 @@ public abstract class BaseRepository<T> implements AbstractRepository<T>, Pagabl
                 entityManager.close();
             }
         }
-        return data;
+        return records;
     }
 
     @Override
-    public List<T> findAll(QuerySpecs querySpecs, int startPosition) throws RetrievalException {        
+    public List<Object[]> findAll(QuerySpecs querySpecs, int startPosition) throws RetrievalException {
         EntityManager entityManager = null;
-        List<T> data = null;
+        List<Object[]> records = null;
         
         try (Session session = hibernateConfigurator.getSessionFactory().openSession()) {
 
             entityManager = session.getEntityManagerFactory().createEntityManager();
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.entity);            
-            Root<T> root = criteriaQuery.from(this.entity);                                 
-            data = entityManager.createQuery(querySpecs.build(criteriaQuery, criteriaBuilder, root))
+            CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
+            Root<T> root = criteriaQuery.from(this.entity);
+            criteriaQuery.multiselect(root.get("id"), root.get("name"));
+            criteriaQuery = querySpecs.build(criteriaQuery, criteriaBuilder, root);
+            records = entityManager.createQuery(criteriaQuery)
                                     .setFirstResult(startPosition)
                                     .setMaxResults(5)
                                     .getResultList();
@@ -189,7 +212,7 @@ public abstract class BaseRepository<T> implements AbstractRepository<T>, Pagabl
                 entityManager.close();
             }
         }
-        return data;
+        return records;
     }
 
     @Override

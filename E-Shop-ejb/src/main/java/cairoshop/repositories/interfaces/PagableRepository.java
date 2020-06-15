@@ -13,6 +13,6 @@ import cairoshop.repositories.specs.QuerySpecs;
 public interface PagableRepository<T> {
     
     int getCount(QuerySpecs querySpecs) throws RetrievalException;    
-    List<T> findAll(QuerySpecs querySpecs, int startPosition) throws RetrievalException; 
+    List<Object[]> findAll(QuerySpecs querySpecs, int startPosition) throws RetrievalException;
     
 }

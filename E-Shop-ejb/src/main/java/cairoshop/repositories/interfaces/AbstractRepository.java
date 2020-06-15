@@ -1,6 +1,7 @@
 package cairoshop.repositories.interfaces;
 
 import java.util.List;
+import java.util.Map;
 
 import cairoshop.repositories.exceptions.DeletionException;
 import cairoshop.repositories.exceptions.InsertionException;
@@ -15,10 +16,10 @@ import cairoshop.repositories.specs.QuerySpecs;
  * ************************************************************************ */
 public interface AbstractRepository<T> {
     
-    void add(T entity) throws InsertionException;    
-    void update(T entity) throws ModificationException;    
-    void remove(int id) throws DeletionException;    
-    T find(QuerySpecs querySpecs) throws RetrievalException;    
-    List<T> findAll(QuerySpecs querySpecs) throws RetrievalException; 
+    Integer add(T entity) throws InsertionException;
+    void update(int id, Map<String, Object> fields) throws ModificationException;
+    void remove(int id) throws DeletionException;
+    Object[] find(QuerySpecs querySpecs) throws RetrievalException;
+    List<Object[]> findAll(QuerySpecs querySpecs) throws RetrievalException;
         
 }
