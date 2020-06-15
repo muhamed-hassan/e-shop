@@ -20,6 +20,7 @@
         <jsf.version>2.2.0</jsf.version>
         <jersey.container-servlet.version>2.31</jersey.container-servlet.version>
         <jersey.media-json-jackson.version>2.31</jersey.media-json-jackson.version>
+        <commons-lang3.version>3.10</commons-lang3.version>
     </properties>
 
     <dependencies>
@@ -56,6 +57,11 @@
             <artifactId>Logging</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>   
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
         </dependency>
     </dependencies>
 

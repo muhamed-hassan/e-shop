@@ -1,17 +1,20 @@
-package cairoshop.utils;
+package cairoshop.web.dtos;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public final class MediaType {
-    
-    private MediaType() {}
-    
-    public static final String IMAGE_JPG = "image/jpg";
-    public static final String IMAGE_JPEG = "image/jpeg";
-    public static final String IMAGE_PNG = "image/png";
-    public static final String APPLICATION_JSON = "application/json";
+public class NewCustomerStatusDTO {
+
+    private boolean active;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
     
 }

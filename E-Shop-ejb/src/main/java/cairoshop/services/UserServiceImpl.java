@@ -49,7 +49,7 @@ public class UserServiceImpl extends BaseService implements UserService {
             
             userRepository.add(customer);
             user = userRepository.find(new QuerySpecs()
-                                            .addPredicate(new Condition("mail", ConditionConnector.EQUAL, customer.getMail()))
+                                            .addPredicate(new Condition("mail", ConditionConnector.EQUAL, customer.getEmail()))
                                             .addPredicate(new Condition("password", ConditionConnector.EQUAL, customer.getPassword()))
                                             .addPredicate(new Condition("active", ConditionConnector.EQUAL, true)));
             

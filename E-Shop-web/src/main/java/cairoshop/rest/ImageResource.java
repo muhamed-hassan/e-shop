@@ -1,6 +1,7 @@
 package cairoshop.rest;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -22,6 +23,7 @@ import cairoshop.repositories.exceptions.RetrievalException;
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
+@Singleton
 @Path("/images")
 public class ImageResource {
     

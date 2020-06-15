@@ -1,17 +1,30 @@
-package cairoshop.utils;
+package cairoshop.web.dtos;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
  * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
-public final class MediaType {
-    
-    private MediaType() {}
-    
-    public static final String IMAGE_JPG = "image/jpg";
-    public static final String IMAGE_JPEG = "image/jpeg";
-    public static final String IMAGE_PNG = "image/png";
-    public static final String APPLICATION_JSON = "application/json";
+public class BaseCustomerDTO {
+
+    private String name;
+
+    private String email;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     
 }

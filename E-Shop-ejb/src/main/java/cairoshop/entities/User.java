@@ -35,9 +35,10 @@ public abstract class User implements Serializable {
     private String name;
 
     @Column(name = "user_name")
-    private String userName;
+    private String username;
 
-    private String mail;
+    @Column(name = "mail")
+    private String email;
 
     private String password;
 
@@ -69,20 +70,20 @@ public abstract class User implements Serializable {
         this.name = name;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String userName) {
+        this.username = userName;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public boolean getActive() {
@@ -121,7 +122,7 @@ public abstract class User implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 89 * hash + this.id;
-        hash = 89 * hash + Objects.hashCode(this.userName);
+        hash = 89 * hash + Objects.hashCode(this.username);
         return hash;
     }
 
@@ -140,7 +141,7 @@ public abstract class User implements Serializable {
         if (this.id != other.id) {
             return false;
         }
-        if (!Objects.equals(this.userName, other.userName)) {
+        if (!Objects.equals(this.username, other.username)) {
             return false;
         }
         return true;
@@ -148,7 +149,7 @@ public abstract class User implements Serializable {
     
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", name=" + name + ", userName=" + userName + ", mail=" + mail + ", active=" + active + '}';
+        return "User{" + "id=" + id + ", name=" + name + ", userName=" + username + ", mail=" + email + ", active=" + active + '}';
     }
 
 }
