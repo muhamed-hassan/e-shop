@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+>
+    <h:form prependId="false" id="adminSideBar">
+        <div class="col-md-2">                
+            <div id='cssmenu'>                        
+                <ul>
+                    <li>
+                        <h:commandLink value="" action="#{manageUsersBean.navigate('manageUsers')}" 
+                                       actionListener="#{manageUsersBean.resetPaginator()}" >
+                            <span class="glyphicon glyphicon-tasks"></span>
+                            <span>Manage Users</span>                                
+                        </h:commandLink> 
+                    </li>
+                    <li class='active has-sub'>
+                        <a href='#'>
+                            <span class="glyphicon glyphicon-tasks"></span>
+                            <span>Manage Products</span>
+                        </a>
+                        <ul>
+                            <li>
+                                <h:commandLink value="" action="#{manageProductsBean.navigate('addProduct')}" 
+                                               actionListener="#{manageProductsBean.initAddProduct()}">
+                                    <span class="glyphicon glyphicon-plus text-success"></span>
+                                    <span>Add new product</span>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink value="" action="#{manageProductsBean.navigate('editProduct')}" 
+                                               actionListener="#{manageProductsBean.resetPaginator()}">
+                                    <span class="glyphicon glyphicon-pencil text-primary"></span>
+                                    <span>Edit product</span>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink value="" action="#{manageProductsBean.navigate('deleteProduct')}" 
+                                               actionListener="#{manageProductsBean.resetPaginator()}">
+                                    <span class="glyphicon glyphicon-trash text-danger"></span>
+                                    <span>Delete product</span>
+                                </h:commandLink>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class='active has-sub'>
+                        <a href='#'>
+                            <span class="glyphicon glyphicon-tasks"></span>
+                            <span>Manage Vendors</span>
+                        </a>
+                        <ul>
+                            <li>
+                                <h:commandLink value="" action="#{manageVendorsBean.navigate('addVendor')}" 
+                                               actionListener="#{manageVendorsBean.createVendor()}">
+                                    <span class="glyphicon glyphicon-plus text-success"></span>
+                                    <span>Add new vendor</span>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink value="" action="#{manageVendorsBean.navigate('editVendor')}"
+                                               actionListener="#{manageVendorsBean.resetPaginator()}" >
+                                    <span class="glyphicon glyphicon-pencil text-primary"></span>
+                                    <span>Edit vendor</span>                                    
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink value="" action="#{manageVendorsBean.navigate('deleteVendor')}"
+                                               actionListener="#{manageVendorsBean.resetPaginator()}" >
+                                    <span class="glyphicon glyphicon-trash text-danger"></span>
+                                    <span>Delete vendor</span>                                    
+                                </h:commandLink>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class='active has-sub'>
+                        <a href='#'>
+                            <span class="glyphicon glyphicon-tasks"></span>
+                            <span>Manage Categories</span>
+                        </a>
+                        <ul>
+                            <li>                                            
+                                <h:commandLink value="" action="#{manageCategoriesBean.navigate('addCategory')}" 
+                                               actionListener="#{manageCategoriesBean.createCategory()}">
+                                    <span class="glyphicon glyphicon-plus text-success"></span>
+                                    <span>Add new category</span>                                    
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink value="" action="#{manageCategoriesBean.navigate('editCategory')}" 
+                                               actionListener="#{manageCategoriesBean.resetPaginator()}">
+                                    <span class="glyphicon glyphicon-pencil text-primary"></span>
+                                    <span>Edit category</span>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink value="" action="#{manageCategoriesBean.navigate('deleteCategory')}" 
+                                               actionListener="#{manageCategoriesBean.resetPaginator()}">
+                                    <span class="glyphicon glyphicon-trash text-danger"></span>
+                                    <span>Delete category</span>
+                                </h:commandLink>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </h:form>    
+</ui:composition>
+
+

@@ -1,0 +1,1 @@
+INSERT INTO `category` (`name`) VALUES ('Laptops'), ('Mobiles'), ('Tablets'), ('Accessories');
