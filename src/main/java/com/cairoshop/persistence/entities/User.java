@@ -1,11 +1,7 @@
 package com.cairoshop.persistence.entities;
 
-import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.InheritanceType.SINGLE_TABLE;
-
-import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -13,9 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -28,7 +21,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @Entity
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "role")
-public abstract class User implements Serializable {
+public class User {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -45,13 +38,6 @@ public abstract class User implements Serializable {
     private String password;
 
     private boolean active;
-    
-    @ManyToMany(fetch = LAZY)
-    @JoinTable(name = "customer_fav_product",
-                joinColumns = @JoinColumn(name = "customer"),
-                inverseJoinColumns = @JoinColumn(name = "product")
-    )
-    private List<Product> favoriteProducts;
  
     @Column(insertable=false, updatable=false)
     private int role;
@@ -102,14 +88,6 @@ public abstract class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public List<Product> getFavoriteProducts() {
-        return favoriteProducts;
-    }
-
-    public void setFavoriteProducts(List<Product> favoriteProducts) {
-        this.favoriteProducts = favoriteProducts;
     }
 
     public int getRole() {

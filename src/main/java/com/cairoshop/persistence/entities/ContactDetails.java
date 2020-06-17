@@ -10,7 +10,7 @@ import java.io.Serializable;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Embeddable
-public class ContactDetails implements Serializable {
+public class ContactDetails {
 
     private String phone;
 

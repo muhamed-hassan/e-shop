@@ -2,14 +2,15 @@ package com.cairoshop.persistence.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.Loader;
+import org.hibernate.annotations.NamedQuery;
+import org.hibernate.annotations.Where;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
@@ -17,7 +18,14 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Entity
-public class Category implements Serializable {
+@Loader(namedQuery = "findCategoryById")
+@NamedQuery(name = "findCategoryById", query =
+    "SELECT c " +
+        "FROM Category c " +
+        "WHERE " +
+        "    c.id = ?1 ")
+@Where(clause = "active = true")
+public class Category {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

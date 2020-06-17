@@ -2,8 +2,6 @@ package com.cairoshop.persistence.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +19,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Entity
-public class Product implements Serializable {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -29,12 +27,11 @@ public class Product implements Serializable {
 
     private String name;
 
-    private Double price;
+    private double price;
 
-    private Integer quantity;
+    private int quantity;
 
-    @Lob
-    private String description;
+    private String description; // max 1000 char - TODO update creation script
 
     @Lob
     @Column(length = 200000)

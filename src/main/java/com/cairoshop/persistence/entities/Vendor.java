@@ -2,8 +2,6 @@ package com.cairoshop.persistence.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -17,7 +15,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Entity
-public class Vendor implements Serializable {
+public class Vendor {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
