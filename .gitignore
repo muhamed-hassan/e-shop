@@ -1,12 +1,28 @@
-/E-Shop-ear/target/
-/E-Shop-ejb/target/
-/E-Shop-web/target/
-/Commons/target/
+target/
 
-.idea/
-E-Shop.iml
-E-Shop-ear/E-Shop-ear.iml
-E-Shop-ejb/E-Shop-ejb.iml
-E-Shop-web/E-Shop-web.iml
-Commons/Commons.iml
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
 
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### VS Code ###
+.vscode/
+/bin/
