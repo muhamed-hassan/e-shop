@@ -2,12 +2,10 @@ package com.cairoshop.persistence.entities;
 
 import javax.persistence.Embeddable;
 
-import java.io.Serializable;
-
-/* ************************************************************************** 
- * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
- * GitHub      : https://github.com/muhamed-hassan                          *  
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Embeddable
 public class ContactDetails {

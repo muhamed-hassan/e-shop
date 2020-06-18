@@ -13,15 +13,15 @@ import javax.persistence.Inheritance;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-/* ************************************************************************** 
- * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
- * GitHub      : https://github.com/muhamed-hassan                          *  
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Entity
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "role")
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -37,8 +37,6 @@ public class User {
 
     private String password;
 
-    private boolean active;
- 
     @Column(insertable=false, updatable=false)
     private int role;
 
@@ -74,14 +72,6 @@ public class User {
         this.email = email;
     }
 
-    public boolean getActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -107,8 +97,6 @@ public class User {
         User that = (User) object;
         return new EqualsBuilder()
                     .append(id, that.id)
-                    .append(active, that.active)
-                    .append(name, that.name)
                 .isEquals();
     }
 
@@ -116,8 +104,6 @@ public class User {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                     .append(id)
-                    .append(name)
-                    .append(active)
                 .toHashCode();
     }
 

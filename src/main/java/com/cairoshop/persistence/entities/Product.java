@@ -12,14 +12,23 @@ import javax.persistence.ManyToOne;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.Loader;
+import org.hibernate.annotations.NamedQuery;
+import org.hibernate.annotations.Where;
 
-/* ************************************************************************** 
- * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
- * GitHub      : https://github.com/muhamed-hassan                          *  
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Entity
-public class Product {
+@Loader(namedQuery = "findProductById")
+@NamedQuery(name = "findProductById",
+            query = "SELECT p " +
+                    "FROM Product p " +
+                    "WHERE p.id = ?1 ")
+@Where(clause = "active = true")
+public class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -36,8 +45,6 @@ public class Product {
     @Lob
     @Column(length = 200000)
     private byte[] image;
-
-    private boolean active;
 
     @ManyToOne
     @JoinColumn(name = "category")
@@ -111,14 +118,6 @@ public class Product {
         this.vendor = vendor;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(final boolean active) {
-        this.active = active;
-    }
-
     @Override
     public boolean equals(Object object) {
         if (this == object)
@@ -128,8 +127,6 @@ public class Product {
         Product that = (Product) object;
         return new EqualsBuilder()
                     .append(id, that.id)
-                    .append(active, that.active)
-                    .append(name, that.name)
                 .isEquals();
     }
 
@@ -137,8 +134,6 @@ public class Product {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                     .append(id)
-                    .append(name)
-                    .append(active)
                 .toHashCode();
     }
     

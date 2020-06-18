@@ -3,9 +3,9 @@ package com.cairoshop.web.dtos;
 import java.util.List;
 
 /* **************************************************************************
- * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *
- * GitHub      : https://github.com/muhamed-hassan                          *
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 public class SavedItemsDTO<T> {
 

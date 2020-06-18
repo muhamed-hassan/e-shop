@@ -3,6 +3,7 @@ package com.cairoshop.service.impl;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cairoshop.persistence.repositories.BaseRepository;
 import com.cairoshop.service.BaseService;
+import com.cairoshop.service.exceptions.DataNotDeletedException;
+import com.cairoshop.service.exceptions.DataNotUpdatedException;
+import com.cairoshop.service.exceptions.NoResultException;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 public class BaseServiceImpl<NDTO, SDTO, T> implements BaseService<NDTO, SDTO, T> {
 
     private BaseRepository<SDTO, T, Integer> repository;
@@ -55,38 +64,50 @@ public class BaseServiceImpl<NDTO, SDTO, T> implements BaseService<NDTO, SDTO, T
     @Override
     public void edit(Map<String, Object> fields) {
         int affectedRows = repository.update((String) fields.get("name"), (Integer) fields.get("id"));
+        if (affectedRows == 0) {
+            throw new DataNotUpdatedException();
+        }
     }
 
     @Override
     public SDTO getById(int id) {
-        return repository.findById(id, savedDtoClass).get();
+        return repository.findById(id, savedDtoClass)
+                            .orElseThrow(NoResultException::new);
     }
 
     @Transactional
     @Override
     public void removeById(int id) {
-        repository.softDeleteById(id);
+        int affectedRows = repository.softDeleteById(id);
+        if (affectedRows == 0) {
+            throw new DataNotDeletedException();
+        }
     }
 
     @Override
     public List<SDTO> getAll() {
-
-        return repository.findAllBy();
+        List<SDTO> result = repository.findAllBy();
+        if (result.isEmpty()) {
+            throw new NoResultException();
+        }
+        return result;
     }
 
     @Override
     public List<SDTO> getAll(int startPosition, String sortBy, String sortDirection) {
-
         Sort sort = Sort.by(sortBy);
-        // TODO enhance later
-        if ( sortDirection.equals("DESC") ) {
-            sort = sort.descending();
-        } else { // ASC
-            sort = sort.ascending();
+        switch (sortDirection) {
+            case "DESC":
+                sort = sort.descending();
+                break;
+            case "ASC":
+                sort = sort.ascending();
+                break;
+            default:
+                throw new IllegalArgumentException("Allowed sort directions are DESC and ASC");
         }
-
-        Pageable sortedByPriceDesc =
-            PageRequest.of(startPosition, 5, sort);
-        return repository.findAllBy(sortedByPriceDesc);
+        final int MAX_PAGE_SIZE = 5;
+        return repository.findAllBy(PageRequest.of(startPosition, MAX_PAGE_SIZE, sort));
     }
+
 }

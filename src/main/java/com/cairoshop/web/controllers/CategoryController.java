@@ -1,6 +1,5 @@
 package com.cairoshop.web.controllers;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +21,11 @@ import com.cairoshop.service.CategoryService;
 import com.cairoshop.web.dtos.NewCategoryDTO;
 import com.cairoshop.web.dtos.SavedCategoryDTO;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 @RestController
 @RequestMapping("categories")
 public class CategoryController {
@@ -31,11 +35,10 @@ public class CategoryController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> addCategory(@RequestBody NewCategoryDTO newCategoryDTO) {
-        return ResponseEntity.created(ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .build(categoryService.add(newCategoryDTO)))
-            .build();
+        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
+                                                                    .path("/{id}")
+                                                                    .build(categoryService.add(newCategoryDTO)))
+                                .build();
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -50,13 +53,13 @@ public class CategoryController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"start-position","sort-by", "sort-direction"})
     public ResponseEntity<List<SavedCategoryDTO>> getCategories(@RequestParam("start-position") int startPosition,
-        @RequestParam("sort-by") String sortBy, @RequestParam("sort-direction") String sortDirection) {
+                                                                    @RequestParam("sort-by") String sortBy,
+                                                                    @RequestParam("sort-direction") String sortDirection) {
         return ResponseEntity.ok(categoryService.getAll(startPosition, sortBy, sortDirection));
     }
 
-    @PatchMapping(path = "{id}")
-    public ResponseEntity<Void> updateCategory(@PathVariable int id, @RequestBody Map<String, Object> fields) {
-        fields.put("id", id);
+    @PatchMapping
+    public ResponseEntity<Void> updateCategory(@RequestBody Map<String, Object> fields) {
         categoryService.edit(fields);
         return ResponseEntity.noContent().build();
     }

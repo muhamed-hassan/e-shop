@@ -4,9 +4,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /* **************************************************************************
- * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *
- * GitHub      : https://github.com/muhamed-hassan                          *
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 public class BaseSavedDTO extends BaseDTO {
 

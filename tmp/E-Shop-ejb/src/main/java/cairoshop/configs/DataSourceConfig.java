@@ -6,7 +6,7 @@ import javax.ejb.Startup;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
+* LinkedIn    : https://www.linkedin.com/in/muhamed-hassan/                *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @Startup

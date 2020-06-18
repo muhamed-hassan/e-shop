@@ -18,7 +18,7 @@ import cairoshop.entities.User;
 
 /* ************************************************************************** 
  * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
+* LinkedIn    : https://www.linkedin.com/in/muhamed-hassan/                *  
  * GitHub      : https://github.com/muhamed-hassan                          *  
  * ************************************************************************ */
 @WebFilter(urlPatterns = {"/customer/*", "/admin/*", "/login-pg.jsf"}, filterName = "authFilter")

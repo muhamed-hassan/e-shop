@@ -12,28 +12,25 @@ import org.hibernate.annotations.Loader;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Where;
 
-/* ************************************************************************** 
- * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
- * GitHub      : https://github.com/muhamed-hassan                          *  
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Entity
 @Loader(namedQuery = "findCategoryById")
-@NamedQuery(name = "findCategoryById", query =
-    "SELECT c " +
-        "FROM Category c " +
-        "WHERE " +
-        "    c.id = ?1 ")
+@NamedQuery(name = "findCategoryById",
+            query = "SELECT c " +
+                    "FROM Category c " +
+                    "WHERE c.id = ?1 ")
 @Where(clause = "active = true")
-public class Category {
+public class Category extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private int id;
 
     private String name;
-
-    private boolean active;
 
     public int getId() {
         return id;
@@ -51,14 +48,6 @@ public class Category {
         this.name = name;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
     @Override
     public boolean equals(Object object) {
         if (this == object)
@@ -68,8 +57,6 @@ public class Category {
         Category that = (Category) object;
         return new EqualsBuilder()
                         .append(id, that.id)
-                        .append(active, that.active)
-                        .append(name, that.name)
                     .isEquals();
     }
 
@@ -77,8 +64,6 @@ public class Category {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                         .append(id)
-                        .append(name)
-                        .append(active)
                     .toHashCode();
     }
 

@@ -1,7 +1,6 @@
 package com.cairoshop.web.controllers;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,12 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.cairoshop.service.ProductService;
-import com.cairoshop.web.dtos.NewCategoryDTO;
 import com.cairoshop.web.dtos.NewProductDTO;
 import com.cairoshop.web.dtos.SavedBriefProductDTO;
-import com.cairoshop.web.dtos.SavedCategoryDTO;
 import com.cairoshop.web.dtos.SavedDetailedProductDTO;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 @RestController
 @RequestMapping("products")
 public class ProductController {
@@ -33,11 +35,10 @@ public class ProductController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> addProduct(@RequestBody NewProductDTO newProductDTO) {
-        return ResponseEntity.created(ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .build(productService.add(newProductDTO)))
-            .build();
+        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
+                                                                    .path("/{id}")
+                                                                    .build(productService.add(newProductDTO)))
+                                .build();
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,7 +53,8 @@ public class ProductController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"start-position","sort-by", "sort-direction"})
     public ResponseEntity<List<SavedBriefProductDTO>> getProducts(@RequestParam("start-position") int startPosition,
-        @RequestParam("sort-by") String sortBy, @RequestParam("sort-direction") String sortDirection) {
+                                                                    @RequestParam("sort-by") String sortBy,
+                                                                    @RequestParam("sort-direction") String sortDirection) {
         return ResponseEntity.ok(productService.getAll(startPosition, sortBy, sortDirection));
     }
 

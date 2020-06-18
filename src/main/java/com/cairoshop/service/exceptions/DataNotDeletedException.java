@@ -1,8 +1,8 @@
-package com.cairoshop.web.dtos;
+package com.cairoshop.service.exceptions;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class NewVendorDTO extends BaseDTO {}
+public class DataNotDeletedException extends RuntimeException {}

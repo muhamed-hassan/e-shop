@@ -8,22 +8,29 @@ import javax.persistence.Id;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.Loader;
+import org.hibernate.annotations.NamedQuery;
+import org.hibernate.annotations.Where;
 
-/* ************************************************************************** 
- * Developed by: Muhamed Hassan	                                            *
- * LinkedIn    : https://www.linkedin.com/in/mohamed-qotb/                  *  
- * GitHub      : https://github.com/muhamed-hassan                          *  
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Entity
-public class Vendor {
+@Loader(namedQuery = "findVendorById")
+@NamedQuery(name = "findVendorById",
+            query = "SELECT v " +
+                    "FROM Vendor v " +
+                    "WHERE v.id = ?1 ")
+@Where(clause = "active = true")
+public class Vendor extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private int id;
 
     private String name;
-
-    private boolean active;
 
     public int getId() {
         return id;
@@ -41,14 +48,6 @@ public class Vendor {
         this.name = name;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
     @Override
     public boolean equals(Object object) {
         if (this == object)
@@ -58,8 +57,6 @@ public class Vendor {
         Vendor that = (Vendor) object;
         return new EqualsBuilder()
                     .append(id, that.id)
-                    .append(active, that.active)
-                    .append(name, that.name)
                 .isEquals();
     }
 
@@ -67,8 +64,6 @@ public class Vendor {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                     .append(id)
-                    .append(name)
-                    .append(active)
                 .toHashCode();
     }
 

@@ -3,6 +3,11 @@ package com.cairoshop.service;
 import java.util.List;
 import java.util.Map;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 public interface BaseService<NDTO, SDTO, T> {
 
     int add(NDTO ndto);

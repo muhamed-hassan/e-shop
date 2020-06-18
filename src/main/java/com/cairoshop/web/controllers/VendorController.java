@@ -19,9 +19,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.cairoshop.service.VendorService;
 import com.cairoshop.web.dtos.NewVendorDTO;
-import com.cairoshop.web.dtos.NewVendorDTO;
 import com.cairoshop.web.dtos.SavedVendorDTO;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 @RestController
 @RequestMapping("vendors")
 public class VendorController {
@@ -31,11 +35,10 @@ public class VendorController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> addVendor(@RequestBody NewVendorDTO newVendorDTO) {
-        return ResponseEntity.created(ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .build(vendorService.add(newVendorDTO)))
-            .build();
+        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
+                                                                    .path("/{id}")
+                                                                    .build(vendorService.add(newVendorDTO)))
+                                .build();
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -50,13 +53,13 @@ public class VendorController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"start-position","sort-by", "sort-direction"})
     public ResponseEntity<List<SavedVendorDTO>> getVendors(@RequestParam("start-position") int startPosition,
-        @RequestParam("sort-by") String sortBy, @RequestParam("sort-direction") String sortDirection) {
+                                                            @RequestParam("sort-by") String sortBy,
+                                                            @RequestParam("sort-direction") String sortDirection) {
         return ResponseEntity.ok(vendorService.getAll(startPosition, sortBy, sortDirection));
     }
 
-    @PatchMapping(path = "{id}")
-    public ResponseEntity<Void> updateVendor(@PathVariable int id, @RequestBody Map<String, Object> fields) {
-        fields.put("id", id);
+    @PatchMapping
+    public ResponseEntity<Void> updateVendor(@RequestBody Map<String, Object> fields) {
         vendorService.edit(fields);
         return ResponseEntity.noContent().build();
     }

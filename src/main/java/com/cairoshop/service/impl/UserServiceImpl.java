@@ -11,8 +11,14 @@ import com.cairoshop.service.UserService;
 import com.cairoshop.web.dtos.NewCustomerDTO;
 import com.cairoshop.web.dtos.SavedCustomerDTO;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 @Service
 public class UserServiceImpl extends BaseServiceImpl<NewCustomerDTO, SavedCustomerDTO, User> implements UserService {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -24,4 +30,5 @@ public class UserServiceImpl extends BaseServiceImpl<NewCustomerDTO, SavedCustom
     public void injectRefs() {
         setRepos(userRepository);
     }
+
 }
