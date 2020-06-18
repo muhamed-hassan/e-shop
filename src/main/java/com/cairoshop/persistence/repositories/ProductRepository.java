@@ -20,10 +20,18 @@ public interface ProductRepository extends BaseRepository<SavedBriefProductDTO, 
     @Override
     <SavedDetailedProductDTO> Optional<SavedDetailedProductDTO> findById(int id, Class<SavedDetailedProductDTO> sdtoClass);
 
+    <SavedImageStream> Optional<SavedImageStream> findImageById(int id, Class<SavedImageStream> sdtoClass);
+
     @Query("UPDATE Product p " +
-            "SET p.name = ?1, p.price = ?2, p.quantity = ?3,  p.category.id = ?4, p.vendor.id = ?5 " +
-            "WHERE p.id = ?6")
+            "SET p.name = ?2, p.price = ?3, p.quantity = ?4,  p.category.id = ?5, p.vendor.id = ?6 " +
+            "WHERE p.id = ?1")
     @Modifying
-    int update(String name, double price, int quantity, int categoryId, int vendorId, int id);
+    int update(int id, String name, double price, int quantity, int categoryId, int vendorId);
+
+    @Query("UPDATE Product p " +
+            "SET p.image = ?2 " +
+            "WHERE p.id = ?1")
+    @Modifying
+    int update(int id, byte[] image);
 
 }

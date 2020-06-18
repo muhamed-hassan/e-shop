@@ -70,19 +70,19 @@ public class Product extends BaseEntity {
         this.name = name;
     }
 
-    public Double getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public Integer getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
@@ -98,7 +98,7 @@ public class Product extends BaseEntity {
         return image;
     }
 
-    public void setImage(final byte[] image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 

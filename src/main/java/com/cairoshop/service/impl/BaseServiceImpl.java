@@ -2,18 +2,14 @@ package com.cairoshop.service.impl;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cairoshop.persistence.repositories.BaseRepository;
 import com.cairoshop.service.BaseService;
 import com.cairoshop.service.exceptions.DataNotDeletedException;
-import com.cairoshop.service.exceptions.DataNotUpdatedException;
 import com.cairoshop.service.exceptions.NoResultException;
 
 /* **************************************************************************
@@ -60,15 +56,6 @@ public class BaseServiceImpl<NDTO, SDTO, T> implements BaseService<NDTO, SDTO, T
         return id;
     }
 
-    @Transactional
-    @Override
-    public void edit(Map<String, Object> fields) {
-        int affectedRows = repository.update((String) fields.get("name"), (Integer) fields.get("id"));
-        if (affectedRows == 0) {
-            throw new DataNotUpdatedException();
-        }
-    }
-
     @Override
     public SDTO getById(int id) {
         return repository.findById(id, savedDtoClass)
@@ -82,15 +69,6 @@ public class BaseServiceImpl<NDTO, SDTO, T> implements BaseService<NDTO, SDTO, T
         if (affectedRows == 0) {
             throw new DataNotDeletedException();
         }
-    }
-
-    @Override
-    public List<SDTO> getAll() {
-        List<SDTO> result = repository.findAllBy();
-        if (result.isEmpty()) {
-            throw new NoResultException();
-        }
-        return result;
     }
 
     @Override

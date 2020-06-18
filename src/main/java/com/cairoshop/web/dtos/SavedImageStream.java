@@ -5,12 +5,20 @@ package com.cairoshop.web.dtos;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class SavedBriefProductDTO extends BaseSavedDTO {
+public class SavedImageStream {
 
-    public SavedBriefProductDTO(int id, String name, boolean active) {
-        setId(id);
-        setName(name);
-        setActive(active);
+    private byte[] image;
+
+    public SavedImageStream(byte[] image) {
+        this.image = image;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
 }

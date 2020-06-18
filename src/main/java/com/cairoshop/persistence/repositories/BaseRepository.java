@@ -19,16 +19,10 @@ public interface BaseRepository<SDTO, T, ID> extends JpaRepository<T, ID>  {
 
     <SDTO> Optional<SDTO> findById(int id, Class<SDTO> sdtoClass);
 
-    List<SDTO> findAllBy();
-
     List<SDTO> findAllBy(Pageable pageable);
 
-    @Query("update #{#entityName} e set e.active = false where e.id =?1")
+    @Query("UPDATE #{#entityName} e SET e.active = false WHERE e.id = ?1")
     @Modifying
     int softDeleteById(int id);
-
-    @Query("update #{#entityName} e set e.name = ?1 where e.id =?2")
-    @Modifying
-    int update(String name, int id);
 
 }

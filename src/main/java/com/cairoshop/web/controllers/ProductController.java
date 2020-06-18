@@ -1,5 +1,6 @@
 package com.cairoshop.web.controllers;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.cairoshop.service.ProductService;
@@ -41,14 +43,20 @@ public class ProductController {
                                 .build();
     }
 
+    @PostMapping(path = "{id}")
+    public ResponseEntity<Void> uploadImageOfProduct(@PathVariable int id, @RequestParam("file") MultipartFile file) throws IOException {
+        productService.edit(id, file.getBytes());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(path = "{id}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    public ResponseEntity<byte[]> downloadImageOfProduct(@PathVariable int id) {
+        return ResponseEntity.ok(productService.getImage(id));
+    }
+
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SavedDetailedProductDTO> getProductById(@PathVariable int id) {
         return ResponseEntity.ok(productService.getInDetailById(id));
-    }
-
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<SavedBriefProductDTO>> getProducts() {
-        return ResponseEntity.ok(productService.getAll());
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"start-position","sort-by", "sort-direction"})

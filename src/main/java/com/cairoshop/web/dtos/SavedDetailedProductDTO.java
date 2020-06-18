@@ -11,6 +11,17 @@ public class SavedDetailedProductDTO extends BaseProductDTO {
 
     private boolean active;
 
+    public SavedDetailedProductDTO(int id, String name, double price, int quantity, String description, int categoryId, int vendorId, boolean active) {
+        this.id = id;
+        this.active = active;
+        setName(name);
+        setPrice(price);
+        setQuantity(quantity);
+        setDescription(description);
+        setCategoryId(categoryId);
+        setVendorId(vendorId);
+    }
+
     public int getId() {
         return id;
     }

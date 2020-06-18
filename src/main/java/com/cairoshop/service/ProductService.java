@@ -12,8 +12,14 @@ import com.cairoshop.web.dtos.SavedDetailedProductDTO;
  * ************************************************************************ */
 public interface ProductService extends BaseService<NewProductDTO, SavedBriefProductDTO, Product> {
 
+    int add(NewProductDTO newProductDTO);
+
     SavedDetailedProductDTO getInDetailById(int id);
 
+    byte[] getImage(int id);
+
     void edit(SavedDetailedProductDTO savedDetailedProductDTO);
+
+    void edit(int id, byte[] image);
 
 }
