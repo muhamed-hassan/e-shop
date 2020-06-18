@@ -3,10 +3,14 @@ package com.cairoshop.web.controllers;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.cairoshop.service.ProductService;
 import com.cairoshop.web.dtos.NewProductDTO;
@@ -30,21 +33,18 @@ import com.cairoshop.web.dtos.SavedDetailedProductDTO;
  * ************************************************************************ */
 @RestController
 @RequestMapping("products")
-public class ProductController {
+@Validated
+public class ProductController extends BaseControllerForDeletingResource<NewProductDTO, SavedBriefProductDTO> {
 
     @Autowired
     private ProductService productService;
-
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> addProduct(@RequestBody NewProductDTO newProductDTO) {
-        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
-                                                                    .path("/{id}")
-                                                                    .build(productService.add(newProductDTO)))
-                                .build();
+    @PostConstruct
+    public void injectRefs() {
+        setService(productService);
     }
 
     @PostMapping(path = "{id}")
-    public ResponseEntity<Void> uploadImageOfProduct(@PathVariable int id, @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<Void> uploadImageOfProduct(@PathVariable int id, @NotNull @RequestParam("file") MultipartFile file) throws IOException {
         productService.edit(id, file.getBytes());
         return ResponseEntity.ok().build();
     }
@@ -59,23 +59,15 @@ public class ProductController {
         return ResponseEntity.ok(productService.getInDetailById(id));
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"start-position","sort-by", "sort-direction"})
-    public ResponseEntity<List<SavedBriefProductDTO>> getProducts(@RequestParam("start-position") int startPosition,
-                                                                    @RequestParam("sort-by") String sortBy,
-                                                                    @RequestParam("sort-direction") String sortDirection) {
-        return ResponseEntity.ok(productService.getAll(startPosition, sortBy, sortDirection));
-    }
-
     @PatchMapping
-    public ResponseEntity<Void> updateProduct(@RequestBody SavedDetailedProductDTO savedDetailedProductDTO) {
+    public ResponseEntity<Void> updateProduct(@Valid @RequestBody SavedDetailedProductDTO savedDetailedProductDTO) {
         productService.edit(savedDetailedProductDTO);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(path = "{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable int id) {
-        productService.removeById(id);
-        return ResponseEntity.noContent().build();
+    @GetMapping(path = "sortable-fields", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> getSortableFields() {
+        return ResponseEntity.ok(productService.getSortableFields());
     }
 
 }

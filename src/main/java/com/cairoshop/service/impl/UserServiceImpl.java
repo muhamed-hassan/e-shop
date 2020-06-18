@@ -1,7 +1,5 @@
 package com.cairoshop.service.impl;
 
-import java.util.Map;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,6 @@ import com.cairoshop.persistence.entities.User;
 import com.cairoshop.persistence.repositories.UserRepository;
 import com.cairoshop.service.UserService;
 import com.cairoshop.service.exceptions.DataNotUpdatedException;
-import com.cairoshop.web.dtos.NewCustomerDTO;
 import com.cairoshop.web.dtos.SavedCustomerDTO;
 
 /* **************************************************************************
@@ -21,7 +18,9 @@ import com.cairoshop.web.dtos.SavedCustomerDTO;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Service
-public class UserServiceImpl extends BaseServiceImpl<NewCustomerDTO, SavedCustomerDTO, User> implements UserService {
+public class UserServiceImpl
+                extends BaseServiceImpl<Void, SavedCustomerDTO, User>
+                implements UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -37,8 +36,8 @@ public class UserServiceImpl extends BaseServiceImpl<NewCustomerDTO, SavedCustom
 
     @Transactional
     @Override
-    public void edit(Map<String, Object> fields) {
-        int affectedRows = userRepository.update((int) fields.get("id"), (boolean) fields.get("active"));
+    public void edit(SavedCustomerDTO savedCustomerDTO) {
+        int affectedRows = userRepository.update(savedCustomerDTO.getId(), savedCustomerDTO.isActive());
         if (affectedRows == 0) {
             throw new DataNotUpdatedException();
         }

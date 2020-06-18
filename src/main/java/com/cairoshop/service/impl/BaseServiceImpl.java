@@ -32,6 +32,10 @@ public class BaseServiceImpl<NDTO, SDTO, T> implements BaseService<NDTO, SDTO, T
         this.repository = repository;
     }
 
+    public BaseRepository<SDTO, T, Integer> getRepository() {
+        return repository;
+    }
+
     @Transactional
     @Override
     public int add(NDTO ndto) {

@@ -1,23 +1,16 @@
-package com.cairoshop.web.dtos;
+package com.cairoshop.service;
 
-import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseDTO {
+public interface BaseClassificationService<NDTO, SDTO, T> extends BaseService<NDTO, SDTO, T>{
 
-    @NotBlank(message = "name is required")
-    private String name;
+    void edit(SDTO sdto);
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    List<SDTO> getAll();
 
 }

@@ -1,5 +1,7 @@
 package com.cairoshop.service;
 
+import java.util.List;
+
 import com.cairoshop.persistence.entities.Product;
 import com.cairoshop.web.dtos.NewProductDTO;
 import com.cairoshop.web.dtos.SavedBriefProductDTO;
@@ -21,5 +23,7 @@ public interface ProductService extends BaseService<NewProductDTO, SavedBriefPro
     void edit(SavedDetailedProductDTO savedDetailedProductDTO);
 
     void edit(int id, byte[] image);
+
+    List<String> getSortableFields();
 
 }

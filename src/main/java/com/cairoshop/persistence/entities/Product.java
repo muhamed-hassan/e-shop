@@ -2,6 +2,8 @@ package com.cairoshop.persistence.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -53,6 +55,8 @@ public class Product extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "vendor")
     private Vendor vendor;
+
+    public static final List<String> SORTABLE_FIELDS = List.of("name", "price", "quantity");
 
     public int getId() {
         return id;

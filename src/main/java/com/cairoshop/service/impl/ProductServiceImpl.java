@@ -1,5 +1,6 @@
 package com.cairoshop.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
@@ -26,7 +27,9 @@ import com.cairoshop.web.dtos.SavedImageStream;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Service
-public class ProductServiceImpl extends BaseServiceImpl<NewProductDTO, SavedBriefProductDTO, Product> implements ProductService {
+public class ProductServiceImpl
+                extends BaseServiceImpl<NewProductDTO, SavedBriefProductDTO, Product>
+                implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
@@ -97,6 +100,11 @@ public class ProductServiceImpl extends BaseServiceImpl<NewProductDTO, SavedBrie
         if (affectedRows == 0) {
             throw new DataNotUpdatedException();
         }
+    }
+
+    @Override
+    public List<String> getSortableFields() {
+        return Product.SORTABLE_FIELDS;
     }
 
 }
