@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+                            http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+  <changeSet author="admin" id="3">
+    <sql>
+      INSERT INTO `role` VALUES (1, 'Customer'), (2, 'Admin');
+
+      INSERT INTO `user` (`user_name`, `name`, `password`, `address`, `phone`, `email`, `role`) VALUES
+                            ('admin', 'Administrator', 'XTL8hQTbZL6v9VgTDVbtFQ==', NULL, NULL, 'admin@local.com', 2),
+                            ('demo', 'Demo Customer', 'XTL8hQTbZL6v9VgTDVbtFQ==', 'Cairo', '0112233', 'demo@local.com', 1);
+
+      INSERT INTO `vendor` (`name`) VALUES ('Sony'), ('Toshiba'), ('Apple'), ('HP'), ('Samsung');
+
+      INSERT INTO `category` (`name`) VALUES ('Laptops'), ('Mobiles'), ('Tablets'), ('Accessories');
+    </sql>
+  </changeSet>
+
+</databaseChangeLog>
+
