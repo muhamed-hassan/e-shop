@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
-                            http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
   <changeSet author="admin" id="1">
+
     <createTable tableName="category">
       <column name="id" type="int" autoIncrement="true">
         <constraints primaryKey="true"/>
@@ -18,10 +17,7 @@
         <constraints nullable="false"/>
       </column>
     </createTable>
-    <addDefaultValue columnDataType="bit(1)"
-                     columnName="active"
-                     defaultValueBoolean="true"
-                     tableName="category"/>
+    <addDefaultValue columnDataType="bit(1)" columnName="active" defaultValueBoolean="true" tableName="category"/>
 
     <createTable tableName="vendor">
       <column name="id" type="int" autoIncrement="true">
@@ -34,10 +30,7 @@
         <constraints nullable="false"/>
       </column>
     </createTable>
-    <addDefaultValue columnDataType="bit(1)"
-                     columnName="active"
-                     defaultValueBoolean="true"
-                     tableName="vendor"/>
+    <addDefaultValue columnDataType="bit(1)" columnName="active" defaultValueBoolean="true" tableName="vendor"/>
 
     <createTable tableName="role">
       <column name="id" type="int" autoIncrement="true">
@@ -76,14 +69,8 @@
         <constraints nullable="false" foreignKeyName="role_fk" referencedTableName="role" referencedColumnNames="id"/>
       </column>
     </createTable>
-    <addDefaultValue columnDataType="bit(1)"
-                     columnName="active"
-                     defaultValueBoolean="true"
-                     tableName="user"/>
-    <addDefaultValue columnDataType="int"
-                     columnName="role"
-                     defaultValue="1"
-                     tableName="user"/>
+    <addDefaultValue columnDataType="bit(1)" columnName="active" defaultValueBoolean="true" tableName="user"/>
+    <addDefaultValue columnDataType="int" columnName="role" defaultValue="1" tableName="user"/>
 
     <createTable tableName="product">
       <column name="id" type="int" autoIncrement="true">
@@ -112,10 +99,8 @@
         <constraints nullable="false" foreignKeyName="category_fk" referencedTableName="category" referencedColumnNames="id"/>
       </column>
     </createTable>
-    <addDefaultValue columnDataType="bit(1)"
-                     columnName="active"
-                     defaultValueBoolean="true"
-                     tableName="product"/>
+    <addDefaultValue columnDataType="bit(1)" columnName="active" defaultValueBoolean="true" tableName="product"/>
+
   </changeSet>
 
 </databaseChangeLog>

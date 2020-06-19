@@ -1,5 +1,7 @@
 package com.cairoshop.persistence.repositories;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,5 +20,7 @@ public interface UserRepository extends BaseRepository<SavedCustomerDTO, User, I
     @Query("UPDATE User u SET u.active = ?2 WHERE u.id =?1")
     @Modifying
     int update(int id, boolean newState);
+
+    Optional<User> findByUsername(String username);
 
 }

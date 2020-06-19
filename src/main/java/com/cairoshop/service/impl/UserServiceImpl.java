@@ -1,8 +1,13 @@
 package com.cairoshop.service.impl;
 
+import java.text.MessageFormat;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +25,7 @@ import com.cairoshop.web.dtos.SavedCustomerDTO;
 @Service
 public class UserServiceImpl
                 extends BaseServiceImpl<Void, SavedCustomerDTO, User>
-                implements UserService {
+                implements UserService, UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -41,6 +46,12 @@ public class UserServiceImpl
         if (affectedRows == 0) {
             throw new DataNotUpdatedException();
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException(MessageFormat.format("This user name {0} does not exist", username)));
     }
 
 }
