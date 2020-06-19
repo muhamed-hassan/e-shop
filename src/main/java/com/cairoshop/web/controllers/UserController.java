@@ -1,5 +1,7 @@
 package com.cairoshop.web.controllers;
 
+import java.net.HttpURLConnection;
+
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cairoshop.service.UserService;
 import com.cairoshop.web.dtos.SavedCustomerDTO;
+
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -32,6 +37,12 @@ public class UserController extends BaseControllerForFetchingDataWithPagination<
         setService(userService);
     }
 
+    @ApiResponses(value = {
+        @ApiResponse(code = HttpURLConnection.HTTP_NO_CONTENT, message = "Succeeded in updating the resource"),
+        @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid request"),
+        @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
+        @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
+    })
     @PatchMapping
     public ResponseEntity<Void> changeCustomerState(@Valid @RequestBody SavedCustomerDTO savedCustomerDTO) {
         userService.edit(savedCustomerDTO);
