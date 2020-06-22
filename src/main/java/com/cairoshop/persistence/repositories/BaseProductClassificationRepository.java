@@ -12,12 +12,12 @@ import org.springframework.data.repository.NoRepositoryBean;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @NoRepositoryBean
-public interface BaseClassificationRepository<SDTO, T, ID> extends BaseRepository<SDTO, T, ID> {
+public interface BaseProductClassificationRepository<SBDTO, T> extends BaseRepository<SBDTO, T> {
 
     @Query("UPDATE #{#entityName} c SET c.name = ?2 WHERE c.id = ?1")
     @Modifying
     int update(int id, String name);
 
-    List<SDTO> findAllBy();
+    List<SBDTO> findAllBy();
 
 }

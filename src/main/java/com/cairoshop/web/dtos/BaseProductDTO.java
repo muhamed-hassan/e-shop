@@ -28,6 +28,8 @@ public class BaseProductDTO extends BaseDTO {
     @Max(value = 2_147_483_647, message = "max allowed vendorId is 2,147,483,647")
     private int vendorId;
 
+    private boolean imageUploaded = false;
+
     public double getPrice() {
         return price;
     }
@@ -66,6 +68,14 @@ public class BaseProductDTO extends BaseDTO {
 
     public void setVendorId(int vendorId) {
         this.vendorId = vendorId;
+    }
+
+    public boolean isImageUploaded() {
+        return imageUploaded;
+    }
+
+    public void setImageUploaded(boolean imageUploaded) {
+        this.imageUploaded = imageUploaded;
     }
 
 }

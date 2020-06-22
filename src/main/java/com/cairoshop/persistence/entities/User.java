@@ -29,8 +29,6 @@ import org.springframework.security.core.userdetails.UserDetails;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Entity
-@Inheritance(strategy = SINGLE_TABLE)
-@DiscriminatorColumn(name = "role")
 public class User extends BaseEntity implements UserDetails {
 
     @Id
@@ -46,8 +44,12 @@ public class User extends BaseEntity implements UserDetails {
 
     private String password;
 
+    private String phone;
+
+    private String address;
+
     @ManyToOne
-    @JoinColumn(name = "role", insertable = false, updatable = false)
+    @JoinColumn(name = "role")
     private Role role;
 
     @Column(name = "account_non_expired")
@@ -101,6 +103,22 @@ public class User extends BaseEntity implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Role getRole() {

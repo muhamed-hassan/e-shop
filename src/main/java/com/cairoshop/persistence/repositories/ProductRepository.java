@@ -15,10 +15,10 @@ import com.cairoshop.web.dtos.SavedBriefProductDTO;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Repository
-public interface ProductRepository extends BaseRepository<SavedBriefProductDTO, Product, Integer> {
-
-    @Override
-    <SavedDetailedProductDTO> Optional<SavedDetailedProductDTO> findById(int id, Class<SavedDetailedProductDTO> sdtoClass);
+public interface ProductRepository extends BaseRepository<SavedBriefProductDTO, Product> {
+//
+//    @Override
+//    <SavedDetailedProductDTO> Optional<SavedDetailedProductDTO> findById(int id, Class<SavedDetailedProductDTO> sdtoClass);
 
     <SavedImageStream> Optional<SavedImageStream> findImageById(int id, Class<SavedImageStream> sdtoClass);
 
@@ -29,7 +29,7 @@ public interface ProductRepository extends BaseRepository<SavedBriefProductDTO, 
     int update(int id, String name, double price, int quantity, int categoryId, int vendorId);
 
     @Query("UPDATE Product p " +
-            "SET p.image = ?2 " +
+            "SET p.image = ?2, p.imageUploaded = true " +
             "WHERE p.id = ?1")
     @Modifying
     int update(int id, byte[] image);

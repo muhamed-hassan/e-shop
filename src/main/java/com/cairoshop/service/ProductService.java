@@ -12,11 +12,11 @@ import com.cairoshop.web.dtos.SavedDetailedProductDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public interface ProductService extends BaseService<NewProductDTO, SavedBriefProductDTO, Product> {
+public interface ProductService extends BaseService<NewProductDTO, SavedDetailedProductDTO, SavedBriefProductDTO, Product> {
 
-    int add(NewProductDTO newProductDTO);
+//    int add(NewProductDTO newProductDTO);
 
-    SavedDetailedProductDTO getInDetailById(int id);
+//    SavedDetailedProductDTO getInDetailById(int id);
 
     byte[] getImage(int id);
 

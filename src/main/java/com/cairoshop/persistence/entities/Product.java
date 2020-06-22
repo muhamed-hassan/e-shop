@@ -48,6 +48,9 @@ public class Product extends BaseEntity {
     @Column(length = 200000)
     private byte[] image;
 
+    @Column(name = "image_uploaded")
+    private boolean imageUploaded;
+
     @ManyToOne
     @JoinColumn(name = "category")
     private Category category;
@@ -104,6 +107,14 @@ public class Product extends BaseEntity {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public boolean isImageUploaded() {
+        return imageUploaded;
+    }
+
+    public void setImageUploaded(final boolean imageUploaded) {
+        this.imageUploaded = imageUploaded;
     }
 
     public Category getCategory() {

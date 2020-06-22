@@ -9,7 +9,8 @@ import com.cairoshop.persistence.entities.Category;
 import com.cairoshop.persistence.repositories.CategoryRepository;
 import com.cairoshop.service.CategoryService;
 import com.cairoshop.web.dtos.NewCategoryDTO;
-import com.cairoshop.web.dtos.SavedCategoryDTO;
+import com.cairoshop.web.dtos.SavedBriefCategoryDTO;
+import com.cairoshop.web.dtos.SavedDetailedCategoryDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -18,14 +19,14 @@ import com.cairoshop.web.dtos.SavedCategoryDTO;
  * ************************************************************************ */
 @Service
 public class CategoryServiceImpl
-                extends BaseClassificationServiceImpl<NewCategoryDTO, SavedCategoryDTO, Category>
+                extends BaseProductClassificationServiceImpl<NewCategoryDTO, SavedDetailedCategoryDTO, SavedBriefCategoryDTO, Category>
                 implements CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
 
     public CategoryServiceImpl() {
-        super(Category.class, SavedCategoryDTO.class);
+        super(Category.class, SavedDetailedCategoryDTO.class);
     }
 
     @PostConstruct

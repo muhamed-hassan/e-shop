@@ -9,7 +9,8 @@ import com.cairoshop.persistence.entities.Vendor;
 import com.cairoshop.persistence.repositories.VendorRepository;
 import com.cairoshop.service.VendorService;
 import com.cairoshop.web.dtos.NewVendorDTO;
-import com.cairoshop.web.dtos.SavedVendorDTO;
+import com.cairoshop.web.dtos.SavedBriefVendorDTO;
+import com.cairoshop.web.dtos.SavedDetailedVendorDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -18,14 +19,14 @@ import com.cairoshop.web.dtos.SavedVendorDTO;
  * ************************************************************************ */
 @Service
 public class VendorServiceImpl
-                extends BaseClassificationServiceImpl<NewVendorDTO, SavedVendorDTO, Vendor>
+                extends BaseProductClassificationServiceImpl<NewVendorDTO, SavedDetailedVendorDTO, SavedBriefVendorDTO, Vendor>
                 implements VendorService {
 
     @Autowired
     private VendorRepository vendorRepository;
 
     public VendorServiceImpl() {
-        super(Vendor.class, SavedVendorDTO.class);
+        super(Vendor.class, SavedDetailedVendorDTO.class);
     }
 
     @PostConstruct

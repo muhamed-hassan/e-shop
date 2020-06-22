@@ -1,0 +1,65 @@
+package com.cairoshop.service.impl;
+
+import java.util.List;
+
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
+import com.cairoshop.persistence.repositories.BaseCommonRepository;
+import com.cairoshop.service.BaseCommonService;
+import com.cairoshop.service.exceptions.NoResultException;
+import com.cairoshop.web.dtos.SavedItemsDTO;
+
+public class BaseCommonServiceImpl<SDDTO, SBDTO, T> implements BaseCommonService<SDDTO, SBDTO, T> {
+
+    private BaseCommonRepository<SBDTO, T> repository;
+    private Class<SDDTO> savedDetailedDtoClass;
+
+    public BaseCommonServiceImpl(Class<SDDTO> savedDetailedDtoClass) {
+        this.savedDetailedDtoClass = savedDetailedDtoClass;
+    }
+
+    protected void setRepos(BaseCommonRepository<SBDTO, T> repository) {
+        this.repository = repository;
+    }
+
+    public BaseCommonRepository<SBDTO, T> getRepository() {
+        return repository;
+    }
+//
+//    public void setSavedDetailedDtoClass(Class<SDDTO> savedDetailedDtoClass) {
+//        this.savedDetailedDtoClass = savedDetailedDtoClass;
+//    }
+
+    @Override
+    public SDDTO getById(int id) {
+        return repository.findById(id, savedDetailedDtoClass)
+            .orElseThrow(NoResultException::new);
+    }
+
+    @Override
+    public SavedItemsDTO<SBDTO> getAll(int startPosition, String sortBy, String sortDirection) {
+        Sort sort = Sort.by(sortBy);
+        sortDirection = sortDirection.toLowerCase();
+        switch (sortDirection) {
+            case "desc":
+                sort = sort.descending();
+                break;
+            case "asc":
+                sort = sort.ascending();
+                break;
+            default:
+                throw new IllegalArgumentException("Allowed sort directions are DESC and ASC");
+        }
+        final int MAX_PAGE_SIZE = 6;
+        List<SBDTO> page = repository.findAllBy(PageRequest.of(startPosition, MAX_PAGE_SIZE, sort));
+        long allCount = repository.count();
+        SavedItemsDTO<SBDTO> sbdtoSavedItemsDTO = new SavedItemsDTO<>();
+        sbdtoSavedItemsDTO.setItems(page);
+        sbdtoSavedItemsDTO.setAllSavedItemsCount(Long.valueOf(allCount).intValue());
+        return sbdtoSavedItemsDTO;
+    }
+
+}

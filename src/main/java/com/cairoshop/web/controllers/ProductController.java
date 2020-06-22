@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cairoshop.persistence.entities.Product;
 import com.cairoshop.service.ProductService;
 import com.cairoshop.web.dtos.NewProductDTO;
 import com.cairoshop.web.dtos.SavedBriefProductDTO;
@@ -38,7 +39,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping("products")
 @Validated
-public class ProductController extends BaseControllerForDeletingResource<NewProductDTO, SavedBriefProductDTO> {
+public class ProductController extends BaseController<NewProductDTO, SavedDetailedProductDTO, SavedBriefProductDTO, Product> {
 
     @Autowired
     private ProductService productService;
@@ -66,21 +67,21 @@ public class ProductController extends BaseControllerForDeletingResource<NewProd
         @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
-    @GetMapping(path = "{id}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    @GetMapping(path = "images/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public ResponseEntity<byte[]> downloadImageOfProduct(@PathVariable int id) {
         return ResponseEntity.ok(productService.getImage(id));
     }
 
-    @ApiResponses(value = {
-        @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Succeeded in fetching data"),
-        @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Data not found"),
-        @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
-        @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
-    })
-    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SavedDetailedProductDTO> getProductById(@PathVariable int id) {
-        return ResponseEntity.ok(productService.getInDetailById(id));
-    }
+//    @ApiResponses(value = {
+//        @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Succeeded in fetching data"),
+//        @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Data not found"),
+//        @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
+//        @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
+//    })
+//    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<SavedDetailedProductDTO> getProductById(@PathVariable int id) {
+//        return ResponseEntity.ok(productService.getInDetailById(id));
+//    }
 
     @ApiResponses(value = {
         @ApiResponse(code = HttpURLConnection.HTTP_NO_CONTENT, message = "Succeeded in updating the resource"),
@@ -89,7 +90,7 @@ public class ProductController extends BaseControllerForDeletingResource<NewProd
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @PatchMapping
-    public ResponseEntity<Void> updateProduct(@Valid @RequestBody SavedDetailedProductDTO savedDetailedProductDTO) {
+    public ResponseEntity<Void> update(@Valid @RequestBody SavedDetailedProductDTO savedDetailedProductDTO) {
         productService.edit(savedDetailedProductDTO);
         return ResponseEntity.noContent().build();
     }

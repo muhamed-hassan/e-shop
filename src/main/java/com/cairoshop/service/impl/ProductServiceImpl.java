@@ -28,14 +28,14 @@ import com.cairoshop.web.dtos.SavedImageStream;
  * ************************************************************************ */
 @Service
 public class ProductServiceImpl
-                extends BaseServiceImpl<NewProductDTO, SavedBriefProductDTO, Product>
+                extends BaseServiceImpl<NewProductDTO, SavedDetailedProductDTO, SavedBriefProductDTO, Product>
                 implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
 
     public ProductServiceImpl() {
-        super(Product.class, SavedBriefProductDTO.class);
+        super(Product.class, SavedDetailedProductDTO.class);
     }
 
     @PostConstruct
@@ -67,11 +67,11 @@ public class ProductServiceImpl
         return id;
     }
 
-    @Override
-    public SavedDetailedProductDTO getInDetailById(int id) {
-        return productRepository.findById(id, SavedDetailedProductDTO.class)
-                                    .orElseThrow(NoResultException::new);
-    }
+//    @Override
+//    public SavedDetailedProductDTO getInDetailById(int id) {
+//        return productRepository.findById(id, SavedDetailedProductDTO.class)
+//                                    .orElseThrow(NoResultException::new);
+//    }
 
     @Override
     public byte[] getImage(int id) {

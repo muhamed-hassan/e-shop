@@ -1,16 +1,16 @@
-package com.cairoshop.web.dtos;
+package com.cairoshop.service;
+
+import java.util.List;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class SavedCategoryDTO extends BaseSavedDTO {
+public interface BaseProductClassificationService<NDTO, SDDTO, SBDTO, T> extends BaseService<NDTO, SDDTO, SBDTO, T>{
 
-    public SavedCategoryDTO(int id, String name, boolean active) {
-        setId(id);
-        setName(name);
-        setActive(active);
-    }
+    void edit(SDDTO sddto);
+
+    List<SBDTO> getAll();
 
 }

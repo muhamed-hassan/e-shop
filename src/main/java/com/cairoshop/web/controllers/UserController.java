@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cairoshop.persistence.entities.User;
 import com.cairoshop.service.UserService;
-import com.cairoshop.web.dtos.SavedCustomerDTO;
+import com.cairoshop.web.dtos.NewCustomerStateDTO;
+import com.cairoshop.web.dtos.SavedBriefCustomerDTO;
+import com.cairoshop.web.dtos.SavedDetailedCustomerDTO;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -27,7 +30,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping("users")
 @Validated
-public class UserController extends BaseControllerForFetchingDataWithPagination<SavedCustomerDTO> {
+public class UserController extends BaseCommonController<SavedDetailedCustomerDTO, SavedBriefCustomerDTO, User> {
     
     @Autowired
     private UserService userService;
@@ -44,9 +47,11 @@ public class UserController extends BaseControllerForFetchingDataWithPagination<
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @PatchMapping
-    public ResponseEntity<Void> changeCustomerState(@Valid @RequestBody SavedCustomerDTO savedCustomerDTO) {
-        userService.edit(savedCustomerDTO);
+    public ResponseEntity<Void> update(@Valid @RequestBody NewCustomerStateDTO newCustomerStateDTO) {
+        userService.edit(newCustomerStateDTO);
         return ResponseEntity.noContent().build();
     }
+
+
     
 }

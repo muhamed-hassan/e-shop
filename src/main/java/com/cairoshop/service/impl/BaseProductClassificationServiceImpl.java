@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cairoshop.persistence.repositories.BaseClassificationRepository;
-import com.cairoshop.service.BaseClassificationService;
+import com.cairoshop.persistence.repositories.BaseProductClassificationRepository;
+import com.cairoshop.service.BaseProductClassificationService;
 import com.cairoshop.service.exceptions.DataNotUpdatedException;
 import com.cairoshop.service.exceptions.NoResultException;
 
@@ -14,17 +14,19 @@ import com.cairoshop.service.exceptions.NoResultException;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseClassificationServiceImpl<NDTO, SDTO, T>
-                    extends BaseServiceImpl<NDTO, SDTO, T>
-                    implements BaseClassificationService<NDTO, SDTO, T> {
+public class BaseProductClassificationServiceImpl<NDTO, SDDTO, SBDTO, T>
+                    extends BaseServiceImpl<NDTO, SDDTO, SBDTO, T>
+                    implements BaseProductClassificationService<NDTO, SDDTO, SBDTO, T> {
 
-    public BaseClassificationServiceImpl(Class<T> entityClass, Class<SDTO> savedDtoClass) {
-        super(entityClass, savedDtoClass);
+    public BaseProductClassificationServiceImpl(Class<T> entityClass, Class<SDDTO> savedDetailedDtoClass) {
+
+        //setSavedDetailedDtoClass(savedDetailedDtoClass);
+        super(entityClass, savedDetailedDtoClass);
     }
 
     @Transactional
     @Override
-    public void edit(SDTO sdto) {
+    public void edit(SDDTO sdto) {
         int id = -1;
         String name = null;
         try {
@@ -34,15 +36,15 @@ public class BaseClassificationServiceImpl<NDTO, SDTO, T>
             throw new RuntimeException(e);
         }
 
-        int affectedRows = ((BaseClassificationRepository) getRepository()).update(id, name);
+        int affectedRows = ((BaseProductClassificationRepository) getRepository()).update(id, name);
         if (affectedRows == 0) {
             throw new DataNotUpdatedException();
         }
     }
 
     @Override
-    public List<SDTO> getAll() {
-        List<SDTO> result = ((BaseClassificationRepository) getRepository()).findAllBy();
+    public List<SBDTO> getAll() {
+        List<SBDTO> result = ((BaseProductClassificationRepository) getRepository()).findAllBy();
         if (result.isEmpty()) {
             throw new NoResultException();
         }

@@ -15,7 +15,9 @@ import com.cairoshop.persistence.entities.User;
 import com.cairoshop.persistence.repositories.UserRepository;
 import com.cairoshop.service.UserService;
 import com.cairoshop.service.exceptions.DataNotUpdatedException;
-import com.cairoshop.web.dtos.SavedCustomerDTO;
+import com.cairoshop.web.dtos.NewCustomerStateDTO;
+import com.cairoshop.web.dtos.SavedBriefCustomerDTO;
+import com.cairoshop.web.dtos.SavedDetailedCustomerDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -24,14 +26,14 @@ import com.cairoshop.web.dtos.SavedCustomerDTO;
  * ************************************************************************ */
 @Service
 public class UserServiceImpl
-                extends BaseServiceImpl<Void, SavedCustomerDTO, User>
+                extends BaseCommonServiceImpl<SavedDetailedCustomerDTO, SavedBriefCustomerDTO, User>
                 implements UserService, UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
 
     public UserServiceImpl() {
-        super(User.class, SavedCustomerDTO.class);
+        super(SavedDetailedCustomerDTO.class);
     }
 
     @PostConstruct
@@ -41,8 +43,8 @@ public class UserServiceImpl
 
     @Transactional
     @Override
-    public void edit(SavedCustomerDTO savedCustomerDTO) {
-        int affectedRows = userRepository.update(savedCustomerDTO.getId(), savedCustomerDTO.isActive());
+    public void edit(NewCustomerStateDTO newCustomerStateDTO) {
+        int affectedRows = userRepository.update(newCustomerStateDTO.getId(), newCustomerStateDTO.isActive());
         if (affectedRows == 0) {
             throw new DataNotUpdatedException();
         }
