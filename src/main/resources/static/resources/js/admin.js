@@ -249,44 +249,27 @@ function addProduct() {
     }
     $.when(sendAuthorizedRequest('/products', 'POST', JSON.stringify(payload), 'application/json')
     ).then(function(data, textStatus, jqXHR) {
-debugger
-;       
             let locationHeader = jqXHR.getResponseHeader('Location');
-            let savedProductId = locationHeader.substring(locationHeader.lastIndexOf('/')+1);
-            let image = tmpUploadedImage;
-
-            var fd = new FormData();
-        fd.append('file', image);
-
-        //return sendAuthorizedRequest(`/products/${savedProductId}`, 'POST', fd, 'multipart/form-data'); //multipart/form-data
-
+            let savedProductId = locationHeader.substring(locationHeader.lastIndexOf('/')+1);            
+            let formData = new FormData();
+            formData.append('file', tmpUploadedImage);
         return jQuery.ajax({
             url: `/products/${savedProductId}`,
             type: "POST",
-            data: fd,
+            data: formData,
             processData: false,
             contentType: false,
             headers: {'Authorization': 'Bearer ' + localStorage.getItem('authToken')}
-        });
-             
+        });             
     }).done(function(data, textStatus, jqXHR) {
-        debugger
+        //showMessage('Product added successfully', 'success');
+        //$('#content').empty();
     }).fail(function(errorThrown) {
-        debugger
+        //showMessage('Product added successfully', 'success');
+        //$('#content').empty();
     }).always(function() {
         removePreloader();
     });
-
-    /*.done(function (data, textStatus, jqXHR) {
-        //showMessage('Product added successfully', 'success');
-        //$('#content').empty();
-        debugger
-;
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.error(errorThrown);
-    }).always(function() {
-        removePreloader();
-    });*/
 }
 
 
