@@ -18,27 +18,30 @@ function showLoginForm() {
         $.ajax({
             url: "/authenticate",
             type: "POST",
-            data: formParams,})
-        .done(function (data, textStatus, jqXHR) {
+            data: formParams
+        }).done(function (data, textStatus, jqXHR) {
             hideLoginForm();
             let authToken = jqXHR.getResponseHeader("Authorization").substring(7);
             localStorage.setItem("authToken", authToken);
-            let role = getRole(authToken);
-            switch (role) {
-                case "Admin":
-                    showAdminMenu();
-                    break;
-                case "Customer":
-                    showProductsSearchBar();
-                    break;
-            }
-            showLogoutLink();})
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);})
-        .always(function(){
+            showInitialScreenBasedOnRole(getRole(authToken));
+            showLogoutLink();
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+        }).always(function() {
             removePreloader();
         });
     });
+}
+
+function showInitialScreenBasedOnRole(role) {
+    switch (role) {
+        case "Admin":
+            showAdminMenu();
+            break;
+        case "Customer":
+            showProductsSearchBar();
+            break;
+    }
 }
 
 function hideLoginForm() {
@@ -46,16 +49,14 @@ function hideLoginForm() {
 }
 
 function getRole(authToken) {
-    return JSON.parse(window.atob(authToken.split(".")[1])).rol[0];
+    return jwtAuthTokenToJson(authToken).rol[0];
 }
 
-function isAuthTokenExpired() {
-    return false;
+function authTokenExpired(authToken) {
+    return (new Date().getTime() - new Date(jwtAuthTokenToJson(authToken).exp * 1000).getTime()) >= 0;
 }
 
-function logout() {
-    localStorage.removeItem("authToken");
-    clearHeader();
-    clearMain();
-    showLoginForm();
+function jwtAuthTokenToJson(authToken) {
+    return JSON.parse(window.atob(authToken.split(".")[1]));
 }
+
