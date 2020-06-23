@@ -41,7 +41,9 @@ function getItems(itemAction, requestUrl) {
         }
 
         itemsHtml += "</div>";
-        let finalContent = `<div id='items_container'>${itemsHtml}</div>`;
+        let paginator = createPaginator(data.allSavedItemsCount);
+        let finalContent = `<div id='items_container'>${itemsHtml}</div>
+                            ${paginator}`;        
         if ($('#products_search_bar').length > 0) {
             $("#content").append(finalContent);
         } else {
@@ -123,6 +125,82 @@ function getDetails(requestUrl) {
         getUserDetails(requestUrl);
     }
 }
+
+
+/* ********************************************************************************************************************************** */
+
+/**
+ <nav>
+  <ul class="pagination justify-content-center">
+    <li class="page-item disabled">
+      <a class="page-link" href="#" tabindex="-1">Previous</a>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item active">
+      <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item">
+      <a class="page-link" href="#">Next</a>
+    </li>
+  </ul>
+</nav>
+ */
+const PAGE_SIZE = 9;
+let currentPage, lastPage;
+
+function createPaginator(allItemsCount) {
+    currentPage = 1;
+    let noOfPageLinks = Math.ceil(allItemsCount / PAGE_SIZE);
+    let paginator = `<nav>
+                        <ul id='paginator' class="pagination justify-content-center">
+                            <li id='paginator_previous' class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                            </li>
+                            <li id='paginator_1' class="page-item active">
+                                <a id='paginator_1_link' class="page-link" href="#" onclick='moveTo(1)'>1<span class="sr-only">(current)</span></a>
+                            </li>`;
+    for (let pageLink = 2; pageLink <= noOfPageLinks; pageLink++) {
+        paginator += `<li id='paginator_${pageLink}' class="page-item"><a class="page-link" href="#" onclick='moveTo(${pageLink})'>${pageLink}</a></li>`;
+    }
+    paginator += `<li id='paginator_next' class="page-item ${noOfPageLinks == 1 ? 'disabled' : ''}">
+    <a class="page-link" href="#">Next</a>
+</li>
+</ul>
+</nav>`;
+    return paginator;
+}
+
+function moveTo(targetPage) {
+    // if targetPage != currentPage => then proceed
+    // remove class `active` from `paginator_${currentPage}`
+    // remove htmlContent of `a` element with id `paginator_${currentPage}_link`
+    // make pageLink active of targetPage using this id `paginator_${targetPage}`
+    // add htmlContent to `a` element with id `paginator_${targetPage}_link` => `${targetPage}<span class="sr-only">(current)</span>`
+    // if the targetPage is the lastPage, then disable `next` btn, and enable `previous` button
+    // else if the targetPage is the 1, then disable `previous` btn and enable `next` button
+}
+
+function previous() {
+    // calculate targetPage = currentPage - 1
+    // remove class `active` from `paginator_${currentPage}`
+    // remove htmlContent of `a` element with id `paginator_${currentPage}_link`
+    // make pageLink active of targetPage using this id `paginator_${targetPage}`
+    // add htmlContent to `a` element with id `paginator_${targetPage}_link` => `${targetPage}<span class="sr-only">(current)</span>`
+    // if the targetPage is the lastPage, then disable `next` btn, and enable `previous` button
+    // else if the targetPage is the 1, then disable `previous` btn and enable `next` button
+}
+
+function next() {
+    // calculate targetPage = currentPage + 1
+    // remove class `active` from `paginator_${currentPage}`
+    // remove htmlContent of `a` element with id `paginator_${currentPage}_link`
+    // make pageLink active of targetPage using this id `paginator_${targetPage}`
+    // add htmlContent to `a` element with id `paginator_${targetPage}_link` => `${targetPage}<span class="sr-only">(current)</span>`
+    // if the targetPage is the lastPage, then disable `next` btn, and enable `previous` button
+    // else if the targetPage is the 1, then disable `previous` btn and enable `next` button
+}
+
 
 
 

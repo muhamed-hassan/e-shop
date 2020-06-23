@@ -52,7 +52,7 @@ public class BaseCommonServiceImpl<SDDTO, SBDTO, T> implements BaseCommonService
             default:
                 throw new IllegalArgumentException("Allowed sort directions are DESC and ASC");
         }
-        final int MAX_PAGE_SIZE = 6;
+        final int MAX_PAGE_SIZE = 9;
         List<SBDTO> page = repository.findAllBy(PageRequest.of(startPosition, MAX_PAGE_SIZE, sort));
         long allCount = repository.count();
         SavedItemsDTO<SBDTO> sbdtoSavedItemsDTO = new SavedItemsDTO<>();

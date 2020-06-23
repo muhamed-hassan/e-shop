@@ -68,3 +68,4 @@ function clearMessagesSection() {
 function notSkippedField(field) {
     return !SKIPPED_FIELDS.includes(field);
 }
+
