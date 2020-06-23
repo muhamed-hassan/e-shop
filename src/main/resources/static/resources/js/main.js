@@ -26,7 +26,8 @@ function clearHeader() {
 }
 
 function clearMain() {
-    $("#main").empty();
+    $("#msg_alert").empty();
+    $("#content").empty();
 }
 
 function showLogoutLink() {

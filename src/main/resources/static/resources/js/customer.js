@@ -33,5 +33,5 @@ function searchProducts(event) {
                                       </select>
                                   </div>
                               </form>`;
-      $("#main").html(productsSearchBar);
+      $("#content").html(productsSearchBar);
   }

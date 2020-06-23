@@ -60,3 +60,7 @@ function showMessage(text, msgType) {
                 </div>`;
     $('#msg_alert').html(msg);
 }
+
+function clearMessagesSection() {
+    $('#msg_alert').html('');
+}

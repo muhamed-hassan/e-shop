@@ -82,8 +82,7 @@ function changeUserState(id, inversedState) {
     showPreloader();
     let payload = {"id": id, active: inversedState};
     sendAuthorizedRequest('/users', 'PATCH', JSON.stringify(payload), 'application/json')
-    .done(function (data, textStatus, jqXHR) {
-        // show success msg
+    .done(function (data, textStatus, jqXHR) {        
         let elementId = `#user_${id}`;
         if ($(elementId).text() == ACTIVATE) {
             $(elementId).text(DEACTIVATE);
@@ -91,8 +90,9 @@ function changeUserState(id, inversedState) {
             $(elementId).text(ACTIVATE);
         }
         $(elementId).attr('onclick', `changeUserState(id,${!inversedState})`);
+        showMessage('User updated successfully', 'success');
     }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.error(errorThrown);
+        showMessage('Failed to update this user', 'danger');
     }).always(function() {
         removePreloader();
     });
@@ -151,10 +151,13 @@ function preEditItem(requestUrlOfItem) {
                                 <button onclick='editItem()' class='form-control btn btn-primary'>Save</button>`;
             $("#main").html(itemDetailsHtml);
         }, function(errorThrown) {
-            console.error(errorThrown);
-        }).always(function(){
+            showMessage('Failed to load the details of this item', 'danger');
+        }).always(function() {
             removePreloader();
+            clearMessagesSection();
         });
+    } else {
+        // show modal to edit name of either vendor or category
     }
 }
 
@@ -166,6 +169,23 @@ function editItem() {
 
 function prepareDeleteItems(requestUrl) {
     getItems("Delete", requestUrl)
+}
+
+function preDeleteItem(requestUrlOfItem) {    
+    $('#delete_btn').attr('onclick', `deleteItem(\"${requestUrlOfItem}\")`);
+}
+
+function deleteItem(requestUrl) {
+    showPreloader();
+    sendAuthorizedRequest(requestUrl, 'DELETE')
+    .done(function (data, textStatus, jqXHR) {        
+        $("#content").empty();
+        showMessage('Item deleted successfully', 'success');
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        showMessage('Failed to delete this item', 'danger');
+    }).always(function() {
+        removePreloader();
+    });
 }
 
 /* ********************************************************************************************************************************** */
@@ -222,7 +242,7 @@ function createProductAddForm() {
                                 </div>                                  
                             </div>
                             <button onclick='addProduct()' class='form-control btn btn-primary'>Save</button>`;
-        $("#main").html(htmlContent);
+        $("#content").html(htmlContent);
         $("#image").bind('change', function(event) {
             tmpUploadedImage = event.target.files[0];
         });
@@ -230,6 +250,7 @@ function createProductAddForm() {
         console.error(errorThrown);
     }).always(function() {
         removePreloader();
+        clearMessagesSection();
     });
 }
 
@@ -253,7 +274,7 @@ function addProduct() {
             let savedProductId = locationHeader.substring(locationHeader.lastIndexOf('/')+1);            
             let formData = new FormData();
             formData.append('file', tmpUploadedImage);
-        return jQuery.ajax({
+        return $.ajax({
             url: `/products/${savedProductId}`,
             type: "POST",
             data: formData,
@@ -262,13 +283,13 @@ function addProduct() {
             headers: {'Authorization': 'Bearer ' + localStorage.getItem('authToken')}
         });             
     }).done(function(data, textStatus, jqXHR) {
-        //showMessage('Product added successfully', 'success');
-        //$('#content').empty();
+        showMessage('Product added successfully', 'success');
+        $('#content').empty();
     }).fail(function(errorThrown) {
-        //showMessage('Product added successfully', 'success');
-        //$('#content').empty();
+        showMessage('Failed to add this product', 'danger');
     }).always(function() {
         removePreloader();
+        clearMessagesSection();
     });
 }
 
