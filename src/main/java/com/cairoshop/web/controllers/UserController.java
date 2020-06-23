@@ -51,7 +51,5 @@ public class UserController extends BaseCommonController<SavedDetailedCustomerDT
         userService.edit(newCustomerStateDTO);
         return ResponseEntity.noContent().build();
     }
-
-
     
 }

@@ -1,9 +1,7 @@
 package com.cairoshop.web.controllers;
 
 import java.net.HttpURLConnection;
-import java.util.List;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -11,14 +9,10 @@ import javax.validation.constraints.Pattern;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cairoshop.service.BaseCommonService;
-import com.cairoshop.service.BaseProductClassificationService;
-import com.cairoshop.service.BaseService;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
 import io.swagger.annotations.ApiResponse;
@@ -40,18 +34,6 @@ public class BaseCommonController<SDDTO, SBDTO, T> {
     protected BaseCommonService<SDDTO, SBDTO, T> getService() {
         return baseCommonService;
     }
-
-//    @ApiResponses(value = {
-//        @ApiResponse(code = HttpURLConnection.HTTP_NO_CONTENT, message = "Succeeded in updating the resource"),
-//        @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid request"),
-//        @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
-//        @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
-//    })
-//    @PatchMapping
-//    public ResponseEntity<Void> edit(@Valid @RequestBody SDDTO sddto) {
-//        ((BaseProductClassificationService) getService()).edit(sddto);
-//        return ResponseEntity.noContent().build();
-//    }
 
     @ApiResponses(value = {
         @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Succeeded in fetching data"),

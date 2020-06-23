@@ -1,42 +1,28 @@
 package com.cairoshop.service.impl;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cairoshop.persistence.repositories.BaseRepository;
 import com.cairoshop.service.BaseService;
 import com.cairoshop.service.exceptions.DataNotDeletedException;
-import com.cairoshop.service.exceptions.NoResultException;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseServiceImpl<NDTO, SDDTO, SBDTO, T> extends BaseCommonServiceImpl<SDDTO, SBDTO, T> implements BaseService<NDTO, SDDTO, SBDTO, T> {
+public class BaseServiceImpl<NDTO, SDDTO, SBDTO, T>
+                extends BaseCommonServiceImpl<SDDTO, SBDTO, T>
+                implements BaseService<NDTO, SDDTO, SBDTO, T> {
 
-//    private BaseRepository<SDTO, T, Integer> repository;
     private Class<T> entityClass;
-//    private Class<SDTO> savedDtoClass;
-//
-    public BaseServiceImpl(Class<T> entityClass, Class<SDDTO> savedDetailedDtoClass) {
 
-        //setSavedDetailedDtoClass(savedDetailedDtoClass);
+    public BaseServiceImpl(Class<T> entityClass, Class<SDDTO> savedDetailedDtoClass) {
         super(savedDetailedDtoClass);
         this.entityClass = entityClass;
     }
-//
-//    protected void setRepos(BaseRepository<SDTO, T, Integer> repository) {
-//        this.repository = repository;
-//    }
-//
-//    public BaseRepository<SDTO, T, Integer> getRepository() {
-//        return repository;
-//    }
 
     @Transactional
     @Override
@@ -62,12 +48,6 @@ public class BaseServiceImpl<NDTO, SDDTO, SBDTO, T> extends BaseCommonServiceImp
         return id;
     }
 
-//    @Override
-//    public SDTO getById(int id) {
-//        return repository.findById(id, savedDtoClass)
-//                            .orElseThrow(NoResultException::new);
-//    }
-
     @Transactional
     @Override
     public void removeById(int id) {
@@ -76,22 +56,5 @@ public class BaseServiceImpl<NDTO, SDDTO, SBDTO, T> extends BaseCommonServiceImp
             throw new DataNotDeletedException();
         }
     }
-
-//    @Override
-//    public List<SDTO> getAll(int startPosition, String sortBy, String sortDirection) {
-//        Sort sort = Sort.by(sortBy);
-//        switch (sortDirection) {
-//            case "DESC":
-//                sort = sort.descending();
-//                break;
-//            case "ASC":
-//                sort = sort.ascending();
-//                break;
-//            default:
-//                throw new IllegalArgumentException("Allowed sort directions are DESC and ASC");
-//        }
-//        final int MAX_PAGE_SIZE = 5;
-//        return repository.findAllBy(PageRequest.of(startPosition, MAX_PAGE_SIZE, sort));
-//    }
 
 }

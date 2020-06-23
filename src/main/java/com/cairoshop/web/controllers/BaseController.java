@@ -33,9 +33,9 @@ public class BaseController<NDTO, SDDTO, SBDTO, T> extends BaseCommonController<
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> add(@Valid @RequestBody NDTO newResourceDTO) {
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/{id}")
-            .build(((BaseService) getService()).add(newResourceDTO)))
-            .build();
+                                .path("/{id}")
+                                .build(((BaseService) getService()).add(newResourceDTO)))
+                                .build();
     }
 
     @ApiResponses(value = {

@@ -1,15 +1,20 @@
 package com.cairoshop.web.dtos;
 
-import javax.persistence.Column;
-
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 public class SavedDetailedCustomerDTO extends SavedBriefCustomerDTO {
 
     private String username;
 
     private String email;
+
     private String phone;
 
     private String address;
+
     public SavedDetailedCustomerDTO(int id, String name, boolean active, String username, String email, String phone, String address) {
         super(id, name, active);
         setUsername(username);
@@ -49,4 +54,5 @@ public class SavedDetailedCustomerDTO extends SavedBriefCustomerDTO {
     public void setAddress(String address) {
         this.address = address;
     }
+
 }

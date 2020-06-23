@@ -67,12 +67,6 @@ public class ProductServiceImpl
         return id;
     }
 
-//    @Override
-//    public SavedDetailedProductDTO getInDetailById(int id) {
-//        return productRepository.findById(id, SavedDetailedProductDTO.class)
-//                                    .orElseThrow(NoResultException::new);
-//    }
-
     @Override
     public byte[] getImage(int id) {
         Optional<SavedImageStream> savedImageStream = productRepository.findImageById(id, SavedImageStream.class);

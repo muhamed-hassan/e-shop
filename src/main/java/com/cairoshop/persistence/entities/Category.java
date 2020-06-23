@@ -24,13 +24,11 @@ import org.hibernate.annotations.Where;
                     "FROM Category c " +
                     "WHERE c.id = ?1 ")
 @Where(clause = "active = true")
-public class Category extends BaseEntity {
+public class Category extends ProductClassification {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private int id;
-
-    private String name;
 
     public int getId() {
         return id;
@@ -38,14 +36,6 @@ public class Category extends BaseEntity {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override

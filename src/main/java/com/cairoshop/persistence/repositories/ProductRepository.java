@@ -16,9 +16,6 @@ import com.cairoshop.web.dtos.SavedBriefProductDTO;
  * ************************************************************************ */
 @Repository
 public interface ProductRepository extends BaseRepository<SavedBriefProductDTO, Product> {
-//
-//    @Override
-//    <SavedDetailedProductDTO> Optional<SavedDetailedProductDTO> findById(int id, Class<SavedDetailedProductDTO> sdtoClass);
 
     <SavedImageStream> Optional<SavedImageStream> findImageById(int id, Class<SavedImageStream> sdtoClass);
 

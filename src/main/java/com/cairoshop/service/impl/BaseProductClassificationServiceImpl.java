@@ -19,8 +19,6 @@ public class BaseProductClassificationServiceImpl<NDTO, SDDTO, SBDTO, T>
                     implements BaseProductClassificationService<NDTO, SDDTO, SBDTO, T> {
 
     public BaseProductClassificationServiceImpl(Class<T> entityClass, Class<SDDTO> savedDetailedDtoClass) {
-
-        //setSavedDetailedDtoClass(savedDetailedDtoClass);
         super(entityClass, savedDetailedDtoClass);
     }
 
@@ -35,7 +33,6 @@ public class BaseProductClassificationServiceImpl<NDTO, SDDTO, SBDTO, T>
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
         int affectedRows = ((BaseProductClassificationRepository) getRepository()).update(id, name);
         if (affectedRows == 0) {
             throw new DataNotUpdatedException();

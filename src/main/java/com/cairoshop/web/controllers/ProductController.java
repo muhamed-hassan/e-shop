@@ -72,17 +72,6 @@ public class ProductController extends BaseController<NewProductDTO, SavedDetail
         return ResponseEntity.ok(productService.getImage(id));
     }
 
-//    @ApiResponses(value = {
-//        @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Succeeded in fetching data"),
-//        @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Data not found"),
-//        @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
-//        @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
-//    })
-//    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<SavedDetailedProductDTO> getProductById(@PathVariable int id) {
-//        return ResponseEntity.ok(productService.getInDetailById(id));
-//    }
-
     @ApiResponses(value = {
         @ApiResponse(code = HttpURLConnection.HTTP_NO_CONTENT, message = "Succeeded in updating the resource"),
         @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid request"),

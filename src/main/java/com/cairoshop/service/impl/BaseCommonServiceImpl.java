@@ -2,8 +2,6 @@ package com.cairoshop.service.impl;
 
 import java.util.List;
 
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -12,6 +10,11 @@ import com.cairoshop.service.BaseCommonService;
 import com.cairoshop.service.exceptions.NoResultException;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 public class BaseCommonServiceImpl<SDDTO, SBDTO, T> implements BaseCommonService<SDDTO, SBDTO, T> {
 
     private BaseCommonRepository<SBDTO, T> repository;
@@ -28,10 +31,6 @@ public class BaseCommonServiceImpl<SDDTO, SBDTO, T> implements BaseCommonService
     public BaseCommonRepository<SBDTO, T> getRepository() {
         return repository;
     }
-//
-//    public void setSavedDetailedDtoClass(Class<SDDTO> savedDetailedDtoClass) {
-//        this.savedDetailedDtoClass = savedDetailedDtoClass;
-//    }
 
     @Override
     public SDDTO getById(int id) {

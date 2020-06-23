@@ -1,33 +1,23 @@
 package com.cairoshop.persistence.entities;
 
-import javax.persistence.Embeddable;
+import javax.persistence.MappedSuperclass;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-@Embeddable
-public class ContactDetails {
+@MappedSuperclass
+public class ProductClassification extends BaseEntity {
 
-    private String phone;
+    private String name;
 
-    private String address;
-
-    public String getPhone() {
-        return phone;
+    public String getName() {
+        return name;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

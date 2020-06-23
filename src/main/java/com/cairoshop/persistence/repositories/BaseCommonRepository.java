@@ -14,6 +14,4 @@ public interface BaseCommonRepository<SBDTO, T> extends JpaRepository<T, Integer
 
     <SDDTO> Optional<SDDTO> findById(int id, Class<SDDTO> sdtoClass);
 
-
-
 }

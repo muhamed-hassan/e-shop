@@ -1,12 +1,13 @@
 package com.cairoshop.service;
 
-import java.util.List;
-
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 public interface BaseCommonService<SDDTO, SBDTO, T> {
-
-//    void edit(SDDTO sddto);
 
     SDDTO getById(int id);
 

@@ -1,3 +1,5 @@
+let tmpUploadedImage;
+
 function showAdminMenu() {
     let adminMenu = `<div id='admin_menu' class='container'>
                         <div class='row'>
@@ -113,27 +115,27 @@ function preEditItem(requestUrlOfItem) {
             let product = productResponse[0];
             let vendors = vendorsResponse[0];
             let categories = categoriesResponse[0];
-            let vendorsSelectOptionsHtml = createSelectMenuFrom(vendors, 'vendors', product.vendorId);
-            let categoriesSelectOptionsHtml = createSelectMenuFrom(categories, 'categories', product.categoryId);
-            let itemDetailsHtml = `<div id='product_under_edit' class='row'>`;
+            let vendorsSelectOptionsHtml = createSelectMenuFrom(vendors, 'vendorId', product.vendorId);
+            let categoriesSelectOptionsHtml = createSelectMenuFrom(categories, 'categoryId', product.categoryId);
+            let htmlContent = `<div id='product_under_edit' class='row'>`;
             Object.keys(product)
                     .forEach(function(key) {
-                        if (key != 'id' && key != 'active' && key != 'imageUploaded') {
+                        if (notSkippedField(key)) {
                             switch (key) {
                                 case 'vendorId':
-                                    itemDetailsHtml += `<div class='col-md-6 mb-3'>
+                                    htmlContent += `<div class='col-md-6 mb-3'>
                                                             <p class='font-weight-bold text-capitalize'>vendor: </p>
                                                             ${vendorsSelectOptionsHtml}
                                                         </div>`;
                                     break;
                                 case 'categoryId':
-                                    itemDetailsHtml += `<div class='col-md-6 mb-3'>
+                                    htmlContent += `<div class='col-md-6 mb-3'>
                                                             <p class='font-weight-bold text-capitalize'>category: </p>
                                                             ${categoriesSelectOptionsHtml}
                                                         </div>`;
                                     break;
                                 default:
-                                    itemDetailsHtml += `<div class='col-md-6 mb-3'>
+                                    htmlContent += `<div class='col-md-6 mb-3'>
                                                             <p class='font-weight-bold text-capitalize'>${key}: </p>
                                                             <input id='${key}' type='text' value='${product[key]}' class='form-control'/>
                                                         </div>`;
@@ -146,10 +148,15 @@ function preEditItem(requestUrlOfItem) {
             } else {
                 imageSrc = `resources/images/empty.jpg`;
             }
-            itemDetailsHtml += `    <img id='image_of_product' src='${imageSrc}' width='500' height='333'>
+            htmlContent += `    <div class='col-md-6 mb-3'>
+                                        <p class='font-weight-bold text-capitalize'>image: </p>
+                                        <input id='image' type='file' class='form-control-file'>
+                                    </div>
+                                    <img id='image_of_product' src='${imageSrc}' width='500' height='333'>
                                 </div>
-                                <button onclick='editItem()' class='form-control btn btn-primary'>Save</button>`;
-            $("#main").html(itemDetailsHtml);
+                                <button onclick='editProduct(${product.id})' class='form-control btn btn-primary'>Save</button>`;                                
+            $("#content").html(htmlContent);
+            attachImageChangeListener();
         }, function(errorThrown) {
             showMessage('Failed to load the details of this item', 'danger');
         }).always(function() {
@@ -161,8 +168,37 @@ function preEditItem(requestUrlOfItem) {
     }
 }
 
-function editItem() {
-    //select input elements in product_under_edit
+function editProduct(savedProductId) {
+    let editProductFormElements = $('#product_under_edit input[type=text], select');
+    let payload = {'id': savedProductId, 'active': true};
+    for (let index = 0; index < editProductFormElements.length; index++) {
+        $(editProductFormElements[index]).attr('id')        
+        payload[$(editProductFormElements[index]).attr('id')] = $(editProductFormElements[index]).is('select') ? 
+                                                                    $(editProductFormElements[index]).children("option:selected").val() : 
+                                                                    $(editProductFormElements[index]).val();
+    }
+    $.when(sendAuthorizedRequest('/products', 'PATCH', JSON.stringify(payload), 'application/json')
+    ).then(function(data, textStatus, jqXHR) {
+            if (tmpUploadedImage != null) {
+                let formData = new FormData();
+                formData.append('file', tmpUploadedImage);
+                return $.ajax({
+                    url: `/products/${savedProductId}`,
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {'Authorization': 'Bearer ' + localStorage.getItem('authToken')}
+                }); 
+            }                        
+    }).done(function(data, textStatus, jqXHR) {
+        showMessage('Product edited successfully', 'success');
+        $('#content').empty();
+    }).fail(function(errorThrown) {
+        showMessage('Failed to edit this product', 'danger');
+    }).always(function() {
+        removePreloader();
+    });    
 }
 
 /* ********************************************************************************************************************************** */
@@ -185,6 +221,7 @@ function deleteItem(requestUrl) {
         showMessage('Failed to delete this item', 'danger');
     }).always(function() {
         removePreloader();
+        $('#confirm_delete_dialogue').modal('hide');
     });
 }
 
@@ -202,7 +239,6 @@ function prepareAddFormOf(itemType) {
     }
 }
 
-let tmpUploadedImage;
 function createProductAddForm() {
     $.when(sendAuthorizedRequest('/vendors', 'GET'),
             sendAuthorizedRequest('/categories', 'GET')
@@ -243,9 +279,7 @@ function createProductAddForm() {
                             </div>
                             <button onclick='addProduct()' class='form-control btn btn-primary'>Save</button>`;
         $("#content").html(htmlContent);
-        $("#image").bind('change', function(event) {
-            tmpUploadedImage = event.target.files[0];
-        });
+        attachImageChangeListener();
     }, function(errorThrown) {
         console.error(errorThrown);
     }).always(function() {
@@ -293,7 +327,11 @@ function addProduct() {
     });
 }
 
-
+function attachImageChangeListener() {
+    $("#image").bind('change', function(event) {
+        tmpUploadedImage = event.target.files[0];
+    });
+}
 
 
 

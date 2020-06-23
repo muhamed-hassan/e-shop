@@ -64,3 +64,7 @@ function showMessage(text, msgType) {
 function clearMessagesSection() {
     $('#msg_alert').html('');
 }
+
+function notSkippedField(field) {
+    return !SKIPPED_FIELDS.includes(field);
+}

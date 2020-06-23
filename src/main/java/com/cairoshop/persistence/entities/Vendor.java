@@ -24,13 +24,11 @@ import org.hibernate.annotations.Where;
                     "FROM Vendor v " +
                     "WHERE v.id = ?1 ")
 @Where(clause = "active = true")
-public class Vendor extends BaseEntity {
+public class Vendor extends ProductClassification {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private int id;
-
-    private String name;
 
     public int getId() {
         return id;
@@ -38,14 +36,6 @@ public class Vendor extends BaseEntity {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
