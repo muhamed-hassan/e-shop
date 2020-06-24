@@ -77,6 +77,7 @@ function showAdminMenu() {
 /* ********************************************************************************************************************************** */
 
 function prepareEditItemsOfUsers(requestUrl) {
+    resetPaginator();
     getItems([ACTIVATE, DEACTIVATE], requestUrl);    
 }
 
@@ -103,6 +104,7 @@ function changeUserState(id, inversedState) {
 /* ********************************************************************************************************************************** */
 
 function prepareEditItems(requestUrl) {
+    resetPaginator();
     getItems("Edit", requestUrl);
 }
 
@@ -204,6 +206,7 @@ function editProduct(savedProductId) {
 /* ********************************************************************************************************************************** */
 
 function prepareDeleteItems(requestUrl) {
+    resetPaginator();
     getItems("Delete", requestUrl)
 }
 

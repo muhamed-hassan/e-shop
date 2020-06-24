@@ -28,6 +28,7 @@ function clearHeader() {
 function clearMain() {
     $("#msg_alert").empty();
     $("#content").empty();
+    resetPaginator();
 }
 
 function showLogoutLink() {

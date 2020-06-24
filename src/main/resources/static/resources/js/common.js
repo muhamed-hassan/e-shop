@@ -1,6 +1,6 @@
 function getItems(itemAction, requestUrl) {
     showPreloader();
-    $("#items_container").remove();
+    $("#items_container").html('');
     sendAuthorizedRequest(requestUrl, 'GET')
     .done(function (data, textStatus, jqXHR) {
         let itemsJson = data.items;
@@ -39,16 +39,19 @@ function getItems(itemAction, requestUrl) {
                             </div>
                         </div>`;
         }
-
         itemsHtml += "</div>";
-        let paginator = createPaginator(data.allSavedItemsCount);
-        let finalContent = `<div id='items_container'>${itemsHtml}</div>
-                            ${paginator}`;        
-        if ($('#products_search_bar').length > 0) {
-            $("#content").append(finalContent);
-        } else {
+        let finalContent, paginator;        
+        if ($("#items_container").length == 0 && $("#paginator").length == 0) {
+            finalContent = `<div id='items_container'>${itemsHtml}</div>`;
+            paginator = createPaginator(data.allSavedItemsCount, requestUrl, itemAction);            
+            finalContent += `${paginator}`;
             $("#content").html(finalContent);
-        }
+        } else if ($("#paginator").length == 0) {
+            $("#items_container").html(itemsHtml);
+            $("#content").append(createPaginator(data.allSavedItemsCount, requestUrl, itemAction));
+        } else {
+            $("#items_container").html(itemsHtml);
+        }               
     }).fail(function (jqXHR, textStatus, errorThrown) {
         showMessage('Failed to fetch data', 'danger');
     }).always(function() {
@@ -129,33 +132,26 @@ function getDetails(requestUrl) {
 
 /* ********************************************************************************************************************************** */
 
-/**
- <nav>
-  <ul class="pagination justify-content-center">
-    <li class="page-item disabled">
-      <a class="page-link" href="#" tabindex="-1">Previous</a>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item active">
-      <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item">
-      <a class="page-link" href="#">Next</a>
-    </li>
-  </ul>
-</nav>
- */
 const PAGE_SIZE = 9;
-let currentPage, lastPage;
+let currentPage = 1, lastPage, currentRequestUrl, currentItemAction;
 
-function createPaginator(allItemsCount) {
+function resetPaginator() {
     currentPage = 1;
+    lastPage = null;
+    currentRequestUrl = null;
+    currentItemAction = null;
+    $('#paginator').remove();
+}
+
+function createPaginator(allItemsCount, requestUrl, itemAction) {
+    currentRequestUrl = requestUrl;
+    currentItemAction = itemAction;
     let noOfPageLinks = Math.ceil(allItemsCount / PAGE_SIZE);
-    let paginator = `<nav>
-                        <ul id='paginator' class="pagination justify-content-center">
+    lastPage = noOfPageLinks; 
+    let paginator = `<nav id='paginator'>
+                        <ul class="pagination justify-content-center">
                             <li id='paginator_previous' class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                <a id='paginator_previous_link' href="#" class="page-link" onclick='previous()' tabindex="-1">Previous</a>
                             </li>
                             <li id='paginator_1' class="page-item active">
                                 <a id='paginator_1_link' class="page-link" href="#" onclick='moveTo(1)'>1<span class="sr-only">(current)</span></a>
@@ -163,11 +159,11 @@ function createPaginator(allItemsCount) {
     for (let pageLink = 2; pageLink <= noOfPageLinks; pageLink++) {
         paginator += `<li id='paginator_${pageLink}' class="page-item"><a class="page-link" href="#" onclick='moveTo(${pageLink})'>${pageLink}</a></li>`;
     }
-    paginator += `<li id='paginator_next' class="page-item ${noOfPageLinks == 1 ? 'disabled' : ''}">
-    <a class="page-link" href="#">Next</a>
-</li>
-</ul>
-</nav>`;
+    paginator += `          <li id='paginator_next' class="page-item ${noOfPageLinks == 1 ? 'disabled' : ''}">
+                                <a id='paginator_next_link' href="#" class="page-link" onclick='next()'>Next</a>
+                            </li>
+                        </ul>
+                    </nav>`;
     return paginator;
 }
 
@@ -179,6 +175,32 @@ function moveTo(targetPage) {
     // add htmlContent to `a` element with id `paginator_${targetPage}_link` => `${targetPage}<span class="sr-only">(current)</span>`
     // if the targetPage is the lastPage, then disable `next` btn, and enable `previous` button
     // else if the targetPage is the 1, then disable `previous` btn and enable `next` button
+    if (targetPage != currentPage) {
+        $(`#paginator_${currentPage}`).removeClass('active');
+        $(`#paginator_${currentPage}_link`).html(currentPage);
+        $(`#paginator_${targetPage}`).addClass('active');
+        $(`#paginator_${targetPage}_link`).html(`${targetPage}<span class="sr-only">(current)</span>`);
+        if (targetPage == lastPage) {
+            $(`#paginator_next`).addClass('disabled');
+            $('#paginator_next_link').attr('tabindex', -1);
+
+            $(`#paginator_previous`).removeClass('disabled');
+            $('#paginator_previous_link').removeAttr('tabindex');
+        } else if (targetPage == 1) {
+            $(`#paginator_next`).removeClass('disabled');
+            $('#paginator_next_link').removeAttr('tabindex');
+
+            $(`#paginator_previous`).addClass('disabled');
+            $('#paginator_previous_link').attr('tabindex', -1);
+        }
+        currentPage = targetPage;
+
+            // /vendors?start-position=0&sort-by=id&sort-direction=ASC
+    // "/vendors?start-position=0&sort-by=id&sort-direction=ASC".replace(/(start-position=)[0-9]+/g, "start-position=9");
+        currentRequestUrl = currentRequestUrl.replace(/(start-position=)[0-9]+/g, `start-position=${targetPage - 1}`);
+        getItems(currentItemAction, currentRequestUrl);
+    }
+    // fetch data of targetPage page and draw it currentItemAction
 }
 
 function previous() {
@@ -187,8 +209,29 @@ function previous() {
     // remove htmlContent of `a` element with id `paginator_${currentPage}_link`
     // make pageLink active of targetPage using this id `paginator_${targetPage}`
     // add htmlContent to `a` element with id `paginator_${targetPage}_link` => `${targetPage}<span class="sr-only">(current)</span>`
-    // if the targetPage is the lastPage, then disable `next` btn, and enable `previous` button
+    // if the targetPage is the lastPage, then disable `next` btn, and enable `previous` button // cannot happen
     // else if the targetPage is the 1, then disable `previous` btn and enable `next` button
+    let targetPage = currentPage - 1;
+    $(`#paginator_${currentPage}`).removeClass('active');
+    $(`#paginator_${currentPage}_link`).html(currentPage);
+    $(`#paginator_${targetPage}`).addClass('active');
+    $(`#paginator_${targetPage}_link`).html(`${targetPage}<span class="sr-only">(current)</span>`);
+    /*if (targetPage == lastPage) {
+        $(`#paginator_next`).removeClass('active');
+        $(`#paginator_previous`).addClass('active');
+    } else*/ if (targetPage == 1) {
+        $(`#paginator_next`).removeClass('disabled');
+            $('#paginator_next_link').removeAttr('tabindex');
+
+            $(`#paginator_previous`).addClass('disabled');
+            $('#paginator_previous_link').attr('tabindex', -1);
+    }
+    currentPage = targetPage;
+    // /vendors?start-position=0&sort-by=id&sort-direction=ASC
+    // "/vendors?start-position=0&sort-by=id&sort-direction=ASC".replace(/(start-position=)[0-9]+/g, "start-position=9");
+    currentRequestUrl = currentRequestUrl.replace(/(start-position=)[0-9]+/g, `start-position=${targetPage - 1}`);
+    getItems(currentItemAction, currentRequestUrl);
+    // fetch data of previous page and draw it
 }
 
 function next() {
@@ -198,7 +241,28 @@ function next() {
     // make pageLink active of targetPage using this id `paginator_${targetPage}`
     // add htmlContent to `a` element with id `paginator_${targetPage}_link` => `${targetPage}<span class="sr-only">(current)</span>`
     // if the targetPage is the lastPage, then disable `next` btn, and enable `previous` button
-    // else if the targetPage is the 1, then disable `previous` btn and enable `next` button
+    // else if the targetPage is the 1, then disable `previous` btn and enable `next` button // cannot happen
+    let targetPage = currentPage + 1;
+    $(`#paginator_${currentPage}`).removeClass('active');
+    $(`#paginator_${currentPage}_link`).html(currentPage);
+    $(`#paginator_${targetPage}`).addClass('active');
+    $(`#paginator_${targetPage}_link`).html(`${targetPage}<span class="sr-only">(current)</span>`);
+    if (targetPage == lastPage) {
+        $(`#paginator_next`).addClass('disabled');
+            $('#paginator_next_link').attr('tabindex', -1);
+
+            $(`#paginator_previous`).removeClass('disabled');
+            $('#paginator_previous_link').removeAttr('tabindex');
+    } /*else if (targetPage == 1) {
+        $(`#paginator_next`).addClass('active');
+        $(`#paginator_previous`).removeClass('active');
+    }*/
+    currentPage = targetPage;
+    // /vendors?start-position=0&sort-by=id&sort-direction=ASC
+    // "/vendors?start-position=0&sort-by=id&sort-direction=ASC".replace(/(start-position=)[0-9]+/g, "start-position=9");
+    currentRequestUrl = currentRequestUrl.replace(/(start-position=)[0-9]+/g, `start-position=${targetPage - 1}`);
+    getItems(currentItemAction, currentRequestUrl);
+    // fetch data of next page and draw it
 }
 
 

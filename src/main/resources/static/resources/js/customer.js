@@ -1,7 +1,7 @@
 function searchProducts(event) {
     event.preventDefault(); //prevent default action
   
-    $("#items_container").remove();
+    $("#items_container").html('');
     getItems("", "/products"); //view mode
   
     //reset search
