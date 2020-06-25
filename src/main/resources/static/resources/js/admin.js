@@ -84,7 +84,7 @@ function prepareEditItemsOfUsers(requestUrl) {
 function changeUserState(id, inversedState) {
     showPreloader();
     let payload = {"id": id, active: inversedState};
-    sendAuthorizedRequest('/users', 'PATCH', JSON.stringify(payload), 'application/json')
+    sendAuthorizedRequest('/users', PATCH, JSON.stringify(payload), 'application/json')
     .done(function (data, textStatus, jqXHR) {        
         let elementId = `#user_${id}`;
         if ($(elementId).text() == ACTIVATE) {
@@ -110,9 +110,9 @@ function prepareEditItems(requestUrl) {
 
 function preEditItem(requestUrlOfItem) {
     if (requestUrlOfItem.includes("products")) {
-        $.when(sendAuthorizedRequest(requestUrlOfItem, 'GET'),
-                sendAuthorizedRequest('/vendors', 'GET'),
-                sendAuthorizedRequest('/categories', 'GET')
+        $.when(sendAuthorizedRequest(requestUrlOfItem, GET),
+                sendAuthorizedRequest('/vendors', GET),
+                sendAuthorizedRequest('/categories', GET)
         ).then(function(productResponse, vendorsResponse, categoriesResponse) {
             let product = productResponse[0];
             let vendors = vendorsResponse[0];
@@ -179,14 +179,14 @@ function editProduct(savedProductId) {
                                                                     $(editProductFormElements[index]).children("option:selected").val() : 
                                                                     $(editProductFormElements[index]).val();
     }
-    $.when(sendAuthorizedRequest('/products', 'PATCH', JSON.stringify(payload), 'application/json')
+    $.when(sendAuthorizedRequest('/products', PATCH, JSON.stringify(payload), 'application/json')
     ).then(function(data, textStatus, jqXHR) {
             if (tmpUploadedImage != null) {
                 let formData = new FormData();
                 formData.append('file', tmpUploadedImage);
                 return $.ajax({
                     url: `/products/${savedProductId}`,
-                    type: "POST",
+                    type: POST,
                     data: formData,
                     processData: false,
                     contentType: false,
@@ -216,7 +216,7 @@ function preDeleteItem(requestUrlOfItem) {
 
 function deleteItem(requestUrl) {
     showPreloader();
-    sendAuthorizedRequest(requestUrl, 'DELETE')
+    sendAuthorizedRequest(requestUrl, DELETE)
     .done(function (data, textStatus, jqXHR) {        
         $("#content").empty();
         showMessage('Item deleted successfully', 'success');
@@ -243,8 +243,8 @@ function prepareAddFormOf(itemType) {
 }
 
 function createProductAddForm() {
-    $.when(sendAuthorizedRequest('/vendors', 'GET'),
-            sendAuthorizedRequest('/categories', 'GET')
+    $.when(sendAuthorizedRequest('/vendors', GET),
+            sendAuthorizedRequest('/categories', GET)
     ).then(function(vendorsResponse, categoriesResponse) {
         let vendors = vendorsResponse[0];
         let categories = categoriesResponse[0];
@@ -305,7 +305,7 @@ function addProduct() {
                                                                     $(addProductFormElements[index]).children("option:selected").val() : 
                                                                     $(addProductFormElements[index]).val();
     }
-    $.when(sendAuthorizedRequest('/products', 'POST', JSON.stringify(payload), 'application/json')
+    $.when(sendAuthorizedRequest('/products', POST, JSON.stringify(payload), 'application/json')
     ).then(function(data, textStatus, jqXHR) {
             let locationHeader = jqXHR.getResponseHeader('Location');
             let savedProductId = locationHeader.substring(locationHeader.lastIndexOf('/')+1);            
@@ -313,7 +313,7 @@ function addProduct() {
             formData.append('file', tmpUploadedImage);
         return $.ajax({
             url: `/products/${savedProductId}`,
-            type: "POST",
+            type: POST,
             data: formData,
             processData: false,
             contentType: false,
