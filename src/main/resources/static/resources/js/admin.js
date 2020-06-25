@@ -108,8 +108,12 @@ function prepareEditItems(requestUrl) {
     getItems("Edit", requestUrl);
 }
 
-function preEditItem(requestUrlOfItem) {
-    if (requestUrlOfItem.includes("products")) {
+function preEditItem(requestUrlOfItem) {    
+    let isProduct = requestUrlOfItem.includes("products"), 
+        isVendor = requestUrlOfItem.includes("vendors"), 
+        isCategory = requestUrlOfItem.includes("categories");
+    if (isProduct) {
+        showPreloader();
         $.when(sendAuthorizedRequest(requestUrlOfItem, GET),
                 sendAuthorizedRequest('/vendors', GET),
                 sendAuthorizedRequest('/categories', GET)
@@ -163,18 +167,56 @@ function preEditItem(requestUrlOfItem) {
             showMessage('Failed to load the details of this item', 'danger');
         }).always(function() {
             removePreloader();
-            clearMessagesSection();
         });
-    } else {
-        // show modal to edit name of either vendor or category
+    } else if (isVendor || isCategory) {
+        sendAuthorizedRequest(requestUrlOfItem, GET)
+        .done(function(data, textStatus, jqXHR) {
+            clearMain();
+            let type;
+            if (isVendor) {
+                type = 'Vendor';
+            } else if (isCategory) {
+                type = 'Category';
+            }
+            $('#modal_title').html(`Edit ${type}`);
+            let modalBody = `<div id='new_product_classification' class='row'>
+                                <div class='col-md-6 mb-3'>
+                                    <p class='font-weight-bold text-capitalize'>name: </p>
+                                    <input id='product_classification_name' type='text' class='form-control' value='${data.name}'>
+                                </div>
+                            </div>`;
+            $('#modal_body').html(modalBody);
+            $('#modal_action_btn').attr('onclick', `editProductClassification(\"${requestUrlOfItem}\",\"${type}\")`);
+            $('#modal_action_btn').html('Save');
+            $('#modal').modal('show'); 
+        }).fail(function(errorThrown) {
+            showMessage('Failed to load the details of this item', 'danger');
+        });        
     }
 }
 
+function editProductClassification(requestUrl, type) {
+    showPreloader();
+    let productClassificationId = requestUrl.substring(requestUrl.lastIndexOf('/') + 1);
+    let productClassificationName = $('#product_classification_name').val();
+    let payload = {'id': productClassificationId, 'name': productClassificationName, 'active': true};
+    sendAuthorizedRequest(requestUrl.substring(0, requestUrl.lastIndexOf('/')), PATCH, JSON.stringify(payload), 'application/json')
+    .done(function(data, textStatus, jqXHR) {
+        showMessage(`${type} edited successfully`, 'success');
+        $('#content').empty();
+    }).fail(function(errorThrown) {
+        showMessage(`Failed to edit this ${type}`, 'danger');
+    }).always(function() {
+        removePreloader();
+        hideModal();
+    }); 
+}
+
 function editProduct(savedProductId) {
+    showPreloader();
     let editProductFormElements = $('#product_under_edit input[type=text], select');
     let payload = {'id': savedProductId, 'active': true};
-    for (let index = 0; index < editProductFormElements.length; index++) {
-        $(editProductFormElements[index]).attr('id')        
+    for (let index = 0; index < editProductFormElements.length; index++) {    
         payload[$(editProductFormElements[index]).attr('id')] = $(editProductFormElements[index]).is('select') ? 
                                                                     $(editProductFormElements[index]).children("option:selected").val() : 
                                                                     $(editProductFormElements[index]).val();
@@ -211,7 +253,10 @@ function prepareDeleteItems(requestUrl) {
 }
 
 function preDeleteItem(requestUrlOfItem) {    
-    $('#delete_btn').attr('onclick', `deleteItem(\"${requestUrlOfItem}\")`);
+    $('#modal_title').html('Delete Confirmation');
+    $('#modal_body').html('Are you sure you want to delete this item ?');
+    $('#modal_action_btn').attr('onclick', `deleteItem(\"${requestUrlOfItem}\")`);
+    $('#modal_action_btn').html('Ok');
 }
 
 function deleteItem(requestUrl) {
@@ -224,7 +269,7 @@ function deleteItem(requestUrl) {
         showMessage('Failed to delete this item', 'danger');
     }).always(function() {
         removePreloader();
-        $('#confirm_delete_dialogue').modal('hide');
+        hideModal();
     });
 }
 
@@ -236,8 +281,10 @@ function prepareAddFormOf(itemType) {
             createProductAddForm();
             break;
         case 'Vendor':
+            createProductClassificationAddForm('/vendors', itemType);
+            break;
         case 'Category':    
-            createProductClassificationAddForm();
+            createProductClassificationAddForm('/categories', itemType);
             break;
     }
 }
@@ -291,8 +338,34 @@ function createProductAddForm() {
     });
 }
 
-function createProductClassificationAddForm() {
-    // create it from modal: just  'name' field !
+function createProductClassificationAddForm(requestUrl, type) {
+    clearMain();
+    $('#modal_title').html(`Add ${type}`);
+    let modalBody = `<div id='new_product_classification' class='row'>
+                        <div class='col-md-6 mb-3'>
+                            <p class='font-weight-bold text-capitalize'>name: </p>
+                            <input id='product_classification_name' type='text' class='form-control'>
+                        </div>
+                    </div>`;
+    $('#modal_body').html(modalBody);
+    $('#modal_action_btn').attr('onclick', `addProductClassification(\"${requestUrl}\",\"${type}\")`);
+    $('#modal_action_btn').html('Save');
+    $('#modal').modal('show');
+}
+
+function addProductClassification(requestUrl, type) {
+    showPreloader();
+    let payload = {'name': $('#product_classification_name').val()};    
+    sendAuthorizedRequest(requestUrl, POST, JSON.stringify(payload), 'application/json')
+    .done(function(data, textStatus, jqXHR) {
+        showMessage(`${type} added successfully`, 'success');
+        $('#content').empty();
+    }).fail(function(errorThrown) {
+        showMessage(`Failed to add this ${type}`, 'danger');
+    }).always(function() {
+        removePreloader();
+        hideModal();
+    });
 }
 
 function addProduct() {
@@ -300,7 +373,6 @@ function addProduct() {
     let addProductFormElements = $('#new_product input[type=text], select');
     let payload = {};
     for (let index = 0; index < addProductFormElements.length; index++) {
-        $(addProductFormElements[index]).attr('id')        
         payload[$(addProductFormElements[index]).attr('id')] = $(addProductFormElements[index]).is('select') ? 
                                                                     $(addProductFormElements[index]).children("option:selected").val() : 
                                                                     $(addProductFormElements[index]).val();
@@ -326,7 +398,6 @@ function addProduct() {
         showMessage('Failed to add this product', 'danger');
     }).always(function() {
         removePreloader();
-        clearMessagesSection();
     });
 }
 

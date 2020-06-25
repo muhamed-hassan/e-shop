@@ -16,7 +16,7 @@ function getItems(itemAction, requestUrl) {
                         itemActionButton += `<button type='button' class='btn btn-sm btn-warning' onclick='preEditItem("${requestUrl.substring(0, requestUrl.lastIndexOf('?'))}/${item.id}")'>${itemAction}</button>`;
                         break;
                     case "Delete":
-                        itemActionButton += `<button type='button' class='btn btn-sm btn-danger' data-toggle='modal' data-target='#confirm_delete_dialogue' onclick='preDeleteItem("${requestUrl.substring(0, requestUrl.lastIndexOf('?'))}/${item.id}")'>${itemAction}</button>`;
+                        itemActionButton += `<button type='button' class='btn btn-sm btn-danger' data-toggle='modal' data-target='#modal' onclick='preDeleteItem("${requestUrl.substring(0, requestUrl.lastIndexOf('?'))}/${item.id}")'>${itemAction}</button>`;
                         break;
                 }
             }

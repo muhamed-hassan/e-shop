@@ -69,3 +69,18 @@ function notSkippedField(field) {
     return !SKIPPED_FIELDS.includes(field);
 }
 
+function hideModal() {
+    $('#modal').modal('hide');
+}
+
+$('#modal').on('hidden.bs.modal', function () {
+    resetModal();
+});
+
+function resetModal() {
+    $('#modal_title').html('');
+    $('#modal_body').html('');
+    $('#modal_action_btn').removeAttr('onclick');
+    $('#modal_action_btn').html('');
+}
+

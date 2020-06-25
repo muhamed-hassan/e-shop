@@ -30,21 +30,19 @@
       </div>
     </main>
 
-    <div class="modal fade" id="confirm_delete_dialogue" tabindex="-1" role="dialog" aria-labelledby="confirm_delete_dialogue_title" aria-hidden="true">
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal_title" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="confirm_delete_dialogue_title">Delete Confirmation</h5>
+            <h5 class="modal-title" id="modal_title"></h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-            Are you sure you want to delete this item ?
-          </div>
+          <div class="modal-body" id="modal_body"></div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button id="delete_btn" type="button" class="btn btn-primary">Ok</button>
+            <button id="modal_action_btn" type="button" class="btn btn-primary"></button>
           </div>
         </div>
       </div>
