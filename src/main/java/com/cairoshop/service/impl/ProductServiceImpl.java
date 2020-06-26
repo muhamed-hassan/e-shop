@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cairoshop.configs.Constants;
 import com.cairoshop.persistence.entities.Category;
 import com.cairoshop.persistence.entities.Product;
 import com.cairoshop.persistence.entities.Vendor;
@@ -20,6 +21,7 @@ import com.cairoshop.web.dtos.NewProductDTO;
 import com.cairoshop.web.dtos.SavedBriefProductDTO;
 import com.cairoshop.web.dtos.SavedDetailedProductDTO;
 import com.cairoshop.web.dtos.SavedImageStream;
+import com.cairoshop.web.dtos.SavedItemsDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -99,6 +101,16 @@ public class ProductServiceImpl
     @Override
     public List<String> getSortableFields() {
         return Product.SORTABLE_FIELDS;
+    }
+
+    @Override
+    public SavedItemsDTO<SavedBriefProductDTO> searchByProductName(String name, int startPosition, String sortBy, String sortDirection) {
+        List<SavedBriefProductDTO> page = productRepository.search(name, startPosition, Constants.MAX_PAGE_SIZE, sortBy, sortDirection);
+        int countOfItemMetSearchCriteria = productRepository.countAllByCriteria(name);
+        SavedItemsDTO<SavedBriefProductDTO> savedBriefProductDTOSavedItemsDTO = new SavedItemsDTO<>();
+        savedBriefProductDTOSavedItemsDTO.setItems(page);
+        savedBriefProductDTOSavedItemsDTO.setAllSavedItemsCount(countOfItemMetSearchCriteria);
+        return savedBriefProductDTOSavedItemsDTO;
     }
 
 }

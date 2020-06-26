@@ -72,6 +72,7 @@ function showAdminMenu() {
                         </div>
                     </div>`;
     $("#header").append(adminMenu);
+    $('#main').html(`<div id="msg_alert"></div><div id="content"></div>`);
 }
 
 /* ********************************************************************************************************************************** */

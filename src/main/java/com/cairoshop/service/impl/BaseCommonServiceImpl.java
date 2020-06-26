@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import com.cairoshop.configs.Constants;
 import com.cairoshop.persistence.repositories.BaseCommonRepository;
 import com.cairoshop.service.BaseCommonService;
 import com.cairoshop.service.exceptions.NoResultException;
@@ -35,7 +36,7 @@ public class BaseCommonServiceImpl<SDDTO, SBDTO, T> implements BaseCommonService
     @Override
     public SDDTO getById(int id) {
         return repository.findById(id, savedDetailedDtoClass)
-            .orElseThrow(NoResultException::new);
+                            .orElseThrow(NoResultException::new);
     }
 
     @Override
@@ -49,11 +50,8 @@ public class BaseCommonServiceImpl<SDDTO, SBDTO, T> implements BaseCommonService
             case "asc":
                 sort = sort.ascending();
                 break;
-            default:
-                throw new IllegalArgumentException("Allowed sort directions are DESC and ASC");
         }
-        final int MAX_PAGE_SIZE = 9;
-        List<SBDTO> page = repository.findAllBy(PageRequest.of(startPosition, MAX_PAGE_SIZE, sort));
+        List<SBDTO> page = repository.findAllBy(PageRequest.of(startPosition, Constants.MAX_PAGE_SIZE, sort));
         long allCount = repository.count();
         SavedItemsDTO<SBDTO> sbdtoSavedItemsDTO = new SavedItemsDTO<>();
         sbdtoSavedItemsDTO.setItems(page);

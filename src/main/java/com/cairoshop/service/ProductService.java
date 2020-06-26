@@ -6,6 +6,7 @@ import com.cairoshop.persistence.entities.Product;
 import com.cairoshop.web.dtos.NewProductDTO;
 import com.cairoshop.web.dtos.SavedBriefProductDTO;
 import com.cairoshop.web.dtos.SavedDetailedProductDTO;
+import com.cairoshop.web.dtos.SavedItemsDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -21,5 +22,7 @@ public interface ProductService extends BaseService<NewProductDTO, SavedDetailed
     void edit(int id, byte[] image);
 
     List<String> getSortableFields();
+
+    SavedItemsDTO<SavedBriefProductDTO> searchByProductName(String name, int startPosition, String sortBy, String sortDirection);
 
 }

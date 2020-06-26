@@ -29,7 +29,7 @@ public class BaseServiceImpl<NDTO, SDDTO, SBDTO, T>
     public int add(NDTO ndto) {
         Integer id = -1;
         try {
-            T entity = entityClass.newInstance();
+            T entity = entityClass.getDeclaredConstructor().newInstance();
             Method[] dtoMethods = ndto.getClass().getMethods();
             for (Method method : dtoMethods) {
                 String methodName = method.getName();

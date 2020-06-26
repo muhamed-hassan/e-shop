@@ -78,6 +78,7 @@ $('#modal').on('hidden.bs.modal', function () {
 });
 
 function resetModal() {
+    $(".modal-dialog").removeClass('modal-xl');
     $('#modal_title').html('');
     $('#modal_body').html('');
     $('#modal_action_btn').removeAttr('onclick');

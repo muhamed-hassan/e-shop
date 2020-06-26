@@ -15,7 +15,7 @@ import com.cairoshop.web.dtos.SavedBriefProductDTO;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Repository
-public interface ProductRepository extends BaseRepository<SavedBriefProductDTO, Product> {
+public interface ProductRepository extends BaseRepository<SavedBriefProductDTO, Product>, ProductRepositoryCustom {
 
     <SavedImageStream> Optional<SavedImageStream> findImageById(int id, Class<SavedImageStream> sdtoClass);
 

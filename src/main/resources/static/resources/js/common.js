@@ -45,7 +45,7 @@ function getItems(itemAction, requestUrl) {
             finalContent = `<div id='items_container'>${itemsHtml}</div>`;
             paginator = createPaginator(data.allSavedItemsCount, requestUrl, itemAction);            
             finalContent += `${paginator}`;
-            $("#content").html(finalContent);
+            $("#content").html(finalContent); 
         } else if ($("#paginator").length == 0) {
             $("#items_container").html(itemsHtml);
             $("#content").append(createPaginator(data.allSavedItemsCount, requestUrl, itemAction));
@@ -92,7 +92,11 @@ function getProductDetails(requestUrl) {
             }
             itemDetailsHtml += `    <img id='image_of_product' src='${imageSrc}' width='500' height='333'>
                                 </div>`;
-            $("#content").html(itemDetailsHtml);
+        $(".modal-dialog").addClass("modal-xl");
+            $('#modal_title').html(`View product details`);
+            $('#modal_body').html(itemDetailsHtml);
+            $('#modal_action_btn').hide();
+            $('#modal').modal('show'); 
     }, function(errorThrown) {
         showMessage('Failed to load the details', 'danger');
     }).always(function() {
@@ -111,7 +115,11 @@ function getUserDetails(requestUrl) {
             }
         });
         itemDetailsHtml += `</div>`;
-        $("#content").html(itemDetailsHtml);
+        $(".modal-dialog").addClass("modal-xl");
+        $('#modal_title').html(`View user details`);
+        $('#modal_body').html(itemDetailsHtml);
+        $('#modal_action_btn').hide();
+        $('#modal').modal('show'); 
     }).fail(function (jqXHR, textStatus, errorThrown) {
         showMessage('Failed to load the details', 'danger');
     }).always(function() { 
