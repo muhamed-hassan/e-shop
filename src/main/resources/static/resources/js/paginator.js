@@ -14,8 +14,7 @@ function createPaginator(allItemsCount, requestUrl, itemAction) {
     currentItemAction = itemAction;
     let noOfPageLinks = Math.ceil(allItemsCount / PAGE_SIZE);
     lastPage = noOfPageLinks; 
-    let paginator = `<br /><br />
-                    <nav id='paginator'>
+    let paginator = `<nav id='paginator'> <br /><br />
                         <ul class="pagination justify-content-center">
                             <li id='paginator_previous' class="page-item disabled">
                                 <a id='paginator_previous_link' href="#" class="page-link" onclick='previous()' tabindex="-1">Previous</a>
