@@ -7,7 +7,7 @@ function showLoginForm() {
                         <input id='password' type='password' class='form-control' placeholder='Password' required>
                         <button class='btn btn-lg btn-primary btn-block' type='submit'>Sign in</button>
                     </form>`;
-    $("#content").html(loginForm);
+    $("#main").html(loginForm);
 
     $("#login_form").bind("submit", function (event) {
         showPreloader();
@@ -35,10 +35,10 @@ function showLoginForm() {
 
 function showInitialScreenBasedOnRole(role) {
     switch (role) {
-        case "Admin":
+        case "ROLE_ADMIN":
             showAdminMenu();
             break;
-        case "Customer":
+        case "ROLE_CUSTOMER":
             showProductsSearchBar();
             break;
     }

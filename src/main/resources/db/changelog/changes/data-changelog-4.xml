@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+  <changeSet author="admin" id="8">
+    <sql>
+      UPDATE `role` SET `name` = 'ROLE_ADMIN' WHERE `name` = 'Admin';
+      UPDATE `role` SET `name` = 'ROLE_CUSTOMER' WHERE `name` = 'Customer';
+    </sql>
+  </changeSet>
+
+</databaseChangeLog>
+

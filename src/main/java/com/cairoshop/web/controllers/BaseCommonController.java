@@ -8,6 +8,7 @@ import javax.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +36,7 @@ public class BaseCommonController<SDDTO, SBDTO, T> {
         return baseCommonService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     @ApiResponses(value = {
         @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Succeeded in fetching data"),
         @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Data not found"),
@@ -46,6 +48,7 @@ public class BaseCommonController<SDDTO, SBDTO, T> {
         return ResponseEntity.ok(baseCommonService.getById(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     @ApiResponses(value = {
         @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Succeeded in fetching data"),
         @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Data not found"),

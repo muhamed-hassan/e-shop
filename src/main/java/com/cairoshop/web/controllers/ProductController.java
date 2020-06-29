@@ -14,6 +14,7 @@ import javax.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -53,6 +54,7 @@ public class ProductController extends BaseController<NewProductDTO, SavedDetail
         setService(productService);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiResponses(value = {
         @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Succeeded in updating the resource"),
         @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid request"),
@@ -76,6 +78,7 @@ public class ProductController extends BaseController<NewProductDTO, SavedDetail
         return ResponseEntity.ok(productService.getImage(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiResponses(value = {
         @ApiResponse(code = HttpURLConnection.HTTP_NO_CONTENT, message = "Succeeded in updating the resource"),
         @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid request"),
@@ -88,6 +91,7 @@ public class ProductController extends BaseController<NewProductDTO, SavedDetail
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
     @ApiResponses(value = {
         @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Succeeded in fetching data"),
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
@@ -97,6 +101,7 @@ public class ProductController extends BaseController<NewProductDTO, SavedDetail
         return ResponseEntity.ok(productService.getSortableFields());
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
     @ApiResponses(value = {
         @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Succeeded in fetching data"),
         @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Data not found"),
