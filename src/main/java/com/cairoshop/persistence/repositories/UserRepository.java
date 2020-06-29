@@ -15,7 +15,7 @@ import com.cairoshop.web.dtos.SavedBriefCustomerDTO;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Repository
-public interface UserRepository extends BaseCommonRepository<SavedBriefCustomerDTO, User> {
+public interface UserRepository extends BaseCommonRepository<SavedBriefCustomerDTO, User>, UserRepositoryCustom {
 
     @Query("UPDATE User u SET u.active = ?2, u.enabled = ?2 WHERE u.id =?1")
     @Modifying

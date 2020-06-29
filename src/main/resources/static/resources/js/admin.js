@@ -93,7 +93,7 @@ function changeUserState(id, inversedState) {
         } else {
             $(elementId).text(ACTIVATE);
         }
-        $(elementId).attr('onclick', `changeUserState(id,${!inversedState})`);
+        $(elementId).attr('onclick', `changeUserState(${id},${!inversedState})`);
         showMessage('User updated successfully', 'success');
     }).fail(function (jqXHR, textStatus, errorThrown) {
         showMessage('Failed to update this user', 'danger');
@@ -256,6 +256,7 @@ function prepareDeleteItems(requestUrl) {
 function preDeleteItem(requestUrlOfItem) {    
     $('#modal_title').html('Delete Confirmation');
     $('#modal_body').html('Are you sure you want to delete this item ?');
+    $('#modal_action_btn').show();
     $('#modal_action_btn').attr('onclick', `deleteItem(\"${requestUrlOfItem}\")`);
     $('#modal_action_btn').html('Ok');
 }

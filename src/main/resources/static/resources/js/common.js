@@ -93,10 +93,10 @@ function getProductDetails(requestUrl) {
             itemDetailsHtml += `    <img id='image_of_product' src='${imageSrc}' width='500' height='333'>
                                 </div>`;
         $(".modal-dialog").addClass("modal-xl");
-            $('#modal_title').html(`View product details`);
-            $('#modal_body').html(itemDetailsHtml);
-            $('#modal_action_btn').hide();
-            $('#modal').modal('show'); 
+        $('#modal_title').html(`View product details`);
+        $('#modal_body').html(itemDetailsHtml);
+        $('#modal_action_btn').hide();
+        $('#modal').modal('show'); 
     }, function(errorThrown) {
         showMessage('Failed to load the details', 'danger');
     }).always(function() {
