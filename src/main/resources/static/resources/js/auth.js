@@ -7,7 +7,7 @@ function showLoginForm() {
                         <input id='password' type='password' class='form-control' placeholder='Password' required>
                         <button class='btn btn-lg btn-primary btn-block' type='submit'>Sign in</button>
                     </form>`;
-    $("#main").html(loginForm);
+    $("#content").html(loginForm);
 
     $("#login_form").bind("submit", function (event) {
         showPreloader();
@@ -24,11 +24,11 @@ function showLoginForm() {
             let authToken = jqXHR.getResponseHeader("Authorization").substring(7);
             localStorage.setItem("authToken", authToken);
             showInitialScreenBasedOnRole(getRole(authToken));
+            clearMessagesSection();
         }).fail(function (jqXHR, textStatus, errorThrown) {
             showMessage(jqXHR.responseJSON.message || `Can't login`, 'danger');
         }).always(function() {
-            removePreloader();
-            clearMessagesSection();
+            removePreloader();            
         });
     });
 }

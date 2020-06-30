@@ -41,10 +41,10 @@ function showProductsSearchBar() {
                                             </select>
                                         </div>
                                     </div>                                    
-                                </form><br /><br /><div id='content'></div>`;                              
-        $("#main").html(productsSearchBar);         
+                                </form><br /><br />`;                              
+        $("#content").html(productsSearchBar);         
     }).fail(function(errorThrown) {
-        console.error(errorThrown);
+        showMessage(errorThrown, 'danger');
     }).always(function() {
         removePreloader();
     });       

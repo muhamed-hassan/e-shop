@@ -71,20 +71,20 @@ function showAdminMenu() {
                             </div>
                         </div>
                     </div>`;
-    $("#header").append(adminMenu);
-    $('#main').html(`<div id="msg_alert"></div><div id="content"></div>`);
+    $('#header').append(adminMenu);
 }
 
 /* ********************************************************************************************************************************** */
 
 function prepareEditItemsOfUsers(requestUrl) {
     resetPaginator();
+    clearMessagesSection();
     getItems([ACTIVATE, DEACTIVATE], requestUrl);    
 }
 
 function changeUserState(id, inversedState) {
     showPreloader();
-    let payload = {"id": id, active: inversedState};
+    let payload = {'id': id, active: inversedState};
     sendAuthorizedRequest('/users', PATCH, JSON.stringify(payload), 'application/json')
     .done(function (data, textStatus, jqXHR) {        
         let elementId = `#user_${id}`;
@@ -106,6 +106,7 @@ function changeUserState(id, inversedState) {
 
 function prepareEditItems(requestUrl) {
     resetPaginator();
+    clearMessagesSection();
     getItems("Edit", requestUrl);
 }
 
@@ -179,17 +180,20 @@ function preEditItem(requestUrlOfItem) {
             } else if (isCategory) {
                 type = 'Category';
             }
-            $('#modal_title').html(`Edit ${type}`);
-            let modalBody = `<div id='new_product_classification' class='row'>
-                                <div class='col-md-6 mb-3'>
-                                    <p class='font-weight-bold text-capitalize'>name: </p>
-                                    <input id='product_classification_name' type='text' class='form-control' value='${data.name}'>
-                                </div>
-                            </div>`;
-            $('#modal_body').html(modalBody);
-            $('#modal_action_btn').attr('onclick', `editProductClassification(\"${requestUrlOfItem}\",\"${type}\")`);
-            $('#modal_action_btn').html('Save');
-            $('#modal').modal('show'); 
+            showModal({
+                large: false,
+                title: `Edit ${type}`,
+                body: `<div id='new_product_classification' class='row'>
+                            <div class='col-md-6 mb-3'>
+                                <p class='font-weight-bold text-capitalize'>name: </p>
+                                <input id='product_classification_name' type='text' class='form-control' value='${data.name}'>
+                            </div>
+                        </div>`,
+                actionBtn: {
+                    onclick: `editProductClassification(\"${requestUrlOfItem}\",\"${type}\")`,
+                    label: 'Save'
+                }
+            });
         }).fail(function(errorThrown) {
             showMessage('Failed to load the details of this item', 'danger');
         });        
@@ -213,32 +217,37 @@ function editProductClassification(requestUrl, type) {
     }); 
 }
 
+function uploadImageIfAny(productId) {
+    if (tmpUploadedImage != null) {
+        let formData = new FormData();
+        formData.append('file', tmpUploadedImage);
+        return $.ajax({
+            url: `/products/${productId}`,
+            type: POST,
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {'Authorization': 'Bearer ' + localStorage.getItem('authToken')}
+        }); 
+    }
+}
+
 function editProduct(savedProductId) {
     showPreloader();
     let editProductFormElements = $('#product_under_edit input[type=text], select');
     let payload = {'id': savedProductId, 'active': true};
     for (let index = 0; index < editProductFormElements.length; index++) {    
         payload[$(editProductFormElements[index]).attr('id')] = $(editProductFormElements[index]).is('select') ? 
-                                                                    $(editProductFormElements[index]).children("option:selected").val() : 
+                                                                    $(editProductFormElements[index]).children('option:selected').val() : 
                                                                     $(editProductFormElements[index]).val();
     }
     $.when(sendAuthorizedRequest('/products', PATCH, JSON.stringify(payload), 'application/json')
-    ).then(function(data, textStatus, jqXHR) {
-            if (tmpUploadedImage != null) {
-                let formData = new FormData();
-                formData.append('file', tmpUploadedImage);
-                return $.ajax({
-                    url: `/products/${savedProductId}`,
-                    type: POST,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    headers: {'Authorization': 'Bearer ' + localStorage.getItem('authToken')}
-                }); 
-            }                        
+    ).then(function(data, textStatus, jqXHR) { 
+        return uploadImageIfAny(savedProductId);                        
     }).done(function(data, textStatus, jqXHR) {
         showMessage('Product edited successfully', 'success');
         $('#content').empty();
+        tmpUploadedImage = null;
     }).fail(function(errorThrown) {
         showMessage('Failed to edit this product', 'danger');
     }).always(function() {
@@ -250,15 +259,20 @@ function editProduct(savedProductId) {
 
 function prepareDeleteItems(requestUrl) {
     resetPaginator();
-    getItems("Delete", requestUrl)
+    clearMessagesSection();
+    getItems('Delete', requestUrl);
 }
 
-function preDeleteItem(requestUrlOfItem) {    
-    $('#modal_title').html('Delete Confirmation');
-    $('#modal_body').html('Are you sure you want to delete this item ?');
-    $('#modal_action_btn').show();
-    $('#modal_action_btn').attr('onclick', `deleteItem(\"${requestUrlOfItem}\")`);
-    $('#modal_action_btn').html('Ok');
+function preDeleteItem(requestUrlOfItem) {
+    showModal({
+        large: false,
+        title: 'Delete Confirmation',
+        body: 'Are you sure you want to delete this item ?',
+        actionBtn: {
+            onclick: `deleteItem(\"${requestUrlOfItem}\")`,
+            label: 'Ok'
+        }
+    });
 }
 
 function deleteItem(requestUrl) {
@@ -278,6 +292,7 @@ function deleteItem(requestUrl) {
 /* ********************************************************************************************************************************** */
 
 function prepareAddFormOf(itemType) {
+    clearMessagesSection();
     switch (itemType) {
         case 'Product':
             createProductAddForm();
@@ -306,11 +321,11 @@ function createProductAddForm() {
                                 </div>
                                 <div class='col-md-6 mb-3'>
                                     <p class='font-weight-bold text-capitalize'>price: </p>
-                                    <input id='price' type='text' class='form-control'>
+                                    <input id='price' type='number' class='form-control'>
                                 </div>
                                 <div class='col-md-6 mb-3'>
                                     <p class='font-weight-bold text-capitalize'>quantity: </p>
-                                    <input id='quantity' type='text' class='form-control'>
+                                    <input id='quantity' type='number' class='form-control'>
                                 </div>
                                 <div class='col-md-6 mb-3'>
                                     <p class='font-weight-bold text-capitalize'>description: </p>
@@ -330,29 +345,31 @@ function createProductAddForm() {
                                 </div>                                  
                             </div>
                             <button onclick='addProduct()' class='form-control btn btn-primary'>Save</button>`;
-        $("#content").html(htmlContent);
+        $('#content').html(htmlContent);
         attachImageChangeListener();
     }, function(errorThrown) {
-        console.error(errorThrown);
+        showMessage(errorThrown, 'danger');
     }).always(function() {
-        removePreloader();
-        clearMessagesSection();
+        removePreloader();        
     });
 }
 
 function createProductClassificationAddForm(requestUrl, type) {
     clearMain();
-    $('#modal_title').html(`Add ${type}`);
-    let modalBody = `<div id='new_product_classification' class='row'>
-                        <div class='col-md-6 mb-3'>
-                            <p class='font-weight-bold text-capitalize'>name: </p>
-                            <input id='product_classification_name' type='text' class='form-control'>
-                        </div>
-                    </div>`;
-    $('#modal_body').html(modalBody);
-    $('#modal_action_btn').attr('onclick', `addProductClassification(\"${requestUrl}\",\"${type}\")`);
-    $('#modal_action_btn').html('Save');
-    $('#modal').modal('show');
+    showModal({
+        large: false,
+        title: `Add ${type}`,
+        body: `<div id='new_product_classification' class='row'>
+                    <div class='col-md-6 mb-3'>
+                        <p class='font-weight-bold text-capitalize'>name: </p>
+                        <input id='product_classification_name' type='text' class='form-control'>
+                    </div>
+                </div>`,
+        actionBtn: {
+            onclick: `addProductClassification(\"${requestUrl}\",\"${type}\")`,
+            label: 'Save'
+        }
+    });
 }
 
 function addProductClassification(requestUrl, type) {
@@ -381,30 +398,22 @@ function addProduct() {
     }
     $.when(sendAuthorizedRequest('/products', POST, JSON.stringify(payload), 'application/json')
     ).then(function(data, textStatus, jqXHR) {
-            let locationHeader = jqXHR.getResponseHeader('Location');
-            let savedProductId = locationHeader.substring(locationHeader.lastIndexOf('/')+1);            
-            let formData = new FormData();
-            formData.append('file', tmpUploadedImage);
-        return $.ajax({
-            url: `/products/${savedProductId}`,
-            type: POST,
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {'Authorization': 'Bearer ' + localStorage.getItem('authToken')}
-        });             
+        let locationHeader = jqXHR.getResponseHeader('Location');
+        let savedProductId = locationHeader.substring(locationHeader.lastIndexOf('/') + 1);  
+        return uploadImageIfAny(savedProductId);                          
     }).done(function(data, textStatus, jqXHR) {
         showMessage('Product added successfully', 'success');
         $('#content').empty();
+        tmpUploadedImage = null;
     }).fail(function(errorThrown) {
         showMessage('Failed to add this product', 'danger');
     }).always(function() {
-        removePreloader();
+        removePreloader();        
     });
 }
 
 function attachImageChangeListener() {
-    $("#image").bind('change', function(event) {
+    $('#image').bind('change', function(event) {
         tmpUploadedImage = event.target.files[0];
     });
 }

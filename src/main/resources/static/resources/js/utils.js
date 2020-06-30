@@ -15,7 +15,7 @@ function showPreloader() {
                                <div></div>
                             </div>
                          </div>`;
-    $('#main').append(preloaderHtml);
+    $('#content').append(preloaderHtml);
 }
 
 function removePreloader() {
@@ -69,6 +69,21 @@ function notSkippedField(field) {
     return !SKIPPED_FIELDS.includes(field);
 }
 
+function showModal(configs) {
+    if (configs.large) {
+        $(".modal-dialog").addClass("modal-xl");
+    }
+    $('#modal_title').html(configs.title);
+    $('#modal_body').html(configs.body);
+    if (configs.actionBtn == null) {
+        $('#modal_action_btn').hide();
+    } else {
+        $('#modal_action_btn').attr('onclick', configs.actionBtn.onclick);
+        $('#modal_action_btn').html(configs.actionBtn.label);
+    }
+    $('#modal').modal('show');    
+}
+
 function hideModal() {
     $('#modal').modal('hide');
 }
@@ -83,5 +98,15 @@ function resetModal() {
     $('#modal_body').html('');
     $('#modal_action_btn').removeAttr('onclick');
     $('#modal_action_btn').html('');
+    $('#modal_action_btn').show();
+}
+
+function showDataNotFound() {
+    if ($("#items_container").length == 0) {
+        $("#content").append(`<div id='items_container'><p class="font-weight-bold text-center">data not found ...!!</p></div>`);
+    } else {
+        $("#items_container").html(`<p class="font-weight-bold text-center">data not found ...!!</p>`);
+    }
+    
 }
 

@@ -1,66 +1,72 @@
 function getItems(itemAction, requestUrl) {
     showPreloader();
-    $("#items_container").html('');
+    $('#items_container').html('');
     sendAuthorizedRequest(requestUrl, GET)
     .done(function (data, textStatus, jqXHR) {
         let itemsJson = data.items;
-        let itemsHtml = `<div class='row'>`;
-        for (var index = 0; index < itemsJson.length; index++) {
-            let item = itemsJson[index];
-            let itemActionButton = "";
-            if (requestUrl.includes("users")) {
-                itemActionButton += `<button id='user_${item.id}' type='button' class='btn btn-sm btn-warning' onclick='changeUserState(${item.id},${!item.active})'>${item.active ? itemAction[1] : itemAction[0]}</button>`;
-            } else {
-                switch (itemAction) {
-                    case "Edit":
-                        itemActionButton += `<button type='button' class='btn btn-sm btn-warning' onclick='preEditItem("${requestUrl.substring(0, requestUrl.lastIndexOf('?'))}/${item.id}")'>${itemAction}</button>`;
-                        break;
-                    case "Delete":
-                        itemActionButton += `<button type='button' class='btn btn-sm btn-danger' data-toggle='modal' data-target='#modal' onclick='preDeleteItem("${requestUrl.substring(0, requestUrl.lastIndexOf('?'))}/${item.id}")'>${itemAction}</button>`;
-                        break;
+        if (itemsJson != null) {
+            let itemsHtml = `<div class='row'>`;
+            for (var index = 0; index < itemsJson.length; index++) {
+                let item = itemsJson[index];
+                let itemActionButton = '';
+                if (requestUrl.includes('users')) {
+                    itemActionButton += `<button id='user_${item.id}' type='button' class='btn btn-sm btn-warning' onclick='changeUserState(${item.id},${!item.active})'>${item.active ? itemAction[1] : itemAction[0]}</button>`;
+                } else {
+                    switch (itemAction) {
+                        case 'Edit':
+                            itemActionButton += `<button type='button' class='btn btn-sm btn-warning' onclick='preEditItem("${requestUrl.substring(0, requestUrl.lastIndexOf('?'))}/${item.id}")'>${itemAction}</button>`;
+                            break;
+                        case 'Delete':
+                            itemActionButton += `<button type='button' class='btn btn-sm btn-danger' onclick='preDeleteItem("${requestUrl.substring(0, requestUrl.lastIndexOf('?'))}/${item.id}")'>${itemAction}</button>`;
+                            break;
+                    }
                 }
-            }
-
-            let viewDetailsBtn = !requestUrl.includes('vendors') && !requestUrl.includes('categories') ?
-                    `<button type='button' class='btn btn-sm btn-secondary' onclick='getDetails("${requestUrl.substring(0, requestUrl.lastIndexOf('?'))}/${item.id}")'>View</button>`
-                    :
-                    "";
-            itemsHtml += `<div class='col-md-4'>
-                            <div class='card mb-4 shadow-sm'>
-                                <div class='card-body'>
-                                    <p class='card-text text-center'>${item.name}</p>
-                                        <div class='d-flex justify-content-between align-items-center'>
-                                            <div class='btn-group'>
-                                                ${viewDetailsBtn}
-                                                ${itemActionButton}
+    
+                let viewDetailsBtn = !requestUrl.includes('vendors') && !requestUrl.includes('categories') ?
+                        `<button type='button' class='btn btn-sm btn-secondary' onclick='getDetails("${requestUrl.substring(0, requestUrl.lastIndexOf('?'))}/${item.id}")'>View</button>`
+                        :
+                        '';
+                itemsHtml += `<div class='col-md-4'>
+                                <div class='card mb-4 shadow-sm'>
+                                    <div class='card-body'>
+                                        <p class='card-text text-center'>${item.name}</p>
+                                            <div class='d-flex justify-content-between align-items-center'>
+                                                <div class='btn-group'>
+                                                    ${viewDetailsBtn}
+                                                    ${itemActionButton}
+                                                </div>
                                             </div>
-                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>`;
-        }
-        itemsHtml += "</div>";
-        let finalContent, paginator;        
-        if ($("#items_container").length == 0 && $("#paginator").length == 0) {
-            finalContent = `<div id='items_container'>${itemsHtml}</div>`;
-            paginator = createPaginator(data.allSavedItemsCount, requestUrl, itemAction);            
-            finalContent += `${paginator}`;
-            $("#content").html(finalContent); 
-        } else if ($("#paginator").length == 0) {
-            $("#items_container").html(itemsHtml);
-            $("#content").append(createPaginator(data.allSavedItemsCount, requestUrl, itemAction));
+                            </div>`;
+            }
+            itemsHtml += "</div>";
+            if ($("#items_container").length == 0 && $("#paginator").length == 0) {
+                let finalContent = `<div id='items_container'>${itemsHtml}</div>`;
+                let paginator = createPaginator(data.allSavedItemsCount, requestUrl, itemAction);            
+                finalContent += `${paginator}`; 
+                if ($('#products_search_bar').length == 0) {
+                    $("#content").html(finalContent); 
+                } else {
+                    $("#content").append(finalContent); 
+                }                
+            } else if ($("#paginator").length == 0) {
+                $("#items_container").html(itemsHtml);
+                $("#content").append(createPaginator(data.allSavedItemsCount, requestUrl, itemAction));
+            } else {
+                $("#items_container").html(itemsHtml);
+            }  
         } else {
-            $("#items_container").html(itemsHtml);
-        }               
+            showDataNotFound();
+        }                     
     }).fail(function (jqXHR, textStatus, errorThrown) {
         showMessage('Failed to fetch data', 'danger');
     }).always(function() {
-        removePreloader();
-        clearMessagesSection();
+        removePreloader();        
     });
 }
 
-function getProductDetails(requestUrl) {
+function getProductDetails(requestUrl) {    
     sendAuthorizedRequest(requestUrl, GET)
     .then(function(data, textStatus, jqXHR) {
             return $.when(sendAuthorizedRequest('/vendors/' + data.vendorId, GET),
@@ -92,16 +98,15 @@ function getProductDetails(requestUrl) {
             }
             itemDetailsHtml += `    <img id='image_of_product' src='${imageSrc}' width='500' height='333'>
                                 </div>`;
-        $(".modal-dialog").addClass("modal-xl");
-        $('#modal_title').html(`View product details`);
-        $('#modal_body').html(itemDetailsHtml);
-        $('#modal_action_btn').hide();
-        $('#modal').modal('show'); 
+        showModal({
+            large: true,
+            title: 'View product details',
+            body: itemDetailsHtml
+        });
     }, function(errorThrown) {
         showMessage('Failed to load the details', 'danger');
     }).always(function() {
-        removePreloader();
-        clearMessagesSection();
+        removePreloader();        
     });
 }
 
@@ -115,20 +120,20 @@ function getUserDetails(requestUrl) {
             }
         });
         itemDetailsHtml += `</div>`;
-        $(".modal-dialog").addClass("modal-xl");
-        $('#modal_title').html(`View user details`);
-        $('#modal_body').html(itemDetailsHtml);
-        $('#modal_action_btn').hide();
-        $('#modal').modal('show'); 
+        showModal({
+            large: true,
+            title: 'View user details',
+            body: itemDetailsHtml
+        });
     }).fail(function (jqXHR, textStatus, errorThrown) {
         showMessage('Failed to load the details', 'danger');
     }).always(function() { 
         removePreloader();
-        clearMessagesSection();
     });
 }
 
 function getDetails(requestUrl) {
+    clearMessagesSection();
     showPreloader();
     if (requestUrl.includes("products")) {
         getProductDetails(requestUrl);
