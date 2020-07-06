@@ -1,33 +1,21 @@
-package com.cairoshop.service.impl;
+package com.cairoshop.services;
 
-import java.lang.reflect.Method;
-
-import org.springframework.transaction.annotation.Transactional;
-
-import com.cairoshop.persistence.repositories.BaseRepository;
-import com.cairoshop.service.BaseService;
-import com.cairoshop.service.exceptions.DataNotDeletedException;
-
-/* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
- * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
- * GitHub       : https://github.com/muhamed-hassan                         *
- * ************************************************************************ */
-public class BaseServiceImpl<NDTO, SDDTO, SBDTO, T>
-                extends BaseCommonServiceImpl<SDDTO, SBDTO, T>
-                implements BaseService<NDTO, SDDTO, SBDTO, T> {
+public class BaseServiceTest<NDTO, SDDTO, SBDTO, T> extends BaseCommonServiceTest<SDDTO, SBDTO, T> {
 
     private Class<T> entityClass;
 
-    public BaseServiceImpl(Class<T> entityClass, Class<SDDTO> savedDetailedDtoClass) {
+    public BaseServiceTest(Class<T> entityClass, Class<SDDTO> savedDetailedDtoClass) {
         super(savedDetailedDtoClass);
         this.entityClass = entityClass;
     }
 
+    /*
+
+
     @Transactional
     @Override
     public int add(NDTO ndto) {
-        int id = -1;
+        Integer id = -1;
         try {
             T entity = entityClass.getDeclaredConstructor().newInstance();
             Method[] dtoMethods = ndto.getClass().getMethods();
@@ -41,7 +29,7 @@ public class BaseServiceImpl<NDTO, SDDTO, SBDTO, T>
             }
             entity.getClass().getMethod("setActive", boolean.class).invoke(entity, true);
             entity = getRepository().save(entity);
-            id = (int) entity.getClass().getMethod("getId").invoke(entity);
+            id = (Integer) entity.getClass().getMethod("getId").invoke(entity);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -56,5 +44,5 @@ public class BaseServiceImpl<NDTO, SDDTO, SBDTO, T>
             throw new DataNotDeletedException();
         }
     }
-
+    * */
 }
