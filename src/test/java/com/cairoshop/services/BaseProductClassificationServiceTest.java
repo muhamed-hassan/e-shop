@@ -14,6 +14,11 @@ import com.cairoshop.persistence.repositories.BaseProductClassificationRepositor
 import com.cairoshop.service.BaseProductClassificationService;
 import com.cairoshop.web.dtos.SavedBriefVendorDTO;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 public class BaseProductClassificationServiceTest<NDTO, SDDTO, SBDTO, T>
         extends BaseServiceTest<SDDTO, SBDTO, T> {
 

@@ -15,6 +15,11 @@ import com.cairoshop.persistence.repositories.BaseRepository;
 import com.cairoshop.service.BaseService;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 public class BaseServiceTest<SDDTO, SBDTO, T> extends BaseCommonServiceTest<SDDTO, T> {
 
     protected BaseServiceTest(Class<T> entityClass, Class<SDDTO> sddtoClass) {

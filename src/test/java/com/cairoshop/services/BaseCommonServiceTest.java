@@ -10,6 +10,11 @@ import java.util.Optional;
 import com.cairoshop.persistence.repositories.BaseCommonRepository;
 import com.cairoshop.service.impl.BaseCommonServiceImpl;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 public class BaseCommonServiceTest<SDDTO, T> {
 
     private Class<SDDTO> sddtoClass;

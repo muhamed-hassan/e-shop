@@ -27,6 +27,11 @@ import com.cairoshop.web.dtos.SavedBriefCustomerDTO;
 import com.cairoshop.web.dtos.SavedDetailedCustomerDTO;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest
         extends BaseCommonServiceTest<SavedDetailedCustomerDTO, User> {

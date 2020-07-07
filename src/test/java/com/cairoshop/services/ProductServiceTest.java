@@ -29,6 +29,11 @@ import com.cairoshop.web.dtos.SavedDetailedProductDTO;
 import com.cairoshop.web.dtos.SavedImageStream;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest
                 extends BaseServiceTest<SavedDetailedProductDTO, SavedBriefProductDTO, Product> {
