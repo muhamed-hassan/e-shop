@@ -1,7 +1,8 @@
 package com.cairoshop.service;
 
+import java.util.Map;
+
 import com.cairoshop.persistence.entities.User;
-import com.cairoshop.web.dtos.NewCustomerStateDTO;
 import com.cairoshop.web.dtos.SavedBriefCustomerDTO;
 import com.cairoshop.web.dtos.SavedDetailedCustomerDTO;
 import com.cairoshop.web.dtos.SavedItemsDTO;
@@ -13,8 +14,8 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * ************************************************************************ */
 public interface UserService extends BaseCommonService<SavedDetailedCustomerDTO, SavedBriefCustomerDTO, User> {
 
-   void edit(NewCustomerStateDTO newCustomerStateDTO);
+   void edit(int id, Map<String, String> newStatus);
 
-   SavedItemsDTO<SavedBriefCustomerDTO> findAllCustomers(int startPosition, String sortBy, String sortDirection);
+   SavedItemsDTO<SavedBriefCustomerDTO> getAllCustomers(int startPosition, String sortBy, String sortDirection);
 
 }

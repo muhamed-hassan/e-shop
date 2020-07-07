@@ -23,7 +23,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     @Override
     public List<SavedBriefCustomerDTO> findAllCustomers(int startPosition, int pageSize, String sortBy, String sortDirection) {
         StringBuilder query = new StringBuilder()
-            .append("SELECT u.id, u.name ")
+            .append("SELECT u.id, u.name, u.active ")
             .append("FROM user u INNER JOIN role r ON (u.role = r.id AND r.name = :role) ")
             .append("ORDER BY ").append(sortBy).append(" ").append(sortDirection);
         return ((List<Object[]>) entityManager.createNativeQuery(query.toString())
@@ -32,7 +32,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
                                                 .setFirstResult(startPosition)
                                                 .getResultList())
                                                 .stream()
-                                                .map(record -> new SavedBriefCustomerDTO((Integer) record[0], (String) record[1], true))
+                                                .map(record -> new SavedBriefCustomerDTO((Integer) record[0], (String) record[1], (Boolean) record[2]))
                                                 .collect(Collectors.toList());
     }
 

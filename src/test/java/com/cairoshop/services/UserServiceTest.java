@@ -1,43 +1,101 @@
 package com.cairoshop.services;
 
-public class UserServiceTest /*extends BaseCommonServiceTest*/ {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-    /*
-    * @Autowired
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.cairoshop.persistence.entities.User;
+import com.cairoshop.persistence.repositories.UserRepository;
+import com.cairoshop.service.impl.UserServiceImpl;
+import com.cairoshop.web.dtos.SavedBriefCustomerDTO;
+import com.cairoshop.web.dtos.SavedDetailedCustomerDTO;
+import com.cairoshop.web.dtos.SavedItemsDTO;
+
+@ExtendWith(MockitoExtension.class)
+public class UserServiceTest
+        extends BaseCommonServiceTest<SavedDetailedCustomerDTO, SavedBriefCustomerDTO, User> {
+
+    @Mock
     private UserRepository userRepository;
 
-    public UserServiceImpl() {
-        super(SavedDetailedCustomerDTO.class);
+    @InjectMocks
+    private UserServiceImpl userService;
+
+    protected UserServiceTest() {
+        super(User.class, SavedDetailedCustomerDTO.class);
     }
 
-    @PostConstruct
+    @BeforeEach
     public void injectRefs() {
-        setRepos(userRepository);
+        injectRefs(userRepository, userService);
     }
 
-    @Transactional
-    @Override
-    public void edit(NewCustomerStateDTO newCustomerStateDTO) {
-        int affectedRows = userRepository.update(newCustomerStateDTO.getId(), newCustomerStateDTO.isActive());
-        if (affectedRows == 0) {
-            throw new DataNotUpdatedException();
-        }
+    @Test
+    public void testGetById_WhenDataFound_ThenReturnIt() throws Exception {
+        SavedDetailedCustomerDTO savedDetailedCustomerDTO = new SavedDetailedCustomerDTO(1, "name", true, "username", "email", "phone", "address");
+        testGetById_WhenDataFound_ThenReturnIt(savedDetailedCustomerDTO, List.of("getId", "getName", "isActive", "getUsername", "getEmail", "getPhone", "getAddress"));
     }
 
-    @Override
-    public SavedItemsDTO<SavedBriefCustomerDTO> findAllCustomers(int startPosition, String sortBy, String sortDirection) {
-        List<SavedBriefCustomerDTO> page = userRepository.findAllCustomers(startPosition, Constants.MAX_PAGE_SIZE, sortBy, sortDirection);
-        int countOfAllCustomers = userRepository.countAllCustomers();
-        SavedItemsDTO<SavedBriefCustomerDTO> savedBriefCustomerDTOSavedItemsDTO = new SavedItemsDTO<>();
-        savedBriefCustomerDTOSavedItemsDTO.setItems(page);
-        savedBriefCustomerDTOSavedItemsDTO.setAllSavedItemsCount(countOfAllCustomers);
-        return savedBriefCustomerDTOSavedItemsDTO;
+    @Test
+    public void testGetAllCustomersByPage_WhenDataFound_ThenReturnIt() {
+        SavedBriefCustomerDTO savedBriefCustomerDTO = new SavedBriefCustomerDTO(1, "name", true);
+        List<SavedBriefCustomerDTO> page = List.of(savedBriefCustomerDTO);
+        when(userRepository.findAllCustomers(any(int.class), any(int.class), anyString(), anyString()))
+            .thenReturn(page);
+        int countOfAllCustomers = 1;
+        when(userRepository.countAllCustomers())
+            .thenReturn(countOfAllCustomers);
+        SavedItemsDTO<SavedBriefCustomerDTO> expectedResult = new SavedItemsDTO<>();
+        expectedResult.setItems(page);
+        expectedResult.setAllSavedItemsCount(countOfAllCustomers);
+
+        SavedItemsDTO<SavedBriefCustomerDTO> actualResult = userService.getAllCustomers(0, "name", "ASC");
+
+        assertEquals(expectedResult.getAllSavedItemsCount(), actualResult.getAllSavedItemsCount());
+        assertIterableEquals(expectedResult.getItems(), actualResult.getItems());
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username)
-                                .orElseThrow(() -> new UsernameNotFoundException(MessageFormat.format("This user name {0} does not exist", username)));
+    @Test
+    public void testEdit_WhenDataIsValid_ThenSave() throws Exception {
+        int id = 1;
+        Map<String, String> newStatus = Map.of("status", "true");
+        int affectedRows = 1;
+        when(userRepository.update(id, Boolean.valueOf(newStatus.get("status"))))
+            .thenReturn(affectedRows);
+
+        userService.edit(id, newStatus);
+
+        verify(userRepository, times(1)).update(id, Boolean.valueOf(newStatus.get("status")));
     }
-    * */
+
+    @Test
+    public void testLoadUserByUsername_WhenDataFound_ThenReturnIt() throws Exception {
+        String username = "username";
+        User user = new User();
+        user.setUsername(username);
+        Optional<User> expectedResult = Optional.of(user);
+        when(userRepository.findByUsername(anyString()))
+            .thenReturn(expectedResult);
+
+        UserDetails actualResult = userService.loadUserByUsername(username);
+
+        assertEquals(username, actualResult.getUsername());
+    }
+
 }

@@ -84,8 +84,7 @@ function prepareEditItemsOfUsers(requestUrl) {
 
 function changeUserState(id, inversedState) {
     showPreloader();
-    let payload = {'id': id, active: inversedState};
-    sendAuthorizedRequest('/users', PATCH, JSON.stringify(payload), 'application/json')
+    sendAuthorizedRequest(`/users/${id}`, PATCH, JSON.stringify({status: inversedState}), 'application/json')
     .done(function (data, textStatus, jqXHR) {        
         let elementId = `#user_${id}`;
         if ($(elementId).text() == ACTIVATE) {

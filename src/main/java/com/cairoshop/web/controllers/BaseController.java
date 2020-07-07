@@ -71,7 +71,7 @@ public class BaseController<NDTO, SDDTO, SBDTO, T> extends BaseCommonController<
         @RequestParam("start-position") @Min(value = 0, message = "min start-position is 0") int startPosition,
         @RequestParam("sort-by") @NotBlank(message = "sort-by field is required") String sortBy,
         @RequestParam("sort-direction") @Pattern(regexp = "^(ASC|DESC)$", message = "allowed values for sort-direction are DESC or ASC") String sortDirection) {
-        return ResponseEntity.ok(getService().getAll(startPosition, sortBy, sortDirection));
+        return ResponseEntity.ok(((BaseService) getService()).getAll(startPosition, sortBy, sortDirection));
     }
 
 }
