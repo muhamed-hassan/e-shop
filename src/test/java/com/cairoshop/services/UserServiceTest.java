@@ -29,7 +29,7 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest
-        extends BaseCommonServiceTest<SavedDetailedCustomerDTO, SavedBriefCustomerDTO, User> {
+        extends BaseCommonServiceTest<SavedDetailedCustomerDTO, User> {
 
     @Mock
     private UserRepository userRepository;

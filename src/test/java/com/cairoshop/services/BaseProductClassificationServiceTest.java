@@ -15,7 +15,7 @@ import com.cairoshop.service.BaseProductClassificationService;
 import com.cairoshop.web.dtos.SavedBriefVendorDTO;
 
 public class BaseProductClassificationServiceTest<NDTO, SDDTO, SBDTO, T>
-        extends BaseServiceTest<NDTO, SDDTO, SBDTO, T> {
+        extends BaseServiceTest<SDDTO, SBDTO, T> {
 
     protected BaseProductClassificationServiceTest(Class<T> entityClass, Class<SDDTO> sddtoClass) {
         super(entityClass, sddtoClass);

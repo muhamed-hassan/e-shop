@@ -10,7 +10,7 @@ import java.util.Optional;
 import com.cairoshop.persistence.repositories.BaseCommonRepository;
 import com.cairoshop.service.impl.BaseCommonServiceImpl;
 
-public class BaseCommonServiceTest<SDDTO, SBDTO, T> {
+public class BaseCommonServiceTest<SDDTO, T> {
 
     private Class<SDDTO> sddtoClass;
     private Class<T> entityClass;

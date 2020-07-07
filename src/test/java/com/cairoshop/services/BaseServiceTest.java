@@ -15,7 +15,7 @@ import com.cairoshop.persistence.repositories.BaseRepository;
 import com.cairoshop.service.BaseService;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
-public class BaseServiceTest<NDTO, SDDTO, SBDTO, T> extends BaseCommonServiceTest<SDDTO, SBDTO, T> {
+public class BaseServiceTest<SDDTO, SBDTO, T> extends BaseCommonServiceTest<SDDTO, T> {
 
     protected BaseServiceTest(Class<T> entityClass, Class<SDDTO> sddtoClass) {
         super(entityClass, sddtoClass);

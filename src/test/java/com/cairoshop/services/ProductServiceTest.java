@@ -30,7 +30,8 @@ import com.cairoshop.web.dtos.SavedImageStream;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
 @ExtendWith(MockitoExtension.class)
-public class ProductServiceTest extends BaseServiceTest<NewProductDTO, SavedDetailedProductDTO, SavedBriefProductDTO, Product> {
+public class ProductServiceTest
+                extends BaseServiceTest<SavedDetailedProductDTO, SavedBriefProductDTO, Product> {
 
     @Mock
     private ProductRepository productRepository;
