@@ -48,7 +48,7 @@ public class ProductServiceImpl
     @Transactional
     @Override
     public int add(NewProductDTO newProductDTO) {
-        Integer id = -1;
+        int id = -1;
         try {
             Product product = new Product();
             product.setName(newProductDTO.getName());

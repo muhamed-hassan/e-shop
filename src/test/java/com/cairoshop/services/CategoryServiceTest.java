@@ -1,58 +1,31 @@
 package com.cairoshop.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import javax.annotation.PostConstruct;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.provider.Arguments;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
 
 import com.cairoshop.persistence.entities.Category;
-import com.cairoshop.persistence.entities.Category;
-import com.cairoshop.persistence.entities.Category;
-import com.cairoshop.persistence.repositories.CategoryRepository;
 import com.cairoshop.persistence.repositories.CategoryRepository;
 import com.cairoshop.service.impl.CategoryServiceImpl;
-import com.cairoshop.service.impl.CategoryServiceImpl;
-import com.cairoshop.web.dtos.NewCategoryDTO;
-import com.cairoshop.web.dtos.NewCategoryDTO;
 import com.cairoshop.web.dtos.NewCategoryDTO;
 import com.cairoshop.web.dtos.SavedBriefCategoryDTO;
-import com.cairoshop.web.dtos.SavedBriefCategoryDTO;
-import com.cairoshop.web.dtos.SavedBriefCategoryDTO;
-import com.cairoshop.web.dtos.SavedBriefVendorDTO;
 import com.cairoshop.web.dtos.SavedDetailedCategoryDTO;
-import com.cairoshop.web.dtos.SavedDetailedCategoryDTO;
-import com.cairoshop.web.dtos.SavedDetailedCategoryDTO;
-import com.cairoshop.web.dtos.SavedDetailedVendorDTO;
-import com.cairoshop.web.dtos.SavedItemsDTO;
-
 
 @ExtendWith(MockitoExtension.class)
-public class CategoryServiceTest extends BaseProductClassificationServiceTest<NewCategoryDTO, SavedDetailedCategoryDTO, SavedBriefCategoryDTO, Category> {
+public class CategoryServiceTest
+        extends BaseProductClassificationServiceTest<NewCategoryDTO, SavedDetailedCategoryDTO, SavedBriefCategoryDTO, Category> {
 
     @Mock
     private CategoryRepository categoryRepository;
 
     @InjectMocks
     private CategoryServiceImpl categoryService;
+
     public CategoryServiceTest() {
         super(Category.class, SavedDetailedCategoryDTO.class);
     }
@@ -63,33 +36,39 @@ public class CategoryServiceTest extends BaseProductClassificationServiceTest<Ne
     }
 
     @Test
-    public void testAdd() throws Exception {
+    public void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId() throws Exception {
         NewCategoryDTO newCategoryDTO = new NewCategoryDTO();
         newCategoryDTO.setName("Tablets");
-        testAdd(newCategoryDTO);
+        testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(newCategoryDTO);
     }
 
     @Test
-    public void testEdit() throws Exception {
+    public void testEdit_WhenDataIsValid_ThenSave() throws Exception {
         SavedDetailedCategoryDTO savedDetailedCategoryDTO = new SavedDetailedCategoryDTO(1, "Mobiles", true);
-        testEdit(savedDetailedCategoryDTO);
+        testEdit_WhenDataIsValid_ThenSave(savedDetailedCategoryDTO);
     }
 
     @Test
-    public void testRemoveById() {
-        super.testRemoveById();
-    }
-    @Test
-    public void testGetById() throws Exception {
+    public void testGetById_WhenDataFound_ThenReturnIt() throws Exception {
         SavedDetailedCategoryDTO savedDetailedCategoryDTO = new SavedDetailedCategoryDTO(1, "Mobiles", true);
-        testGetById(savedDetailedCategoryDTO);
+        testGetById_WhenDataFound_ThenReturnIt(savedDetailedCategoryDTO, List.of("getId", "getName", "isActive"));
     }
 
     @Test
-    public void testGetAllByPage() {
+    public void testGetAllByPage_WhenDataFound_ThenReturnIt() {
         SavedBriefCategoryDTO savedBriefCategoryDTO = new SavedBriefCategoryDTO(1, "Mobiles", true);
-        testGetAllByPage(savedBriefCategoryDTO);
+        testGetAllByPage_WhenDataFound_ThenReturnIt(savedBriefCategoryDTO);
     }
 
+    @Test
+    public void testGetAll_WhenDataFound_ThenReturnIt() {
+        SavedBriefCategoryDTO savedBriefCategoryDTO = new SavedBriefCategoryDTO(1, "Mobiles", true);
+        testGetAll_WhenDataFound_ThenReturnIt(savedBriefCategoryDTO);
+    }
+
+    @Test
+    public void testRemoveById_WhenDataFound_ThenReturnIt() {
+        super.testRemoveById_WhenDataFound_ThenRemoveIt();
+    }
 
 }

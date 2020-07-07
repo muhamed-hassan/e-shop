@@ -1,48 +1,94 @@
 package com.cairoshop.services;
 
-public class BaseServiceTest<NDTO, SDDTO, SBDTO, T> extends BaseCommonServiceTest<SDDTO, SBDTO, T> {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.PageRequest;
+
+import com.cairoshop.persistence.repositories.BaseCommonRepository;
+import com.cairoshop.persistence.repositories.BaseRepository;
+import com.cairoshop.service.BaseService;
+import com.cairoshop.service.impl.BaseCommonServiceImpl;
+import com.cairoshop.web.dtos.SavedItemsDTO;
+
+public class BaseServiceTest<NDTO, SDDTO, SBDTO, T> /*extends BaseCommonServiceTest<SDDTO, SBDTO, T>*/ {
+
+    private Class<SDDTO> sddtoClass;
     private Class<T> entityClass;
 
-    public BaseServiceTest(Class<T> entityClass, Class<SDDTO> savedDetailedDtoClass) {
-        super(savedDetailedDtoClass);
+    private BaseCommonRepository baseCommonRepository;
+    private BaseCommonServiceImpl baseCommonService;
+
+    protected BaseServiceTest(Class<T> entityClass, Class<SDDTO> sddtoClass) {
         this.entityClass = entityClass;
+        this.sddtoClass = sddtoClass;
     }
 
-    /*
-
-
-    @Transactional
-    @Override
-    public int add(NDTO ndto) {
-        Integer id = -1;
-        try {
-            T entity = entityClass.getDeclaredConstructor().newInstance();
-            Method[] dtoMethods = ndto.getClass().getMethods();
-            for (Method method : dtoMethods) {
-                String methodName = method.getName();
-                if (methodName.startsWith("get") && !methodName.equals("getClass")) {
-                    Object valueFromDto = method.invoke(ndto);
-                    String setterNameFromEntity = methodName.replace("get", "set");
-                    entity.getClass().getMethod(setterNameFromEntity, method.getReturnType()).invoke(entity, valueFromDto);
-                }
-            }
-            entity.getClass().getMethod("setActive", boolean.class).invoke(entity, true);
-            entity = getRepository().save(entity);
-            id = (Integer) entity.getClass().getMethod("getId").invoke(entity);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return id;
+    protected void injectRefs(BaseCommonRepository baseCommonRepository, BaseCommonServiceImpl baseCommonService) {
+        this.baseCommonRepository = baseCommonRepository;
+        this.baseCommonService = baseCommonService;
     }
 
-    @Transactional
-    @Override
-    public void removeById(int id) {
-        int affectedRows = ((BaseRepository)getRepository()).softDeleteById(id);
-        if (affectedRows == 0) {
-            throw new DataNotDeletedException();
+    public Class<T> getEntityClass() {
+        return entityClass;
+    }
+
+    public Class<SDDTO> getSavedDetailedDtoClass() {
+        return sddtoClass;
+    }
+
+    protected BaseCommonRepository getRepository() {
+        return baseCommonRepository;
+    }
+
+    protected BaseCommonServiceImpl getService() {
+        return baseCommonService;
+    }
+
+    protected void testGetById_WhenDataFound_ThenReturnIt(SDDTO sddto, List<String> getters) throws Exception {
+        Optional<SDDTO> expectedResult = Optional.of(sddto);
+        when(getRepository().findById(any(int.class), any(getSavedDetailedDtoClass().getClass())))
+            .thenReturn(expectedResult);
+
+        SDDTO actualResult = (SDDTO) getService().getById(1);
+
+        for (String getter : getters) {
+            assertEquals(expectedResult.get().getClass().getMethod(getter).invoke(sddto), actualResult.getClass().getMethod(getter).invoke(actualResult));
         }
     }
-    * */
+
+    protected void testGetAllByPage_WhenDataFound_ThenReturnIt(SBDTO sbdto) {
+        List<SBDTO> page = List.of(sbdto);
+        when(getRepository().findAllBy(any(PageRequest.class)))
+            .thenReturn(page);
+        when(getRepository().count())
+            .thenReturn(1L);
+        SavedItemsDTO<SBDTO> expectedResult = new SavedItemsDTO<>();
+        expectedResult.setItems(page);
+        expectedResult.setAllSavedItemsCount(1);
+
+        SavedItemsDTO<SBDTO> actualResult = getService().getAll(0, "name", "ASC");
+
+        assertEquals(expectedResult.getAllSavedItemsCount(), actualResult.getAllSavedItemsCount());
+        assertIterableEquals(expectedResult.getItems(), actualResult.getItems());
+    }
+
+    protected void testRemoveById_WhenDataFound_ThenRemoveIt() {
+        int idOfObjectToDelete = 1;
+        int affectedRows = 1;
+        when(((BaseRepository) getRepository()).softDeleteById(idOfObjectToDelete))
+            .thenReturn(affectedRows);
+
+        ((BaseService) getService()).removeById(idOfObjectToDelete);
+
+        verify(((BaseRepository) getRepository()), times(1)).softDeleteById(idOfObjectToDelete);
+    }
+
 }
