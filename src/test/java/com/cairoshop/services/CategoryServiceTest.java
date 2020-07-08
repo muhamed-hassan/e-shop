@@ -12,9 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.cairoshop.persistence.entities.Category;
 import com.cairoshop.persistence.repositories.CategoryRepository;
 import com.cairoshop.service.impl.CategoryServiceImpl;
-import com.cairoshop.web.dtos.NewCategoryDTO;
-import com.cairoshop.web.dtos.SavedBriefCategoryDTO;
-import com.cairoshop.web.dtos.SavedDetailedCategoryDTO;
+import com.cairoshop.web.dtos.CategoryInBriefDTO;
+import com.cairoshop.web.dtos.CategoryInDetailDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -23,7 +22,7 @@ import com.cairoshop.web.dtos.SavedDetailedCategoryDTO;
  * ************************************************************************ */
 @ExtendWith(MockitoExtension.class)
 public class CategoryServiceTest
-        extends BaseProductClassificationServiceTest<NewCategoryDTO, SavedDetailedCategoryDTO, SavedBriefCategoryDTO, Category> {
+        extends BaseProductClassificationServiceTest<CategoryInDetailDTO, CategoryInBriefDTO, Category> {
 
     @Mock
     private CategoryRepository categoryRepository;
@@ -32,7 +31,7 @@ public class CategoryServiceTest
     private CategoryServiceImpl categoryService;
 
     public CategoryServiceTest() {
-        super(Category.class, SavedDetailedCategoryDTO.class);
+        super(Category.class, CategoryInDetailDTO.class);
     }
 
     @BeforeEach
@@ -42,33 +41,32 @@ public class CategoryServiceTest
 
     @Test
     public void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId() throws Exception {
-        NewCategoryDTO newCategoryDTO = new NewCategoryDTO();
-        newCategoryDTO.setName("Tablets");
-        testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(newCategoryDTO);
+        CategoryInDetailDTO categoryInDetailDTO = new CategoryInDetailDTO("Tablets");
+        testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(categoryInDetailDTO);
     }
 
     @Test
     public void testEdit_WhenDataIsValid_ThenSave() throws Exception {
-        SavedDetailedCategoryDTO savedDetailedCategoryDTO = new SavedDetailedCategoryDTO(1, "Mobiles", true);
-        testEdit_WhenDataIsValid_ThenSave(savedDetailedCategoryDTO);
+        CategoryInDetailDTO savedDetailedCategoryDTO = new CategoryInDetailDTO("Mobiles");
+        testEdit_WhenDataIsValid_ThenSave(1, savedDetailedCategoryDTO);
     }
 
     @Test
     public void testGetById_WhenDataFound_ThenReturnIt() throws Exception {
-        SavedDetailedCategoryDTO savedDetailedCategoryDTO = new SavedDetailedCategoryDTO(1, "Mobiles", true);
-        testGetById_WhenDataFound_ThenReturnIt(savedDetailedCategoryDTO, List.of("getId", "getName", "isActive"));
+        CategoryInDetailDTO savedDetailedCategoryDTO = new CategoryInDetailDTO("Mobiles");
+        testGetById_WhenDataFound_ThenReturnIt(savedDetailedCategoryDTO, List.of("getName"));
     }
 
     @Test
     public void testGetAllByPage_WhenDataFound_ThenReturnIt() {
-        SavedBriefCategoryDTO savedBriefCategoryDTO = new SavedBriefCategoryDTO(1, "Mobiles", true);
-        testGetAllByPage_WhenDataFound_ThenReturnIt(savedBriefCategoryDTO);
+        CategoryInBriefDTO categoryInBriefDTO = new CategoryInBriefDTO(2, "Mobiles");
+        testGetAllByPage_WhenDataFound_ThenReturnIt(categoryInBriefDTO);
     }
 
     @Test
     public void testGetAll_WhenDataFound_ThenReturnIt() {
-        SavedBriefCategoryDTO savedBriefCategoryDTO = new SavedBriefCategoryDTO(1, "Mobiles", true);
-        testGetAll_WhenDataFound_ThenReturnIt(savedBriefCategoryDTO);
+        CategoryInBriefDTO categoryInBriefDTO = new CategoryInBriefDTO(2, "Mobiles");
+        testGetAll_WhenDataFound_ThenReturnIt(categoryInBriefDTO);
     }
 
     @Test

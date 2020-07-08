@@ -7,10 +7,11 @@ import java.util.List;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public interface BaseProductClassificationService<NDTO, SDDTO, SBDTO, T> extends BaseService<NDTO, SDDTO, SBDTO, T>{
+public interface BaseProductClassificationService<DDTO, BDTO>
+            extends BaseService<DDTO, BDTO> {
 
-    void edit(SDDTO sddto);
+    void edit(int id, DDTO ddto);
 
-    List<SBDTO> getAll();
+    List<BDTO> getAll();
 
 }

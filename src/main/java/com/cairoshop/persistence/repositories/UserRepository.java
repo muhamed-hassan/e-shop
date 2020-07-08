@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.cairoshop.persistence.entities.User;
-import com.cairoshop.web.dtos.SavedBriefCustomerDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -15,7 +14,8 @@ import com.cairoshop.web.dtos.SavedBriefCustomerDTO;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Repository
-public interface UserRepository extends BaseCommonRepository<SavedBriefCustomerDTO, User>, UserRepositoryCustom {
+public interface UserRepository
+            extends BaseCommonRepository<User>, UserRepositoryCustom {
 
     @Query("UPDATE User u SET u.active = ?2, u.enabled = ?2 WHERE u.id =?1")
     @Modifying

@@ -1,64 +1,84 @@
 package com.cairoshop.it;
 
-import javax.annotation.PostConstruct;
+import java.text.MessageFormat;
+import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import com.cairoshop.persistence.entities.Vendor;
-import com.cairoshop.service.VendorService;
-import com.cairoshop.web.dtos.NewVendorDTO;
-import com.cairoshop.web.dtos.SavedBriefVendorDTO;
-import com.cairoshop.web.dtos.SavedDetailedVendorDTO;
+import com.cairoshop.it.helpers.Endpoints;
+import com.cairoshop.it.helpers.Users;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-//@RestController
-//@RequestMapping("vendors")
-//@Validated
-public class VendorControllerIT extends BaseProductClassificationControllerIT /*extends BaseProductClassificationControllerIT<NewVendorDTO, SavedDetailedVendorDTO, SavedBriefVendorDTO, Vendor>*/ {
-    
-//    @Autowired
-//    private VendorService vendorService;
-//
-//    @PostConstruct
-//    public void injectRefs() {
-//        setService(vendorService);
-//    }
+public class VendorControllerIT extends BaseProductClassificationControllerIT {
+
+    @Test
+    public void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation() throws Exception {
+        testAddingDataWithValidPayloadAndAuthorizedUser(Endpoints.ADD_NEW_VENDOR, Users.ADMIN,"valid_new_vendor.json");
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideArgsForTestAddWithInvalidPayload")
+    public void testAdd_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile) throws Exception {
+        testAddingDataWithInvalidPayloadAndAuthorizedUser(Endpoints.ADD_NEW_VENDOR, Users.ADMIN, requestBodyFile, errorMsgFile);
+    }
+
+    private static Stream<Arguments> provideArgsForTestAddWithInvalidPayload() {
+        return Stream.of(
+            Arguments.of("invalid_new_vendor_with_duplicated_name.json", "db_violated_constraints.json"),
+            Arguments.of("invalid_new_vendor_with_empty_name_value.json", "name_is_required.json"),
+            Arguments.of("invalid_new_vendor_with_empty_payload.json", "name_is_required.json")
+        );
+    }
+
+    @Test
+    public void testAdd_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg() throws Exception {
+        testAddingDataWithValidPayloadAndUnauthorizedUser(Endpoints.ADD_NEW_VENDOR, Users.CUSTOMER,"valid_new_vendor.json", "access_denied.json");
+    }
+
+    @Test
+    public void testEdit_WhenPayloadIsValid_ThenReturn204() throws Exception {
+        testDataModification(Endpoints.EDIT_VENDOR, Users.ADMIN,"valid_new_vendor_for_update.json");
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideArgsForTestEditWithInvalidPayload")
+    public void testEdit_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile) throws Exception {
+        testAddingDataWithInvalidPayloadAndAuthorizedUser(Endpoints.EDIT_VENDOR, Users.ADMIN, requestBodyFile, errorMsgFile);
+    }
+
+    private static Stream<Arguments> provideArgsForTestEditWithInvalidPayload() {
+        return Stream.of(
+            Arguments.of("invalid_new_vendor_with_duplicated_name.json", "db_violated_constraints.json"),
+            Arguments.of("invalid_new_vendor_with_empty_name_value.json", "name_is_required.json"),
+            Arguments.of("invalid_new_vendor_with_empty_payload.json", "name_is_required.json")
+        );
+    }
+
+    //admin
+    public void testRemove_WhenItemExists_ThenRemoveItAndReturn204() {
+        testDataRemoval(Endpoints.DELETE_VENDOR_BY_ID,Users.ADMIN);
+    }
+
+    //admin or customer
+    public void testGetById_WhenDataFound_ThenReturn200AndData() throws Exception {
+        testDataRetrievalToReturnExistedData(Endpoints.GET_VENDOR_BY_ID, Users.ADMIN, null);
+    }
+
+    //admin or customer
+    public void testGetAllItemsByPagination_WhenDataExists_ThenReturn200WithData() throws Exception {
+        testDataRetrievalToReturnExistedData(MessageFormat.format(Endpoints.GET_VENDORS_BY_PAGINATION, 0), Users.ADMIN, null);
+    }
 
     // admin or customer
-    public void testGetAll_WhenDataExists_ThenReturn200WithData() {
-        testGetAll_WhenDataExists_ThenReturn200WithData(null,null,null);
+    public void testGetAll_WhenDataExists_ThenReturn200WithData() throws Exception {
+        testDataRetrievalToReturnExistedData(Endpoints.GET_ALL_VENDORS, Users.ADMIN, null);
     }
 
-    // admin
-    public void testEdit_WhenPayloadIsValid_ThenReturn204() {
-        testEdit_WhenPayloadIsValid_ThenReturn204(null,null,null);
-    }
-
-    //admin
-    protected void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation() {
-        testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation(null,null,null,null);
-    }
-
-    //admin
-    protected void testRemove_WhenItemExists_ThenRemoveItAndReturn204() {
-        testRemove_WhenItemExists_ThenRemoveItAndReturn204(null,null);
-    }
-
-    //admin or customer
-    protected void testGetAllItemsByPagination_WhenDataExists_ThenReturn200WithData() throws Exception {
-        testGetAllItemsByPagination_WhenDataExists_ThenReturn200WithData(null,null,null);
-    }
-
-    //admin or customer
-    protected void testGetById_WhenDataFound_ThenReturn200AndData() throws Exception {
-        testGetById_WhenDataFound_ThenReturn200AndData(null,null,null);
-    }
-    
 }

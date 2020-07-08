@@ -13,9 +13,10 @@ import org.springframework.data.repository.NoRepositoryBean;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @NoRepositoryBean
-public interface BaseRepository<SBDTO, T> extends BaseCommonRepository<SBDTO, T>  {
+public interface BaseRepository<BDTO, T>
+            extends BaseCommonRepository<T>  {
 
-    List<SBDTO> findAllBy(Pageable pageable);
+    List<BDTO> findAllBy(Pageable pageable);
 
     @Query("UPDATE #{#entityName} e SET e.active = false WHERE e.id = ?1")
     @Modifying

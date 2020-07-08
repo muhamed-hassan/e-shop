@@ -1,13 +1,12 @@
 package com.cairoshop.service;
 
-import com.cairoshop.persistence.entities.Category;
-import com.cairoshop.web.dtos.NewCategoryDTO;
-import com.cairoshop.web.dtos.SavedBriefCategoryDTO;
-import com.cairoshop.web.dtos.SavedDetailedCategoryDTO;
+import com.cairoshop.web.dtos.CategoryInBriefDTO;
+import com.cairoshop.web.dtos.CategoryInDetailDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public interface CategoryService extends BaseProductClassificationService<NewCategoryDTO, SavedDetailedCategoryDTO, SavedBriefCategoryDTO, Category> {}
+public interface CategoryService
+            extends BaseProductClassificationService<CategoryInDetailDTO, CategoryInBriefDTO> {}

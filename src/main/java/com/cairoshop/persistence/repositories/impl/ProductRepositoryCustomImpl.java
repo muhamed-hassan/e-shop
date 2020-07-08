@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.cairoshop.persistence.repositories.ProductRepositoryCustom;
-import com.cairoshop.web.dtos.SavedBriefProductDTO;
+import com.cairoshop.web.dtos.ProductInBriefDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -21,7 +21,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public List<SavedBriefProductDTO> search(String name, int startPosition, int pageSize, String sortBy, String sortDirection) {
+    public List<ProductInBriefDTO> search(String name, int startPosition, int pageSize, String sortBy, String sortDirection) {
         StringBuilder query = new StringBuilder()
             .append("SELECT id, name ")
             .append("FROM product ")
@@ -34,7 +34,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                                                 .setFirstResult(startPosition)
                                                 .getResultList())
                                                 .stream()
-                                                .map(record -> new SavedBriefProductDTO((Integer) record[0], (String) record[1], true))
+                                                .map(record -> new ProductInBriefDTO((Integer) record[0], (String) record[1]))
                                                 .collect(Collectors.toList());
     }
 

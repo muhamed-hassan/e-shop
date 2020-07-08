@@ -8,34 +8,19 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseSavedDTO extends BaseDTO {
+public class VendorInBriefDTO extends ProductClassificationInBriefDTO {
 
-    private int id;
-
-    private boolean active;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
+    public VendorInBriefDTO(int id, String name) {
+        setId(id);
+        setName(name);
     }
 
     public boolean equals(Object object) {
         if (this == object)
             return true;
-        if (!(object instanceof BaseSavedDTO))
+        if (!(object instanceof VendorInBriefDTO))
             return false;
-        BaseSavedDTO that = (BaseSavedDTO) object;
+        VendorInBriefDTO that = (VendorInBriefDTO) object;
         return new EqualsBuilder()
             .append(getId(), that.getId())
             .isEquals();

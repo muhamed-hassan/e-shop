@@ -8,20 +8,21 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.cairoshop.persistence.repositories.UserRepositoryCustom;
-import com.cairoshop.web.dtos.SavedBriefCustomerDTO;
+import com.cairoshop.web.dtos.UserInBriefDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class UserRepositoryCustomImpl implements UserRepositoryCustom {
+public class UserRepositoryCustomImpl
+            implements UserRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
-    public List<SavedBriefCustomerDTO> findAllCustomers(int startPosition, int pageSize, String sortBy, String sortDirection) {
+    public List<UserInBriefDTO> findAllCustomers(int startPosition, int pageSize, String sortBy, String sortDirection) {
         StringBuilder query = new StringBuilder()
             .append("SELECT u.id, u.name, u.active ")
             .append("FROM user u INNER JOIN role r ON (u.role = r.id AND r.name = :role) ")
@@ -32,7 +33,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
                                                 .setFirstResult(startPosition)
                                                 .getResultList())
                                                 .stream()
-                                                .map(record -> new SavedBriefCustomerDTO((Integer) record[0], (String) record[1], (Boolean) record[2]))
+                                                .map(record -> new UserInBriefDTO((Integer) record[0], (String) record[1], (Boolean) record[2]))
                                                 .collect(Collectors.toList());
     }
 

@@ -20,24 +20,24 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseServiceTest<SDDTO, SBDTO, T> extends BaseCommonServiceTest<SDDTO, T> {
+public class BaseServiceTest<DDTO, BDTO, T> extends BaseCommonServiceTest<DDTO, T> {
 
-    protected BaseServiceTest(Class<T> entityClass, Class<SDDTO> sddtoClass) {
-        super(entityClass, sddtoClass);
+    protected BaseServiceTest(Class<T> entityClass, Class<DDTO> ddtoClass) {
+        super(entityClass, ddtoClass);
     }
 
-    protected void testGetAllByPage_WhenDataFound_ThenReturnIt(SBDTO sbdto) {
-        List<SBDTO> page = List.of(sbdto);
+    protected void testGetAllByPage_WhenDataFound_ThenReturnIt(BDTO bdto) {
+        List<BDTO> page = List.of(bdto);
         when(((BaseRepository) getRepository()).findAllBy(any(PageRequest.class)))
             .thenReturn(page);
         Long countOfAllActiveItems = 1L;
         when(getRepository().count())
             .thenReturn(countOfAllActiveItems);
-        SavedItemsDTO<SBDTO> expectedResult = new SavedItemsDTO<>();
+        SavedItemsDTO<BDTO> expectedResult = new SavedItemsDTO<>();
         expectedResult.setItems(page);
         expectedResult.setAllSavedItemsCount(countOfAllActiveItems.intValue());
 
-        SavedItemsDTO<SBDTO> actualResult = ((BaseService) getService()).getAll(0, "name", "ASC");
+        SavedItemsDTO<BDTO> actualResult = ((BaseService) getService()).getAll(0, "name", "ASC");
 
         assertEquals(expectedResult.getAllSavedItemsCount(), actualResult.getAllSavedItemsCount());
         assertIterableEquals(expectedResult.getItems(), actualResult.getItems());

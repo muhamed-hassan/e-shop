@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.cairoshop.service.BaseProductClassificationService;
@@ -22,7 +23,7 @@ import io.swagger.annotations.ApiResponses;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseProductClassificationController<NDTO, SDDTO, SBDTO, T> extends BaseController<NDTO, SDDTO, SBDTO, T> {
+public class BaseProductClassificationController<DDTO, BDTO, T> extends BaseController<DDTO, BDTO, T> {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     @ApiResponses(value = {
@@ -32,7 +33,7 @@ public class BaseProductClassificationController<NDTO, SDDTO, SBDTO, T> extends 
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<SBDTO>> getAll() {
+    public ResponseEntity<List<BDTO>> getAll() {
         return ResponseEntity.ok(((BaseProductClassificationService) getService()).getAll());
     }
 
@@ -43,9 +44,9 @@ public class BaseProductClassificationController<NDTO, SDDTO, SBDTO, T> extends 
         @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
-    @PatchMapping
-    public ResponseEntity<Void> edit(@Valid @RequestBody SDDTO sddto) {
-        ((BaseProductClassificationService) getService()).edit(sddto);
+    @PatchMapping(path = "{id}")
+    public ResponseEntity<Void> edit(@PathVariable int id, @Valid @RequestBody DDTO ddto) {
+        ((BaseProductClassificationService) getService()).edit(id, ddto);
         return ResponseEntity.noContent().build();
     }
 

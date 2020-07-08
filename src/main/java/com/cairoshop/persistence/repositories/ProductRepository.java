@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.cairoshop.persistence.entities.Product;
-import com.cairoshop.web.dtos.SavedBriefProductDTO;
+import com.cairoshop.web.dtos.ProductInBriefDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -15,9 +15,9 @@ import com.cairoshop.web.dtos.SavedBriefProductDTO;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Repository
-public interface ProductRepository extends BaseRepository<SavedBriefProductDTO, Product>, ProductRepositoryCustom {
+public interface ProductRepository extends BaseRepository<ProductInBriefDTO, Product>, ProductRepositoryCustom {
 
-    <SavedImageStream> Optional<SavedImageStream> findImageById(int id, Class<SavedImageStream> sdtoClass);
+    <SavedImageStream> Optional<SavedImageStream> findImageById(int id, Class<SavedImageStream> savedImageStreamClass);
 
     @Query("UPDATE Product p " +
             "SET p.name = ?2, p.price = ?3, p.quantity = ?4,  p.category.id = ?5, p.vendor.id = ?6 " +

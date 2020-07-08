@@ -2,7 +2,7 @@ package com.cairoshop.persistence.repositories;
 
 import java.util.List;
 
-import com.cairoshop.web.dtos.SavedBriefProductDTO;
+import com.cairoshop.web.dtos.ProductInBriefDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -11,7 +11,7 @@ import com.cairoshop.web.dtos.SavedBriefProductDTO;
  * ************************************************************************ */
 public interface ProductRepositoryCustom {
 
-    List<SavedBriefProductDTO> search(String name, int startPosition, int pageSize, String sortBy, String sortDirection);
+    List<ProductInBriefDTO> search(String name, int startPosition, int pageSize, String sortBy, String sortDirection);
 
     int countAllByCriteria(String name);
 

@@ -1,21 +1,20 @@
 package com.cairoshop.service;
 
-import java.util.Map;
-
-import com.cairoshop.persistence.entities.User;
-import com.cairoshop.web.dtos.SavedBriefCustomerDTO;
-import com.cairoshop.web.dtos.SavedDetailedCustomerDTO;
 import com.cairoshop.web.dtos.SavedItemsDTO;
+import com.cairoshop.web.dtos.UserInBriefDTO;
+import com.cairoshop.web.dtos.UserInDetailDTO;
+import com.cairoshop.web.dtos.UserStatusDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public interface UserService extends BaseCommonService<SavedDetailedCustomerDTO, SavedBriefCustomerDTO, User> {
+public interface UserService
+            extends BaseCommonService<UserInDetailDTO> {
 
-   void edit(int id, Map<String, String> newStatus);
+   void edit(int id, UserStatusDTO userStatusDTO);
 
-   SavedItemsDTO<SavedBriefCustomerDTO> getAllCustomers(int startPosition, String sortBy, String sortDirection);
+   SavedItemsDTO<UserInBriefDTO> getAllCustomers(int startPosition, String sortBy, String sortDirection);
 
 }

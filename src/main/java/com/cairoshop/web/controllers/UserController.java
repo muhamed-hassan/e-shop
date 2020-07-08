@@ -1,7 +1,6 @@
 package com.cairoshop.web.controllers;
 
 import java.net.HttpURLConnection;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.Min;
@@ -23,9 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cairoshop.persistence.entities.User;
 import com.cairoshop.service.UserService;
-import com.cairoshop.web.dtos.SavedBriefCustomerDTO;
-import com.cairoshop.web.dtos.SavedDetailedCustomerDTO;
 import com.cairoshop.web.dtos.SavedItemsDTO;
+import com.cairoshop.web.dtos.UserInBriefDTO;
+import com.cairoshop.web.dtos.UserInDetailDTO;
+import com.cairoshop.web.dtos.UserStatusDTO;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -38,7 +38,8 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping("users")
 @Validated
-public class UserController extends BaseCommonController<SavedDetailedCustomerDTO, SavedBriefCustomerDTO, User> {
+public class UserController
+            extends BaseCommonController<UserInDetailDTO, UserInBriefDTO, User> {
     
     @Autowired
     private UserService userService;
@@ -56,8 +57,8 @@ public class UserController extends BaseCommonController<SavedDetailedCustomerDT
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @PatchMapping(path = "{id}")
-    public ResponseEntity<Void> changeStatus(@PathVariable int id, @RequestBody Map<String, String> newStatus) {
-        userService.edit(id, newStatus);
+    public ResponseEntity<Void> changeStatus(@PathVariable int id, @RequestBody UserStatusDTO userStatusDTO) {
+        userService.edit(id, userStatusDTO);
         return ResponseEntity.noContent().build();
     }
 
@@ -70,7 +71,7 @@ public class UserController extends BaseCommonController<SavedDetailedCustomerDT
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"start-position", "sort-by", "sort-direction"})
-    public ResponseEntity<SavedItemsDTO<SavedBriefCustomerDTO>> getAllCustomersByPagination(
+    public ResponseEntity<SavedItemsDTO<UserInBriefDTO>> getAllCustomersByPagination(
         @RequestParam("start-position") @Min(value = 0, message = "min start-position is 0") int startPosition,
         @RequestParam("sort-by") @NotBlank(message = "sort-by field is required") String sortBy,
         @RequestParam("sort-direction") @Pattern(regexp = "^(ASC|DESC)$", message = "allowed values for sort-direction are DESC or ASC") String sortDirection) {

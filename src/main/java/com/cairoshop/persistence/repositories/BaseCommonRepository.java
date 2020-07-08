@@ -11,8 +11,9 @@ import org.springframework.data.repository.NoRepositoryBean;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @NoRepositoryBean
-public interface BaseCommonRepository<SBDTO, T> extends JpaRepository<T, Integer>  {
+public interface BaseCommonRepository<T>
+            extends JpaRepository<T, Integer>  {
 
-    <SDDTO> Optional<SDDTO> findById(int id, Class<SDDTO> sdtoClass);
+    <DDTO> Optional<DDTO> findById(int id, Class<DDTO> sdtoClass);
 
 }

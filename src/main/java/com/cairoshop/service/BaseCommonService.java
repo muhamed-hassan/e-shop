@@ -5,8 +5,8 @@ package com.cairoshop.service;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public interface BaseCommonService<SDDTO, SBDTO, T> {
+public interface BaseCommonService<DDTO> {
 
-    SDDTO getById(int id);
+    DDTO getById(int id);
 
 }

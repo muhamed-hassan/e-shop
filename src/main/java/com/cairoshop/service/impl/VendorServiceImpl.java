@@ -8,9 +8,8 @@ import org.springframework.stereotype.Service;
 import com.cairoshop.persistence.entities.Vendor;
 import com.cairoshop.persistence.repositories.VendorRepository;
 import com.cairoshop.service.VendorService;
-import com.cairoshop.web.dtos.NewVendorDTO;
-import com.cairoshop.web.dtos.SavedBriefVendorDTO;
-import com.cairoshop.web.dtos.SavedDetailedVendorDTO;
+import com.cairoshop.web.dtos.VendorInBriefDTO;
+import com.cairoshop.web.dtos.VendorInDetailDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -19,14 +18,14 @@ import com.cairoshop.web.dtos.SavedDetailedVendorDTO;
  * ************************************************************************ */
 @Service
 public class VendorServiceImpl
-                extends BaseProductClassificationServiceImpl<NewVendorDTO, SavedDetailedVendorDTO, SavedBriefVendorDTO, Vendor>
-                implements VendorService {
+            extends BaseProductClassificationServiceImpl<VendorInDetailDTO, VendorInBriefDTO, Vendor>
+            implements VendorService {
 
     @Autowired
     private VendorRepository vendorRepository;
 
     public VendorServiceImpl() {
-        super(Vendor.class, SavedDetailedVendorDTO.class);
+        super(Vendor.class, VendorInDetailDTO.class);
     }
 
     @PostConstruct

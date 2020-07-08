@@ -2,10 +2,8 @@ package com.cairoshop.service;
 
 import java.util.List;
 
-import com.cairoshop.persistence.entities.Product;
-import com.cairoshop.web.dtos.NewProductDTO;
-import com.cairoshop.web.dtos.SavedBriefProductDTO;
-import com.cairoshop.web.dtos.SavedDetailedProductDTO;
+import com.cairoshop.web.dtos.ProductInBriefDTO;
+import com.cairoshop.web.dtos.ProductInDetailDTO;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
 /* **************************************************************************
@@ -13,16 +11,17 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public interface ProductService extends BaseService<NewProductDTO, SavedDetailedProductDTO, SavedBriefProductDTO, Product> {
+public interface ProductService
+            extends BaseService<ProductInDetailDTO, ProductInBriefDTO> {
 
     byte[] getImage(int id);
 
-    void edit(SavedDetailedProductDTO savedDetailedProductDTO);
+    void edit(int id, ProductInDetailDTO productInDetailDTO);
 
     void edit(int id, byte[] image);
 
     List<String> getSortableFields();
 
-    SavedItemsDTO<SavedBriefProductDTO> searchByProductName(String name, int startPosition, String sortBy, String sortDirection);
+    SavedItemsDTO<ProductInBriefDTO> searchByProductName(String name, int startPosition, String sortBy, String sortDirection);
 
 }

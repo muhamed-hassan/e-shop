@@ -28,9 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cairoshop.persistence.entities.Product;
 import com.cairoshop.service.ProductService;
-import com.cairoshop.web.dtos.NewProductDTO;
-import com.cairoshop.web.dtos.SavedBriefProductDTO;
-import com.cairoshop.web.dtos.SavedDetailedProductDTO;
+import com.cairoshop.web.dtos.ProductInBriefDTO;
+import com.cairoshop.web.dtos.ProductInDetailDTO;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
 import io.swagger.annotations.ApiResponse;
@@ -44,7 +43,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping("products")
 @Validated
-public class ProductController extends BaseController<NewProductDTO, SavedDetailedProductDTO, SavedBriefProductDTO, Product> {
+public class ProductController extends BaseController<ProductInDetailDTO, ProductInBriefDTO, Product> {
 
     @Autowired
     private ProductService productService;
@@ -85,9 +84,9 @@ public class ProductController extends BaseController<NewProductDTO, SavedDetail
         @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
-    @PatchMapping
-    public ResponseEntity<Void> update(@Valid @RequestBody SavedDetailedProductDTO savedDetailedProductDTO) {
-        productService.edit(savedDetailedProductDTO);
+    @PatchMapping(path = "{id}")
+    public ResponseEntity<Void> update(@PathVariable int id, @Valid @RequestBody ProductInDetailDTO productInDetailDTO) {
+        productService.edit(id, productInDetailDTO);
         return ResponseEntity.noContent().build();
     }
 
@@ -110,7 +109,7 @@ public class ProductController extends BaseController<NewProductDTO, SavedDetail
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"name", "start-position", "sort-by", "sort-direction"})
-    public ResponseEntity<SavedItemsDTO<SavedBriefProductDTO>> searchByProductName(
+    public ResponseEntity<SavedItemsDTO<ProductInBriefDTO>> searchByProductName(
         @RequestParam("name") @NotBlank(message = "name is required") String name,
         @RequestParam("start-position") @Min(value = 0, message = "min start-position is 0") int startPosition,
         @RequestParam("sort-by") @NotBlank(message = "sort-by field is required") String sortBy,

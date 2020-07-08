@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cairoshop.persistence.entities.Vendor;
 import com.cairoshop.service.VendorService;
-import com.cairoshop.web.dtos.NewVendorDTO;
-import com.cairoshop.web.dtos.SavedBriefVendorDTO;
-import com.cairoshop.web.dtos.SavedDetailedVendorDTO;
+import com.cairoshop.web.dtos.VendorInBriefDTO;
+import com.cairoshop.web.dtos.VendorInDetailDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -21,7 +20,8 @@ import com.cairoshop.web.dtos.SavedDetailedVendorDTO;
 @RestController
 @RequestMapping("vendors")
 @Validated
-public class VendorController extends BaseProductClassificationController<NewVendorDTO, SavedDetailedVendorDTO, SavedBriefVendorDTO, Vendor> {
+public class VendorController
+                extends BaseProductClassificationController<VendorInDetailDTO, VendorInBriefDTO, Vendor> {
     
     @Autowired
     private VendorService vendorService;

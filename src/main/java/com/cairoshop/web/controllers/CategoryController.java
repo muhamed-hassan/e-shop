@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cairoshop.persistence.entities.Category;
 import com.cairoshop.service.CategoryService;
-import com.cairoshop.web.dtos.NewCategoryDTO;
-import com.cairoshop.web.dtos.SavedBriefCategoryDTO;
-import com.cairoshop.web.dtos.SavedDetailedCategoryDTO;
+import com.cairoshop.web.dtos.CategoryInBriefDTO;
+import com.cairoshop.web.dtos.CategoryInDetailDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -21,7 +20,8 @@ import com.cairoshop.web.dtos.SavedDetailedCategoryDTO;
 @RestController
 @RequestMapping("categories")
 @Validated
-public class CategoryController extends BaseProductClassificationController<NewCategoryDTO, SavedDetailedCategoryDTO, SavedBriefCategoryDTO, Category> {
+public class CategoryController
+            extends BaseProductClassificationController<CategoryInDetailDTO, CategoryInBriefDTO, Category> {
 
     @Autowired
     private CategoryService categoryService;

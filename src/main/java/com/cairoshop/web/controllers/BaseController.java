@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiResponses;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseController<NDTO, SDDTO, SBDTO, T> extends BaseCommonController<SDDTO, SBDTO, T> {
+public class BaseController<DDTO, BDTO, T> extends BaseCommonController<DDTO, BDTO, T> {
 
     @PreAuthorize("hasRole('ADMIN')")
     @ApiResponses(value = {
@@ -39,10 +39,10 @@ public class BaseController<NDTO, SDDTO, SBDTO, T> extends BaseCommonController<
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> add(@Valid @RequestBody NDTO newResourceDTO) {
+    public ResponseEntity<Void> add(@Valid @RequestBody DDTO ddto) {
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
                                 .path("/{id}")
-                                .build(((BaseService) getService()).add(newResourceDTO)))
+                                .build(((BaseService) getService()).add(ddto)))
                                 .build();
     }
 
@@ -67,7 +67,7 @@ public class BaseController<NDTO, SDDTO, SBDTO, T> extends BaseCommonController<
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"start-position", "sort-by", "sort-direction"})
-    public ResponseEntity<SavedItemsDTO<SBDTO>> getAllByPagination(
+    public ResponseEntity<SavedItemsDTO<BDTO>> getAllByPagination(
         @RequestParam("start-position") @Min(value = 0, message = "min start-position is 0") int startPosition,
         @RequestParam("sort-by") @NotBlank(message = "sort-by field is required") String sortBy,
         @RequestParam("sort-direction") @Pattern(regexp = "^(ASC|DESC)$", message = "allowed values for sort-direction are DESC or ASC") String sortDirection) {

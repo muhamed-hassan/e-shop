@@ -5,7 +5,7 @@ package com.cairoshop.web.dtos;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class SavedDetailedCustomerDTO extends SavedBriefCustomerDTO {
+public class UserInDetailDTO extends BaseDTO {
 
     private String username;
 
@@ -14,13 +14,16 @@ public class SavedDetailedCustomerDTO extends SavedBriefCustomerDTO {
     private String phone;
 
     private String address;
+    
+    private boolean active;
 
-    public SavedDetailedCustomerDTO(int id, String name, boolean active, String username, String email, String phone, String address) {
-        super(id, name, active);
-        setUsername(username);
-        setEmail(email);
-        setPhone(phone);
-        setAddress(address);
+    public UserInDetailDTO(String name, String username, String email, String phone, String address, boolean active) {
+        setName(name);
+        this.username = username;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.active = active;
     }
 
     public String getUsername() {
@@ -53,6 +56,14 @@ public class SavedDetailedCustomerDTO extends SavedBriefCustomerDTO {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
 }

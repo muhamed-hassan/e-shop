@@ -7,12 +7,13 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public interface BaseService<NDTO, SDDTO, SBDTO, T> extends BaseCommonService<SDDTO, SBDTO, T> {
+public interface BaseService<DDTO, BDTO>
+            extends BaseCommonService<DDTO> {
 
-    int add(NDTO ndto);
+    int add(DDTO ddto);
 
     void removeById(int id);
 
-    SavedItemsDTO<SBDTO> getAll(int startPosition, String sortBy, String sortDirection);
+    SavedItemsDTO<BDTO> getAll(int startPosition, String sortBy, String sortDirection);
 
 }

@@ -12,21 +12,20 @@ import java.util.List;
 
 import com.cairoshop.persistence.repositories.BaseProductClassificationRepository;
 import com.cairoshop.service.BaseProductClassificationService;
-import com.cairoshop.web.dtos.SavedBriefVendorDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseProductClassificationServiceTest<NDTO, SDDTO, SBDTO, T>
-        extends BaseServiceTest<SDDTO, SBDTO, T> {
+public class BaseProductClassificationServiceTest<DDTO, BDTO, T>
+        extends BaseServiceTest<DDTO, BDTO, T> {
 
-    protected BaseProductClassificationServiceTest(Class<T> entityClass, Class<SDDTO> sddtoClass) {
-        super(entityClass, sddtoClass);
+    protected BaseProductClassificationServiceTest(Class<T> entityClass, Class<DDTO> DDTOClass) {
+        super(entityClass, DDTOClass);
     }
 
-    protected void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(NDTO ndto) throws Exception {
+    protected void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(DDTO ddto) throws Exception {
         int expectedCreatedId = 1;
         T savedEntity = mock(getEntityClass());
         when((int) savedEntity.getClass().getMethod("getId").invoke(savedEntity))
@@ -34,29 +33,28 @@ public class BaseProductClassificationServiceTest<NDTO, SDDTO, SBDTO, T>
         when(getRepository().save(any(getEntityClass())))
             .thenReturn(savedEntity);
 
-        int actualCreatedId = ((BaseProductClassificationService) getService()).add(ndto);
+        int actualCreatedId = ((BaseProductClassificationService) getService()).add(ddto);
 
         assertEquals(expectedCreatedId, actualCreatedId);
     }
 
-    protected void testEdit_WhenDataIsValid_ThenSave(SDDTO sddto) throws Exception {
-        int id = (int) getSavedDetailedDtoClass().getMethod("getId").invoke(sddto);
-        String name = (String) getSavedDetailedDtoClass().getMethod("getName").invoke(sddto);
+    protected void testEdit_WhenDataIsValid_ThenSave(int id, DDTO ddto) throws Exception {
+        String name = (String) getDetailedDtoClass().getMethod("getName").invoke(ddto);
         int affectedRows = 1;
-        when(((BaseProductClassificationRepository) getRepository()).update(id,name))
+        when(((BaseProductClassificationRepository) getRepository()).update(id, name))
             .thenReturn(affectedRows);
 
-        ((BaseProductClassificationService) getService()).edit(sddto);
+        ((BaseProductClassificationService) getService()).edit(id, ddto);
 
         verify(((BaseProductClassificationRepository) getRepository()), times(1)).update(id, name);
     }
 
-    protected void testGetAll_WhenDataFound_ThenReturnIt(SBDTO sbdto) {
-        List<SBDTO> expectedResult = List.of(sbdto);
+    protected void testGetAll_WhenDataFound_ThenReturnIt(BDTO bdto) {
+        List<BDTO> expectedResult = List.of(bdto);
         when(((BaseProductClassificationRepository) getRepository()).findAllBy())
             .thenReturn(expectedResult);
 
-        List<SavedBriefVendorDTO> actualResult = ((BaseProductClassificationService) getService()).getAll();
+        List<BDTO> actualResult = ((BaseProductClassificationService) getService()).getAll();
 
         assertIterableEquals(expectedResult, actualResult);
     }

@@ -5,4 +5,16 @@ package com.cairoshop.web.dtos;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class NewVendorDTO extends BaseDTO {}
+public class UserStatusDTO {
+
+    private boolean active;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+}

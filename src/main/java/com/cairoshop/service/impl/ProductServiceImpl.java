@@ -17,9 +17,8 @@ import com.cairoshop.persistence.repositories.ProductRepository;
 import com.cairoshop.service.ProductService;
 import com.cairoshop.service.exceptions.DataNotUpdatedException;
 import com.cairoshop.service.exceptions.NoResultException;
-import com.cairoshop.web.dtos.NewProductDTO;
-import com.cairoshop.web.dtos.SavedBriefProductDTO;
-import com.cairoshop.web.dtos.SavedDetailedProductDTO;
+import com.cairoshop.web.dtos.ProductInBriefDTO;
+import com.cairoshop.web.dtos.ProductInDetailDTO;
 import com.cairoshop.web.dtos.SavedImageStream;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
@@ -30,14 +29,14 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * ************************************************************************ */
 @Service
 public class ProductServiceImpl
-                extends BaseServiceImpl<NewProductDTO, SavedDetailedProductDTO, SavedBriefProductDTO, Product>
+                extends BaseServiceImpl<ProductInDetailDTO, ProductInBriefDTO, Product>
                 implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
 
     public ProductServiceImpl() {
-        super(Product.class, SavedDetailedProductDTO.class);
+        super(Product.class, ProductInDetailDTO.class);
     }
 
     @PostConstruct
@@ -47,19 +46,19 @@ public class ProductServiceImpl
 
     @Transactional
     @Override
-    public int add(NewProductDTO newProductDTO) {
+    public int add(ProductInDetailDTO productInDetailDTO) {
         int id = -1;
         try {
             Product product = new Product();
-            product.setName(newProductDTO.getName());
-            product.setDescription(newProductDTO.getDescription());
-            product.setPrice(newProductDTO.getPrice());
-            product.setQuantity(newProductDTO.getQuantity());
+            product.setName(productInDetailDTO.getName());
+            product.setDescription(productInDetailDTO.getDescription());
+            product.setPrice(productInDetailDTO.getPrice());
+            product.setQuantity(productInDetailDTO.getQuantity());
             Vendor vendor = new Vendor();
-            vendor.setId(newProductDTO.getVendorId());
+            vendor.setId(productInDetailDTO.getVendorId());
             product.setVendor(vendor);
             Category category = new Category();
-            category.setId(newProductDTO.getCategoryId());
+            category.setId(productInDetailDTO.getCategoryId());
             product.setCategory(category);
             product.setActive(true);
             id = productRepository.save(product).getId();
@@ -80,10 +79,10 @@ public class ProductServiceImpl
 
     @Transactional
     @Override
-    public void edit(SavedDetailedProductDTO savedDetailedProductDTO) {
-        int affectedRows = productRepository.update(savedDetailedProductDTO.getId(), savedDetailedProductDTO.getName(),
-                                                        savedDetailedProductDTO.getPrice(), savedDetailedProductDTO.getQuantity(),
-                                                        savedDetailedProductDTO.getCategoryId(), savedDetailedProductDTO.getVendorId());
+    public void edit(int id, ProductInDetailDTO productInDetailDTO) {
+        int affectedRows = productRepository.update(id, productInDetailDTO.getName(),
+                                                        productInDetailDTO.getPrice(), productInDetailDTO.getQuantity(),
+                                                        productInDetailDTO.getCategoryId(), productInDetailDTO.getVendorId());
         if (affectedRows == 0) {
             throw new DataNotUpdatedException();
         }
@@ -104,10 +103,10 @@ public class ProductServiceImpl
     }
 
     @Override
-    public SavedItemsDTO<SavedBriefProductDTO> searchByProductName(String name, int startPosition, String sortBy, String sortDirection) {
-        List<SavedBriefProductDTO> page = productRepository.search(name, startPosition, Constants.MAX_PAGE_SIZE, sortBy, sortDirection);
+    public SavedItemsDTO<ProductInBriefDTO> searchByProductName(String name, int startPosition, String sortBy, String sortDirection) {
+        List<ProductInBriefDTO> page = productRepository.search(name, startPosition, Constants.MAX_PAGE_SIZE, sortBy, sortDirection);
         int countOfItemMetSearchCriteria = productRepository.countAllByCriteria(name);
-        SavedItemsDTO<SavedBriefProductDTO> savedBriefProductDTOSavedItemsDTO = new SavedItemsDTO<>();
+        SavedItemsDTO<ProductInBriefDTO> savedBriefProductDTOSavedItemsDTO = new SavedItemsDTO<>();
         savedBriefProductDTOSavedItemsDTO.setItems(page);
         savedBriefProductDTOSavedItemsDTO.setAllSavedItemsCount(countOfItemMetSearchCriteria);
         return savedBriefProductDTOSavedItemsDTO;

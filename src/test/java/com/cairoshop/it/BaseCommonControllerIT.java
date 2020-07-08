@@ -1,21 +1,16 @@
 package com.cairoshop.it;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
-import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.MessageFormat;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,24 +25,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.testcontainers.containers.MySQLContainer;
 
 import com.cairoshop.configs.security.Constants;
+import com.cairoshop.it.helpers.KeysOfHttpHeaders;
 import com.cairoshop.it.models.Credentials;
 import com.cairoshop.it.models.HttpRequest;
-import com.cairoshop.persistence.repositories.BaseCommonRepository;
-import com.cairoshop.service.BaseCommonService;
-import com.cairoshop.service.impl.BaseCommonServiceImpl;
-
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -56,12 +43,11 @@ import io.swagger.annotations.ApiResponses;
  * ************************************************************************ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class BaseCommonControllerIT/*<SDDTO, SBDTO, T>*/ {
+public class BaseCommonControllerIT {
 
-    protected static final String SEED_MAPPINGS_DIR = "seed/";
-    protected static final String EXPECTED_MAPPINGS_DIR = "expected/";
-    protected static final String ERRORS_MAPPINGS_DIR = "errors/";
-
+    private static final String SEED_MAPPINGS_DIR = "seed/";
+    private static final String EXPECTED_MAPPINGS_DIR = "expected/";
+    private static final String ERRORS_MAPPINGS_DIR = "errors/";
     private static final String BASE_MAPPINGS_DIR = "__files/";
 
     private static MySQLContainer mySQLContainer = null;
@@ -77,9 +63,9 @@ public class BaseCommonControllerIT/*<SDDTO, SBDTO, T>*/ {
     @BeforeAll
     public static void init() {
         mySQLContainer = new MySQLContainer("mysql:8.0.20")
-            .withDatabaseName("integration-tests-db")
-            .withUsername("username")
-            .withPassword("password");
+                                .withDatabaseName("integration-tests-db")
+                                .withUsername("username")
+                                .withPassword("password");
         mySQLContainer.start();
         System.setProperty("DB_URL", mySQLContainer.getJdbcUrl());
         System.setProperty("DB_USER", mySQLContainer.getUsername());
@@ -125,13 +111,27 @@ public class BaseCommonControllerIT/*<SDDTO, SBDTO, T>*/ {
         return testRestTemplate.exchange(httpRequest.getUri(), httpRequest.getHttpMethod(), requestEntity, responseType);
     }
 
-    ///////////////////////////////////////////////////////////////////
+    protected static String getSeedMappingsDir() {
+        return SEED_MAPPINGS_DIR;
+    }
 
-    protected void testGetById_WhenDataFound_ThenReturn200AndData(String uri, String expectedResponseFile, Credentials credentials) throws Exception {
+    protected static String getExpectedMappingsDir() {
+        return EXPECTED_MAPPINGS_DIR;
+    }
+
+    protected static String getErrorsMappingsDir() {
+        return ERRORS_MAPPINGS_DIR;
+    }
+
+    protected static String getBaseMappingsDir() {
+        return BASE_MAPPINGS_DIR;
+    }
+
+    protected void testDataRetrievalToReturnExistedData(String uri, Credentials credentials, String expectedResponseFile) throws Exception {
         String expectedResponse = readJsonFrom(EXPECTED_MAPPINGS_DIR + expectedResponseFile);
         String jwtToken = authenticate(credentials);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add(KeysOfHttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
 
         ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.GET), String.class);
@@ -140,43 +140,16 @@ public class BaseCommonControllerIT/*<SDDTO, SBDTO, T>*/ {
         JSONAssert.assertEquals(expectedResponse, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
-    //admin or customer
-    protected void testGetAllItemsByPagination_WhenDataExists_ThenReturn200WithData(String uri, String expectedResponseFile, Credentials credentials) throws Exception {
-        String expectedResponse = readJsonFrom(EXPECTED_MAPPINGS_DIR + expectedResponseFile);
+    protected void testDataModification(String uri, Credentials credentials, String requestBodyFile) throws Exception {
+        String requestBody = readJsonFrom(getSeedMappingsDir() + requestBodyFile);
         String jwtToken = authenticate(credentials);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
-
-        ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.GET), String.class);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        JSONAssert.assertEquals(expectedResponse, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
-    }
-
-    // admin
-    protected void testEdit_WhenPayloadIsValid_ThenReturn204(String uri, Credentials credentials, String requestBody) {
-        String jwtToken = authenticate(credentials);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        headers.add(KeysOfHttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
 
         ResponseEntity<Void> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.PATCH, requestBody), Void.class);
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
-
-
-    /*@PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
-    @ApiResponses(value = {
-        @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Succeeded in fetching data"),
-        @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Data not found"),
-        @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
-        @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
-    })
-    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SDDTO> getById(@PathVariable int id) {
-        return ResponseEntity.ok(baseCommonService.getById(id));
-    }*/
 
 }

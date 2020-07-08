@@ -23,9 +23,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.cairoshop.persistence.entities.Product;
 import com.cairoshop.persistence.repositories.ProductRepository;
 import com.cairoshop.service.impl.ProductServiceImpl;
-import com.cairoshop.web.dtos.NewProductDTO;
-import com.cairoshop.web.dtos.SavedBriefProductDTO;
-import com.cairoshop.web.dtos.SavedDetailedProductDTO;
+import com.cairoshop.web.dtos.ProductInBriefDTO;
+import com.cairoshop.web.dtos.ProductInDetailDTO;
 import com.cairoshop.web.dtos.SavedImageStream;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
@@ -36,7 +35,7 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * ************************************************************************ */
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest
-                extends BaseServiceTest<SavedDetailedProductDTO, SavedBriefProductDTO, Product> {
+                extends BaseServiceTest<ProductInDetailDTO, ProductInBriefDTO, Product> {
 
     @Mock
     private ProductRepository productRepository;
@@ -45,7 +44,7 @@ public class ProductServiceTest
     private ProductServiceImpl productService;
 
     protected ProductServiceTest() {
-        super(Product.class, SavedDetailedProductDTO.class);
+        super(Product.class, ProductInDetailDTO.class);
     }
 
     @BeforeEach
@@ -55,13 +54,7 @@ public class ProductServiceTest
 
     @Test
     public void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId() {
-        NewProductDTO newProductDTO = new NewProductDTO();
-        newProductDTO.setCategoryId(1);
-        newProductDTO.setVendorId(1);
-        newProductDTO.setDescription("description");
-        newProductDTO.setName("name");
-        newProductDTO.setPrice(50.5);
-        newProductDTO.setQuantity(20);
+        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO("name", 50.5, 20, "description",1, 1, false);
         Product product = mock(Product.class);
         int expectedIdOfCreatedProduct = 1;
         when(product.getId())
@@ -69,25 +62,26 @@ public class ProductServiceTest
         when(productRepository.save(any(Product.class)))
             .thenReturn(product);
 
-        int actualIdOfCreatedProduct = productService.add(newProductDTO);
+        int actualIdOfCreatedProduct = productService.add(productInDetailDTO);
 
         assertEquals(expectedIdOfCreatedProduct, actualIdOfCreatedProduct);
     }
 
     @Test
     public void testEdit_WhenDataIsValid_ThenSave() throws Exception {
-        SavedDetailedProductDTO savedDetailedProductDTO = new SavedDetailedProductDTO(1, "name", 55.55, 20, "description",1, 1, true, false);
+        int id = 1;
+        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO("name", 55.55, 20, "description",1, 1, false);
         int affectedRows = 1;
-        when(productRepository.update(savedDetailedProductDTO.getId(), savedDetailedProductDTO.getName(),
-                                        savedDetailedProductDTO.getPrice(), savedDetailedProductDTO.getQuantity(),
-                                        savedDetailedProductDTO.getCategoryId(), savedDetailedProductDTO.getVendorId()))
+        when(productRepository.update(id, productInDetailDTO.getName(),
+                                        productInDetailDTO.getPrice(), productInDetailDTO.getQuantity(),
+                                        productInDetailDTO.getCategoryId(), productInDetailDTO.getVendorId()))
             .thenReturn(affectedRows);
 
-        productService.edit(savedDetailedProductDTO);
+        productService.edit(id, productInDetailDTO);
 
-        verify(productRepository, times(1)).update(savedDetailedProductDTO.getId(), savedDetailedProductDTO.getName(),
-                                                                            savedDetailedProductDTO.getPrice(), savedDetailedProductDTO.getQuantity(),
-                                                                            savedDetailedProductDTO.getCategoryId(), savedDetailedProductDTO.getVendorId());
+        verify(productRepository, times(1)).update(id, productInDetailDTO.getName(),
+                                                                            productInDetailDTO.getPrice(), productInDetailDTO.getQuantity(),
+                                                                            productInDetailDTO.getCategoryId(), productInDetailDTO.getVendorId());
     }
 
     @Test
@@ -105,10 +99,10 @@ public class ProductServiceTest
 
     @Test
     public void testGetById_WhenDataFound_ThenReturnIt() throws Exception {
-        SavedDetailedProductDTO savedDetailedProductDTO = new SavedDetailedProductDTO(1, "name", 55.55, 20,
+        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO("name", 55.55, 20,
                                                                                 "description",1, 1,
-                                                                                    true, false);
-        testGetById_WhenDataFound_ThenReturnIt(savedDetailedProductDTO, List.of("getId", "getName", "getPrice", "getQuantity", "getDescription", "getCategoryId", "getVendorId", "isActive", "isImageUploaded"));
+                                                                                    false);
+        testGetById_WhenDataFound_ThenReturnIt(productInDetailDTO, List.of("getName", "getPrice", "getQuantity", "getDescription", "getCategoryId", "getVendorId", "isImageUploaded"));
     }
 
     @Test
@@ -126,23 +120,23 @@ public class ProductServiceTest
 
     @Test
     public void testGetAllByPage_WhenDataFound_ThenReturnIt() {
-        SavedBriefProductDTO savedBriefProductDTO = new SavedBriefProductDTO(1, "IPhone X", true);
-        testGetAllByPage_WhenDataFound_ThenReturnIt(savedBriefProductDTO);
+        ProductInBriefDTO productInBriefDTO = new ProductInBriefDTO(1, "IPhone X");
+        testGetAllByPage_WhenDataFound_ThenReturnIt(productInBriefDTO);
     }
 
     @Test
     public void testSearchByProductName_WhenDataFound_ThenReturnIt() {
-        SavedBriefProductDTO savedBriefProductDTO = new SavedBriefProductDTO(1, "IPhone X", true);
-        List<SavedBriefProductDTO> page = List.of(savedBriefProductDTO);
+        ProductInBriefDTO productInBriefDTO = new ProductInBriefDTO(1, "IPhone X");
+        List<ProductInBriefDTO> page = List.of(productInBriefDTO);
         when(productRepository.search(anyString(), any(int.class), any(int.class), anyString(), anyString()))
             .thenReturn(page);
         when(productRepository.countAllByCriteria(anyString()))
             .thenReturn(1);
-        SavedItemsDTO<SavedBriefProductDTO> expectedResult = new SavedItemsDTO<>();
+        SavedItemsDTO<ProductInBriefDTO> expectedResult = new SavedItemsDTO<>();
         expectedResult.setItems(page);
         expectedResult.setAllSavedItemsCount(1);
 
-        SavedItemsDTO<SavedBriefProductDTO> actualResult = productService.searchByProductName("IPhone", 0, "name", "ASC");
+        SavedItemsDTO<ProductInBriefDTO> actualResult = productService.searchByProductName("IPhone", 0, "name", "ASC");
 
         assertEquals(expectedResult.getAllSavedItemsCount(), actualResult.getAllSavedItemsCount());
         assertIterableEquals(expectedResult.getItems(), actualResult.getItems());

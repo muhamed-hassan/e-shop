@@ -5,12 +5,10 @@ package com.cairoshop.web.dtos;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class SavedBriefCustomerDTO extends BaseSavedDTO {
+public class VendorInDetailDTO extends BaseDTO {
 
-    public SavedBriefCustomerDTO(int id, String name, boolean active) {
-        setId(id);
+    public VendorInDetailDTO(String name) {
         setName(name);
-        setActive(active);
     }
 
 }

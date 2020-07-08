@@ -12,9 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.cairoshop.persistence.entities.Vendor;
 import com.cairoshop.persistence.repositories.VendorRepository;
 import com.cairoshop.service.impl.VendorServiceImpl;
-import com.cairoshop.web.dtos.NewVendorDTO;
-import com.cairoshop.web.dtos.SavedBriefVendorDTO;
-import com.cairoshop.web.dtos.SavedDetailedVendorDTO;
+import com.cairoshop.web.dtos.VendorInBriefDTO;
+import com.cairoshop.web.dtos.VendorInDetailDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -23,7 +22,7 @@ import com.cairoshop.web.dtos.SavedDetailedVendorDTO;
  * ************************************************************************ */
 @ExtendWith(MockitoExtension.class)
 public class VendorServiceTest
-        extends BaseProductClassificationServiceTest<NewVendorDTO, SavedDetailedVendorDTO, SavedBriefVendorDTO, Vendor> {
+        extends BaseProductClassificationServiceTest<VendorInDetailDTO, VendorInBriefDTO, Vendor> {
 
     @Mock
     private VendorRepository vendorRepository;
@@ -32,7 +31,7 @@ public class VendorServiceTest
     private VendorServiceImpl vendorService;
 
     public VendorServiceTest() {
-        super(Vendor.class, SavedDetailedVendorDTO.class);
+        super(Vendor.class, VendorInDetailDTO.class);
     }
 
     @BeforeEach
@@ -42,33 +41,32 @@ public class VendorServiceTest
 
     @Test
     public void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId() throws Exception {
-        NewVendorDTO newVendorDTO = new NewVendorDTO();
-        newVendorDTO.setName("Sony");
-        testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(newVendorDTO);
+        VendorInDetailDTO vendorInDetailDTO = new VendorInDetailDTO("Sony");
+        testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(vendorInDetailDTO);
     }
 
     @Test
     public void testEdit_WhenDataIsValid_ThenSave() throws Exception {
-        SavedDetailedVendorDTO savedDetailedVendorDTO = new SavedDetailedVendorDTO(1, "Toshiba", true);
-        testEdit_WhenDataIsValid_ThenSave(savedDetailedVendorDTO);
+        VendorInDetailDTO vendorInDetailDTO = new VendorInDetailDTO("Toshiba");
+        testEdit_WhenDataIsValid_ThenSave(1, vendorInDetailDTO);
     }
 
     @Test
     public void testGetById_WhenDataFound_ThenReturnIt() throws Exception {
-        SavedDetailedVendorDTO savedDetailedVendorDTO = new SavedDetailedVendorDTO(1, "Toshiba", true);
-        testGetById_WhenDataFound_ThenReturnIt(savedDetailedVendorDTO, List.of("getId", "getName", "isActive"));
+        VendorInDetailDTO vendorInDetailDTO = new VendorInDetailDTO("Toshiba");
+        testGetById_WhenDataFound_ThenReturnIt(vendorInDetailDTO, List.of("getName"));
     }
 
     @Test
     public void testGetAllByPage_WhenDataFound_ThenReturnIt() {
-        SavedBriefVendorDTO savedBriefVendorDTO = new SavedBriefVendorDTO(1, "Toshiba", true);
-        testGetAllByPage_WhenDataFound_ThenReturnIt(savedBriefVendorDTO);
+        VendorInBriefDTO vendorInBriefDTO = new VendorInBriefDTO(1, "Toshiba");
+        testGetAllByPage_WhenDataFound_ThenReturnIt(vendorInBriefDTO);
     }
 
     @Test
     public void testGetAll_WhenDataFound_ThenReturnIt() {
-        SavedBriefVendorDTO savedBriefVendorDTO = new SavedBriefVendorDTO(1, "Toshiba", true);
-        testGetAll_WhenDataFound_ThenReturnIt(savedBriefVendorDTO);
+        VendorInBriefDTO vendorInBriefDTO = new VendorInBriefDTO(1, "Toshiba");
+        testGetAll_WhenDataFound_ThenReturnIt(vendorInBriefDTO);
     }
 
     @Test

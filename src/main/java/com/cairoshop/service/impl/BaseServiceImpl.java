@@ -3,6 +3,7 @@ package com.cairoshop.service.impl;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cairoshop.configs.Constants;
 import com.cairoshop.persistence.repositories.BaseRepository;
 import com.cairoshop.service.BaseService;
+import com.cairoshop.service.exceptions.DataIntegrityViolatedException;
 import com.cairoshop.service.exceptions.DataNotDeletedException;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
@@ -18,28 +20,32 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseServiceImpl<NDTO, SDDTO, SBDTO, T>
-                extends BaseCommonServiceImpl<SDDTO, SBDTO, T>
-                implements BaseService<NDTO, SDDTO, SBDTO, T> {
+public class BaseServiceImpl<DDTO, BDTO, T>
+                extends BaseCommonServiceImpl<DDTO, T>
+                implements BaseService<DDTO, BDTO> {
 
     private Class<T> entityClass;
 
-    public BaseServiceImpl(Class<T> entityClass, Class<SDDTO> savedDetailedDtoClass) {
+    public BaseServiceImpl(Class<T> entityClass, Class<DDTO> savedDetailedDtoClass) {
         super(savedDetailedDtoClass);
         this.entityClass = entityClass;
     }
 
+    public Class<T> getEntityClass() {
+        return entityClass;
+    }
+
     @Transactional
     @Override
-    public int add(NDTO ndto) {
+    public int add(DDTO ddto) {
         int id = -1;
         try {
-            T entity = entityClass.getDeclaredConstructor().newInstance();
-            Method[] dtoMethods = ndto.getClass().getMethods();
+            T entity = getEntityClass().getDeclaredConstructor().newInstance();
+            Method[] dtoMethods = ddto.getClass().getMethods();
             for (Method method : dtoMethods) {
                 String methodName = method.getName();
                 if (methodName.startsWith("get") && !methodName.equals("getClass")) {
-                    Object valueFromDto = method.invoke(ndto);
+                    Object valueFromDto = method.invoke(ddto);
                     String setterNameFromEntity = methodName.replace("get", "set");
                     entity.getClass().getMethod(setterNameFromEntity, method.getReturnType()).invoke(entity, valueFromDto);
                 }
@@ -47,6 +53,8 @@ public class BaseServiceImpl<NDTO, SDDTO, SBDTO, T>
             entity.getClass().getMethod("setActive", boolean.class).invoke(entity, true);
             entity = getRepository().save(entity);
             id = (int) entity.getClass().getMethod("getId").invoke(entity);
+        } catch (DataIntegrityViolationException dive) {
+            throw new DataIntegrityViolatedException();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -63,7 +71,7 @@ public class BaseServiceImpl<NDTO, SDDTO, SBDTO, T>
     }
 
     @Override
-    public SavedItemsDTO<SBDTO> getAll(int startPosition, String sortBy, String sortDirection) {
+    public SavedItemsDTO<BDTO> getAll(int startPosition, String sortBy, String sortDirection) {
         Sort sort = Sort.by(sortBy);
         sortDirection = sortDirection.toLowerCase();
         switch (sortDirection) {
@@ -74,12 +82,12 @@ public class BaseServiceImpl<NDTO, SDDTO, SBDTO, T>
                 sort = sort.ascending();
                 break;
         }
-        List<SBDTO> page = ((BaseRepository) getRepository()).findAllBy(PageRequest.of(startPosition, Constants.MAX_PAGE_SIZE, sort));
-        long allCount = ((BaseRepository) getRepository()).count();
-        SavedItemsDTO<SBDTO> sbdtoSavedItemsDTO = new SavedItemsDTO<>();
-        sbdtoSavedItemsDTO.setItems(page);
-        sbdtoSavedItemsDTO.setAllSavedItemsCount(Long.valueOf(allCount).intValue());
-        return sbdtoSavedItemsDTO;
+        List<BDTO> page = ((BaseRepository) getRepository()).findAllBy(PageRequest.of(startPosition, Constants.MAX_PAGE_SIZE, sort));
+        long allCount = getRepository().count();
+        SavedItemsDTO<BDTO> BDTOSavedItemsDTO = new SavedItemsDTO<>();
+        BDTOSavedItemsDTO.setItems(page);
+        BDTOSavedItemsDTO.setAllSavedItemsCount(Long.valueOf(allCount).intValue());
+        return BDTOSavedItemsDTO;
     }
 
 }

@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -23,9 +22,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.cairoshop.persistence.entities.User;
 import com.cairoshop.persistence.repositories.UserRepository;
 import com.cairoshop.service.impl.UserServiceImpl;
-import com.cairoshop.web.dtos.SavedBriefCustomerDTO;
-import com.cairoshop.web.dtos.SavedDetailedCustomerDTO;
 import com.cairoshop.web.dtos.SavedItemsDTO;
+import com.cairoshop.web.dtos.UserInBriefDTO;
+import com.cairoshop.web.dtos.UserInDetailDTO;
+import com.cairoshop.web.dtos.UserStatusDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -34,7 +34,7 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * ************************************************************************ */
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest
-        extends BaseCommonServiceTest<SavedDetailedCustomerDTO, User> {
+        extends BaseCommonServiceTest<UserInDetailDTO, User> {
 
     @Mock
     private UserRepository userRepository;
@@ -43,7 +43,7 @@ public class UserServiceTest
     private UserServiceImpl userService;
 
     protected UserServiceTest() {
-        super(User.class, SavedDetailedCustomerDTO.class);
+        super(User.class, UserInDetailDTO.class);
     }
 
     @BeforeEach
@@ -53,24 +53,24 @@ public class UserServiceTest
 
     @Test
     public void testGetById_WhenDataFound_ThenReturnIt() throws Exception {
-        SavedDetailedCustomerDTO savedDetailedCustomerDTO = new SavedDetailedCustomerDTO(1, "name", true, "username", "email", "phone", "address");
-        testGetById_WhenDataFound_ThenReturnIt(savedDetailedCustomerDTO, List.of("getId", "getName", "isActive", "getUsername", "getEmail", "getPhone", "getAddress"));
+        UserInDetailDTO userInDetailDTO = new UserInDetailDTO("name", "username", "email", "phone", "address", true);
+        testGetById_WhenDataFound_ThenReturnIt(userInDetailDTO, List.of("getName", "getUsername", "getEmail", "getPhone", "getAddress", "isActive"));
     }
 
     @Test
     public void testGetAllCustomersByPage_WhenDataFound_ThenReturnIt() {
-        SavedBriefCustomerDTO savedBriefCustomerDTO = new SavedBriefCustomerDTO(1, "name", true);
-        List<SavedBriefCustomerDTO> page = List.of(savedBriefCustomerDTO);
+        UserInBriefDTO userInBriefDTO = new UserInBriefDTO(1, "name", true);
+        List<UserInBriefDTO> page = List.of(userInBriefDTO);
         when(userRepository.findAllCustomers(any(int.class), any(int.class), anyString(), anyString()))
             .thenReturn(page);
         int countOfAllCustomers = 1;
         when(userRepository.countAllCustomers())
             .thenReturn(countOfAllCustomers);
-        SavedItemsDTO<SavedBriefCustomerDTO> expectedResult = new SavedItemsDTO<>();
+        SavedItemsDTO<UserInBriefDTO> expectedResult = new SavedItemsDTO<>();
         expectedResult.setItems(page);
         expectedResult.setAllSavedItemsCount(countOfAllCustomers);
 
-        SavedItemsDTO<SavedBriefCustomerDTO> actualResult = userService.getAllCustomers(0, "name", "ASC");
+        SavedItemsDTO<UserInBriefDTO> actualResult = userService.getAllCustomers(0, "name", "ASC");
 
         assertEquals(expectedResult.getAllSavedItemsCount(), actualResult.getAllSavedItemsCount());
         assertIterableEquals(expectedResult.getItems(), actualResult.getItems());
@@ -79,14 +79,15 @@ public class UserServiceTest
     @Test
     public void testEdit_WhenDataIsValid_ThenSave() {
         int id = 1;
-        Map<String, String> newStatus = Map.of("status", "true");
+        UserStatusDTO userStatusDTO = new UserStatusDTO();
+        userStatusDTO.setActive(false);
         int affectedRows = 1;
-        when(userRepository.update(id, Boolean.valueOf(newStatus.get("status"))))
+        when(userRepository.update(id, userStatusDTO.isActive()))
             .thenReturn(affectedRows);
 
-        userService.edit(id, newStatus);
+        userService.edit(id, userStatusDTO);
 
-        verify(userRepository, times(1)).update(id, Boolean.valueOf(newStatus.get("status")));
+        verify(userRepository, times(1)).update(id, userStatusDTO.isActive());
     }
 
     @Test

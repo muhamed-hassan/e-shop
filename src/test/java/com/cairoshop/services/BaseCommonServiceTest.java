@@ -15,17 +15,17 @@ import com.cairoshop.service.impl.BaseCommonServiceImpl;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseCommonServiceTest<SDDTO, T> {
+public class BaseCommonServiceTest<DDTO, T> {
 
-    private Class<SDDTO> sddtoClass;
     private Class<T> entityClass;
+    private Class<DDTO> ddtoClass;
 
     private BaseCommonRepository baseCommonRepository;
     private BaseCommonServiceImpl baseCommonService;
 
-    protected BaseCommonServiceTest(Class<T> entityClass, Class<SDDTO> sddtoClass) {
+    protected BaseCommonServiceTest(Class<T> entityClass, Class<DDTO> ddtoClass) {
         this.entityClass = entityClass;
-        this.sddtoClass = sddtoClass;
+        this.ddtoClass = ddtoClass;
     }
 
     protected void injectRefs(BaseCommonRepository baseCommonRepository, BaseCommonServiceImpl baseCommonService) {
@@ -37,8 +37,8 @@ public class BaseCommonServiceTest<SDDTO, T> {
         return entityClass;
     }
 
-    protected Class<SDDTO> getSavedDetailedDtoClass() {
-        return sddtoClass;
+    protected Class<DDTO> getDetailedDtoClass() {
+        return ddtoClass;
     }
 
     protected BaseCommonRepository getRepository() {
@@ -49,15 +49,15 @@ public class BaseCommonServiceTest<SDDTO, T> {
         return baseCommonService;
     }
 
-    protected void testGetById_WhenDataFound_ThenReturnIt(SDDTO sddto, List<String> getters) throws Exception {
-        Optional<SDDTO> expectedResult = Optional.of(sddto);
-        when(getRepository().findById(any(int.class), any(getSavedDetailedDtoClass().getClass())))
+    protected void testGetById_WhenDataFound_ThenReturnIt(DDTO ddto, List<String> getters) throws Exception {
+        Optional<DDTO> expectedResult = Optional.of(ddto);
+        when(getRepository().findById(any(int.class), any(getDetailedDtoClass().getClass())))
             .thenReturn(expectedResult);
 
-        SDDTO actualResult = (SDDTO) getService().getById(1);
+        DDTO actualResult = (DDTO) getService().getById(1);
 
         for (String getter : getters) {
-            assertEquals(expectedResult.get().getClass().getMethod(getter).invoke(sddto), actualResult.getClass().getMethod(getter).invoke(actualResult));
+            assertEquals(expectedResult.get().getClass().getMethod(getter).invoke(ddto), actualResult.getClass().getMethod(getter).invoke(actualResult));
         }
     }
 

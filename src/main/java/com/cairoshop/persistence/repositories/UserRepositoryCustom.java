@@ -2,7 +2,7 @@ package com.cairoshop.persistence.repositories;
 
 import java.util.List;
 
-import com.cairoshop.web.dtos.SavedBriefCustomerDTO;
+import com.cairoshop.web.dtos.UserInBriefDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -11,7 +11,7 @@ import com.cairoshop.web.dtos.SavedBriefCustomerDTO;
  * ************************************************************************ */
 public interface UserRepositoryCustom {
 
-    List<SavedBriefCustomerDTO> findAllCustomers(int startPosition, int pageSize, String sortBy, String sortDirection);
+    List<UserInBriefDTO> findAllCustomers(int startPosition, int pageSize, String sortBy, String sortDirection);
 
     int countAllCustomers();
 

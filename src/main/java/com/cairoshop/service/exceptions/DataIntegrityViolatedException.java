@@ -1,30 +1,15 @@
-package com.cairoshop.web.dtos;
+package com.cairoshop.service.exceptions;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class NewCustomerStateDTO {
+public class DataIntegrityViolatedException extends RuntimeException {
 
-    private int id;
-
-    private boolean active;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
+    public DataIntegrityViolatedException() {
+        super("DB constraint(s) violated");
     }
 
 }
+

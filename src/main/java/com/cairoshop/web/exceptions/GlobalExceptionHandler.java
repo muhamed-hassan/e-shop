@@ -9,10 +9,12 @@ import javax.validation.ConstraintViolationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.cairoshop.service.exceptions.DataIntegrityViolatedException;
 import com.cairoshop.service.exceptions.NoResultException;
 
 /* **************************************************************************
@@ -31,8 +33,8 @@ public class GlobalExceptionHandler {
                                 .body(Map.of(ERROR_KEY, "No data found"));
     }
 
-    @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException exception) {
+    @ExceptionHandler({IllegalArgumentException.class, DataIntegrityViolatedException.class})
+    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(Exception exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .body(Map.of(ERROR_KEY, exception.getMessage()));
     }
@@ -56,6 +58,12 @@ public class GlobalExceptionHandler {
                                     .collect(Collectors.joining(", "));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .body(Map.of(ERROR_KEY, message));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> handleAccessDeniedException(AccessDeniedException exception) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body(Map.of(ERROR_KEY, exception.getMessage()));
     }
 
     @ExceptionHandler
