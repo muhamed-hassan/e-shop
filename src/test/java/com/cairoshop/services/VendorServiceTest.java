@@ -48,7 +48,7 @@ public class VendorServiceTest
     }
 
     @Test
-    public void testEdit_WhenDataIsValid_ThenSave() throws Exception{
+    public void testEdit_WhenDataIsValid_ThenSave() throws Exception {
         SavedDetailedVendorDTO savedDetailedVendorDTO = new SavedDetailedVendorDTO(1, "Toshiba", true);
         testEdit_WhenDataIsValid_ThenSave(savedDetailedVendorDTO);
     }

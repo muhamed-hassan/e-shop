@@ -77,7 +77,7 @@ public class UserServiceTest
     }
 
     @Test
-    public void testEdit_WhenDataIsValid_ThenSave() throws Exception {
+    public void testEdit_WhenDataIsValid_ThenSave() {
         int id = 1;
         Map<String, String> newStatus = Map.of("status", "true");
         int affectedRows = 1;
@@ -90,7 +90,7 @@ public class UserServiceTest
     }
 
     @Test
-    public void testLoadUserByUsername_WhenDataFound_ThenReturnIt() throws Exception {
+    public void testLoadUserByUsername_WhenDataFound_ThenReturnIt() {
         String username = "username";
         User user = new User();
         user.setUsername(username);

@@ -1,0 +1,3 @@
+{
+  "message": "Payload contains invalid value for new status, valid values are: {APPLIED, INVITED, REJECTED, HIRED}"
+}
