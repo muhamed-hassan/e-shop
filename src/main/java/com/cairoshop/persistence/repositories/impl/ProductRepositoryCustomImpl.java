@@ -2,7 +2,6 @@ package com.cairoshop.persistence.repositories.impl;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -23,19 +22,16 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     @Override
     public List<ProductInBriefDTO> search(String name, int startPosition, int pageSize, String sortBy, String sortDirection) {
         StringBuilder query = new StringBuilder()
-            .append("SELECT id, name ")
-            .append("FROM product ")
-            .append("WHERE active = :isActive AND name LIKE :keyword ")
-            .append("ORDER BY ").append(sortBy).append(" ").append(sortDirection);
-        return ((List<Object[]>) entityManager.createNativeQuery(query.toString())
-                                                .setParameter("isActive", true)
-                                                .setParameter("keyword", "%" + name + "%")
-                                                .setMaxResults(pageSize)
-                                                .setFirstResult(startPosition)
-                                                .getResultList())
-                                                .stream()
-                                                .map(record -> new ProductInBriefDTO((Integer) record[0], (String) record[1]))
-                                                .collect(Collectors.toList());
+                                    .append("SELECT id, name ")
+                                    .append("FROM product ")
+                                    .append("WHERE active = :isActive AND name LIKE :keyword ")
+                                    .append("ORDER BY ").append(sortBy).append(" ").append(sortDirection);
+        return entityManager.createNativeQuery(query.toString(), "ProductInBriefDTOMapping")
+                                .setParameter("isActive", true)
+                                .setParameter("keyword", "%" + name + "%")
+                                .setMaxResults(pageSize)
+                                .setFirstResult(startPosition)
+                                .getResultList();
     }
 
     @Override

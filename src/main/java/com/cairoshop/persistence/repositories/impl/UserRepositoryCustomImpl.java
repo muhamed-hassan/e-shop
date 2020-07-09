@@ -2,7 +2,6 @@ package com.cairoshop.persistence.repositories.impl;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,17 +23,14 @@ public class UserRepositoryCustomImpl
     @Override
     public List<UserInBriefDTO> findAllCustomers(int startPosition, int pageSize, String sortBy, String sortDirection) {
         StringBuilder query = new StringBuilder()
-            .append("SELECT u.id, u.name, u.active ")
-            .append("FROM user u INNER JOIN role r ON (u.role = r.id AND r.name = :role) ")
-            .append("ORDER BY ").append(sortBy).append(" ").append(sortDirection);
-        return ((List<Object[]>) entityManager.createNativeQuery(query.toString())
-                                                .setParameter("role", "ROLE_CUSTOMER")
-                                                .setMaxResults(pageSize)
-                                                .setFirstResult(startPosition)
-                                                .getResultList())
-                                                .stream()
-                                                .map(record -> new UserInBriefDTO((Integer) record[0], (String) record[1], (Boolean) record[2]))
-                                                .collect(Collectors.toList());
+                                    .append("SELECT u.id, u.name, u.active ")
+                                    .append("FROM user u INNER JOIN role r ON (u.role = r.id AND r.name = :role) ")
+                                    .append("ORDER BY ").append(sortBy).append(" ").append(sortDirection);
+        return entityManager.createNativeQuery(query.toString(), "UserInBriefDTOMapping")
+                                .setParameter("role", "ROLE_CUSTOMER")
+                                .setMaxResults(pageSize)
+                                .setFirstResult(startPosition)
+                                .getResultList();
     }
 
     @Override

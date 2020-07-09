@@ -5,18 +5,23 @@ import static javax.persistence.GenerationType.IDENTITY;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.SqlResultSetMapping;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Loader;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Where;
+
+import com.cairoshop.web.dtos.ProductInBriefDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -30,6 +35,11 @@ import org.hibernate.annotations.Where;
                     "FROM Product p " +
                     "WHERE p.id = ?1 ")
 @Where(clause = "active = true")
+@SqlResultSetMapping(name = "ProductInBriefDTOMapping",
+                        classes = { @ConstructorResult(targetClass = ProductInBriefDTO.class,
+                                                        columns = { @ColumnResult(name = "id", type = int.class),
+                                                                    @ColumnResult(name = "name", type = String.class) })
+})
 public class Product extends BaseEntity {
 
     @Id
@@ -42,7 +52,7 @@ public class Product extends BaseEntity {
 
     private int quantity;
 
-    private String description; // max 1000 char - TODO update creation script
+    private String description;
 
     @Lob
     @Column(length = 200000)
