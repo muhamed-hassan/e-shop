@@ -29,7 +29,7 @@ import com.cairoshop.web.dtos.UserStatusDTO;
  * ************************************************************************ */
 @Service
 public class UserServiceImpl
-                extends BaseCommonServiceImpl<UserInDetailDTO, User>
+                extends BaseCommonServiceImpl<UserInDetailDTO>
                 implements UserService, UserDetailsService {
 
     @Autowired

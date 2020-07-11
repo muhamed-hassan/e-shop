@@ -51,8 +51,8 @@ public class BaseCommonServiceTest<DDTO, T> {
 
     protected void testGetById_WhenDataFound_ThenReturnIt(DDTO ddto, List<String> getters) throws Exception {
         Optional<DDTO> expectedResult = Optional.of(ddto);
-        when(getRepository().findById(any(int.class), any(getDetailedDtoClass().getClass())))
-            .thenReturn(expectedResult);
+//        when(getRepository().findById(any(int.class), any(getDetailedDtoClass().getClass())))
+//            .thenReturn(expectedResult);
 
         DDTO actualResult = (DDTO) getService().getById(1);
 

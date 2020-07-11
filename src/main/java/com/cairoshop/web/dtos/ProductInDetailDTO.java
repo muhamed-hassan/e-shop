@@ -23,7 +23,7 @@ public class ProductInDetailDTO extends BaseDTO {
 
     private boolean imageUploaded = false;
 
-    public ProductInDetailDTO(String name, double price, int quantity, String description, int categoryId, int vendorId, boolean imageUploaded) {
+    public ProductInDetailDTO(double price, int quantity, String description, int categoryId, int vendorId, boolean imageUploaded, String name) {
         setName(name);
         this.price = price;
         this.quantity = quantity;

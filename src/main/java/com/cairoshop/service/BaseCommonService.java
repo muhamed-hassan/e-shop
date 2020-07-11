@@ -9,4 +9,5 @@ public interface BaseCommonService<DDTO> {
 
     DDTO getById(int id);
 
+
 }

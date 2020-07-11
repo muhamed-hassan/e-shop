@@ -7,6 +7,8 @@ package com.cairoshop.web.dtos;
  * ************************************************************************ */
 public class CategoryInDetailDTO extends BaseDTO {
 
+    public CategoryInDetailDTO() {}
+
     public CategoryInDetailDTO(String name) {
         setName(name);
     }

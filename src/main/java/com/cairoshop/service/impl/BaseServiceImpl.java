@@ -20,14 +20,14 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseServiceImpl<DDTO, BDTO, T>
-                extends BaseCommonServiceImpl<DDTO, T>
+public class BaseServiceImpl<T, DDTO, BDTO>
+                extends BaseCommonServiceImpl<DDTO>
                 implements BaseService<DDTO, BDTO> {
 
     private Class<T> entityClass;
 
-    public BaseServiceImpl(Class<T> entityClass, Class<DDTO> savedDetailedDtoClass) {
-        super(savedDetailedDtoClass);
+    public BaseServiceImpl(Class<T> entityClass, Class<DDTO> ddtoClass) {
+        super(ddtoClass);
         this.entityClass = entityClass;
     }
 
@@ -51,8 +51,8 @@ public class BaseServiceImpl<DDTO, BDTO, T>
                 }
             }
             entity.getClass().getMethod("setActive", boolean.class).invoke(entity, true);
-            entity = getRepository().save(entity);
-            id = (int) entity.getClass().getMethod("getId").invoke(entity);
+            id = ((BaseRepository) getRepository()).save(entity);
+//            id = (int) entity.getClass().getMethod("getId").invoke(entity);
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
         } catch (Exception e) {
@@ -64,7 +64,7 @@ public class BaseServiceImpl<DDTO, BDTO, T>
     @Transactional
     @Override
     public void removeById(int id) {
-        int affectedRows = ((BaseRepository) getRepository()).softDeleteById(id);
+        int affectedRows = ((BaseRepository) getRepository()).deleteById(id);
         if (affectedRows == 0) {
             throw new DataNotDeletedException();
         }
@@ -72,18 +72,18 @@ public class BaseServiceImpl<DDTO, BDTO, T>
 
     @Override
     public SavedItemsDTO<BDTO> getAll(int startPosition, String sortBy, String sortDirection) {
-        Sort sort = Sort.by(sortBy);
-        sortDirection = sortDirection.toLowerCase();
-        switch (sortDirection) {
-            case "desc":
-                sort = sort.descending();
-                break;
-            case "asc":
-                sort = sort.ascending();
-                break;
-        }
-        List<BDTO> page = ((BaseRepository) getRepository()).findAllBy(PageRequest.of(startPosition, Constants.MAX_PAGE_SIZE, sort));
-        long allCount = getRepository().count();
+//        Sort sort = Sort.by(sortBy);
+//        sortDirection = sortDirection.toLowerCase();
+//        switch (sortDirection) {
+//            case "desc":
+//                sort = sort.descending();
+//                break;
+//            case "asc":
+//                sort = sort.ascending();
+//                break;
+//        }
+        List<BDTO> page = ((BaseRepository) getRepository()).findAllByPage(startPosition, Constants.MAX_PAGE_SIZE, sortBy, sortDirection);
+        long allCount = ((BaseRepository) getRepository()).countAllActive();
         SavedItemsDTO<BDTO> BDTOSavedItemsDTO = new SavedItemsDTO<>();
         BDTOSavedItemsDTO.setItems(page);
         BDTOSavedItemsDTO.setAllSavedItemsCount(Long.valueOf(allCount).intValue());

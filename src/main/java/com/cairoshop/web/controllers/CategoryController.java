@@ -21,7 +21,7 @@ import com.cairoshop.web.dtos.CategoryInDetailDTO;
 @RequestMapping("categories")
 @Validated
 public class CategoryController
-            extends BaseProductClassificationController<CategoryInDetailDTO, CategoryInBriefDTO, Category> {
+            extends BaseProductClassificationController<Category, CategoryInDetailDTO, CategoryInBriefDTO> {
 
     @Autowired
     private CategoryService categoryService;

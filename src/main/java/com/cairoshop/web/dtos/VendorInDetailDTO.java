@@ -7,6 +7,8 @@ package com.cairoshop.web.dtos;
  * ************************************************************************ */
 public class VendorInDetailDTO extends BaseDTO {
 
+    public VendorInDetailDTO() {}
+
     public VendorInDetailDTO(String name) {
         setName(name);
     }

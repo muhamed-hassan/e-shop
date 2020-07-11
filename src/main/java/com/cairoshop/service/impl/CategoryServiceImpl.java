@@ -18,7 +18,7 @@ import com.cairoshop.web.dtos.CategoryInDetailDTO;
  * ************************************************************************ */
 @Service
 public class CategoryServiceImpl
-                extends BaseProductClassificationServiceImpl<CategoryInDetailDTO, CategoryInBriefDTO, Category>
+                extends BaseProductClassificationServiceImpl<Category, CategoryInDetailDTO, CategoryInBriefDTO>
                 implements CategoryService {
 
     @Autowired

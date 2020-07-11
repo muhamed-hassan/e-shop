@@ -1,11 +1,11 @@
 package com.cairoshop.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +19,6 @@ import com.cairoshop.service.exceptions.DataNotUpdatedException;
 import com.cairoshop.service.exceptions.NoResultException;
 import com.cairoshop.web.dtos.ProductInBriefDTO;
 import com.cairoshop.web.dtos.ProductInDetailDTO;
-import com.cairoshop.web.dtos.SavedImageStream;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
 /* **************************************************************************
@@ -29,7 +28,7 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * ************************************************************************ */
 @Service
 public class ProductServiceImpl
-                extends BaseServiceImpl<ProductInDetailDTO, ProductInBriefDTO, Product>
+                extends BaseServiceImpl<Product, ProductInDetailDTO, ProductInBriefDTO>
                 implements ProductService {
 
     @Autowired
@@ -61,7 +60,7 @@ public class ProductServiceImpl
             category.setId(productInDetailDTO.getCategoryId());
             product.setCategory(category);
             product.setActive(true);
-            id = productRepository.save(product).getId();
+            id = productRepository.save(product);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -70,19 +69,19 @@ public class ProductServiceImpl
 
     @Override
     public byte[] getImage(int id) {
-        Optional<SavedImageStream> savedImageStream = productRepository.findImageById(id, SavedImageStream.class);
-        if (savedImageStream.isEmpty()) {
+        byte[] imageStream;
+        try {
+            imageStream = productRepository.findImageByProductId(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
+        } catch (EmptyResultDataAccessException erde) {
             throw new NoResultException();
         }
-        return savedImageStream.get().getImage();
+        return imageStream;
     }
 
     @Transactional
     @Override
-    public void edit(int id, ProductInDetailDTO productInDetailDTO) {
-        int affectedRows = productRepository.update(id, productInDetailDTO.getName(),
-                                                        productInDetailDTO.getPrice(), productInDetailDTO.getQuantity(),
-                                                        productInDetailDTO.getCategoryId(), productInDetailDTO.getVendorId());
+    public void edit(int id, ProductInDetailDTO productInDetailDTO) throws Exception {
+        int affectedRows = productRepository.update(id, productInDetailDTO);
         if (affectedRows == 0) {
             throw new DataNotUpdatedException();
         }

@@ -39,7 +39,7 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("users")
 @Validated
 public class UserController
-            extends BaseCommonController<UserInDetailDTO, UserInBriefDTO, User> {
+            extends BaseCommonController<UserInDetailDTO> {
     
     @Autowired
     private UserService userService;

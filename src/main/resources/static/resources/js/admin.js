@@ -115,43 +115,44 @@ function preEditItem(requestUrlOfItem) {
         isCategory = requestUrlOfItem.includes("categories");
     if (isProduct) {
         showPreloader();
-        $.when(sendAuthorizedRequest(requestUrlOfItem, GET),
+        $.when($.Deferred().resolve(requestUrlOfItem.substr(requestUrlOfItem.lastIndexOf("/") + 1)),
+                sendAuthorizedRequest(requestUrlOfItem, GET),
                 sendAuthorizedRequest('/vendors', GET),
                 sendAuthorizedRequest('/categories', GET)
-        ).then(function(productResponse, vendorsResponse, categoriesResponse) {
+        ).then(function(productId, productResponse, vendorsResponse, categoriesResponse) {
             let product = productResponse[0];
             let vendors = vendorsResponse[0];
             let categories = categoriesResponse[0];
-            let vendorsSelectOptionsHtml = createSelectMenuFrom(vendors, 'vendorId', product.vendorId);
-            let categoriesSelectOptionsHtml = createSelectMenuFrom(categories, 'categoryId', product.categoryId);
+            let vendorsSelectOptionsHtml = createSelectMenuFrom(vendors, VENDOR_ID, product.vendorId);
+            let categoriesSelectOptionsHtml = createSelectMenuFrom(categories, CATEGORY_ID, product.categoryId);
             let htmlContent = `<div id='product_under_edit' class='row'>`;
             Object.keys(product)
                     .forEach(function(key) {
                         if (notSkippedField(key)) {
                             switch (key) {
-                                case 'vendorId':
+                                case VENDOR_ID:
                                     htmlContent += `<div class='col-md-6 mb-3'>
-                                                            <p class='font-weight-bold text-capitalize'>vendor: </p>
-                                                            ${vendorsSelectOptionsHtml}
-                                                        </div>`;
+                                                        <p class='font-weight-bold text-capitalize'>vendor: </p>
+                                                        ${vendorsSelectOptionsHtml}
+                                                    </div>`;
                                     break;
-                                case 'categoryId':
+                                case CATEGORY_ID:
                                     htmlContent += `<div class='col-md-6 mb-3'>
-                                                            <p class='font-weight-bold text-capitalize'>category: </p>
-                                                            ${categoriesSelectOptionsHtml}
-                                                        </div>`;
+                                                        <p class='font-weight-bold text-capitalize'>category: </p>
+                                                        ${categoriesSelectOptionsHtml}
+                                                    </div>`;
                                     break;
                                 default:
                                     htmlContent += `<div class='col-md-6 mb-3'>
-                                                            <p class='font-weight-bold text-capitalize'>${key}: </p>
-                                                            <input id='${key}' type='text' value='${product[key]}' class='form-control'/>
-                                                        </div>`;
+                                                        <p class='font-weight-bold text-capitalize'>${key}: </p>
+                                                        <input id='${key}' type='text' value='${product[key]}' class='form-control'/>
+                                                    </div>`;
                             }
                         }
                     });
             let imageSrc;
             if (product.imageUploaded) {
-                imageSrc = `/products/images/${product.id}`;
+                imageSrc = `/products/images/${productId}`;
             } else {
                 imageSrc = `resources/images/empty.jpg`;
             }
@@ -161,7 +162,7 @@ function preEditItem(requestUrlOfItem) {
                                     </div>
                                     <img id='image_of_product' src='${imageSrc}' width='500' height='333'>
                                 </div>
-                                <button onclick='editProduct(${product.id})' class='form-control btn btn-primary'>Save</button>`;                                
+                                <button onclick='editProduct(${productId})' class='form-control btn btn-primary'>Save</button>`;                                
             $("#content").html(htmlContent);
             attachImageChangeListener();
         }, function(errorThrown) {
@@ -201,10 +202,8 @@ function preEditItem(requestUrlOfItem) {
 
 function editProductClassification(requestUrl, type) {
     showPreloader();
-    let productClassificationId = requestUrl.substring(requestUrl.lastIndexOf('/') + 1);
-    let productClassificationName = $('#product_classification_name').val();
-    let payload = {'id': productClassificationId, 'name': productClassificationName, 'active': true};
-    sendAuthorizedRequest(requestUrl.substring(0, requestUrl.lastIndexOf('/')), PATCH, JSON.stringify(payload), 'application/json')
+    let payload = {'name': $('#product_classification_name').val()};
+    sendAuthorizedRequest(requestUrl, PATCH, JSON.stringify(payload), 'application/json')
     .done(function(data, textStatus, jqXHR) {
         showMessage(`${type} edited successfully`, 'success');
         $('#content').empty();
@@ -234,13 +233,13 @@ function uploadImageIfAny(productId) {
 function editProduct(savedProductId) {
     showPreloader();
     let editProductFormElements = $('#product_under_edit input[type=text], select');
-    let payload = {'id': savedProductId, 'active': true};
+    let payload = {};
     for (let index = 0; index < editProductFormElements.length; index++) {    
         payload[$(editProductFormElements[index]).attr('id')] = $(editProductFormElements[index]).is('select') ? 
                                                                     $(editProductFormElements[index]).children('option:selected').val() : 
                                                                     $(editProductFormElements[index]).val();
     }
-    $.when(sendAuthorizedRequest('/products', PATCH, JSON.stringify(payload), 'application/json')
+    $.when(sendAuthorizedRequest(`/products/${savedProductId}`, PATCH, JSON.stringify(payload), 'application/json')
     ).then(function(data, textStatus, jqXHR) { 
         return uploadImageIfAny(savedProductId);                        
     }).done(function(data, textStatus, jqXHR) {

@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiResponses;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseCommonController<DDTO, BDTO, T> {
+public class BaseCommonController<DDTO> {
 
     private BaseCommonService<DDTO> baseCommonService;
 

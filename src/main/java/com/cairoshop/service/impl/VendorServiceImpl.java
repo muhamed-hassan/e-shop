@@ -18,7 +18,7 @@ import com.cairoshop.web.dtos.VendorInDetailDTO;
  * ************************************************************************ */
 @Service
 public class VendorServiceImpl
-            extends BaseProductClassificationServiceImpl<VendorInDetailDTO, VendorInBriefDTO, Vendor>
+            extends BaseProductClassificationServiceImpl<Vendor, VendorInDetailDTO, VendorInBriefDTO>
             implements VendorService {
 
     @Autowired

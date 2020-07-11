@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiResponses;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseProductClassificationController<DDTO, BDTO, T> extends BaseController<DDTO, BDTO, T> {
+public class BaseProductClassificationController<T, DDTO, BDTO> extends BaseController<T, DDTO, BDTO> {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     @ApiResponses(value = {

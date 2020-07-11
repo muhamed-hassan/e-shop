@@ -35,7 +35,7 @@ import com.cairoshop.web.dtos.ProductInBriefDTO;
                     "FROM Product p " +
                     "WHERE p.id = ?1 ")
 @Where(clause = "active = true")
-@SqlResultSetMapping(name = "ProductInBriefDTOMapping",
+@SqlResultSetMapping(name = "ProductInBriefDTO",
                         classes = { @ConstructorResult(targetClass = ProductInBriefDTO.class,
                                                         columns = { @ColumnResult(name = "id", type = int.class),
                                                                     @ColumnResult(name = "name", type = String.class) })

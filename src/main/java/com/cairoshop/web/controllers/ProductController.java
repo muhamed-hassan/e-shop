@@ -43,7 +43,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping("products")
 @Validated
-public class ProductController extends BaseController<ProductInDetailDTO, ProductInBriefDTO, Product> {
+public class ProductController extends BaseController<Product, ProductInDetailDTO, ProductInBriefDTO> {
 
     @Autowired
     private ProductService productService;
@@ -85,7 +85,7 @@ public class ProductController extends BaseController<ProductInDetailDTO, Produc
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @PatchMapping(path = "{id}")
-    public ResponseEntity<Void> update(@PathVariable int id, @Valid @RequestBody ProductInDetailDTO productInDetailDTO) {
+    public ResponseEntity<Void> update(@PathVariable int id, @Valid @RequestBody ProductInDetailDTO productInDetailDTO) throws Exception {
         productService.edit(id, productInDetailDTO);
         return ResponseEntity.noContent().build();
     }

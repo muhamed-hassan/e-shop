@@ -30,8 +30,8 @@ public class BaseProductClassificationServiceTest<DDTO, BDTO, T>
         T savedEntity = mock(getEntityClass());
         when((int) savedEntity.getClass().getMethod("getId").invoke(savedEntity))
             .thenReturn(expectedCreatedId);
-        when(getRepository().save(any(getEntityClass())))
-            .thenReturn(savedEntity);
+//        when(getRepository().save(any(getEntityClass())))
+//            .thenReturn(savedEntity);
 
         int actualCreatedId = ((BaseProductClassificationService) getService()).add(ddto);
 
@@ -51,7 +51,7 @@ public class BaseProductClassificationServiceTest<DDTO, BDTO, T>
 
     protected void testGetAll_WhenDataFound_ThenReturnIt(BDTO bdto) {
         List<BDTO> expectedResult = List.of(bdto);
-        when(((BaseProductClassificationRepository) getRepository()).findAllBy())
+        when(((BaseProductClassificationRepository) getRepository()).findAll())
             .thenReturn(expectedResult);
 
         List<BDTO> actualResult = ((BaseProductClassificationService) getService()).getAll();

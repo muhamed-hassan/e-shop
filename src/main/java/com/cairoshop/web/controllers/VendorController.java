@@ -21,7 +21,7 @@ import com.cairoshop.web.dtos.VendorInDetailDTO;
 @RequestMapping("vendors")
 @Validated
 public class VendorController
-                extends BaseProductClassificationController<VendorInDetailDTO, VendorInBriefDTO, Vendor> {
+                extends BaseProductClassificationController<Vendor, VendorInDetailDTO, VendorInBriefDTO> {
     
     @Autowired
     private VendorService vendorService;

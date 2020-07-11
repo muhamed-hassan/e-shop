@@ -28,7 +28,7 @@ import com.cairoshop.web.dtos.UserInBriefDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-@SqlResultSetMapping(name = "UserInBriefDTOMapping",
+@SqlResultSetMapping(name = "UserInBriefDTO",
                         classes = { @ConstructorResult(targetClass = UserInBriefDTO.class,
                                                         columns = { @ColumnResult(name = "id", type = int.class),
                                                                     @ColumnResult(name = "name", type = String.class),
