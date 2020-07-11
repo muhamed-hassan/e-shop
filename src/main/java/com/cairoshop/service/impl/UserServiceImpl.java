@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cairoshop.configs.Constants;
-import com.cairoshop.persistence.entities.User;
 import com.cairoshop.persistence.repositories.UserRepository;
 import com.cairoshop.service.UserService;
 import com.cairoshop.service.exceptions.DataNotUpdatedException;
@@ -29,8 +28,8 @@ import com.cairoshop.web.dtos.UserStatusDTO;
  * ************************************************************************ */
 @Service
 public class UserServiceImpl
-                extends BaseCommonServiceImpl<UserInDetailDTO>
-                implements UserService, UserDetailsService {
+            extends BaseCommonServiceImpl<UserInDetailDTO>
+            implements UserService, UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;

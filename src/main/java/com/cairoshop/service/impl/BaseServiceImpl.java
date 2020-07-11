@@ -21,8 +21,8 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 public class BaseServiceImpl<T, DDTO, BDTO>
-                extends BaseCommonServiceImpl<DDTO>
-                implements BaseService<DDTO, BDTO> {
+            extends BaseCommonServiceImpl<DDTO>
+            implements BaseService<DDTO, BDTO> {
 
     private Class<T> entityClass;
 
@@ -38,7 +38,7 @@ public class BaseServiceImpl<T, DDTO, BDTO>
     @Transactional
     @Override
     public int add(DDTO ddto) {
-        int id = -1;
+        int id;
         try {
             T entity = getEntityClass().getDeclaredConstructor().newInstance();
             Method[] dtoMethods = ddto.getClass().getMethods();
@@ -52,7 +52,6 @@ public class BaseServiceImpl<T, DDTO, BDTO>
             }
             entity.getClass().getMethod("setActive", boolean.class).invoke(entity, true);
             id = ((BaseRepository) getRepository()).save(entity);
-//            id = (int) entity.getClass().getMethod("getId").invoke(entity);
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
         } catch (Exception e) {
@@ -72,21 +71,11 @@ public class BaseServiceImpl<T, DDTO, BDTO>
 
     @Override
     public SavedItemsDTO<BDTO> getAll(int startPosition, String sortBy, String sortDirection) {
-//        Sort sort = Sort.by(sortBy);
-//        sortDirection = sortDirection.toLowerCase();
-//        switch (sortDirection) {
-//            case "desc":
-//                sort = sort.descending();
-//                break;
-//            case "asc":
-//                sort = sort.ascending();
-//                break;
-//        }
         List<BDTO> page = ((BaseRepository) getRepository()).findAllByPage(startPosition, Constants.MAX_PAGE_SIZE, sortBy, sortDirection);
-        long allCount = ((BaseRepository) getRepository()).countAllActive();
+        int allCount = ((BaseRepository) getRepository()).countAllActive();
         SavedItemsDTO<BDTO> BDTOSavedItemsDTO = new SavedItemsDTO<>();
         BDTOSavedItemsDTO.setItems(page);
-        BDTOSavedItemsDTO.setAllSavedItemsCount(Long.valueOf(allCount).intValue());
+        BDTOSavedItemsDTO.setAllSavedItemsCount(allCount);
         return BDTOSavedItemsDTO;
     }
 

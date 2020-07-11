@@ -35,14 +35,6 @@ public class BaseCommonServiceImpl<DDTO>
 
     @Override
     public DDTO getById(int id) {
-//        TypeVariable<Class<BaseCommonServiceImpl>>[] ff = BaseCommonServiceImpl.class.getTypeParameters();
-//        System.out.println(ff[1].getName());
-        //findById(int id, Class<DDTO> ddtoClass, String entityName, String dtoResultMapperName)
-//        return repository.findById("", id, savedDetailedDtoClass)
-//                            .orElseThrow(NoResultException::new);
-
-
-
         try {
             return repository.findById(id);
         } catch (EmptyResultDataAccessException erde) {

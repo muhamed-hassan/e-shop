@@ -1,24 +1,16 @@
 package com.cairoshop.persistence.repositories.impl;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
-
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Repository;
 
 import com.cairoshop.persistence.repositories.BaseCommonRepository;
 
@@ -53,59 +45,28 @@ public class BaseCommonRepositoryImpl<T, DDTO>
         return entityManager;
     }
 
-    /*
-    select new com.vladmihalcea.book.hpjp.hibernate.forum.dto.PostDTO(
-       p.id,
-       p.title
-    )
-    * */
-
-
-
     @Override
     public DDTO findById(int id) {
-
-
-        DDTO authors = null;
-
-        try {
-            CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-            CriteriaQuery<DDTO> criteriaQuery = criteriaBuilder.createQuery(getDdtoClass());
-            Root<T> root = criteriaQuery.from(getEntityClass());
-            //Selection<?>... selections
-            List<String> fields = new ArrayList<>();
-            getFields(fields, getDdtoClass());
-            List<Selection<?>> selections = fields.stream()
-                .map(field -> root.get(field))
-                .collect(Collectors.toList());
-
-            criteriaQuery.select(criteriaBuilder.construct(getDdtoClass(), selections.toArray(new Selection[selections.size()])))
-            .where(criteriaBuilder.and(criteriaBuilder.equal(root.get("id"), id), criteriaBuilder.equal(root.get("active"), true)));
-
-            TypedQuery<DDTO> query = getEntityManager().createQuery(criteriaQuery);
-            authors = query.getSingleResult();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        return authors;
-
-
-
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<DDTO> criteriaQuery = criteriaBuilder.createQuery(getDdtoClass());
+        Root<T> root = criteriaQuery.from(getEntityClass());
+        List<String> fields = new ArrayList<>();
+        getFields(fields, getDdtoClass());
+        List<Selection<?>> selections = fields.stream()
+                                                .map(field -> root.get(field))
+                                                .collect(Collectors.toList());
+        criteriaQuery.select(criteriaBuilder.construct(getDdtoClass(), selections.toArray(new Selection[selections.size()])))
+                        .where(criteriaBuilder.and(criteriaBuilder.equal(root.get("id"), id),
+                                                    criteriaBuilder.equal(root.get("active"), true)));
+        return getEntityManager().createQuery(criteriaQuery).getSingleResult();
     }
 
-
-
     protected void getFields(List<String> fields, Class<?> current) {
-
-
-
         if (current.equals(Object.class)) return;
 
         fields.addAll(Stream.of(current.getDeclaredFields())
-            .map(field -> field.getName())
-            .collect(Collectors.toList()));
+                            .map(field -> field.getName())
+                            .collect(Collectors.toList()));
 
         getFields(fields, current.getSuperclass());
     }

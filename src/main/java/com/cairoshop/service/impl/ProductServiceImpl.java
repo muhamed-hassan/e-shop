@@ -28,8 +28,8 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * ************************************************************************ */
 @Service
 public class ProductServiceImpl
-                extends BaseServiceImpl<Product, ProductInDetailDTO, ProductInBriefDTO>
-                implements ProductService {
+            extends BaseServiceImpl<Product, ProductInDetailDTO, ProductInBriefDTO>
+            implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;

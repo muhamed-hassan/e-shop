@@ -6,14 +6,11 @@ import java.util.Collection;
 import java.util.Collections;
 
 import javax.persistence.Column;
-import javax.persistence.ColumnResult;
-import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SqlResultSetMapping;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -21,19 +18,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.cairoshop.web.dtos.UserInBriefDTO;
-
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-@SqlResultSetMapping(name = "UserInBriefDTO",
-                        classes = { @ConstructorResult(targetClass = UserInBriefDTO.class,
-                                                        columns = { @ColumnResult(name = "id", type = int.class),
-                                                                    @ColumnResult(name = "name", type = String.class),
-                                                                    @ColumnResult(name = "active", type = boolean.class) })
-})
 @Entity
 public class User extends BaseEntity implements UserDetails {
 

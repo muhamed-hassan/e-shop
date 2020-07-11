@@ -18,10 +18,10 @@ import com.cairoshop.service.exceptions.DataNotUpdatedException;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 public class BaseProductClassificationServiceImpl<T, DDTO, BDTO>
-                    extends BaseServiceImpl<T, DDTO, BDTO>
-                    implements BaseProductClassificationService<DDTO, BDTO> {
+            extends BaseServiceImpl<T, DDTO, BDTO>
+            implements BaseProductClassificationService<DDTO, BDTO> {
 
-    public BaseProductClassificationServiceImpl(Class<T> entityClass, Class<DDTO> ddtoClass) {
+    protected BaseProductClassificationServiceImpl(Class<T> entityClass, Class<DDTO> ddtoClass) {
         super(entityClass, ddtoClass);
     }
 
@@ -30,7 +30,6 @@ public class BaseProductClassificationServiceImpl<T, DDTO, BDTO>
     public void edit(int id, DDTO ddto) {
         int affectedRows;
         try {
-            //String name = (String) ddto.getClass().getMethod("getName").invoke(ddto);
             affectedRows = ((BaseProductClassificationRepository) getRepository()).update(id, ddto);
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();

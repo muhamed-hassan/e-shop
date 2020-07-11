@@ -1,8 +1,6 @@
 package com.cairoshop.persistence.repositories;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.Map;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *

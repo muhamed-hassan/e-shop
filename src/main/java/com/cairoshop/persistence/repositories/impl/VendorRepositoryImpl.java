@@ -7,10 +7,15 @@ import com.cairoshop.persistence.repositories.VendorRepository;
 import com.cairoshop.web.dtos.VendorInBriefDTO;
 import com.cairoshop.web.dtos.VendorInDetailDTO;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 @Repository
 public class VendorRepositoryImpl
-    extends BaseProductClassificationRepositoryImpl<Vendor, VendorInDetailDTO, VendorInBriefDTO>
-    implements VendorRepository {
+            extends BaseProductClassificationRepositoryImpl<Vendor, VendorInDetailDTO, VendorInBriefDTO>
+            implements VendorRepository {
 
     public VendorRepositoryImpl() {
         super(Vendor.class, VendorInDetailDTO.class, VendorInBriefDTO.class);
