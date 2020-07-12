@@ -1,10 +1,12 @@
 package com.cairoshop.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,8 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cairoshop.configs.Constants;
 import com.cairoshop.persistence.entities.Category;
 import com.cairoshop.persistence.entities.Product;
+import com.cairoshop.persistence.entities.ProductSortableFields;
 import com.cairoshop.persistence.entities.Vendor;
 import com.cairoshop.persistence.repositories.ProductRepository;
+import com.cairoshop.persistence.repositories.ProductSortableFieldsRepository;
 import com.cairoshop.service.ProductService;
 import com.cairoshop.service.exceptions.DataNotUpdatedException;
 import com.cairoshop.service.exceptions.NoResultException;
@@ -33,6 +37,9 @@ public class ProductServiceImpl
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ProductSortableFieldsRepository productSortableFieldsRepository;
 
     public ProductServiceImpl() {
         super(Product.class, ProductInDetailDTO.class);
@@ -96,9 +103,13 @@ public class ProductServiceImpl
         }
     }
 
+    @Cacheable(value = "productSortableFieldsCache")
     @Override
     public List<String> getSortableFields() {
-        return Product.SORTABLE_FIELDS;
+        return productSortableFieldsRepository.findAll()
+                                                .stream()
+                                                .map(ProductSortableFields::getName)
+                                                .collect(Collectors.toList());
     }
 
     @Override
