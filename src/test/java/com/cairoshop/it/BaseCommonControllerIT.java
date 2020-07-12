@@ -41,8 +41,8 @@ import com.cairoshop.it.models.HttpRequest;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class BaseCommonControllerIT {
 
     private static final String SEED_MAPPINGS_DIR = "seed/";
@@ -54,13 +54,13 @@ public class BaseCommonControllerIT {
 
     private TestRestTemplate testRestTemplate;
 
-    @Autowired
+//    @Autowired
     private RestTemplateBuilder restTemplateBuilder;
 
-    @LocalServerPort
+//    @LocalServerPort
     private int port;
 
-    @BeforeAll
+//   / @BeforeAll
     public static void init() {
         mySQLContainer = new MySQLContainer("mysql:8.0.20")
                                 .withDatabaseName("integration-tests-db")
@@ -72,7 +72,7 @@ public class BaseCommonControllerIT {
         System.setProperty("DB_PASSWORD", mySQLContainer.getPassword());
     }
 
-    @PostConstruct
+//    @PostConstruct
     public void iniTestRestTemplate() {
         testRestTemplate = new TestRestTemplate(restTemplateBuilder.rootUri("http://localhost:" + port));
         testRestTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());

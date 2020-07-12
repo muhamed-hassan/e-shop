@@ -2,8 +2,6 @@ package com.cairoshop.service.impl;
 
 import java.util.List;
 
-import javax.persistence.NoResultException;
-
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +9,7 @@ import com.cairoshop.persistence.repositories.BaseProductClassificationRepositor
 import com.cairoshop.service.BaseProductClassificationService;
 import com.cairoshop.service.exceptions.DataIntegrityViolatedException;
 import com.cairoshop.service.exceptions.DataNotUpdatedException;
+import com.cairoshop.service.exceptions.NoResultException;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
@@ -31,9 +30,10 @@ public class BaseProductClassificationServiceImpl<T, DDTO, BDTO>
         int affectedRows;
         try {
             affectedRows = ((BaseProductClassificationRepository) getRepository()).update(id, ddto);
-        } catch (DataIntegrityViolationException dive) {
-            throw new DataIntegrityViolatedException();
         } catch (Exception e) {
+            if (e instanceof DataIntegrityViolationException) {
+                throw new DataIntegrityViolatedException();
+            }
             throw new RuntimeException(e);
         }
         if (affectedRows == 0) {

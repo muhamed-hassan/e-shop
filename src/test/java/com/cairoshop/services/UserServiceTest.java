@@ -2,9 +2,9 @@ package com.cairoshop.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -13,14 +13,14 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.cairoshop.persistence.entities.User;
 import com.cairoshop.persistence.repositories.UserRepository;
+import com.cairoshop.service.exceptions.DataNotUpdatedException;
 import com.cairoshop.service.impl.UserServiceImpl;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 import com.cairoshop.web.dtos.UserInBriefDTO;
@@ -32,9 +32,8 @@ import com.cairoshop.web.dtos.UserStatusDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-@ExtendWith(MockitoExtension.class)
 public class UserServiceTest
-        extends BaseCommonServiceTest<UserInDetailDTO, User> {
+            extends BaseCommonServiceTest<User, UserInDetailDTO> {
 
     @Mock
     private UserRepository userRepository;
@@ -54,7 +53,12 @@ public class UserServiceTest
     @Test
     public void testGetById_WhenDataFound_ThenReturnIt() throws Exception {
         UserInDetailDTO userInDetailDTO = new UserInDetailDTO("name", "username", "email", "phone", "address", true);
-        testGetById_WhenDataFound_ThenReturnIt(userInDetailDTO, List.of("getName", "getUsername", "getEmail", "getPhone", "getAddress", "isActive"));
+        testGetById_WhenDataFound_ThenReturnIt(1, userInDetailDTO, List.of("getName", "getUsername", "getEmail", "getPhone", "getAddress", "isActive"));
+    }
+
+    @Test
+    public void testGetById_WhenDataNotFound_ThenThrowNoResultException() {
+        testGetById_WhenDataNotFound_ThenThrowNoResultException(404);
     }
 
     @Test
@@ -87,7 +91,20 @@ public class UserServiceTest
 
         userService.edit(id, userStatusDTO);
 
-        verify(userRepository, times(1)).update(id, userStatusDTO.isActive());
+        verify(userRepository).update(id, userStatusDTO.isActive());
+    }
+
+    @Test
+    public void testEdit_WhenRecordNotUpdated_ThenThrowDataNotUpdatedException() {
+        int id = 1;
+        UserStatusDTO userStatusDTO = new UserStatusDTO();
+        userStatusDTO.setActive(false);
+        int affectedRows = 0;
+        when(userRepository.update(any(int.class), any(boolean.class)))
+            .thenReturn(affectedRows);
+
+        assertThrows(DataNotUpdatedException.class,
+            () -> userService.edit(id, userStatusDTO));
     }
 
     @Test
@@ -102,6 +119,17 @@ public class UserServiceTest
         UserDetails actualResult = userService.loadUserByUsername(username);
 
         assertEquals(username, actualResult.getUsername());
+    }
+
+    @Test
+    public void testLoadUserByUsername_WhenDataNotFound_ThenThrowUsernameNotFoundException() {
+        String username = "username";
+        Optional<User> expectedResult = Optional.empty();
+        when(userRepository.findByUsername(anyString()))
+            .thenReturn(expectedResult);
+
+        assertThrows(UsernameNotFoundException.class,
+            () -> userService.loadUserByUsername(username));
     }
 
 }

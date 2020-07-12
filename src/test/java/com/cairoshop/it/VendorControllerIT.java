@@ -18,13 +18,13 @@ import com.cairoshop.it.helpers.Users;
  * ************************************************************************ */
 public class VendorControllerIT extends BaseProductClassificationControllerIT {
 
-    @Test
+//    @Test
     public void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation() throws Exception {
         testAddingDataWithValidPayloadAndAuthorizedUser(Endpoints.ADD_NEW_VENDOR, Users.ADMIN,"valid_new_vendor.json");
     }
 
-    @ParameterizedTest
-    @MethodSource("provideArgsForTestAddWithInvalidPayload")
+//    @ParameterizedTest
+//    @MethodSource("provideArgsForTestAddWithInvalidPayload")
     public void testAdd_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile) throws Exception {
         testAddingDataWithInvalidPayloadAndAuthorizedUser(Endpoints.ADD_NEW_VENDOR, Users.ADMIN, requestBodyFile, errorMsgFile);
     }
@@ -37,18 +37,18 @@ public class VendorControllerIT extends BaseProductClassificationControllerIT {
         );
     }
 
-    @Test
+//    @Test
     public void testAdd_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg() throws Exception {
         testAddingDataWithValidPayloadAndUnauthorizedUser(Endpoints.ADD_NEW_VENDOR, Users.CUSTOMER,"valid_new_vendor.json", "access_denied.json");
     }
 
-    @Test
+//    @Test
     public void testEdit_WhenPayloadIsValid_ThenReturn204() throws Exception {
         testDataModification(Endpoints.EDIT_VENDOR, Users.ADMIN,"valid_new_vendor_for_update.json");
     }
 
-    @ParameterizedTest
-    @MethodSource("provideArgsForTestEditWithInvalidPayload")
+//    @ParameterizedTest
+//    @MethodSource("provideArgsForTestEditWithInvalidPayload")
     public void testEdit_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile) throws Exception {
         testAddingDataWithInvalidPayloadAndAuthorizedUser(Endpoints.EDIT_VENDOR, Users.ADMIN, requestBodyFile, errorMsgFile);
     }

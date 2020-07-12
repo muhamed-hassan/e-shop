@@ -67,11 +67,17 @@ public class BaseController<T, DDTO, BDTO> extends BaseCommonController<DDTO> {
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"start-position", "sort-by", "sort-direction"})
-    public ResponseEntity<SavedItemsDTO<BDTO>> getAllByPagination(
-        @RequestParam("start-position") @Min(value = 0, message = "min start-position is 0") int startPosition,
-        @RequestParam("sort-by") @NotBlank(message = "sort-by field is required") String sortBy,
-        @RequestParam("sort-direction") @Pattern(regexp = "^(ASC|DESC)$", message = "allowed values for sort-direction are DESC or ASC") String sortDirection) {
-        return ResponseEntity.ok(((BaseService) getService()).getAll(startPosition, sortBy, sortDirection));
+    public SavedItemsDTO<BDTO> getAllByPage(@RequestParam("start-position")
+                                                @Min(value = 0, message = "min start-position is 0")
+                                                int startPosition,
+                                            @RequestParam("sort-by")
+                                                @NotBlank(message = "sort-by field is required")
+                                                @Pattern(regexp = "^(id|name|price|quantity)$", message = "allowed values for sort-direction are DESC or ASC")
+                                                String sortBy,
+                                            @RequestParam("sort-direction")
+                                                @Pattern(regexp = "^(ASC|DESC)$", message = "allowed values for sort-direction are DESC or ASC")
+                                                String sortDirection) {
+        return ((BaseService) getService()).getAll(startPosition, sortBy, sortDirection);
     }
 
 }

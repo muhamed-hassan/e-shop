@@ -13,6 +13,7 @@ import com.cairoshop.persistence.repositories.BaseRepository;
 import com.cairoshop.service.BaseService;
 import com.cairoshop.service.exceptions.DataIntegrityViolatedException;
 import com.cairoshop.service.exceptions.DataNotDeletedException;
+import com.cairoshop.service.exceptions.NoResultException;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
 /* **************************************************************************
@@ -52,9 +53,10 @@ public class BaseServiceImpl<T, DDTO, BDTO>
             }
             entity.getClass().getMethod("setActive", boolean.class).invoke(entity, true);
             id = ((BaseRepository) getRepository()).save(entity);
-        } catch (DataIntegrityViolationException dive) {
-            throw new DataIntegrityViolatedException();
         } catch (Exception e) {
+            if (e instanceof DataIntegrityViolationException) {
+                throw new DataIntegrityViolatedException();
+            }
             throw new RuntimeException(e);
         }
         return id;
@@ -72,6 +74,9 @@ public class BaseServiceImpl<T, DDTO, BDTO>
     @Override
     public SavedItemsDTO<BDTO> getAll(int startPosition, String sortBy, String sortDirection) {
         List<BDTO> page = ((BaseRepository) getRepository()).findAllByPage(startPosition, Constants.MAX_PAGE_SIZE, sortBy, sortDirection);
+        if (page.isEmpty()) {
+            throw new NoResultException();
+        }
         int allCount = ((BaseRepository) getRepository()).countAllActive();
         SavedItemsDTO<BDTO> BDTOSavedItemsDTO = new SavedItemsDTO<>();
         BDTOSavedItemsDTO.setItems(page);

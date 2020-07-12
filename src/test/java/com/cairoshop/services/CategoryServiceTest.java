@@ -4,10 +4,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.cairoshop.persistence.entities.Category;
 import com.cairoshop.persistence.repositories.CategoryRepository;
@@ -20,9 +18,8 @@ import com.cairoshop.web.dtos.CategoryInDetailDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-@ExtendWith(MockitoExtension.class)
 public class CategoryServiceTest
-        extends BaseProductClassificationServiceTest<CategoryInDetailDTO, CategoryInBriefDTO, Category> {
+            extends BaseProductClassificationServiceTest<Category, CategoryInDetailDTO, CategoryInBriefDTO> {
 
     @Mock
     private CategoryRepository categoryRepository;
@@ -46,15 +43,38 @@ public class CategoryServiceTest
     }
 
     @Test
+    public void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() throws Exception {
+        CategoryInDetailDTO categoryInDetailDTO = new CategoryInDetailDTO("Tablets");
+        testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(categoryInDetailDTO);
+    }
+
+    @Test
     public void testEdit_WhenDataIsValid_ThenSave() throws Exception {
         CategoryInDetailDTO savedDetailedCategoryDTO = new CategoryInDetailDTO("Mobiles");
         testEdit_WhenDataIsValid_ThenSave(1, savedDetailedCategoryDTO);
     }
 
     @Test
+    public void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() throws Exception {
+        CategoryInDetailDTO savedDetailedCategoryDTO = new CategoryInDetailDTO("Tablets");
+        testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(1, savedDetailedCategoryDTO);
+    }
+
+    @Test
+    public void testEdit_WhenRecordNotUpdated_ThenThrowDataNotUpdatedException() throws Exception {
+        CategoryInDetailDTO savedDetailedCategoryDTO = new CategoryInDetailDTO("Mobiles");
+        testEdit_WhenRecordNotUpdated_ThenThrowDataNotUpdatedException(1, savedDetailedCategoryDTO);
+    }
+
+    @Test
     public void testGetById_WhenDataFound_ThenReturnIt() throws Exception {
         CategoryInDetailDTO savedDetailedCategoryDTO = new CategoryInDetailDTO("Mobiles");
-        testGetById_WhenDataFound_ThenReturnIt(savedDetailedCategoryDTO, List.of("getName"));
+        testGetById_WhenDataFound_ThenReturnIt(1, savedDetailedCategoryDTO, List.of("getName"));
+    }
+
+    @Test
+    public void testGetById_WhenDataNotFound_ThenThrowNoResultException() {
+        testGetById_WhenDataNotFound_ThenThrowNoResultException(404);
     }
 
     @Test
@@ -64,14 +84,29 @@ public class CategoryServiceTest
     }
 
     @Test
+    public void testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException() {
+        super.testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException();
+    }
+
+    @Test
     public void testGetAll_WhenDataFound_ThenReturnIt() {
         CategoryInBriefDTO categoryInBriefDTO = new CategoryInBriefDTO(2, "Mobiles");
         testGetAll_WhenDataFound_ThenReturnIt(categoryInBriefDTO);
     }
 
     @Test
+    public void testGetAll_WhenDataNotFound_ThenThrowNoResultException() {
+        super.testGetAll_WhenDataNotFound_ThenThrowNoResultException();
+    }
+
+    @Test
     public void testRemoveById_WhenDataFound_ThenReturnIt() {
-        super.testRemoveById_WhenDataFound_ThenRemoveIt();
+        super.testRemoveById_WhenDataFound_ThenRemoveIt(1);
+    }
+
+    @Test
+    public void testRemoveById_WhenDataNotFound_ThenThrowDataNotDeletedException() {
+        super.testRemoveById_WhenDataNotFound_ThenThrowDataNotDeletedException(404);
     }
 
 }

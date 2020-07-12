@@ -14,6 +14,12 @@ public class ProductSortableFields {
     @Id
     private String name;
 
+    ProductSortableFields() {}
+
+    public ProductSortableFields(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
