@@ -41,7 +41,8 @@ public class ProductRepositoryImpl
         CriteriaQuery<byte[]> criteriaQuery = criteriaBuilder.createQuery(byte[].class);
         Root<Product> root = criteriaQuery.from(getEntityClass());
         criteriaQuery.select(root.get("image"))
-                        .where(criteriaBuilder.equal(root.get("id"), id));
+                        .where(criteriaBuilder.and(criteriaBuilder.equal(root.get("id"), id),
+                                criteriaBuilder.equal(root.get("active"), true)));
         return Optional.ofNullable(getEntityManager().createQuery(criteriaQuery).getSingleResult());
     }
 
@@ -50,8 +51,9 @@ public class ProductRepositoryImpl
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaUpdate<Product> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(getEntityClass());
         Root<Product> root = criteriaUpdate.from(getEntityClass());
-        criteriaUpdate.set(root.get("image"), image);
-        criteriaUpdate.where(criteriaBuilder.and(criteriaBuilder.equal(root.get("id"), id),
+        criteriaUpdate.set(root.get("image"), image)
+                        .set(root.get("imageUploaded"), true)
+                        .where(criteriaBuilder.and(criteriaBuilder.equal(root.get("id"), id),
                                                     criteriaBuilder.equal(root.get("active"), true)));
         return getEntityManager().createQuery(criteriaUpdate).executeUpdate();
     }

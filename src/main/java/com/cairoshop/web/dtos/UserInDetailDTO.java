@@ -17,7 +17,7 @@ public class UserInDetailDTO extends BaseDTO {
     
     private boolean active;
 
-    public UserInDetailDTO(String name, String username, String email, String phone, String address, boolean active) {
+    public UserInDetailDTO(String username, String email, String phone, String address, boolean active, String name) {
         setName(name);
         this.username = username;
         this.email = email;

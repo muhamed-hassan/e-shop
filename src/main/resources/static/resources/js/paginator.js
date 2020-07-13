@@ -40,6 +40,9 @@ function moveTo(targetPage) {
             onLastPage();
         } else if (targetPage == 1) {
             onFirstPage();
+        } else {
+            enableNextBtn();
+            enablePreviousBtn();
         }
         getMoreItems(targetPage);
     }
@@ -50,6 +53,9 @@ function previous() {
     adjustPaginatorActiveLink(currentPage, targetPage);
     if (targetPage == 1) {
         onFirstPage();
+    } else {
+        enableNextBtn();
+        enablePreviousBtn();
     }
     getMoreItems(targetPage);
 }
@@ -59,7 +65,10 @@ function next() {
     adjustPaginatorActiveLink(currentPage, targetPage);
     if (targetPage == lastPage) {
         onLastPage();
-    } 
+    } else {
+        enableNextBtn();
+        enablePreviousBtn();
+    }
     getMoreItems(targetPage);
 }
 
@@ -71,24 +80,46 @@ function adjustPaginatorActiveLink(currentPage, targetPage) {
 }
 
 function onLastPage() {
-    $(`#paginator_next`).addClass('disabled');
-    $('#paginator_next_link').attr('tabindex', -1);
-    $(`#paginator_previous`).removeClass('disabled');
-    $('#paginator_previous_link').removeAttr('tabindex');
+    disableNextBtn();
+    enablePreviousBtn();
 }
 
 function onFirstPage() {
-    $(`#paginator_next`).removeClass('disabled');
-    $('#paginator_next_link').removeAttr('tabindex');
-    $(`#paginator_previous`).addClass('disabled');
-    $('#paginator_previous_link').attr('tabindex', -1);
+    enableNextBtn();
+    disablePreviousBtn();
 }
 
 function getMoreItems(targetPage) {
     currentPage = targetPage;
-    currentRequestUrl = currentRequestUrl.replace(/(start-position=)[0-9]+/g, `start-position=${targetPage - 1}`);
+    currentRequestUrl = currentRequestUrl.replace(/(start-position=)[0-9]+/g, `start-position=${PAGE_SIZE * (targetPage - 1)}`);
     getItems(currentItemAction, currentRequestUrl);
 }
+
+function enablePreviousBtn() {
+    $(`#paginator_previous`).removeClass('disabled');
+    $('#paginator_previous_link').removeAttr('tabindex');
+}
+
+function disablePreviousBtn() {
+    $(`#paginator_previous`).addClass('disabled');
+    $('#paginator_previous_link').attr('tabindex', -1);
+}
+
+function enableNextBtn() {
+    $(`#paginator_next`).removeClass('disabled');
+    $('#paginator_next_link').removeAttr('tabindex');
+}
+
+function disableNextBtn() {
+    $(`#paginator_next`).addClass('disabled');
+    $('#paginator_next_link').attr('tabindex', -1);
+}
+
+
+
+
+
+
 
 
 

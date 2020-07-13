@@ -12,4 +12,6 @@ public interface BaseProductClassificationRepository<T, DDTO, BDTO>
 
     List<BDTO> findAll();
 
+    boolean safeToDelete(int productClassificationId);
+
 }

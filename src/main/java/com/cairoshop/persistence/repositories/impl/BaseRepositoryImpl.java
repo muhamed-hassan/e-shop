@@ -85,8 +85,7 @@ public class BaseRepositoryImpl<T, DDTO, BDTO>
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
         Root<T> root = criteriaQuery.from(getEntityClass());
-        criteriaQuery.select(criteriaBuilder.count(root))
-                        .where(criteriaBuilder.equal(root.get("active"), true));
+        criteriaQuery.select(criteriaBuilder.count(root));
         return getEntityManager().createQuery(criteriaQuery).getSingleResult().intValue();
     }
 

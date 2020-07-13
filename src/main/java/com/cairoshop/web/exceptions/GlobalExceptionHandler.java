@@ -33,8 +33,14 @@ public class GlobalExceptionHandler {
                                 .body(Map.of(ERROR_KEY, "No data found"));
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, DataIntegrityViolatedException.class})
-    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(Exception exception) {
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(Map.of(ERROR_KEY, exception.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> handleDataIntegrityViolatedException(DataIntegrityViolatedException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .body(Map.of(ERROR_KEY, exception.getMessage()));
     }
@@ -63,7 +69,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> handleAccessDeniedException(AccessDeniedException exception) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-            .body(Map.of(ERROR_KEY, exception.getMessage()));
+                                .body(Map.of(ERROR_KEY, exception.getMessage()));
     }
 
     @ExceptionHandler

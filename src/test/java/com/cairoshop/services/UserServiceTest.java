@@ -52,7 +52,7 @@ public class UserServiceTest
 
     @Test
     public void testGetById_WhenDataFound_ThenReturnIt() throws Exception {
-        UserInDetailDTO userInDetailDTO = new UserInDetailDTO("name", "username", "email", "phone", "address", true);
+        UserInDetailDTO userInDetailDTO = new UserInDetailDTO("username", "email", "phone", "address", true, "name");
         testGetById_WhenDataFound_ThenReturnIt(1, userInDetailDTO, List.of("getName", "getUsername", "getEmail", "getPhone", "getAddress", "isActive"));
     }
 

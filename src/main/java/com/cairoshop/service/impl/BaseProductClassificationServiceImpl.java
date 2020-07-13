@@ -6,8 +6,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cairoshop.persistence.repositories.BaseProductClassificationRepository;
+import com.cairoshop.persistence.repositories.BaseRepository;
 import com.cairoshop.service.BaseProductClassificationService;
 import com.cairoshop.service.exceptions.DataIntegrityViolatedException;
+import com.cairoshop.service.exceptions.DataNotDeletedException;
 import com.cairoshop.service.exceptions.DataNotUpdatedException;
 import com.cairoshop.service.exceptions.NoResultException;
 
@@ -48,6 +50,19 @@ public class BaseProductClassificationServiceImpl<T, DDTO, BDTO>
             throw new NoResultException();
         }
         return result;
+    }
+
+    @Transactional
+    @Override
+    public void removeById(int id) {
+        boolean safeToDelete = ((BaseProductClassificationRepository) getRepository()).safeToDelete(id);
+        if (!safeToDelete) {
+            throw new IllegalArgumentException("Can not delete this item because it is associated with an active product");
+        }
+        int affectedRows = ((BaseRepository) getRepository()).deleteById(id);
+        if (affectedRows == 0) {
+            throw new DataNotDeletedException();
+        }
     }
 
 }

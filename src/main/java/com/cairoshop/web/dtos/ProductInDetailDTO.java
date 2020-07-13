@@ -1,5 +1,7 @@
 package com.cairoshop.web.dtos;
 
+import javax.validation.constraints.Min;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /* **************************************************************************
@@ -9,18 +11,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * ************************************************************************ */
 public class ProductInDetailDTO extends BaseDTO {
 
+    @Min(value = 1, message = "price is required")
     private double price;
 
+    @Min(value = 1, message = "quantity is required")
     private int quantity;
 
     private String description;
 
+    @Min(value = 1, message = "category is required")
     @JsonProperty(value = "category_id")
     private int categoryId;
 
+    @Min(value = 1, message = "vendor is required")
     @JsonProperty(value = "vendor_id")
     private int vendorId;
 
+    @JsonProperty(value = "image_uploaded")
     private boolean imageUploaded = false;
 
     public ProductInDetailDTO(double price, int quantity, String description, int categoryId, int vendorId, boolean imageUploaded, String name) {

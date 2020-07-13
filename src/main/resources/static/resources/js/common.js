@@ -66,23 +66,24 @@ function getItems(itemAction, requestUrl) {
     });
 }
 
-function getProductDetails(requestUrl) {    
+function getProductDetails(requestUrl) {  
     sendAuthorizedRequest(requestUrl, GET)
     .then(function(data, textStatus, jqXHR) {
-            return $.when(sendAuthorizedRequest('/vendors/' + data.vendorId, GET),
-                            sendAuthorizedRequest('/categories/' + data.categoryId, GET),
+            data.id = requestUrl.substr(requestUrl.lastIndexOf("/") + 1);
+            return $.when(sendAuthorizedRequest(`/vendors/${data.vendor_id}`, GET),
+                            sendAuthorizedRequest(`/categories/${data.category_id}`, GET),
                             $.Deferred().resolve(data));
         }, function(jqXHR, textStatus, errorThrown) {
             throw new Error(errorThrown);
     }).then(function(vendorResponse, categoryResponse, product) {
             let itemDetailsHtml = "<div class='row'>";
             Object.keys(product).forEach(function(key) {
-                if (key != 'id' && key != 'active' && key != 'imageUploaded') {
+                if (key != 'image_uploaded' && key != 'id') {
                     switch (key) {
-                        case 'vendorId':
+                        case VENDOR_ID:
                             itemDetailsHtml += generateItemDetailHtml('vendor', vendorResponse[0].name);
                             break;
-                        case 'categoryId':
+                        case CATEGORY_ID:
                             itemDetailsHtml += generateItemDetailHtml('category', categoryResponse[0].name);
                             break;
                         default:
@@ -91,7 +92,7 @@ function getProductDetails(requestUrl) {
                 }
             });
             let imageSrc;
-            if (product.imageUploaded) {
+            if (product.image_uploaded) {
                 imageSrc = `/products/images/${product.id}`;
             } else {
                 imageSrc = `resources/images/empty.jpg`;

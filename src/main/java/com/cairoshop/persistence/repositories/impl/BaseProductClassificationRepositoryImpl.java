@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 
+import com.cairoshop.persistence.entities.Product;
 import com.cairoshop.persistence.repositories.BaseProductClassificationRepository;
 
 /* **************************************************************************
@@ -36,6 +37,20 @@ public class BaseProductClassificationRepositoryImpl<T, DDTO, BDTO>
                                                 .collect(Collectors.toList());
         criteriaQuery.select(criteriaBuilder.construct(getBdtoClass(), selections.toArray(new Selection[selections.size()])));
         return getEntityManager().createQuery(criteriaQuery).getResultList();
+    }
+
+    @Override
+    public boolean safeToDelete(int productClassificationId) {
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> cqOfProductClassification = cb.createQuery(Long.class);
+        Root<Product> productRoot = cqOfProductClassification.from(Product.class);
+        cqOfProductClassification.select(cb.count(productRoot))
+                                    .where(cb.and(cb.equal(productRoot.get(getEntityClass().getSimpleName().toLowerCase()).get("id"), productClassificationId),
+                                                    cb.equal(productRoot.get("active"), true)));
+        int countOfActiveProductClassification = getEntityManager().createQuery(cqOfProductClassification)
+                                                                    .getSingleResult()
+                                                                    .intValue();
+        return countOfActiveProductClassification == 0;
     }
 
 }

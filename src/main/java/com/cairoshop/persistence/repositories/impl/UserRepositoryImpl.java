@@ -64,6 +64,7 @@ public class UserRepositoryImpl
         CriteriaUpdate<User> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(User.class);
         Root<User> root = criteriaUpdate.from(User.class);
         criteriaUpdate.set(root.get("active"), newState)
+                        .set(root.get("enabled"), newState)
                         .where(criteriaBuilder.equal(root.get("id"), id));
         return getEntityManager().createQuery(criteriaUpdate).executeUpdate();
     }

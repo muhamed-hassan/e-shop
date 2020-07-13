@@ -25,7 +25,8 @@ function removePreloader() {
 function sendAuthorizedRequest(requestUrl, httpMethod) {
     return $.ajax({url: requestUrl,
                     type: httpMethod,
-                    headers: {'Authorization': 'Bearer ' + localStorage.getItem('authToken')}
+                    headers: {'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+                                'Accept': 'application/json'}
                 });
 }
 
@@ -33,13 +34,14 @@ function sendAuthorizedRequest(requestUrl, httpMethod, requestBody, contentType)
     return $.ajax({url: requestUrl,
                     type: httpMethod,
                     headers: {'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
-                                'Content-Type': contentType},
+                                'Content-Type': contentType,
+                                'Accept': 'application/json'},
                     data: requestBody
                 });
 }
 
 function createSelectMenuFrom(items, menuName, selectedItemKey) {
-    let itemsSelectOptionsHtml = `<select id='${menuName}' class='form-control w-25'>`;
+    let itemsSelectOptionsHtml = `<select id='${menuName}' class='form-control w-25' required>`;
     for (var index = 0; index < items.length; index++) {
         itemsSelectOptionsHtml += `<option value='${items[index].id}' ${items[index].id == selectedItemKey ? 'selected' : ''}>${items[index].name}</option>`;
     }
@@ -63,10 +65,6 @@ function showMessage(text, msgType) {
 
 function clearMessagesSection() {
     $('#msg_alert').html('');
-}
-
-function notSkippedField(field) {
-    return !SKIPPED_FIELDS.includes(field);
 }
 
 function showModal(configs) {

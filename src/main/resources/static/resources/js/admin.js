@@ -84,7 +84,7 @@ function prepareEditItemsOfUsers(requestUrl) {
 
 function changeUserState(id, inversedState) {
     showPreloader();
-    sendAuthorizedRequest(`/users/${id}`, PATCH, JSON.stringify({status: inversedState}), 'application/json')
+    sendAuthorizedRequest(`/users/${id}`, PATCH, JSON.stringify({active: inversedState}), 'application/json')
     .done(function (data, textStatus, jqXHR) {        
         let elementId = `#user_${id}`;
         if ($(elementId).text() == ACTIVATE) {
@@ -123,12 +123,12 @@ function preEditItem(requestUrlOfItem) {
             let product = productResponse[0];
             let vendors = vendorsResponse[0];
             let categories = categoriesResponse[0];
-            let vendorsSelectOptionsHtml = createSelectMenuFrom(vendors, VENDOR_ID, product.vendorId);
-            let categoriesSelectOptionsHtml = createSelectMenuFrom(categories, CATEGORY_ID, product.categoryId);
+            let vendorsSelectOptionsHtml = createSelectMenuFrom(vendors, VENDOR_ID, product.vendor_id);
+            let categoriesSelectOptionsHtml = createSelectMenuFrom(categories, CATEGORY_ID, product.category_id);
             let htmlContent = `<div id='product_under_edit' class='row'>`;
             Object.keys(product)
                     .forEach(function(key) {
-                        if (notSkippedField(key)) {
+                        if (key != 'image_uploaded') {
                             switch (key) {
                                 case VENDOR_ID:
                                     htmlContent += `<div class='col-md-6 mb-3'>
@@ -151,7 +151,7 @@ function preEditItem(requestUrlOfItem) {
                         }
                     });
             let imageSrc;
-            if (product.imageUploaded) {
+            if (product.image_uploaded) {
                 imageSrc = `/products/images/${productId}`;
             } else {
                 imageSrc = `resources/images/empty.jpg`;
@@ -280,7 +280,7 @@ function deleteItem(requestUrl) {
         $("#content").empty();
         showMessage('Item deleted successfully', 'success');
     }).fail(function (jqXHR, textStatus, errorThrown) {
-        showMessage('Failed to delete this item', 'danger');
+        showMessage(jqXHR.responseJSON.message || 'Failed to delete this item', 'danger');
     }).always(function() {
         removePreloader();
         hideModal();
@@ -310,20 +310,20 @@ function createProductAddForm() {
     ).then(function(vendorsResponse, categoriesResponse) {
         let vendors = vendorsResponse[0];
         let categories = categoriesResponse[0];
-        let vendorsSelectOptionsHtml = createSelectMenuFrom(vendors, 'vendorId');
-        let categoriesSelectOptionsHtml = createSelectMenuFrom(categories, 'categoryId');
+        let vendorsSelectOptionsHtml = createSelectMenuFrom(vendors, VENDOR_ID);
+        let categoriesSelectOptionsHtml = createSelectMenuFrom(categories, CATEGORY_ID);
         let htmlContent = `<div id='new_product' class='row'>
                                 <div class='col-md-6 mb-3'>
                                     <p class='font-weight-bold text-capitalize'>name: </p>
-                                    <input id='name' type='text' class='form-control'>
+                                    <input id='name' type='text' class='form-control' required>
                                 </div>
                                 <div class='col-md-6 mb-3'>
                                     <p class='font-weight-bold text-capitalize'>price: </p>
-                                    <input id='price' type='number' class='form-control'>
+                                    <input id='price' type='number' class='form-control' required>
                                 </div>
                                 <div class='col-md-6 mb-3'>
                                     <p class='font-weight-bold text-capitalize'>quantity: </p>
-                                    <input id='quantity' type='number' class='form-control'>
+                                    <input id='quantity' type='number' class='form-control' required>
                                 </div>
                                 <div class='col-md-6 mb-3'>
                                     <p class='font-weight-bold text-capitalize'>description: </p>
@@ -386,14 +386,23 @@ function addProductClassification(requestUrl, type) {
 }
 
 function addProduct() {
-    showPreloader();
-    let addProductFormElements = $('#new_product input[type=text], select');
+    let addProductFormElements = $('#new_product input[type=text], input[type=number], select');
     let payload = {};
+    let errors = [];
     for (let index = 0; index < addProductFormElements.length; index++) {
-        payload[$(addProductFormElements[index]).attr('id')] = $(addProductFormElements[index]).is('select') ? 
-                                                                    $(addProductFormElements[index]).children("option:selected").val() : 
-                                                                    $(addProductFormElements[index]).val();
+        let element = $(addProductFormElements[index]);
+        let value = element.is('select') ? element.children("option:selected").val() : element.val();
+        if (element[0].hasAttribute('required') && value == '') {
+            errors.push(element.attr('id').replace('_id', ''));
+            continue;
+        }
+        payload[element.attr('id')] = value;
     }
+    if (errors.length > 0) {        
+        showMessage(`Those item(s) ${errors.join(', ')} should be filled`, 'danger');
+        return;
+    }
+    showPreloader();
     $.when(sendAuthorizedRequest('/products', POST, JSON.stringify(payload), 'application/json')
     ).then(function(data, textStatus, jqXHR) {
         let locationHeader = jqXHR.getResponseHeader('Location');
