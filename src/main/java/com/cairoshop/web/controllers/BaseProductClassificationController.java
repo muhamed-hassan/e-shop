@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiResponses;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseProductClassificationController<T, DDTO, BDTO> extends BaseController<T, DDTO, BDTO> {
+public class BaseProductClassificationController<D, B> extends BaseController<D, B> {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     @ApiResponses(value = {
@@ -33,7 +33,7 @@ public class BaseProductClassificationController<T, DDTO, BDTO> extends BaseCont
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<BDTO>> getAll() {
+    public ResponseEntity<List<B>> getAll() {
         return ResponseEntity.ok(((BaseProductClassificationService) getService()).getAll());
     }
 
@@ -45,8 +45,8 @@ public class BaseProductClassificationController<T, DDTO, BDTO> extends BaseCont
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @PatchMapping(path = "{id}")
-    public ResponseEntity<Void> edit(@PathVariable int id, @Valid @RequestBody DDTO ddto) {
-        ((BaseProductClassificationService) getService()).edit(id, ddto);
+    public ResponseEntity<Void> edit(@PathVariable int id, @Valid @RequestBody D detailedDto) {
+        ((BaseProductClassificationService) getService()).edit(id, detailedDto);
         return ResponseEntity.noContent().build();
     }
 

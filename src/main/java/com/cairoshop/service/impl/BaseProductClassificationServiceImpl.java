@@ -18,9 +18,9 @@ import com.cairoshop.service.exceptions.NoResultException;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseProductClassificationServiceImpl<T, DDTO, BDTO>
-            extends BaseServiceImpl<T, DDTO, BDTO>
-            implements BaseProductClassificationService<DDTO, BDTO> {
+public class BaseProductClassificationServiceImpl<T, D, B>
+            extends BaseServiceImpl<T, D, B>
+            implements BaseProductClassificationService<D, B> {
 
     protected BaseProductClassificationServiceImpl(Class<T> entityClass) {
         super(entityClass);
@@ -28,14 +28,13 @@ public class BaseProductClassificationServiceImpl<T, DDTO, BDTO>
 
     @Transactional
     @Override
-    public void edit(int id, DDTO ddto) {
+    public void edit(int id, D detailedDto) {
         int affectedRows;
         try {
-            affectedRows = ((BaseProductClassificationRepository) getRepository()).update(id, ddto);
+            affectedRows = ((BaseProductClassificationRepository) getRepository()).update(id, detailedDto);
+        } catch (DataIntegrityViolationException dive) {
+            throw new DataIntegrityViolatedException();
         } catch (Exception e) {
-            if (e instanceof DataIntegrityViolationException) {
-                throw new DataIntegrityViolatedException();
-            }
             throw new RuntimeException(e);
         }
         if (affectedRows == 0) {
@@ -44,8 +43,8 @@ public class BaseProductClassificationServiceImpl<T, DDTO, BDTO>
     }
 
     @Override
-    public List<BDTO> getAll() {
-        List<BDTO> result = ((BaseProductClassificationRepository) getRepository()).findAll();
+    public List<B> getAll() {
+        List<B> result = ((BaseProductClassificationRepository) getRepository()).findAll();
         if (result.isEmpty()) {
             throw new NoResultException();
         }

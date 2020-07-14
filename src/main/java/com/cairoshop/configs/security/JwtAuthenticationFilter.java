@@ -1,7 +1,6 @@
 package com.cairoshop.configs.security;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,7 +27,8 @@ import io.jsonwebtoken.security.Keys;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class JwtAuthenticationFilter
+            extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
 
@@ -39,11 +38,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final long jwtExpiration;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, String jwtSecret, String apiName, long jwtExpiration) {
+    private final Utils utils;
+
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, String jwtSecret, String apiName, long jwtExpiration, Utils utils) {
         this.authenticationManager = authenticationManager;
         this.jwtSecret = jwtSecret;
         this.apiName = apiName;
         this.jwtExpiration = jwtExpiration;
+        this.utils = utils;
         setFilterProcessesUrl("/authenticate");
     }
 
@@ -61,7 +63,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                     .stream()
                                     .map(GrantedAuthority::getAuthority)
                                     .collect(Collectors.toList());
-
         var token = Jwts.builder()
                         .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
                         .setHeaderParam("typ", "jwt")
@@ -70,21 +71,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                         .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                         .claim("rol", roles)
                         .compact();
-
         response.addHeader(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + token);
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException authenticationException) throws IOException {
-        StringBuilder errorMsg = new StringBuilder()
-            .append("{\"message\": ").append("\"Invalid credentials\"}");
-
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-
-        PrintWriter writer = response.getWriter();
-        writer.write(errorMsg.toString());
-        writer.flush();
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException authenticationException)
+                        throws IOException {
+        utils.generateResponseFrom(response, HttpStatus.UNAUTHORIZED.value(), "Invalid credentials");
     }
 
 }

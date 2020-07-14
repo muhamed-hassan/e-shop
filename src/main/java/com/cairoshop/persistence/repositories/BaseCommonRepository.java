@@ -5,8 +5,8 @@ package com.cairoshop.persistence.repositories;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public interface BaseCommonRepository<DDTO> {
+public interface BaseCommonRepository<D> {
 
-    DDTO findById(int id);
+    D findById(int id);
 
 }

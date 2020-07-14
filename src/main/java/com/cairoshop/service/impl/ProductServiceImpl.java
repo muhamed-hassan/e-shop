@@ -70,10 +70,9 @@ public class ProductServiceImpl
             product.setCategory(category);
             product.setActive(true);
             id = productRepository.save(product);
+        } catch (DataIntegrityViolationException dive) {
+            throw new DataIntegrityViolatedException();
         } catch (Exception e) {
-            if (e instanceof DataIntegrityViolationException) {
-                throw new DataIntegrityViolatedException();
-            }
             throw new RuntimeException(e);
         }
         return id;

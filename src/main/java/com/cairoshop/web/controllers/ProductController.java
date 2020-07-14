@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cairoshop.persistence.entities.Product;
 import com.cairoshop.service.ProductService;
 import com.cairoshop.web.dtos.ProductInBriefDTO;
 import com.cairoshop.web.dtos.ProductInDetailDTO;
@@ -43,7 +42,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping("products")
 @Validated
-public class ProductController extends BaseController<Product, ProductInDetailDTO, ProductInBriefDTO> {
+public class ProductController extends BaseController<ProductInDetailDTO, ProductInBriefDTO> {
 
     @Autowired
     private ProductService productService;
@@ -109,11 +108,14 @@ public class ProductController extends BaseController<Product, ProductInDetailDT
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"name", "start-position", "sort-by", "sort-direction"})
-    public ResponseEntity<SavedItemsDTO<ProductInBriefDTO>> searchByProductName(
+    public ResponseEntity<SavedItemsDTO<ProductInBriefDTO>> searchByName(
         @RequestParam("name") @NotBlank(message = "name is required") String name,
         @RequestParam("start-position") @Min(value = 0, message = "min start-position is 0") int startPosition,
-        @RequestParam("sort-by") @NotBlank(message = "sort-by field is required") String sortBy,
-        @RequestParam("sort-direction") @Pattern(regexp = "^(ASC|DESC)$", message = "allowed values for sort-direction are DESC or ASC") String sortDirection) {
+        @RequestParam("sort-by") @NotBlank(message = "sort-by field is required")
+        @Pattern(regexp = "^(name|price|quantity)$", message = "allowed values for sort-by are name, price and quantity")
+        String sortBy,
+        @RequestParam("sort-direction") @Pattern(regexp = "^(ASC|DESC)$", message = "allowed values for sort-direction are DESC or ASC")
+        String sortDirection) {
         return ResponseEntity.ok(productService.searchByProductName(name, startPosition, sortBy, sortDirection));
     }
 

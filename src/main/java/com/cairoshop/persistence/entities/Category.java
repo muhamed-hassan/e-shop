@@ -24,7 +24,8 @@ import org.hibernate.annotations.Where;
                     "FROM Category c " +
                     "WHERE c.id = ?1 ")
 @Where(clause = "active = true")
-public class Category extends ProductClassification {
+public class Category
+            extends ProductClassification {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

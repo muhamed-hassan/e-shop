@@ -17,25 +17,25 @@ import com.cairoshop.persistence.repositories.BaseProductClassificationRepositor
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseProductClassificationRepositoryImpl<T, DDTO, BDTO> 
-            extends BaseRepositoryImpl<T, DDTO, BDTO>
-            implements BaseProductClassificationRepository<T, DDTO, BDTO> {
+public class BaseProductClassificationRepositoryImpl<T, D, B>
+            extends BaseRepositoryImpl<T, D, B>
+            implements BaseProductClassificationRepository<T, D, B> {
 
-    protected BaseProductClassificationRepositoryImpl(Class<T> entityClass, Class<DDTO> ddtoClass, Class<BDTO> bdtoClass) {
-        super(entityClass, ddtoClass, bdtoClass);
+    protected BaseProductClassificationRepositoryImpl(Class<T> entityClass, Class<D> detailedDtoClass, Class<B> briefDtoClass) {
+        super(entityClass, detailedDtoClass, briefDtoClass);
     }
 
     @Override
-    public List<BDTO> findAll() {
+    public List<B> findAll() {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<BDTO> criteriaQuery = criteriaBuilder.createQuery(getBdtoClass());
+        CriteriaQuery<B> criteriaQuery = criteriaBuilder.createQuery(getBriefDtoClass());
         Root<T> root = criteriaQuery.from(getEntityClass());
         List<String> fields = new ArrayList<>();
-        getFields(fields, getBdtoClass());
+        getReflectionUtils().getFields(fields, getBriefDtoClass());
         List<Selection<?>> selections = fields.stream()
                                                 .map(field -> root.get(field))
                                                 .collect(Collectors.toList());
-        criteriaQuery.select(criteriaBuilder.construct(getBdtoClass(), selections.toArray(new Selection[selections.size()])));
+        criteriaQuery.select(criteriaBuilder.construct(getBriefDtoClass(), selections.toArray(new Selection[selections.size()])));
         return getEntityManager().createQuery(criteriaQuery).getResultList();
     }
 

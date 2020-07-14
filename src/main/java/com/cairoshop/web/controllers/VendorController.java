@@ -7,7 +7,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cairoshop.persistence.entities.Vendor;
 import com.cairoshop.service.VendorService;
 import com.cairoshop.web.dtos.VendorInBriefDTO;
 import com.cairoshop.web.dtos.VendorInDetailDTO;
@@ -21,7 +20,7 @@ import com.cairoshop.web.dtos.VendorInDetailDTO;
 @RequestMapping("vendors")
 @Validated
 public class VendorController
-                extends BaseProductClassificationController<Vendor, VendorInDetailDTO, VendorInBriefDTO> {
+                extends BaseProductClassificationController<VendorInDetailDTO, VendorInBriefDTO> {
     
     @Autowired
     private VendorService vendorService;

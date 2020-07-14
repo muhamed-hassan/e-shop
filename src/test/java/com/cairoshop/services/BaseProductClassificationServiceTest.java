@@ -25,46 +25,46 @@ import com.cairoshop.service.exceptions.NoResultException;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseProductClassificationServiceTest<T, DDTO, BDTO>
-            extends BaseServiceTest<T, DDTO, BDTO> {
+public class BaseProductClassificationServiceTest<T, D, B>
+            extends BaseServiceTest<T, D, B> {
 
-    protected BaseProductClassificationServiceTest(Class<T> entityClass, Class<DDTO> DDTOClass) {
-        super(entityClass, DDTOClass);
+    protected BaseProductClassificationServiceTest(Class<T> entityClass, Class<D> detailedDtoClass) {
+        super(entityClass, detailedDtoClass);
     }
 
-    protected void testEdit_WhenDataIsValid_ThenSave(int id, DDTO ddto) throws Exception {
+    protected void testEdit_WhenDataIsValid_ThenSave(int id, D detailedDtoClass) throws Exception {
         int affectedRows = 1;
-        when(((BaseProductClassificationRepository) getRepository()).update(id, ddto))
+        when(((BaseProductClassificationRepository) getRepository()).update(id, detailedDtoClass))
             .thenReturn(affectedRows);
 
-        ((BaseProductClassificationService) getService()).edit(id, ddto);
+        ((BaseProductClassificationService) getService()).edit(id, detailedDtoClass);
 
-        verify(((BaseProductClassificationRepository) getRepository())).update(id, ddto);
+        verify(((BaseProductClassificationRepository) getRepository())).update(id, detailedDtoClass);
     }
 
-    protected void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(int id, DDTO ddto) throws Exception {
+    protected void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(int id, D detailedDtoClass) throws Exception {
         doThrow(DataIntegrityViolationException.class)
             .when((BaseProductClassificationRepository) getRepository()).update(any(int.class), any(getDetailedDtoClass()));
 
         assertThrows(DataIntegrityViolatedException.class,
-            () -> ((BaseProductClassificationService) getService()).edit(id, ddto));
+            () -> ((BaseProductClassificationService) getService()).edit(id, detailedDtoClass));
     }
 
-    protected void testEdit_WhenRecordNotUpdated_ThenThrowDataNotUpdatedException(int id, DDTO ddto) throws Exception {
+    protected void testEdit_WhenRecordNotUpdated_ThenThrowDataNotUpdatedException(int id, D detailedDtoClass) throws Exception {
         int affectedRows = 0;
-        when(((BaseProductClassificationRepository) getRepository()).update(id, ddto))
+        when(((BaseProductClassificationRepository) getRepository()).update(id, detailedDtoClass))
             .thenReturn(affectedRows);
 
         assertThrows(DataNotUpdatedException.class,
-            () -> ((BaseProductClassificationService) getService()).edit(id, ddto));
+            () -> ((BaseProductClassificationService) getService()).edit(id, detailedDtoClass));
     }
 
-    protected void testGetAll_WhenDataFound_ThenReturnIt(BDTO bdto) {
-        List<BDTO> expectedResult = List.of(bdto);
+    protected void testGetAll_WhenDataFound_ThenReturnIt(B briefDtoClass) {
+        List<B> expectedResult = List.of(briefDtoClass);
         when(((BaseProductClassificationRepository) getRepository()).findAll())
             .thenReturn(expectedResult);
 
-        List<BDTO> actualResult = ((BaseProductClassificationService) getService()).getAll();
+        List<B> actualResult = ((BaseProductClassificationService) getService()).getAll();
 
         assertIterableEquals(expectedResult, actualResult);
     }

@@ -40,19 +40,12 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
                                             .setSigningKey(jwtSecret.getBytes())
                                             .build()
                                             .parseClaimsJws(token.replace(Constants.AUTHORIZATION_HEADER_VALUE_PREFIX, ""));
-
-            String username = parsedToken.getBody()
-                                            .getSubject();
-
+            String username = parsedToken.getBody().getSubject();
             List<SimpleGrantedAuthority> authorities = ((List<String>) parsedToken.getBody().get("rol"))
                                                             .stream()
                                                             .map(authority -> new SimpleGrantedAuthority(authority))
                                                             .collect(Collectors.toList());
-
-            if (StringUtils.isEmpty(username) && authorities.isEmpty()) {
-                return;
-            }
-
+            if (StringUtils.isEmpty(username) && authorities.isEmpty()) return;
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(username, null, authorities));
         }
         filterChain.doFilter(request, response);

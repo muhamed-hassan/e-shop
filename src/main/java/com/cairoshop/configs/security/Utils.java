@@ -1,33 +1,28 @@
 package com.cairoshop.configs.security;
 
+import static com.cairoshop.configs.Constants.ERROR_KEY;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan	                                        *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+@Component
+public class Utils {
 
-    @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authenticationException) throws IOException {
-        StringBuilder errorMsg = new StringBuilder()
-            .append("{\"message\": ").append("\"Invalid authorization token\"}");
-
+    public void generateResponseFrom(HttpServletResponse response, int httpStatus, String message) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-
+        response.setStatus(httpStatus);
         PrintWriter writer = response.getWriter();
-        writer.write(errorMsg.toString());
+        writer.write(new StringBuilder("{\"").append(ERROR_KEY).append("\":\"").append(message).append("\"}").toString());
         writer.flush();
     }
 

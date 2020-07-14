@@ -24,7 +24,8 @@ import org.hibernate.annotations.Where;
                     "FROM Vendor v " +
                     "WHERE v.id = ?1 ")
 @Where(clause = "active = true")
-public class Vendor extends ProductClassification {
+public class Vendor
+            extends ProductClassification {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

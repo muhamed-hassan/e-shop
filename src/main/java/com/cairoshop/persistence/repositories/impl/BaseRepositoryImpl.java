@@ -20,32 +20,32 @@ import com.cairoshop.persistence.repositories.BaseRepository;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseRepositoryImpl<T, DDTO, BDTO>
-            extends BaseCommonRepositoryImpl<T, DDTO>
-            implements BaseRepository<T, DDTO, BDTO> {
+public class BaseRepositoryImpl<T, D, B>
+            extends BaseCommonRepositoryImpl<T, D>
+            implements BaseRepository<T, D, B> {
 
-    private Class<BDTO>  bdtoClass;
+    private Class<B> briefDtoClass;
 
-    protected BaseRepositoryImpl(Class<T> entityClass, Class<DDTO> ddtoClass, Class<BDTO>  bdtoClass) {
-        super(entityClass, ddtoClass);
-        this.bdtoClass = bdtoClass;
+    protected BaseRepositoryImpl(Class<T> entityClass, Class<D> detailedDtoClass, Class<B> briefDtoClass) {
+        super(entityClass, detailedDtoClass);
+        this.briefDtoClass = briefDtoClass;
     }
 
-    protected Class<BDTO> getBdtoClass() {
-        return bdtoClass;
+    protected Class<B> getBriefDtoClass() {
+        return briefDtoClass;
     }
 
     @Override
-    public List<BDTO> findAllByPage(int startPosition, int pageSize, String sortBy, String sortDirection) {
+    public List<B> findAllByPage(int startPosition, int pageSize, String sortBy, String sortDirection) {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<BDTO> criteriaQuery = criteriaBuilder.createQuery(getBdtoClass());
+        CriteriaQuery<B> criteriaQuery = criteriaBuilder.createQuery(getBriefDtoClass());
         Root<T> root = criteriaQuery.from(getEntityClass());
         List<String> fields = new ArrayList<>();
-        getFields(fields, getBdtoClass());
+        getReflectionUtils().getFields(fields, getBriefDtoClass());
         List<Selection<?>> selections = fields.stream()
                                                 .map(field -> root.get(field))
                                                 .collect(Collectors.toList());
-        criteriaQuery.select(criteriaBuilder.construct(getBdtoClass(), selections.toArray(new Selection[selections.size()])))
+        criteriaQuery.select(criteriaBuilder.construct(getBriefDtoClass(), selections.toArray(new Selection[selections.size()])))
                         .where(criteriaBuilder.equal(root.get("active"), true))
                         .orderBy(sortDirection.equals("ASC") ? criteriaBuilder.asc(root.get(sortBy)) : criteriaBuilder.desc(root.get(sortBy)));
         return getEntityManager().createQuery(criteriaQuery)
@@ -56,17 +56,17 @@ public class BaseRepositoryImpl<T, DDTO, BDTO>
 
     @Transactional
     @Override
-    public int update(int id, DDTO ddto) throws Exception {
+    public int update(int id, D detailedDtoClass) throws Exception {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaUpdate<T> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(getEntityClass());
         Root<T> root = criteriaUpdate.from(getEntityClass());
-        Method[] dtoMethods = getDdtoClass().getMethods();
+        Method[] dtoMethods = getDetailedDtoClass().getMethods();
         for (Method method : dtoMethods) {
             String methodName = method.getName();
             if (methodName.startsWith("get") && !methodName.equals("getClass")) {
                 String field = methodName.replace("get", "");
                 field = field.substring(0, 1).toLowerCase() + field.substring(1);
-                Object valueFromDto = method.invoke(ddto);
+                Object valueFromDto = method.invoke(detailedDtoClass);
                 criteriaUpdate.set(root.get(field), valueFromDto);
             }
         }

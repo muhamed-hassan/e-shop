@@ -28,7 +28,8 @@ import org.hibernate.annotations.Where;
                     "FROM Product p " +
                     "WHERE p.id = ?1 ")
 @Where(clause = "active = true")
-public class Product extends BaseEntity {
+public class Product
+            extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

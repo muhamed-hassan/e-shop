@@ -7,10 +7,10 @@ import java.util.List;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public interface BaseProductClassificationRepository<T, DDTO, BDTO>
-            extends BaseRepository<T, DDTO, BDTO> {
+public interface BaseProductClassificationRepository<T, D, B>
+            extends BaseRepository<T, D, B> {
 
-    List<BDTO> findAll();
+    List<B> findAll();
 
     boolean safeToDelete(int productClassificationId);
 

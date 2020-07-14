@@ -22,17 +22,17 @@ import com.cairoshop.service.impl.BaseCommonServiceImpl;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @ExtendWith(MockitoExtension.class)
-public class BaseCommonServiceTest<T, DDTO> {
+public class BaseCommonServiceTest<T, D> {
 
     private Class<T> entityClass;
-    private Class<DDTO> ddtoClass;
+    private Class<D> detailedDtoClass;
 
     private BaseCommonRepository baseCommonRepository;
     private BaseCommonServiceImpl baseCommonService;
 
-    protected BaseCommonServiceTest(Class<T> entityClass, Class<DDTO> ddtoClass) {
+    protected BaseCommonServiceTest(Class<T> entityClass, Class<D> detailedDtoClass) {
         this.entityClass = entityClass;
-        this.ddtoClass = ddtoClass;
+        this.detailedDtoClass = detailedDtoClass;
     }
 
     protected void injectRefs(BaseCommonRepository baseCommonRepository, BaseCommonServiceImpl baseCommonService) {
@@ -44,8 +44,8 @@ public class BaseCommonServiceTest<T, DDTO> {
         return entityClass;
     }
 
-    protected Class<DDTO> getDetailedDtoClass() {
-        return ddtoClass;
+    protected Class<D> getDetailedDtoClass() {
+        return detailedDtoClass;
     }
 
     protected BaseCommonRepository getRepository() {
@@ -56,11 +56,11 @@ public class BaseCommonServiceTest<T, DDTO> {
         return baseCommonService;
     }
 
-    protected void testGetById_WhenDataFound_ThenReturnIt(int id, DDTO expectedResult, List<String> getters) throws Exception {
+    protected void testGetById_WhenDataFound_ThenReturnIt(int id, D expectedResult, List<String> getters) throws Exception {
         when(getRepository().findById(any(int.class)))
             .thenReturn(expectedResult);
 
-        DDTO actualResult = (DDTO) getService().getById(id);
+        D actualResult = (D) getService().getById(id);
 
         for (String getter : getters) {
             assertEquals(expectedResult.getClass().getMethod(getter).invoke(expectedResult),

@@ -7,11 +7,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan	                                        *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 @Aspect
 @Component
 public class ErrorLoggerAspect {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(ErrorLoggerAspect.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ErrorLoggerAspect.class);
 
     @AfterThrowing(pointcut = "within(com.cairoshop.service.impl.*)", throwing= "exception")
     public void logExceptionMessage(JoinPoint joinPoint, Exception exception) {

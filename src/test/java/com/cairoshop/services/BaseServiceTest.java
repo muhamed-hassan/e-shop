@@ -27,29 +27,29 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseServiceTest<T, DDTO, BDTO>
-            extends BaseCommonServiceTest<T, DDTO> {
+public class BaseServiceTest<T, D, B>
+            extends BaseCommonServiceTest<T, D> {
 
-    protected BaseServiceTest(Class<T> entityClass, Class<DDTO> ddtoClass) {
-        super(entityClass, ddtoClass);
+    protected BaseServiceTest(Class<T> entityClass, Class<D> detailedDtoClass) {
+        super(entityClass, detailedDtoClass);
     }
 
-    protected void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(DDTO ddto) throws Exception {
+    protected void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(D detailedDtoClass) throws Exception {
         int expectedCreatedId = 1;
         when(((BaseRepository) getRepository()).save(any(getEntityClass())))
             .thenReturn(expectedCreatedId);
 
-        int actualCreatedId = ((BaseService) getService()).add(ddto);
+        int actualCreatedId = ((BaseService) getService()).add(detailedDtoClass);
 
         assertEquals(expectedCreatedId, actualCreatedId);
     }
 
-    protected void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(DDTO ddto) throws Exception {
+    protected void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(D detailedDtoClass) throws Exception {
         doThrow(DataIntegrityViolationException.class)
             .when((BaseProductClassificationRepository) getRepository()).save(any(getEntityClass()));
 
         assertThrows(DataIntegrityViolatedException.class,
-            () -> ((BaseService) getService()).add(ddto));
+            () -> ((BaseService) getService()).add(detailedDtoClass));
     }
 
     protected void testRemoveById_WhenDataFound_ThenRemoveIt(int idOfObjectToDelete) {
@@ -71,25 +71,25 @@ public class BaseServiceTest<T, DDTO, BDTO>
             () -> ((BaseService) getService()).removeById(idOfObjectToDelete));
     }
 
-    protected void testGetAllByPage_WhenDataFound_ThenReturnIt(BDTO bdto) {
-        List<BDTO> page = List.of(bdto);
+    protected void testGetAllByPage_WhenDataFound_ThenReturnIt(B briefDtoClass) {
+        List<B> page = List.of(briefDtoClass);
         when(((BaseRepository) getRepository()).findAllByPage(any(int.class), any(int.class), anyString(), anyString()))
             .thenReturn(page);
         int countOfAllActiveItems = 1;
         when(((BaseRepository) getRepository()).countAllActive())
             .thenReturn(countOfAllActiveItems);
-        SavedItemsDTO<BDTO> expectedResult = new SavedItemsDTO<>();
+        SavedItemsDTO<B> expectedResult = new SavedItemsDTO<>();
         expectedResult.setItems(page);
         expectedResult.setAllSavedItemsCount(countOfAllActiveItems);
 
-        SavedItemsDTO<BDTO> actualResult = ((BaseService) getService()).getAll(0, "name", "ASC");
+        SavedItemsDTO<B> actualResult = ((BaseService) getService()).getAll(0, "name", "ASC");
 
         assertEquals(expectedResult.getAllSavedItemsCount(), actualResult.getAllSavedItemsCount());
         assertIterableEquals(expectedResult.getItems(), actualResult.getItems());
     }
 
     protected void testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException() {
-        List<BDTO> page = Collections.emptyList();
+        List<B> page = Collections.emptyList();
         when(((BaseRepository) getRepository()).findAllByPage(any(int.class), any(int.class), anyString(), anyString()))
             .thenReturn(page);
 

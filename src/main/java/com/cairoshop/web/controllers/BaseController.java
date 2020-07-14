@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiResponses;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseController<T, DDTO, BDTO> extends BaseCommonController<DDTO> {
+public class BaseController<D, B> extends BaseCommonController<D> {
 
     @PreAuthorize("hasRole('ADMIN')")
     @ApiResponses(value = {
@@ -39,10 +39,10 @@ public class BaseController<T, DDTO, BDTO> extends BaseCommonController<DDTO> {
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> add(@Valid @RequestBody DDTO ddto) {
+    public ResponseEntity<Void> add(@Valid @RequestBody D detailedDto) {
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
                                 .path("/{id}")
-                                .build(((BaseService) getService()).add(ddto)))
+                                .build(((BaseService) getService()).add(detailedDto)))
                                 .build();
     }
 
@@ -67,16 +67,13 @@ public class BaseController<T, DDTO, BDTO> extends BaseCommonController<DDTO> {
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"start-position", "sort-by", "sort-direction"})
-    public SavedItemsDTO<BDTO> getAllByPage(@RequestParam("start-position")
-                                                @Min(value = 0, message = "min start-position is 0")
-                                                int startPosition,
-                                            @RequestParam("sort-by")
-                                                @NotBlank(message = "sort-by field is required")
-                                                @Pattern(regexp = "^(id|name|price|quantity)$", message = "allowed values for sort-direction are DESC or ASC")
-                                                String sortBy,
-                                            @RequestParam("sort-direction")
-                                                @Pattern(regexp = "^(ASC|DESC)$", message = "allowed values for sort-direction are DESC or ASC")
-                                                String sortDirection) {
+    public SavedItemsDTO<B> getAllByPage(
+        @RequestParam("start-position") @Min(value = 0, message = "min start-position is 0") int startPosition,
+        @RequestParam("sort-by") @NotBlank(message = "sort-by field is required")
+        @Pattern(regexp = "^(id|name|price|quantity)$", message = "allowed values for sort-by are id, name, price and quantity")
+        String sortBy,
+        @RequestParam("sort-direction") @Pattern(regexp = "^(ASC|DESC)$", message = "allowed values for sort-direction are DESC or ASC")
+        String sortDirection) {
         return ((BaseService) getService()).getAll(startPosition, sortBy, sortDirection);
     }
 

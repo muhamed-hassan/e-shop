@@ -8,7 +8,8 @@ import javax.persistence.MappedSuperclass;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @MappedSuperclass
-public class ProductClassification extends BaseEntity {
+public class ProductClassification
+            extends BaseEntity {
 
     private String name;
 

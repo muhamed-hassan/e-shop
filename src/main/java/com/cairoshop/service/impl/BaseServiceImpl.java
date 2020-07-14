@@ -4,8 +4,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cairoshop.configs.Constants;
@@ -21,9 +19,9 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseServiceImpl<T, DDTO, BDTO>
-            extends BaseCommonServiceImpl<DDTO>
-            implements BaseService<DDTO, BDTO> {
+public class BaseServiceImpl<T, D, B>
+            extends BaseCommonServiceImpl<D>
+            implements BaseService<D, B> {
 
     private Class<T> entityClass;
 
@@ -37,25 +35,24 @@ public class BaseServiceImpl<T, DDTO, BDTO>
 
     @Transactional
     @Override
-    public int add(DDTO ddto) {
+    public int add(D detailedDto) {
         int id;
         try {
             T entity = getEntityClass().getDeclaredConstructor().newInstance();
-            Method[] dtoMethods = ddto.getClass().getMethods();
+            Method[] dtoMethods = detailedDto.getClass().getMethods();
             for (Method method : dtoMethods) {
                 String methodName = method.getName();
                 if (methodName.startsWith("get") && !methodName.equals("getClass")) {
-                    Object valueFromDto = method.invoke(ddto);
+                    Object valueFromDto = method.invoke(detailedDto);
                     String setterNameFromEntity = methodName.replace("get", "set");
                     entity.getClass().getMethod(setterNameFromEntity, method.getReturnType()).invoke(entity, valueFromDto);
                 }
             }
             entity.getClass().getMethod("setActive", boolean.class).invoke(entity, true);
             id = ((BaseRepository) getRepository()).save(entity);
+        } catch (DataIntegrityViolationException dive) {
+            throw new DataIntegrityViolatedException();
         } catch (Exception e) {
-            if (e instanceof DataIntegrityViolationException) {
-                throw new DataIntegrityViolatedException();
-            }
             throw new RuntimeException(e);
         }
         return id;
@@ -71,16 +68,16 @@ public class BaseServiceImpl<T, DDTO, BDTO>
     }
 
     @Override
-    public SavedItemsDTO<BDTO> getAll(int startPosition, String sortBy, String sortDirection) {
-        List<BDTO> page = ((BaseRepository) getRepository()).findAllByPage(startPosition, Constants.MAX_PAGE_SIZE, sortBy, sortDirection);
+    public SavedItemsDTO<B> getAll(int startPosition, String sortBy, String sortDirection) {
+        List<B> page = ((BaseRepository) getRepository()).findAllByPage(startPosition, Constants.MAX_PAGE_SIZE, sortBy, sortDirection);
         if (page.isEmpty()) {
             throw new NoResultException();
         }
         int allCount = ((BaseRepository) getRepository()).countAllActive();
-        SavedItemsDTO<BDTO> BDTOSavedItemsDTO = new SavedItemsDTO<>();
-        BDTOSavedItemsDTO.setItems(page);
-        BDTOSavedItemsDTO.setAllSavedItemsCount(allCount);
-        return BDTOSavedItemsDTO;
+        SavedItemsDTO<B> savedItemsDTO = new SavedItemsDTO<>();
+        savedItemsDTO.setItems(page);
+        savedItemsDTO.setAllSavedItemsCount(allCount);
+        return savedItemsDTO;
     }
 
 }

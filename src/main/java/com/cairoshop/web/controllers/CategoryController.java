@@ -7,7 +7,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cairoshop.persistence.entities.Category;
 import com.cairoshop.service.CategoryService;
 import com.cairoshop.web.dtos.CategoryInBriefDTO;
 import com.cairoshop.web.dtos.CategoryInDetailDTO;
@@ -21,7 +20,7 @@ import com.cairoshop.web.dtos.CategoryInDetailDTO;
 @RequestMapping("categories")
 @Validated
 public class CategoryController
-            extends BaseProductClassificationController<Category, CategoryInDetailDTO, CategoryInBriefDTO> {
+            extends BaseProductClassificationController<CategoryInDetailDTO, CategoryInBriefDTO> {
 
     @Autowired
     private CategoryService categoryService;

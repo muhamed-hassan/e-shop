@@ -24,7 +24,9 @@ import org.springframework.security.core.userdetails.UserDetails;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Entity
-public class User extends BaseEntity implements UserDetails {
+public class User
+            extends BaseEntity
+            implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

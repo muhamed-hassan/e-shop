@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,6 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private Utils utils;
+
     @Value("${jwt.secret}")
     private String jwtSecret;
 
@@ -47,9 +51,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-            .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+            .exceptionHandling()
+            .authenticationEntryPoint((request, response, authenticationException) ->
+                                        utils.generateResponseFrom(response, HttpStatus.FORBIDDEN.value(), "Invalid authorization token"))
             .and()
-            .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtSecret, apiName, jwtExpiration))
+            .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtSecret, apiName, jwtExpiration, utils))
             .addFilterAfter(new JwtVerificationFilter(jwtSecret), JwtAuthenticationFilter.class);
     }
 

@@ -1,7 +1,6 @@
 package com.cairoshop.persistence.repositories.impl;
 
 import java.lang.reflect.Method;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -61,16 +60,15 @@ public class ProductRepositoryImpl
     @Override
     public List<ProductInBriefDTO> search(String name, int startPosition, int pageSize, String sortBy, String sortDirection) {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<ProductInBriefDTO> criteriaQuery = criteriaBuilder.createQuery(getBdtoClass());
+        CriteriaQuery<ProductInBriefDTO> criteriaQuery = criteriaBuilder.createQuery(getBriefDtoClass());
         Root<Product> root = criteriaQuery.from(getEntityClass());
         List<String> fields = new ArrayList<>();
-        getFields(fields, getBdtoClass());
+        getReflectionUtils().getFields(fields, getBriefDtoClass());
         List<Selection<?>> selections = fields.stream()
                                                 .map(field -> root.get(field))
                                                 .collect(Collectors.toList());
-        criteriaQuery.select(criteriaBuilder.construct(getBdtoClass(), selections.toArray(new Selection[selections.size()])))
-                        .where(criteriaBuilder.and(criteriaBuilder.like(root.get("name"),"%" + name + "%"),
-                                                    criteriaBuilder.equal(root.get("active"), true)))
+        criteriaQuery.select(criteriaBuilder.construct(getBriefDtoClass(), selections.toArray(new Selection[selections.size()])))
+                        .where(criteriaBuilder.like(root.get("name"),"%" + name + "%"))
                         .orderBy(sortDirection.equals("ASC") ? criteriaBuilder.asc(root.get(sortBy)) : criteriaBuilder.desc(root.get(sortBy)));
         return getEntityManager().createQuery(criteriaQuery)
                                     .setMaxResults(pageSize)
@@ -78,29 +76,30 @@ public class ProductRepositoryImpl
                                     .getResultList();
     }
 
-    // TODO: rewrite using criteria api
     @Override
     public int countAllByCriteria(String name) {
-        return ((BigInteger) getEntityManager().createNativeQuery("SELECT COUNT(*) FROM product WHERE active = :isActive AND name LIKE :keyword")
-                                            .setParameter("isActive", true)
-                                            .setParameter("keyword", "%" + name + "%")
-                                            .getSingleResult())
-                                                .intValue();
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<Product> root = criteriaQuery.from(Product.class);
+        criteriaQuery.select(criteriaBuilder.count(root))
+                        .where(criteriaBuilder.and(criteriaBuilder.equal(root.get("active"), true),
+                                                    criteriaBuilder.like(root.get("name"), "%" + name + "%")));
+        return getEntityManager().createQuery(criteriaQuery).getSingleResult().intValue();
     }
 
     @Override
     public ProductInDetailDTO findById(int id) {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<ProductInDetailDTO> criteriaQuery = criteriaBuilder.createQuery(getDdtoClass());
+        CriteriaQuery<ProductInDetailDTO> criteriaQuery = criteriaBuilder.createQuery(getDetailedDtoClass());
         Root<Product> root = criteriaQuery.from(getEntityClass());
         List<String> fields = new ArrayList<>();
-        getFields(fields, getDdtoClass());
+        getReflectionUtils().getFields(fields, getDetailedDtoClass());
         List<Selection<?>> selections = fields.stream()
                                                 .map(field -> field.endsWith("Id") ?
                                                                 root.get(field.replace("Id", "")).get("id") :
                                                                 root.get(field))
                                                 .collect(Collectors.toList());
-        criteriaQuery.select(criteriaBuilder.construct(getDdtoClass(), selections.toArray(new Selection[selections.size()])))
+        criteriaQuery.select(criteriaBuilder.construct(getDetailedDtoClass(), selections.toArray(new Selection[selections.size()])))
                         .where(criteriaBuilder.and(criteriaBuilder.equal(root.get("id"), id),
                                                     criteriaBuilder.equal(root.get("active"), true)));
         return getEntityManager().createQuery(criteriaQuery).getSingleResult();
@@ -108,17 +107,17 @@ public class ProductRepositoryImpl
 
     @Transactional
     @Override
-    public int update(int id, ProductInDetailDTO ddto) throws Exception {
+    public int update(int id, ProductInDetailDTO detailedDtoClass) throws Exception {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaUpdate<Product> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(getEntityClass());
         Root<Product> root = criteriaUpdate.from(getEntityClass());
-        Method[] dtoMethods = getDdtoClass().getMethods();
+        Method[] dtoMethods = getDetailedDtoClass().getMethods();
         for (Method method : dtoMethods) {
             String methodName = method.getName();
             if (methodName.startsWith("get") && !methodName.equals("getClass")) {
                 String field = methodName.replace("get", "");
                 field = field.substring(0, 1).toLowerCase() + field.substring(1);
-                Object valueFromDto = method.invoke(ddto);
+                Object valueFromDto = method.invoke(detailedDtoClass);
                 criteriaUpdate.set(field.endsWith("Id") ?
                                     root.get(field.replace("Id", "")).get("id") :
                                     root.get(field), valueFromDto);

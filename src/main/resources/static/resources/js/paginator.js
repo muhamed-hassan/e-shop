@@ -35,7 +35,7 @@ function createPaginator(allItemsCount, requestUrl, itemAction) {
 
 function moveTo(targetPage) {
     if (targetPage != currentPage) {
-        adjustPaginatorActiveLink(currentPage, targetPage);
+        adjustPaginatorActiveLink(targetPage);
         if (targetPage == lastPage) {
             onLastPage();
         } else if (targetPage == 1) {
@@ -50,7 +50,7 @@ function moveTo(targetPage) {
 
 function previous() {
     let targetPage = currentPage - 1;
-    adjustPaginatorActiveLink(currentPage, targetPage);
+    adjustPaginatorActiveLink(targetPage);
     if (targetPage == 1) {
         onFirstPage();
     } else {
@@ -62,7 +62,7 @@ function previous() {
 
 function next() {
     let targetPage = currentPage + 1;
-    adjustPaginatorActiveLink(currentPage, targetPage);
+    adjustPaginatorActiveLink(targetPage);
     if (targetPage == lastPage) {
         onLastPage();
     } else {
@@ -72,7 +72,7 @@ function next() {
     getMoreItems(targetPage);
 }
 
-function adjustPaginatorActiveLink(currentPage, targetPage) {
+function adjustPaginatorActiveLink(targetPage) {
     $(`#paginator_${currentPage}`).removeClass('active');
     $(`#paginator_${currentPage}_link`).html(currentPage);
     $(`#paginator_${targetPage}`).addClass('active');

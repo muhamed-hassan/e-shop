@@ -1,5 +1,7 @@
 package com.cairoshop.web.exceptions;
 
+import static com.cairoshop.configs.Constants.ERROR_KEY;
+
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -24,8 +26,6 @@ import com.cairoshop.service.exceptions.NoResultException;
  * ************************************************************************ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    private static final String ERROR_KEY = "message";
 
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> handleNoResultException(NoResultException exception) {

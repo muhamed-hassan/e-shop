@@ -18,15 +18,15 @@ import io.swagger.annotations.ApiResponses;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseCommonController<DDTO> {
+public class BaseCommonController<D> {
 
-    private BaseCommonService<DDTO> baseCommonService;
+    private BaseCommonService<D> baseCommonService;
 
-    protected void setService(BaseCommonService<DDTO> baseCommonService) {
+    protected void setService(BaseCommonService<D> baseCommonService) {
         this.baseCommonService = baseCommonService;
     }
 
-    protected BaseCommonService<DDTO> getService() {
+    protected BaseCommonService<D> getService() {
         return baseCommonService;
     }
 
@@ -38,7 +38,7 @@ public class BaseCommonController<DDTO> {
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DDTO> getById(@PathVariable int id) {
+    public ResponseEntity<D> getById(@PathVariable int id) {
         return ResponseEntity.ok(baseCommonService.getById(id));
     }
 
