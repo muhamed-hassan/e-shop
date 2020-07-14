@@ -44,7 +44,7 @@ public class ProductServiceImpl
     private ProductSortableFieldsRepository productSortableFieldsRepository;
 
     public ProductServiceImpl() {
-        super(Product.class, ProductInDetailDTO.class);
+        super(Product.class);
     }
 
     @PostConstruct

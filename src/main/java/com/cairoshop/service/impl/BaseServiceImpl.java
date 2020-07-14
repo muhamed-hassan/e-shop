@@ -27,8 +27,7 @@ public class BaseServiceImpl<T, DDTO, BDTO>
 
     private Class<T> entityClass;
 
-    public BaseServiceImpl(Class<T> entityClass, Class<DDTO> ddtoClass) {
-        super(ddtoClass);
+    public BaseServiceImpl(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 

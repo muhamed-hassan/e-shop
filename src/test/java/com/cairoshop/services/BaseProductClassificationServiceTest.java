@@ -13,8 +13,10 @@ import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.cairoshop.persistence.repositories.BaseProductClassificationRepository;
+import com.cairoshop.persistence.repositories.BaseRepository;
 import com.cairoshop.service.BaseProductClassificationService;
 import com.cairoshop.service.exceptions.DataIntegrityViolatedException;
+import com.cairoshop.service.exceptions.DataNotDeletedException;
 import com.cairoshop.service.exceptions.DataNotUpdatedException;
 import com.cairoshop.service.exceptions.NoResultException;
 
@@ -73,6 +75,38 @@ public class BaseProductClassificationServiceTest<T, DDTO, BDTO>
 
         assertThrows(NoResultException.class,
             () -> ((BaseProductClassificationService) getService()).getAll());
+    }
+
+    protected void testRemoveById_WhenDataFound_ThenRemoveIt(int idOfObjectToDelete) {
+        when(((BaseProductClassificationRepository) getRepository()).safeToDelete(idOfObjectToDelete))
+            .thenReturn(true);
+        int affectedRows = 1;
+        when(((BaseRepository) getRepository()).deleteById(idOfObjectToDelete))
+            .thenReturn(affectedRows);
+
+        ((BaseProductClassificationService) getService()).removeById(idOfObjectToDelete);
+
+        verify((BaseProductClassificationRepository) getRepository()).safeToDelete(idOfObjectToDelete);
+        verify((BaseRepository) getRepository()).deleteById(idOfObjectToDelete);
+    }
+
+    protected void testRemoveById_WhenDataNotFound_ThenThrowDataNotDeletedException(int idOfObjectToDelete) {
+        when(((BaseProductClassificationRepository) getRepository()).safeToDelete(idOfObjectToDelete))
+            .thenReturn(true);
+        int affectedRows = 0;
+        when(((BaseRepository) getRepository()).deleteById(idOfObjectToDelete))
+            .thenReturn(affectedRows);
+
+        assertThrows(DataNotDeletedException.class,
+            () -> ((BaseProductClassificationService) getService()).removeById(idOfObjectToDelete));
+    }
+
+    protected void testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException(int idOfObjectToDelete) {
+        when(((BaseProductClassificationRepository) getRepository()).safeToDelete(idOfObjectToDelete))
+            .thenReturn(false);
+
+        assertThrows(IllegalArgumentException.class,
+            () -> ((BaseProductClassificationService) getService()).removeById(idOfObjectToDelete));
     }
 
 }

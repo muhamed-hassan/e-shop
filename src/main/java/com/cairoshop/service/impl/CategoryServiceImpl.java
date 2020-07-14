@@ -25,7 +25,7 @@ public class CategoryServiceImpl
     private CategoryRepository categoryRepository;
 
     public CategoryServiceImpl() {
-        super(Category.class, CategoryInDetailDTO.class);
+        super(Category.class);
     }
 
     @PostConstruct

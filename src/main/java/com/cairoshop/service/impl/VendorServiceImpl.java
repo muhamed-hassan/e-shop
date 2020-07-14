@@ -25,7 +25,7 @@ public class VendorServiceImpl
     private VendorRepository vendorRepository;
 
     public VendorServiceImpl() {
-        super(Vendor.class, VendorInDetailDTO.class);
+        super(Vendor.class);
     }
 
     @PostConstruct

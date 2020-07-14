@@ -109,4 +109,9 @@ public class CategoryServiceTest
         super.testRemoveById_WhenDataNotFound_ThenThrowDataNotDeletedException(404);
     }
 
+    @Test
+    public void testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException() {
+        super.testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException(2);
+    }
+
 }

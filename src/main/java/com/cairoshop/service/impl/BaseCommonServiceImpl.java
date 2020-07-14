@@ -15,11 +15,6 @@ public class BaseCommonServiceImpl<DDTO>
             implements BaseCommonService<DDTO> {
 
     private BaseCommonRepository<DDTO> repository;
-    private Class<DDTO> ddtoClass;
-
-    public BaseCommonServiceImpl(Class<DDTO> ddtoClass) {
-        this.ddtoClass = ddtoClass;
-    }
 
     protected void setRepos(BaseCommonRepository<DDTO> repository) {
         this.repository = repository;
@@ -27,10 +22,6 @@ public class BaseCommonServiceImpl<DDTO>
 
     public BaseCommonRepository<DDTO> getRepository() {
         return repository;
-    }
-
-    public Class<DDTO> getDdtoClass() {
-        return ddtoClass;
     }
 
     @Override

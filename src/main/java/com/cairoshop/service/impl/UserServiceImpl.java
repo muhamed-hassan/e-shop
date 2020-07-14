@@ -34,10 +34,6 @@ public class UserServiceImpl
     @Autowired
     private UserRepository userRepository;
 
-    public UserServiceImpl() {
-        super(UserInDetailDTO.class);
-    }
-
     @PostConstruct
     public void injectRefs() {
         setRepos(userRepository);

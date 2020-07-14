@@ -22,8 +22,8 @@ public class BaseProductClassificationServiceImpl<T, DDTO, BDTO>
             extends BaseServiceImpl<T, DDTO, BDTO>
             implements BaseProductClassificationService<DDTO, BDTO> {
 
-    protected BaseProductClassificationServiceImpl(Class<T> entityClass, Class<DDTO> ddtoClass) {
-        super(entityClass, ddtoClass);
+    protected BaseProductClassificationServiceImpl(Class<T> entityClass) {
+        super(entityClass);
     }
 
     @Transactional
