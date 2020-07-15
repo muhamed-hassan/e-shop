@@ -20,11 +20,12 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class JwtVerificationFilter extends OncePerRequestFilter {
+public class JwtVerificationFilter
+            extends OncePerRequestFilter {
 
     private final String jwtSecret;
 

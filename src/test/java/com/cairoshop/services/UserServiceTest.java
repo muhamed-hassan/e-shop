@@ -28,7 +28,7 @@ import com.cairoshop.web.dtos.UserInDetailDTO;
 import com.cairoshop.web.dtos.UserStatusDTO;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
@@ -70,9 +70,7 @@ public class UserServiceTest
         int countOfAllCustomers = 1;
         when(userRepository.countAllCustomers())
             .thenReturn(countOfAllCustomers);
-        SavedItemsDTO<UserInBriefDTO> expectedResult = new SavedItemsDTO<>();
-        expectedResult.setItems(page);
-        expectedResult.setAllSavedItemsCount(countOfAllCustomers);
+        SavedItemsDTO<UserInBriefDTO> expectedResult = new SavedItemsDTO<>(page, countOfAllCustomers);
 
         SavedItemsDTO<UserInBriefDTO> actualResult = userService.getAllCustomers(0, "name", "ASC");
 

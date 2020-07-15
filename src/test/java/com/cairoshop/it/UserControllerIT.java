@@ -1,11 +1,12 @@
 package com.cairoshop.it;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class UserControllerIT extends BaseCommonControllerIT {
+public class UserControllerIT
+            extends BaseCommonControllerIT {
 
     // admin
     public void testEdit_WhenPayloadIsValid_ThenReturn204() throws Exception {

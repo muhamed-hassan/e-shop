@@ -17,7 +17,7 @@ import com.cairoshop.web.dtos.UserInBriefDTO;
 import com.cairoshop.web.dtos.UserInDetailDTO;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */

@@ -23,7 +23,7 @@ import com.cairoshop.service.exceptions.NoResultException;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
@@ -78,9 +78,7 @@ public class BaseServiceTest<T, D, B>
         int countOfAllActiveItems = 1;
         when(((BaseRepository) getRepository()).countAllActive())
             .thenReturn(countOfAllActiveItems);
-        SavedItemsDTO<B> expectedResult = new SavedItemsDTO<>();
-        expectedResult.setItems(page);
-        expectedResult.setAllSavedItemsCount(countOfAllActiveItems);
+        SavedItemsDTO<B> expectedResult = new SavedItemsDTO<>(page, countOfAllActiveItems);
 
         SavedItemsDTO<B> actualResult = ((BaseService) getService()).getAll(0, "name", "ASC");
 

@@ -35,14 +35,15 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @RestController
 @RequestMapping("products")
 @Validated
-public class ProductController extends BaseController<ProductInDetailDTO, ProductInBriefDTO> {
+public class ProductController
+            extends BaseController<ProductInDetailDTO, ProductInBriefDTO> {
 
     @Autowired
     private ProductService productService;

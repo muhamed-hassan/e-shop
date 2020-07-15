@@ -28,7 +28,7 @@ import com.cairoshop.web.dtos.ProductInDetailDTO;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
@@ -131,10 +131,8 @@ public class ProductServiceImpl
         if (page.isEmpty()) {
             throw new NoResultException();
         }
-        int countOfItemMetSearchCriteria = productRepository.countAllByCriteria(name);
-        SavedItemsDTO<ProductInBriefDTO> savedBriefProductDTOSavedItemsDTO = new SavedItemsDTO<>();
-        savedBriefProductDTOSavedItemsDTO.setItems(page);
-        savedBriefProductDTOSavedItemsDTO.setAllSavedItemsCount(countOfItemMetSearchCriteria);
+        int countOfAllItemsThatMetSearchCriteria = productRepository.countAllByCriteria(name);
+        SavedItemsDTO<ProductInBriefDTO> savedBriefProductDTOSavedItemsDTO = new SavedItemsDTO<>(page, countOfAllItemsThatMetSearchCriteria);
         return savedBriefProductDTOSavedItemsDTO;
     }
 

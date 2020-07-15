@@ -22,7 +22,7 @@ import com.cairoshop.web.dtos.UserInDetailDTO;
 import com.cairoshop.web.dtos.UserStatusDTO;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
@@ -52,9 +52,7 @@ public class UserServiceImpl
     public SavedItemsDTO<UserInBriefDTO> getAllCustomers(int startPosition, String sortBy, String sortDirection) {
         List<UserInBriefDTO> page = userRepository.findAllCustomers(startPosition, Constants.MAX_PAGE_SIZE, sortBy, sortDirection);
         int countOfAllCustomers = userRepository.countAllCustomers();
-        SavedItemsDTO<UserInBriefDTO> savedBriefCustomerDTOSavedItemsDTO = new SavedItemsDTO<>();
-        savedBriefCustomerDTOSavedItemsDTO.setItems(page);
-        savedBriefCustomerDTOSavedItemsDTO.setAllSavedItemsCount(countOfAllCustomers);
+        SavedItemsDTO<UserInBriefDTO> savedBriefCustomerDTOSavedItemsDTO = new SavedItemsDTO<>(page, countOfAllCustomers);
         return savedBriefCustomerDTOSavedItemsDTO;
     }
 

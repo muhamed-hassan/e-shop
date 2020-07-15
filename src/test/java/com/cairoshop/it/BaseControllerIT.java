@@ -18,11 +18,12 @@ import com.cairoshop.it.models.Credentials;
 import com.cairoshop.it.models.HttpRequest;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseControllerIT extends BaseCommonControllerIT {
+public class BaseControllerIT
+            extends BaseCommonControllerIT {
 
     protected void testAddingDataWithValidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile) throws Exception {
         String requestBody = readJsonFrom(getSeedMappingsDir() + requestBodyFile);

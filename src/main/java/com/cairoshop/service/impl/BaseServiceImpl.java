@@ -15,7 +15,7 @@ import com.cairoshop.service.exceptions.NoResultException;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
@@ -73,10 +73,8 @@ public class BaseServiceImpl<T, D, B>
         if (page.isEmpty()) {
             throw new NoResultException();
         }
-        int allCount = ((BaseRepository) getRepository()).countAllActive();
-        SavedItemsDTO<B> savedItemsDTO = new SavedItemsDTO<>();
-        savedItemsDTO.setItems(page);
-        savedItemsDTO.setAllSavedItemsCount(allCount);
+        int allActiveCount = ((BaseRepository) getRepository()).countAllActive();
+        SavedItemsDTO<B> savedItemsDTO = new SavedItemsDTO<>(page, allActiveCount);
         return savedItemsDTO;
     }
 

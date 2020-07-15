@@ -19,11 +19,12 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseProductClassificationController<D, B> extends BaseController<D, B> {
+public class BaseProductClassificationController<D, B>
+            extends BaseController<D, B> {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     @ApiResponses(value = {

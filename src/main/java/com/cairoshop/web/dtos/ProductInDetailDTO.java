@@ -5,11 +5,12 @@ import javax.validation.constraints.Min;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class ProductInDetailDTO extends BaseDTO {
+public class ProductInDetailDTO
+            extends BaseDTO {
 
     @Min(value = 1, message = "price is required")
     private double price;

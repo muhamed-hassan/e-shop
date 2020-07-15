@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,7 +34,7 @@ import com.cairoshop.web.dtos.ProductInDetailDTO;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
@@ -62,7 +61,7 @@ public class ProductServiceTest
 
     @Test
     public void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId() throws Exception {
-        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description",1, 1, false, "name");
+        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description", 1, 1, false, "name");
         int expectedIdOfCreatedProduct = 1;
         when(productRepository.save(any(Product.class)))
             .thenReturn(expectedIdOfCreatedProduct);
@@ -74,7 +73,7 @@ public class ProductServiceTest
 
     @Test
     public void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() throws Exception {
-        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description",1, 1, false, "name");
+        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description", 1, 1, false, "name");
         doThrow(DataIntegrityViolationException.class)
             .when(productRepository).save(any(Product.class));
 
@@ -85,7 +84,7 @@ public class ProductServiceTest
     @Test
     public void testEdit_WhenDataIsValid_ThenSave() throws Exception {
         int id = 1;
-        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description",1, 1, false, "name");
+        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description", 1, 1, false, "name");
         int affectedRows = 1;
         when(productRepository.update(id, productInDetailDTO))
             .thenReturn(affectedRows);
@@ -98,7 +97,7 @@ public class ProductServiceTest
     @Test
     public void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() throws Exception {
         int id = 1;
-        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description",1, 1, false, "name");
+        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description", 1, 1, false, "name");
         doThrow(DataIntegrityViolationException.class)
             .when(productRepository).update(any(int.class), any(getDetailedDtoClass()));
 
@@ -109,7 +108,7 @@ public class ProductServiceTest
     @Test
     public void testEdit_WhenRecordNotUpdated_ThenThrowDataNotUpdatedException() throws Exception {
         int id = 1;
-        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description",1, 1, false, "name");
+        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description", 1, 1, false, "name");
         int affectedRows = 0;
         when(productRepository.update(any(int.class), any(getDetailedDtoClass())))
             .thenReturn(affectedRows);
@@ -145,7 +144,7 @@ public class ProductServiceTest
 
     @Test
     public void testGetById_WhenDataFound_ThenReturnIt() throws Exception {
-        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description",1, 1, false, "name");
+        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description", 1, 1, false, "name");
         testGetById_WhenDataFound_ThenReturnIt(1, productInDetailDTO,
             List.of("getName", "getPrice", "getQuantity", "getDescription", "getCategoryId", "getVendorId", "isImageUploaded"));
     }
@@ -197,9 +196,7 @@ public class ProductServiceTest
             .thenReturn(page);
         when(productRepository.countAllByCriteria(anyString()))
             .thenReturn(1);
-        SavedItemsDTO<ProductInBriefDTO> expectedResult = new SavedItemsDTO<>();
-        expectedResult.setItems(page);
-        expectedResult.setAllSavedItemsCount(1);
+        SavedItemsDTO<ProductInBriefDTO> expectedResult = new SavedItemsDTO<>(page, 1);
 
         SavedItemsDTO<ProductInBriefDTO> actualResult = productService.searchByProductName("IPhone", 0, "name", "ASC");
 
@@ -222,8 +219,8 @@ public class ProductServiceTest
         List<String> expectedSortableList = List.of("name", "price", "quantity");
         when(productSortableFieldsRepository.findAll())
             .thenReturn(List.of(new ProductSortableFields("name"),
-                                    new ProductSortableFields("price"),
-                                    new ProductSortableFields("quantity")));
+                new ProductSortableFields("price"),
+                new ProductSortableFields("quantity")));
 
         List<String> actualSortableList = productService.getSortableFields();
 

@@ -10,10 +10,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Loader;
 import org.hibernate.annotations.NamedQuery;
-import org.hibernate.annotations.Where;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
@@ -23,7 +22,6 @@ import org.hibernate.annotations.Where;
             query = "SELECT v " +
                     "FROM Vendor v " +
                     "WHERE v.id = ?1 ")
-@Where(clause = "active = true")
 public class Vendor
             extends ProductClassification {
 

@@ -1,11 +1,12 @@
 package com.cairoshop.it;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class ProductControllerIT extends BaseControllerIT {
+public class ProductControllerIT
+            extends BaseControllerIT {
 
     //admin
     public void testAdd_WhenPayloadIsValid_ThenSaveItAndReturnTtsLocationWith201() throws Exception {

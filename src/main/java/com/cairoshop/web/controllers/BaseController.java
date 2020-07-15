@@ -25,11 +25,12 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseController<D, B> extends BaseCommonController<D> {
+public class BaseController<D, B>
+            extends BaseCommonController<D> {
 
     @PreAuthorize("hasRole('ADMIN')")
     @ApiResponses(value = {

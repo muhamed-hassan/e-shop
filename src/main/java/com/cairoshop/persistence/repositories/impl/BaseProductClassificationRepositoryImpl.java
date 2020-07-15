@@ -13,7 +13,7 @@ import com.cairoshop.persistence.entities.Product;
 import com.cairoshop.persistence.repositories.BaseProductClassificationRepository;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
@@ -35,7 +35,8 @@ public class BaseProductClassificationRepositoryImpl<T, D, B>
         List<Selection<?>> selections = fields.stream()
                                                 .map(field -> root.get(field))
                                                 .collect(Collectors.toList());
-        criteriaQuery.select(criteriaBuilder.construct(getBriefDtoClass(), selections.toArray(new Selection[selections.size()])));
+        criteriaQuery.select(criteriaBuilder.construct(getBriefDtoClass(), selections.toArray(new Selection[selections.size()])))
+                        .where(criteriaBuilder.equal(root.get("active"), true));
         return getEntityManager().createQuery(criteriaQuery).getResultList();
     }
 

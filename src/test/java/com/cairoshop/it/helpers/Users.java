@@ -2,6 +2,11 @@ package com.cairoshop.it.helpers;
 
 import com.cairoshop.it.models.Credentials;
 
+/* **************************************************************************
+ * Developed by : Muhamed Hassan                                            *
+ * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
+ * GitHub       : https://github.com/muhamed-hassan                         *
+ * ************************************************************************ */
 public final class Users {
 
     private Users() {}

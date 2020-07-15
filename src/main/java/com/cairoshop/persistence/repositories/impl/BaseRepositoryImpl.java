@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cairoshop.persistence.repositories.BaseRepository;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
@@ -85,7 +85,8 @@ public class BaseRepositoryImpl<T, D, B>
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
         Root<T> root = criteriaQuery.from(getEntityClass());
-        criteriaQuery.select(criteriaBuilder.count(root));
+        criteriaQuery.select(criteriaBuilder.count(root))
+                        .where(criteriaBuilder.equal(root.get("active"), true));
         return getEntityManager().createQuery(criteriaQuery).getSingleResult().intValue();
     }
 

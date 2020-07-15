@@ -21,7 +21,7 @@ import com.cairoshop.web.dtos.ProductInBriefDTO;
 import com.cairoshop.web.dtos.ProductInDetailDTO;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
@@ -68,7 +68,8 @@ public class ProductRepositoryImpl
                                                 .map(field -> root.get(field))
                                                 .collect(Collectors.toList());
         criteriaQuery.select(criteriaBuilder.construct(getBriefDtoClass(), selections.toArray(new Selection[selections.size()])))
-                        .where(criteriaBuilder.like(root.get("name"),"%" + name + "%"))
+                        .where(criteriaBuilder.and(criteriaBuilder.like(root.get("name"),"%" + name + "%"),
+                                                    criteriaBuilder.equal(root.get("active"), true)))
                         .orderBy(sortDirection.equals("ASC") ? criteriaBuilder.asc(root.get(sortBy)) : criteriaBuilder.desc(root.get(sortBy)));
         return getEntityManager().createQuery(criteriaQuery)
                                     .setMaxResults(pageSize)
@@ -82,8 +83,8 @@ public class ProductRepositoryImpl
         CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
         Root<Product> root = criteriaQuery.from(Product.class);
         criteriaQuery.select(criteriaBuilder.count(root))
-                        .where(criteriaBuilder.and(criteriaBuilder.equal(root.get("active"), true),
-                                                    criteriaBuilder.like(root.get("name"), "%" + name + "%")));
+                        .where(criteriaBuilder.and(criteriaBuilder.like(root.get("name"),"%" + name + "%"),
+                                                    criteriaBuilder.equal(root.get("active"), true)));
         return getEntityManager().createQuery(criteriaQuery).getSingleResult().intValue();
     }
 

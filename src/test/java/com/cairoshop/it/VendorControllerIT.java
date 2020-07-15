@@ -12,11 +12,12 @@ import com.cairoshop.it.helpers.Endpoints;
 import com.cairoshop.it.helpers.Users;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class VendorControllerIT extends BaseProductClassificationControllerIT {
+public class VendorControllerIT
+            extends BaseProductClassificationControllerIT {
 
 //    @Test
     public void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation() throws Exception {

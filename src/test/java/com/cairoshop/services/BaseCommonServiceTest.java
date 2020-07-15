@@ -17,7 +17,7 @@ import com.cairoshop.service.exceptions.NoResultException;
 import com.cairoshop.service.impl.BaseCommonServiceImpl;
 
 /* **************************************************************************
- * Developed by : Muhamed Hassan	                                        *
+ * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
@@ -64,7 +64,7 @@ public class BaseCommonServiceTest<T, D> {
 
         for (String getter : getters) {
             assertEquals(expectedResult.getClass().getMethod(getter).invoke(expectedResult),
-                            actualResult.getClass().getMethod(getter).invoke(actualResult));
+                actualResult.getClass().getMethod(getter).invoke(actualResult));
         }
     }
 
