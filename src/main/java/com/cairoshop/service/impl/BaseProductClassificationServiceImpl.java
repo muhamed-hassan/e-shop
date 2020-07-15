@@ -1,5 +1,6 @@
 package com.cairoshop.service.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,14 +29,12 @@ public class BaseProductClassificationServiceImpl<T, D, B>
 
     @Transactional
     @Override
-    public void edit(int id, D detailedDto) {
+    public void edit(int id, D detailedDto) throws InvocationTargetException, IllegalAccessException {
         int affectedRows;
         try {
             affectedRows = ((BaseProductClassificationRepository) getRepository()).update(id, detailedDto);
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
         if (affectedRows == 0) {
             throw new DataNotUpdatedException();

@@ -1,5 +1,6 @@
 package com.cairoshop.persistence.repositories.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class BaseRepositoryImpl<T, D, B>
 
     @Transactional
     @Override
-    public int update(int id, D detailedDtoClass) throws Exception {
+    public int update(int id, D detailedDtoClass) throws InvocationTargetException, IllegalAccessException {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaUpdate<T> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(getEntityClass());
         Root<T> root = criteriaUpdate.from(getEntityClass());
@@ -75,7 +76,7 @@ public class BaseRepositoryImpl<T, D, B>
     }
 
     @Override
-    public int save(T entity) throws Exception {
+    public int save(T entity) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         getEntityManager().persist(entity);
         return (int) entity.getClass().getMethod("getId").invoke(entity);
     }

@@ -61,7 +61,8 @@ public class ProductController
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @PostMapping(path = "{id}")
-    public ResponseEntity<Void> uploadImageOfProduct(@PathVariable int id, @NotNull @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<Void> uploadImageOfProduct(@PathVariable int id, @NotNull @RequestParam("file") MultipartFile file)
+            throws IOException {
         productService.edit(id, file.getBytes());
         return ResponseEntity.ok().build();
     }
@@ -85,7 +86,7 @@ public class ProductController
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @PatchMapping(path = "{id}")
-    public ResponseEntity<Void> update(@PathVariable int id, @Valid @RequestBody ProductInDetailDTO productInDetailDTO) throws Exception {
+    public ResponseEntity<Void> update(@PathVariable int id, @Valid @RequestBody ProductInDetailDTO productInDetailDTO) {
         productService.edit(id, productInDetailDTO);
         return ResponseEntity.noContent().build();
     }

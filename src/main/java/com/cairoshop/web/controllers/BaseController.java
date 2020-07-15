@@ -1,5 +1,6 @@
 package com.cairoshop.web.controllers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 
 import javax.validation.Valid;
@@ -40,7 +41,8 @@ public class BaseController<D, B>
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> add(@Valid @RequestBody D detailedDto) {
+    public ResponseEntity<Void> add(@Valid @RequestBody D detailedDto)
+            throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
                                 .path("/{id}")
                                 .build(((BaseService) getService()).add(detailedDto)))

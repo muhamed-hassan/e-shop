@@ -16,7 +16,7 @@ public interface ProductService
 
     byte[] getImage(int id);
 
-    void edit(int id, ProductInDetailDTO productInDetailDTO) throws Exception;
+    void edit(int id, ProductInDetailDTO productInDetailDTO);
 
     void edit(int id, byte[] image);
 

@@ -1,5 +1,6 @@
 package com.cairoshop.persistence.repositories.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +109,7 @@ public class ProductRepositoryImpl
 
     @Transactional
     @Override
-    public int update(int id, ProductInDetailDTO detailedDtoClass) throws Exception {
+    public int update(int id, ProductInDetailDTO detailedDtoClass) throws InvocationTargetException, IllegalAccessException {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaUpdate<Product> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(getEntityClass());
         Root<Product> root = criteriaUpdate.from(getEntityClass());

@@ -1,5 +1,6 @@
 package com.cairoshop.web.controllers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.util.List;
 
@@ -46,7 +47,8 @@ public class BaseProductClassificationController<D, B>
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @PatchMapping(path = "{id}")
-    public ResponseEntity<Void> edit(@PathVariable int id, @Valid @RequestBody D detailedDto) {
+    public ResponseEntity<Void> edit(@PathVariable int id, @Valid @RequestBody D detailedDto)
+            throws InvocationTargetException, IllegalAccessException {
         ((BaseProductClassificationService) getService()).edit(id, detailedDto);
         return ResponseEntity.noContent().build();
     }

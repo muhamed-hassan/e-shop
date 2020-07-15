@@ -92,7 +92,7 @@ public class ProductServiceImpl
 
     @Transactional
     @Override
-    public void edit(int id, ProductInDetailDTO productInDetailDTO) throws Exception {
+    public void edit(int id, ProductInDetailDTO productInDetailDTO) {
         int affectedRows;
         try {
             affectedRows = productRepository.update(id, productInDetailDTO);

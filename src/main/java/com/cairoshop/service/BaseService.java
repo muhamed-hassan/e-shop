@@ -1,5 +1,7 @@
 package com.cairoshop.service;
 
+import java.lang.reflect.InvocationTargetException;
+
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
 /* **************************************************************************
@@ -10,7 +12,7 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
 public interface BaseService<D, B>
             extends BaseCommonService<D> {
 
-    int add(D detailedDto);
+    int add(D detailedDto) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException;
 
     void removeById(int id);
 

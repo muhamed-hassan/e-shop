@@ -1,5 +1,6 @@
 package com.cairoshop.service.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class BaseServiceImpl<T, D, B>
 
     @Transactional
     @Override
-    public int add(D detailedDto) {
+    public int add(D detailedDto) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         int id;
         try {
             T entity = getEntityClass().getDeclaredConstructor().newInstance();
@@ -52,8 +53,6 @@ public class BaseServiceImpl<T, D, B>
             id = ((BaseRepository) getRepository()).save(entity);
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
         return id;
     }
