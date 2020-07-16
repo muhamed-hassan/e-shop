@@ -15,16 +15,13 @@ public class UserInDetailDTO
     private String phone;
 
     private String address;
-    
-    private boolean active;
 
-    public UserInDetailDTO(String username, String email, String phone, String address, boolean active, String name) {
+    public UserInDetailDTO(String username, String email, String phone, String address, String name) {
         setName(name);
         this.username = username;
         this.email = email;
         this.phone = phone;
         this.address = address;
-        this.active = active;
     }
 
     public String getUsername() {
@@ -57,14 +54,6 @@ public class UserInDetailDTO
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
 }

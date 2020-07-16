@@ -16,21 +16,21 @@ public class CategoryInBriefDTO
         setName(name);
     }
 
-    public boolean equals(Object object) {
-        if (this == object)
+    public boolean equals(Object other) {
+        if (this == other)
             return true;
-        if (!(object instanceof CategoryInBriefDTO))
+        if (!(other instanceof CategoryInBriefDTO))
             return false;
-        CategoryInBriefDTO that = (CategoryInBriefDTO) object;
+        CategoryInBriefDTO that = (CategoryInBriefDTO) other;
         return new EqualsBuilder()
-            .append(getId(), that.getId())
-            .isEquals();
+                    .append(getId(), that.getId())
+                .isEquals();
     }
 
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-            .append(getId())
-            .toHashCode();
+                    .append(getId())
+                .toHashCode();
     }
 
 }

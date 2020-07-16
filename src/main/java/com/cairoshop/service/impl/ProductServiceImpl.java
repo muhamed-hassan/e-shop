@@ -1,6 +1,9 @@
 package com.cairoshop.service.impl;
 
+import static com.cairoshop.configs.Constants.MAX_PAGE_SIZE;
+
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -8,20 +11,21 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cairoshop.configs.Constants;
 import com.cairoshop.persistence.entities.Category;
 import com.cairoshop.persistence.entities.Product;
 import com.cairoshop.persistence.entities.ProductSortableFields;
 import com.cairoshop.persistence.entities.Vendor;
+import com.cairoshop.persistence.repositories.CategoryRepository;
 import com.cairoshop.persistence.repositories.ProductRepository;
 import com.cairoshop.persistence.repositories.ProductSortableFieldsRepository;
+import com.cairoshop.persistence.repositories.VendorRepository;
 import com.cairoshop.service.ProductService;
 import com.cairoshop.service.exceptions.DataIntegrityViolatedException;
-import com.cairoshop.service.exceptions.DataNotUpdatedException;
 import com.cairoshop.service.exceptions.NoResultException;
 import com.cairoshop.web.dtos.ProductInBriefDTO;
 import com.cairoshop.web.dtos.ProductInDetailDTO;
@@ -41,15 +45,21 @@ public class ProductServiceImpl
     private ProductRepository productRepository;
 
     @Autowired
+    private VendorRepository vendorRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
     private ProductSortableFieldsRepository productSortableFieldsRepository;
 
     public ProductServiceImpl() {
-        super(Product.class);
+        super(Product.class, ProductInBriefDTO.class);
     }
 
     @PostConstruct
     public void injectRefs() {
-        setRepos(productRepository);
+        setRepo(productRepository);
     }
 
     @Transactional
@@ -69,48 +79,42 @@ public class ProductServiceImpl
             category.setId(productInDetailDTO.getCategoryId());
             product.setCategory(category);
             product.setActive(true);
-            id = productRepository.save(product);
+            id = productRepository.save(product).getId();
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
         return id;
     }
 
     @Override
     public byte[] getImage(int id) {
-        byte[] imageStream;
-        try {
-            imageStream = productRepository.findImageByProductId(id)
-                                            .orElseThrow(() -> new EmptyResultDataAccessException(1));
-        } catch (EmptyResultDataAccessException erde) {
-            throw new NoResultException();
-        }
-        return imageStream;
+        return Optional.ofNullable(productRepository.findImageByProductId(id))
+                        .orElseThrow(NoResultException::new);
     }
 
     @Transactional
     @Override
     public void edit(int id, ProductInDetailDTO productInDetailDTO) {
-        int affectedRows;
         try {
-            affectedRows = productRepository.update(id, productInDetailDTO);
+            Product product = productRepository.getOne(id);
+            product.setName(productInDetailDTO.getName());
+            product.setPrice(productInDetailDTO.getPrice());
+            product.setQuantity(productInDetailDTO.getQuantity());
+            product.setCategory(categoryRepository.getOne(productInDetailDTO.getCategoryId()));
+            product.setVendor(vendorRepository.getOne(productInDetailDTO.getVendorId()));
+            productRepository.save(product);
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
-        }
-        if (affectedRows == 0) {
-            throw new DataNotUpdatedException();
         }
     }
 
     @Transactional
     @Override
     public void edit(int id, byte[] image) {
-        int affectedRows = productRepository.update(id, image);
-        if (affectedRows == 0) {
-            throw new DataNotUpdatedException();
-        }
+        Product product = getRepository().getOne(id);
+        product.setImage(image);
+        product.setImageUploaded(image != null);
+        getRepository().save(product);
     }
 
     @Cacheable(value = "productSortableFieldsCache")
@@ -127,13 +131,14 @@ public class ProductServiceImpl
 
     @Override
     public SavedItemsDTO<ProductInBriefDTO> searchByProductName(String name, int startPosition, String sortBy, String sortDirection) {
-        List<ProductInBriefDTO> page = productRepository.search(name, startPosition, Constants.MAX_PAGE_SIZE, sortBy, sortDirection);
+        Page<ProductInBriefDTO> page = productRepository.findAllByActiveAndNameLike(true,
+                                                                                "%" + name + "%",
+                                                                                    PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection)),
+                                                                                    getBriefDtoClass());
         if (page.isEmpty()) {
             throw new NoResultException();
         }
-        int countOfAllItemsThatMetSearchCriteria = productRepository.countAllByCriteria(name);
-        SavedItemsDTO<ProductInBriefDTO> savedBriefProductDTOSavedItemsDTO = new SavedItemsDTO<>(page, countOfAllItemsThatMetSearchCriteria);
-        return savedBriefProductDTOSavedItemsDTO;
+        return new SavedItemsDTO<>(page.getContent(), Long.valueOf(page.getTotalElements()).intValue());
     }
 
 }

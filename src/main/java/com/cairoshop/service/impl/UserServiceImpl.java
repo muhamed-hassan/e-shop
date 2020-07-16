@@ -1,21 +1,24 @@
 package com.cairoshop.service.impl;
 
+import static com.cairoshop.configs.Constants.MAX_PAGE_SIZE;
+
 import java.text.MessageFormat;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cairoshop.configs.Constants;
+import com.cairoshop.persistence.entities.User;
 import com.cairoshop.persistence.repositories.UserRepository;
 import com.cairoshop.service.UserService;
-import com.cairoshop.service.exceptions.DataNotUpdatedException;
+import com.cairoshop.service.exceptions.NoResultException;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 import com.cairoshop.web.dtos.UserInBriefDTO;
 import com.cairoshop.web.dtos.UserInDetailDTO;
@@ -28,32 +31,37 @@ import com.cairoshop.web.dtos.UserStatusDTO;
  * ************************************************************************ */
 @Service
 public class UserServiceImpl
-            extends BaseCommonServiceImpl<UserInDetailDTO>
+            extends BaseServiceImpl<User, UserInDetailDTO, UserInBriefDTO>
             implements UserService, UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
 
+    protected UserServiceImpl() {
+        super(User.class, UserInBriefDTO.class);
+    }
+
     @PostConstruct
     public void injectRefs() {
-        setRepos(userRepository);
+        setRepo(userRepository);
     }
 
     @Transactional
     @Override
     public void edit(int id, UserStatusDTO userStatusDTO) {
-        int affectedRows = userRepository.update(id, userStatusDTO.isActive());
-        if (affectedRows == 0) {
-            throw new DataNotUpdatedException();
-        }
+        User user = getRepository().getOne(id);
+        user.setActive(userStatusDTO.isActive());
+        user.setEnabled(userStatusDTO.isActive());
+        getRepository().save(user);
     }
 
     @Override
-    public SavedItemsDTO<UserInBriefDTO> getAllCustomers(int startPosition, String sortBy, String sortDirection) {
-        List<UserInBriefDTO> page = userRepository.findAllCustomers(startPosition, Constants.MAX_PAGE_SIZE, sortBy, sortDirection);
-        int countOfAllCustomers = userRepository.countAllCustomers();
-        SavedItemsDTO<UserInBriefDTO> savedBriefCustomerDTOSavedItemsDTO = new SavedItemsDTO<>(page, countOfAllCustomers);
-        return savedBriefCustomerDTOSavedItemsDTO;
+    public SavedItemsDTO<UserInBriefDTO> getAll(int startPosition, String sortBy, String sortDirection) {
+        Page<UserInBriefDTO> page = userRepository.findAllCustomers(PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection)));
+        if (page.isEmpty()) {
+            throw new NoResultException();
+        }
+        return new SavedItemsDTO<>(page.getContent(), Long.valueOf(page.getTotalElements()).intValue());
     }
 
     @Override

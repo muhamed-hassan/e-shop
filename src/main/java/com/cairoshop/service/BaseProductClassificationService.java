@@ -11,7 +11,7 @@ import java.util.List;
 public interface BaseProductClassificationService<D, B>
             extends BaseService<D, B> {
 
-    void edit(int id, D detailedDto) throws InvocationTargetException, IllegalAccessException;
+    void edit(int id, D detailedDto) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException;
 
     List<B> getAll();
 

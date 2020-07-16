@@ -12,10 +12,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ProductInDetailDTO
             extends BaseDTO {
 
-    @Min(value = 1, message = "price is required")
+    @Min(value = 1, message = "price should be greater than zero")
     private double price;
 
-    @Min(value = 1, message = "quantity is required")
+    @Min(value = 1, message = "quantity should be greater than zero")
     private int quantity;
 
     private String description;

@@ -6,13 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.cairoshop.persistence.repositories.BaseProductClassificationRepository;
 import com.cairoshop.persistence.repositories.BaseRepository;
@@ -27,16 +31,17 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseServiceTest<T, D, B>
-            extends BaseCommonServiceTest<T, D> {
+public class BaseServiceTest//<T, D, B>
+           /* extends BaseCommonServiceTest<T, D, B>*/ {
 
-    protected BaseServiceTest(Class<T> entityClass, Class<D> detailedDtoClass) {
-        super(entityClass, detailedDtoClass);
+    /*protected BaseServiceTest(Class<T> entityClass/*, Class<D> detailedDtoClass, Class<B> briefDtoClass) {
+        super(entityClass, detailedDtoClass, briefDtoClass);
     }
 
-    protected void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(D detailedDtoClass) throws Exception {
+    protected void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(D detailedDtoClass)
+            throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         int expectedCreatedId = 1;
-        when(((BaseRepository) getRepository()).save(any(getEntityClass())))
+        when(getRepository().save(any(getEntityClass())))
             .thenReturn(expectedCreatedId);
 
         int actualCreatedId = ((BaseService) getService()).add(detailedDtoClass);
@@ -44,7 +49,7 @@ public class BaseServiceTest<T, D, B>
         assertEquals(expectedCreatedId, actualCreatedId);
     }
 
-    protected void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(D detailedDtoClass) throws Exception {
+    protected void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(D detailedDtoClass) {
         doThrow(DataIntegrityViolationException.class)
             .when((BaseProductClassificationRepository) getRepository()).save(any(getEntityClass()));
 
@@ -54,45 +59,23 @@ public class BaseServiceTest<T, D, B>
 
     protected void testRemoveById_WhenDataFound_ThenRemoveIt(int idOfObjectToDelete) {
         int affectedRows = 1;
-        when(((BaseRepository) getRepository()).deleteById(idOfObjectToDelete))
+        when(((BaseRepository) getRepository()).softDelete(idOfObjectToDelete))
             .thenReturn(affectedRows);
 
         ((BaseService) getService()).removeById(idOfObjectToDelete);
 
-        verify((BaseRepository) getRepository()).deleteById(idOfObjectToDelete);
+        verify((BaseRepository) getRepository()).softDelete(idOfObjectToDelete);
     }
 
     protected void testRemoveById_WhenDataNotFound_ThenThrowDataNotDeletedException(int idOfObjectToDelete) {
         int affectedRows = 0;
-        when(((BaseRepository) getRepository()).deleteById(idOfObjectToDelete))
+        when(((BaseRepository) getRepository()).softDelete(idOfObjectToDelete))
             .thenReturn(affectedRows);
 
         assertThrows(DataNotDeletedException.class,
             () -> ((BaseService) getService()).removeById(idOfObjectToDelete));
-    }
+    }*/
 
-    protected void testGetAllByPage_WhenDataFound_ThenReturnIt(B briefDtoClass) {
-        List<B> page = List.of(briefDtoClass);
-        when(((BaseRepository) getRepository()).findAllByPage(any(int.class), any(int.class), anyString(), anyString()))
-            .thenReturn(page);
-        int countOfAllActiveItems = 1;
-        when(((BaseRepository) getRepository()).countAllActive())
-            .thenReturn(countOfAllActiveItems);
-        SavedItemsDTO<B> expectedResult = new SavedItemsDTO<>(page, countOfAllActiveItems);
 
-        SavedItemsDTO<B> actualResult = ((BaseService) getService()).getAll(0, "name", "ASC");
-
-        assertEquals(expectedResult.getAllSavedItemsCount(), actualResult.getAllSavedItemsCount());
-        assertIterableEquals(expectedResult.getItems(), actualResult.getItems());
-    }
-
-    protected void testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException() {
-        List<B> page = Collections.emptyList();
-        when(((BaseRepository) getRepository()).findAllByPage(any(int.class), any(int.class), anyString(), anyString()))
-            .thenReturn(page);
-
-        assertThrows(NoResultException.class,
-            () -> ((BaseService) getService()).getAll(0, "name", "ASC"));
-    }
 
 }

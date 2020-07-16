@@ -12,8 +12,6 @@ import javax.persistence.ManyToOne;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.Loader;
-import org.hibernate.annotations.NamedQuery;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
@@ -21,11 +19,6 @@ import org.hibernate.annotations.NamedQuery;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Entity
-@Loader(namedQuery = "findProductById")
-@NamedQuery(name = "findProductById",
-            query = "SELECT p " +
-                    "FROM Product p " +
-                    "WHERE p.id = ?1 ")
 public class Product
             extends BaseEntity {
 
@@ -108,7 +101,7 @@ public class Product
         return imageUploaded;
     }
 
-    public void setImageUploaded(final boolean imageUploaded) {
+    public void setImageUploaded(boolean imageUploaded) {
         this.imageUploaded = imageUploaded;
     }
 
@@ -129,12 +122,12 @@ public class Product
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object)
+    public boolean equals(Object other) {
+        if (this == other)
             return true;
-        if (object == null || getClass() != object.getClass())
+        if (other == null || getClass() != other.getClass())
             return false;
-        Product that = (Product) object;
+        Product that = (Product) other;
         return new EqualsBuilder()
                     .append(id, that.id)
                 .isEquals();

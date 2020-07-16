@@ -36,24 +36,24 @@ public class Role {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o)
+    public boolean equals(Object other) {
+        if (this == other)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (other == null || getClass() != other.getClass())
             return false;
-        Role role = (Role) o;
+        Role role = (Role) other;
         return new EqualsBuilder()
-            .append(id, role.id)
-            .append(name, role.name)
-            .isEquals();
+                    .append(id, role.id)
+                    .append(name, role.name)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-            .append(id)
-            .append(name)
-            .toHashCode();
+                    .append(id)
+                    .append(name)
+                .toHashCode();
     }
 
 }

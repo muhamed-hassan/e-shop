@@ -89,9 +89,10 @@ function onFirstPage() {
     disablePreviousBtn();
 }
 
+//`start-position=${PAGE_SIZE * (targetPage - 1)}`
 function getMoreItems(targetPage) {
     currentPage = targetPage;
-    currentRequestUrl = currentRequestUrl.replace(/(start-position=)[0-9]+/g, `start-position=${PAGE_SIZE * (targetPage - 1)}`);
+    currentRequestUrl = currentRequestUrl.replace(/(start-position=)[0-9]+/g, `start-position=${(targetPage - 1)}`);
     getItems(currentItemAction, currentRequestUrl);
 }
 

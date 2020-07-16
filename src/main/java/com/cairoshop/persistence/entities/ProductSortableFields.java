@@ -34,22 +34,22 @@ public class ProductSortableFields {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object)
+    public boolean equals(Object other) {
+        if (this == other)
             return true;
-        if (object == null || getClass() != object.getClass())
+        if (other == null || getClass() != other.getClass())
             return false;
-        ProductSortableFields that = (ProductSortableFields) object;
+        ProductSortableFields that = (ProductSortableFields) other;
         return new EqualsBuilder()
-            .append(name, that.name)
-            .isEquals();
+                    .append(name, that.name)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-            .append(name)
-            .toHashCode();
+                    .append(name)
+                .toHashCode();
     }
 
 }

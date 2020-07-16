@@ -25,12 +25,12 @@ public class VendorServiceImpl
     private VendorRepository vendorRepository;
 
     public VendorServiceImpl() {
-        super(Vendor.class);
+        super(Vendor.class, VendorInBriefDTO.class);
     }
 
     @PostConstruct
     public void injectRefs() {
-        setRepos(vendorRepository);
+        setRepo(vendorRepository);
     }
 
 }

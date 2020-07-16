@@ -37,21 +37,21 @@ public class UserInBriefDTO
         this.active = active;
     }
 
-    public boolean equals(Object object) {
-        if (this == object)
+    public boolean equals(Object other) {
+        if (this == other)
             return true;
-        if (!(object instanceof UserInBriefDTO))
+        if (!(other instanceof UserInBriefDTO))
             return false;
-        UserInBriefDTO that = (UserInBriefDTO) object;
+        UserInBriefDTO that = (UserInBriefDTO) other;
         return new EqualsBuilder()
-            .append(getId(), that.getId())
-            .isEquals();
+                    .append(getId(), that.getId())
+                .isEquals();
     }
 
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-            .append(getId())
-            .toHashCode();
+                    .append(getId())
+                .toHashCode();
     }
     
 }

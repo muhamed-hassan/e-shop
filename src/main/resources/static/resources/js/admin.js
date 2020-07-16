@@ -246,8 +246,8 @@ function editProduct(savedProductId) {
         showMessage('Product edited successfully', 'success');
         $('#content').empty();
         tmpUploadedImage = null;
-    }).fail(function(errorThrown) {
-        showMessage('Failed to edit this product', 'danger');
+    }).fail(function(errorThrown) {        
+        showMessage(errorThrown.responseJSON.message || 'Failed to edit this product', 'danger');
     }).always(function() {
         removePreloader();
     });    

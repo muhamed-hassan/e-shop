@@ -7,11 +7,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cairoshop.persistence.repositories.BaseProductClassificationRepository;
-import com.cairoshop.persistence.repositories.BaseRepository;
 import com.cairoshop.service.BaseProductClassificationService;
 import com.cairoshop.service.exceptions.DataIntegrityViolatedException;
-import com.cairoshop.service.exceptions.DataNotDeletedException;
-import com.cairoshop.service.exceptions.DataNotUpdatedException;
 import com.cairoshop.service.exceptions.NoResultException;
 
 /* **************************************************************************
@@ -23,27 +20,27 @@ public class BaseProductClassificationServiceImpl<T, D, B>
             extends BaseServiceImpl<T, D, B>
             implements BaseProductClassificationService<D, B> {
 
-    protected BaseProductClassificationServiceImpl(Class<T> entityClass) {
-        super(entityClass);
+    protected BaseProductClassificationServiceImpl(Class<T> entityClass, Class<B> briefDtoClass) {
+        super(entityClass, briefDtoClass);
     }
 
     @Transactional
     @Override
-    public void edit(int id, D detailedDto) throws InvocationTargetException, IllegalAccessException {
-        int affectedRows;
+    public void edit(int id, D detailedDto)
+            throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         try {
-            affectedRows = ((BaseProductClassificationRepository) getRepository()).update(id, detailedDto);
+            String name = (String) detailedDto.getClass().getMethod("getName").invoke(detailedDto);
+            T entity = getRepository().getOne(id);
+            entity.getClass().getMethod("setName", String.class).invoke(entity, name);
+            getRepository().save(entity);
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
-        }
-        if (affectedRows == 0) {
-            throw new DataNotUpdatedException();
         }
     }
 
     @Override
     public List<B> getAll() {
-        List<B> result = ((BaseProductClassificationRepository) getRepository()).findAll();
+        List<B> result = ((BaseProductClassificationRepository) getRepository()).findAllByActive(true, getBriefDtoClass());
         if (result.isEmpty()) {
             throw new NoResultException();
         }
@@ -52,15 +49,13 @@ public class BaseProductClassificationServiceImpl<T, D, B>
 
     @Transactional
     @Override
-    public void removeById(int id) {
-        boolean safeToDelete = ((BaseProductClassificationRepository) getRepository()).safeToDelete(id);
-        if (!safeToDelete) {
+    public void removeById(int id)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        boolean notSafeToDelete = ((BaseProductClassificationRepository) getRepository()).countOfAssociationsWithProduct(id) > 0L;
+        if (notSafeToDelete) {
             throw new IllegalArgumentException("Can not delete this item because it is associated with an active product");
         }
-        int affectedRows = ((BaseRepository) getRepository()).deleteById(id);
-        if (affectedRows == 0) {
-            throw new DataNotDeletedException();
-        }
+        super.removeById(id);
     }
 
 }

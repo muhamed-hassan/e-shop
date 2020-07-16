@@ -8,8 +8,6 @@ import javax.persistence.Id;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.Loader;
-import org.hibernate.annotations.NamedQuery;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
@@ -17,11 +15,6 @@ import org.hibernate.annotations.NamedQuery;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Entity
-@Loader(namedQuery = "findCategoryById")
-@NamedQuery(name = "findCategoryById",
-            query = "SELECT c " +
-                    "FROM Category c " +
-                    "WHERE c.id = ?1 ")
 public class Category
             extends ProductClassification {
 
@@ -38,12 +31,12 @@ public class Category
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object)
+    public boolean equals(Object other) {
+        if (this == other)
             return true;
-        if (object == null || getClass() != object.getClass())
+        if (other == null || getClass() != other.getClass())
             return false;
-        Category that = (Category) object;
+        Category that = (Category) other;
         return new EqualsBuilder()
                         .append(id, that.id)
                     .isEquals();

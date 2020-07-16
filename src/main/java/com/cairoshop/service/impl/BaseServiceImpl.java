@@ -1,17 +1,19 @@
 package com.cairoshop.service.impl;
 
+import static com.cairoshop.configs.Constants.MAX_PAGE_SIZE;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cairoshop.configs.Constants;
 import com.cairoshop.persistence.repositories.BaseRepository;
 import com.cairoshop.service.BaseService;
 import com.cairoshop.service.exceptions.DataIntegrityViolatedException;
-import com.cairoshop.service.exceptions.DataNotDeletedException;
 import com.cairoshop.service.exceptions.NoResultException;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 
@@ -21,22 +23,54 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 public class BaseServiceImpl<T, D, B>
-            extends BaseCommonServiceImpl<D>
             implements BaseService<D, B> {
+
+    private BaseRepository<T, D, B> repository;
 
     private Class<T> entityClass;
 
-    public BaseServiceImpl(Class<T> entityClass) {
+    private Class<B> briefDtoClass;
+
+    public BaseServiceImpl(Class<T> entityClass, Class<B> briefDtoClass) {
+        this.briefDtoClass = briefDtoClass;
         this.entityClass = entityClass;
     }
 
-    public Class<T> getEntityClass() {
+    protected void setRepo(BaseRepository<T, D, B> repository) {
+        this.repository = repository;
+    }
+
+    protected BaseRepository<T, D, B> getRepository() {
+        return repository;
+    }
+
+    protected Class<T> getEntityClass() {
         return entityClass;
+    }
+
+    protected Class<B> getBriefDtoClass() {
+        return briefDtoClass;
+    }
+
+    protected Sort sortFrom(String sortBy, String sortDirection) {
+        Sort sort = Sort.by(sortBy);
+        switch (sortDirection) {
+            case "DESC":
+                sort = sort.descending();
+                break;
+            case "ASC":
+                sort = sort.ascending();
+                break;
+            default:
+                throw new IllegalArgumentException("allowed sort directions are DESC or ASC");
+        }
+        return sort;
     }
 
     @Transactional
     @Override
-    public int add(D detailedDto) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public int add(D detailedDto)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         int id;
         try {
             T entity = getEntityClass().getDeclaredConstructor().newInstance();
@@ -50,7 +84,8 @@ public class BaseServiceImpl<T, D, B>
                 }
             }
             entity.getClass().getMethod("setActive", boolean.class).invoke(entity, true);
-            id = ((BaseRepository) getRepository()).save(entity);
+            entity = repository.save(entity);
+            id = (int) entity.getClass().getMethod("getId").invoke(entity);
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
         }
@@ -59,22 +94,28 @@ public class BaseServiceImpl<T, D, B>
 
     @Transactional
     @Override
-    public void removeById(int id) {
-        int affectedRows = ((BaseRepository) getRepository()).deleteById(id);
-        if (affectedRows == 0) {
-            throw new DataNotDeletedException();
-        }
+    public void removeById(int id)
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        T entity = getRepository().getOne(id);
+        entity.getClass().getMethod("setActive", boolean.class).invoke(entity, false);
+        getRepository().save(entity);
+    }
+
+    @Override
+    public D getById(int id) {
+        return repository.findByIdAndActive(id, true)
+                            .orElseThrow(NoResultException::new);
     }
 
     @Override
     public SavedItemsDTO<B> getAll(int startPosition, String sortBy, String sortDirection) {
-        List<B> page = ((BaseRepository) getRepository()).findAllByPage(startPosition, Constants.MAX_PAGE_SIZE, sortBy, sortDirection);
+        Page<B> page = repository.findAllByActive(true,
+                                                        PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection)),
+                                                        getBriefDtoClass());
         if (page.isEmpty()) {
             throw new NoResultException();
         }
-        int allActiveCount = ((BaseRepository) getRepository()).countAllActive();
-        SavedItemsDTO<B> savedItemsDTO = new SavedItemsDTO<>(page, allActiveCount);
-        return savedItemsDTO;
+        return new SavedItemsDTO<>(page.getContent(), Long.valueOf(page.getTotalElements()).intValue());
     }
 
 }

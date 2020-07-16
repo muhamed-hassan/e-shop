@@ -25,12 +25,12 @@ public class CategoryServiceImpl
     private CategoryRepository categoryRepository;
 
     public CategoryServiceImpl() {
-        super(Category.class);
+        super(Category.class, CategoryInBriefDTO.class);
     }
 
     @PostConstruct
     public void injectRefs() {
-        setRepos(categoryRepository);
+        setRepo(categoryRepository);
     }
 
 }

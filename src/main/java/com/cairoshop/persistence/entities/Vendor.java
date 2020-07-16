@@ -38,12 +38,12 @@ public class Vendor
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object)
+    public boolean equals(Object other) {
+        if (this == other)
             return true;
-        if (object == null || getClass() != object.getClass())
+        if (other == null || getClass() != other.getClass())
             return false;
-        Vendor that = (Vendor) object;
+        Vendor that = (Vendor) other;
         return new EqualsBuilder()
                     .append(id, that.id)
                 .isEquals();

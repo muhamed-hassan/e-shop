@@ -1,24 +1,23 @@
 package com.cairoshop.persistence.repositories;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.NoRepositoryBean;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
+@NoRepositoryBean
 public interface BaseRepository<T, D, B>
-            extends BaseCommonRepository<D>  {
+            extends JpaRepository<T, Integer> {
 
-    int save(T entity) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException;
+    Optional<D> findByIdAndActive(int id, boolean active);
 
-    int countAllActive();
-
-    List<B> findAllByPage(int startPosition, int pageSize, String sortBy, String sortDirection);
-
-    int update(int id, D detailedDtoClass) throws InvocationTargetException, IllegalAccessException;
-
-    int deleteById(int id);
+    Page<B> findAllByActive(boolean active, Pageable pageable, Class<B> briefDtoClass);
 
 }

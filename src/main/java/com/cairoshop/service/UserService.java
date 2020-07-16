@@ -1,6 +1,5 @@
 package com.cairoshop.service;
 
-import com.cairoshop.web.dtos.SavedItemsDTO;
 import com.cairoshop.web.dtos.UserInBriefDTO;
 import com.cairoshop.web.dtos.UserInDetailDTO;
 import com.cairoshop.web.dtos.UserStatusDTO;
@@ -11,10 +10,8 @@ import com.cairoshop.web.dtos.UserStatusDTO;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 public interface UserService
-            extends BaseCommonService<UserInDetailDTO> {
+            extends BaseService<UserInDetailDTO, UserInBriefDTO> {
 
    void edit(int id, UserStatusDTO userStatusDTO);
-
-   SavedItemsDTO<UserInBriefDTO> getAllCustomers(int startPosition, String sortBy, String sortDirection);
 
 }

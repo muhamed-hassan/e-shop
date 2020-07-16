@@ -48,7 +48,7 @@ public class BaseProductClassificationController<D, B>
     })
     @PatchMapping(path = "{id}")
     public ResponseEntity<Void> edit(@PathVariable int id, @Valid @RequestBody D detailedDto)
-            throws InvocationTargetException, IllegalAccessException {
+            throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         ((BaseProductClassificationService) getService()).edit(id, detailedDto);
         return ResponseEntity.noContent().build();
     }

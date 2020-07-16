@@ -11,6 +11,7 @@ import javax.validation.constraints.Pattern;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,8 +31,18 @@ import io.swagger.annotations.ApiResponses;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseController<D, B>
-            extends BaseCommonController<D> {
+@Validated
+public class BaseController<D, B> {
+
+    private BaseService<D, B> service;
+
+    protected void setService(BaseService<D, B> service) {
+        this.service = service;
+    }
+
+    protected BaseService<D, B> getService() {
+        return service;
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @ApiResponses(value = {
@@ -45,7 +56,7 @@ public class BaseController<D, B>
             throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
                                 .path("/{id}")
-                                .build(((BaseService) getService()).add(detailedDto)))
+                                .build(service.add(detailedDto)))
                                 .build();
     }
 
@@ -56,12 +67,25 @@ public class BaseController<D, B>
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
-        ((BaseService) getService()).removeById(id);
+    public ResponseEntity<Void> delete(@PathVariable int id)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        service.removeById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
+    @ApiResponses(value = {
+        @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Succeeded in fetching data"),
+        @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Data not found"),
+        @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
+        @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
+    })
+    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<D> getById(@PathVariable int id) {
+        return ResponseEntity.ok(service.getById(id));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiResponses(value = {
         @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Succeeded in fetching data"),
         @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Data not found"),
@@ -74,10 +98,10 @@ public class BaseController<D, B>
         @RequestParam("start-position") @Min(value = 0, message = "min start-position is 0") int startPosition,
         @RequestParam("sort-by") @NotBlank(message = "sort-by field is required")
         @Pattern(regexp = "^(id|name|price|quantity)$", message = "allowed values for sort-by are id, name, price and quantity")
-        String sortBy,
+            String sortBy,
         @RequestParam("sort-direction") @Pattern(regexp = "^(ASC|DESC)$", message = "allowed values for sort-direction are DESC or ASC")
-        String sortDirection) {
-        return ((BaseService) getService()).getAll(startPosition, sortBy, sortDirection);
+            String sortDirection) {
+        return service.getAll(startPosition, sortBy, sortDirection);
     }
 
 }
