@@ -35,15 +35,8 @@ public class UserServiceImpl
             implements UserService, UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
-
-    protected UserServiceImpl() {
-        super(User.class, UserInBriefDTO.class);
-    }
-
-    @PostConstruct
-    public void injectRefs() {
-        setRepo(userRepository);
+    public UserServiceImpl(UserRepository repository) {
+        super(User.class, UserInBriefDTO.class, repository);
     }
 
     @Transactional
@@ -57,7 +50,7 @@ public class UserServiceImpl
 
     @Override
     public SavedItemsDTO<UserInBriefDTO> getAll(int startPosition, String sortBy, String sortDirection) {
-        Page<UserInBriefDTO> page = userRepository.findAllCustomers(PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection)));
+        Page<UserInBriefDTO> page = ((UserRepository) getRepository()).findAllCustomers(PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection)));
         if (page.isEmpty()) {
             throw new NoResultException();
         }
@@ -66,7 +59,7 @@ public class UserServiceImpl
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return userRepository.findByUsername(username)
+        return ((UserRepository) getRepository()).findByUsername(username)
                                 .orElseThrow(() -> new UsernameNotFoundException(MessageFormat.format("This user name {0} does not exist", username)));
     }
 

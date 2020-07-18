@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -41,25 +39,21 @@ public class ProductServiceImpl
             extends BaseServiceImpl<Product, ProductInDetailDTO, ProductInBriefDTO>
             implements ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final VendorRepository vendorRepository;
+
+    private final CategoryRepository categoryRepository;
+
+    private final ProductSortableFieldsRepository productSortableFieldsRepository;
 
     @Autowired
-    private VendorRepository vendorRepository;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private ProductSortableFieldsRepository productSortableFieldsRepository;
-
-    public ProductServiceImpl() {
-        super(Product.class, ProductInBriefDTO.class);
-    }
-
-    @PostConstruct
-    public void injectRefs() {
-        setRepo(productRepository);
+    public ProductServiceImpl(ProductRepository productRepository,
+                                VendorRepository vendorRepository,
+                                CategoryRepository categoryRepository,
+                                ProductSortableFieldsRepository productSortableFieldsRepository) {
+        super(Product.class, ProductInBriefDTO.class, productRepository);
+        this.vendorRepository = vendorRepository;
+        this.categoryRepository = categoryRepository;
+        this.productSortableFieldsRepository = productSortableFieldsRepository;
     }
 
     @Transactional
@@ -79,7 +73,7 @@ public class ProductServiceImpl
             category.setId(productInDetailDTO.getCategoryId());
             product.setCategory(category);
             product.setActive(true);
-            id = productRepository.save(product).getId();
+            id = getRepository().save(product).getId();
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
         }
@@ -88,7 +82,7 @@ public class ProductServiceImpl
 
     @Override
     public byte[] getImage(int id) {
-        return Optional.ofNullable(productRepository.findImageByProductId(id))
+        return Optional.ofNullable(((ProductRepository) getRepository()).findImageByProductId(id))
                         .orElseThrow(NoResultException::new);
     }
 
@@ -96,13 +90,13 @@ public class ProductServiceImpl
     @Override
     public void edit(int id, ProductInDetailDTO productInDetailDTO) {
         try {
-            Product product = productRepository.getOne(id);
+            Product product = getRepository().getOne(id);
             product.setName(productInDetailDTO.getName());
             product.setPrice(productInDetailDTO.getPrice());
             product.setQuantity(productInDetailDTO.getQuantity());
             product.setCategory(categoryRepository.getOne(productInDetailDTO.getCategoryId()));
             product.setVendor(vendorRepository.getOne(productInDetailDTO.getVendorId()));
-            productRepository.save(product);
+            getRepository().save(product);
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
         }
@@ -131,7 +125,7 @@ public class ProductServiceImpl
 
     @Override
     public SavedItemsDTO<ProductInBriefDTO> searchByProductName(String name, int startPosition, String sortBy, String sortDirection) {
-        Page<ProductInBriefDTO> page = productRepository.findAllByActiveAndNameLike(true,
+        Page<ProductInBriefDTO> page = ((ProductRepository) getRepository()).findAllByActiveAndNameLike(true,
                                                                                 "%" + name + "%",
                                                                                     PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection)),
                                                                                     getBriefDtoClass());

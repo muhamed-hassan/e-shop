@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -44,11 +43,8 @@ public class ProductController
             extends BaseController<ProductInDetailDTO, ProductInBriefDTO> {
 
     @Autowired
-    private ProductService productService;
-
-    @PostConstruct
-    public void injectRefs() {
-        setService(productService);
+    public ProductController(ProductService productService) {
+        super(productService);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -61,7 +57,7 @@ public class ProductController
     @PostMapping(path = "{id}")
     public ResponseEntity<Void> uploadImageOfProduct(@PathVariable int id, @NotNull @RequestParam("file") MultipartFile file)
             throws IOException {
-        productService.edit(id, file.getBytes());
+        ((ProductService) getService()).edit(id, file.getBytes());
         return ResponseEntity.ok().build();
     }
 
@@ -73,7 +69,7 @@ public class ProductController
     })
     @GetMapping(path = "images/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public ResponseEntity<byte[]> downloadImageOfProduct(@PathVariable int id) {
-        return ResponseEntity.ok(productService.getImage(id));
+        return ResponseEntity.ok(((ProductService) getService()).getImage(id));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -85,7 +81,7 @@ public class ProductController
     })
     @PatchMapping(path = "{id}")
     public ResponseEntity<Void> update(@PathVariable int id, @Valid @RequestBody ProductInDetailDTO productInDetailDTO) {
-        productService.edit(id, productInDetailDTO);
+        ((ProductService) getService()).edit(id, productInDetailDTO);
         return ResponseEntity.noContent().build();
     }
 
@@ -96,7 +92,7 @@ public class ProductController
     })
     @GetMapping(path = "sortable-fields", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<String>> getSortableFields() {
-        return ResponseEntity.ok(productService.getSortableFields());
+        return ResponseEntity.ok(((ProductService) getService()).getSortableFields());
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
@@ -112,11 +108,11 @@ public class ProductController
         @RequestParam("name") @NotBlank(message = "name is required") String name,
         @RequestParam("start-position") @Min(value = 0, message = "min start-position is 0") int startPosition,
         @RequestParam("sort-by") @NotBlank(message = "sort-by field is required")
-        @Pattern(regexp = "^(name|price|quantity)$", message = "allowed values for sort-by are name, price and quantity")
-        String sortBy,
+            @Pattern(regexp = "^(name|price|quantity)$", message = "allowed values for sort-by are name, price and quantity")
+            String sortBy,
         @RequestParam("sort-direction") @Pattern(regexp = "^(ASC|DESC)$", message = "allowed values for sort-direction are DESC or ASC")
-        String sortDirection) {
-        return ResponseEntity.ok(productService.searchByProductName(name, startPosition, sortBy, sortDirection));
+            String sortDirection) {
+        return ResponseEntity.ok(((ProductService) getService()).searchByProductName(name, startPosition, sortBy, sortDirection));
     }
 
 }

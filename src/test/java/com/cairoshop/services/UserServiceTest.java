@@ -5,22 +5,25 @@ import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.cairoshop.persistence.entities.User;
 import com.cairoshop.persistence.repositories.UserRepository;
-import com.cairoshop.service.exceptions.DataNotUpdatedException;
+import com.cairoshop.service.UserService;
 import com.cairoshop.service.impl.UserServiceImpl;
 import com.cairoshop.web.dtos.SavedItemsDTO;
 import com.cairoshop.web.dtos.UserInBriefDTO;
@@ -33,88 +36,69 @@ import com.cairoshop.web.dtos.UserStatusDTO;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 public class UserServiceTest
-            /*extends BaseCommonServiceTest<User, UserInDetailDTO, UserInBriefDTO>*/ {
-
-    /*@Mock
-    private UserRepository userRepository;
-
-    @InjectMocks
-    private UserServiceImpl userService;
+            extends BaseServiceTest<User, UserInDetailDTO, UserInBriefDTO> {
 
     protected UserServiceTest() {
-        super(User.class, UserInDetailDTO.class, UserInBriefDTO.class);
+        super(User.class);
     }
 
     @BeforeEach
     public void injectRefs() {
-        injectRefs(userRepository, userService);
+        UserServiceImpl userService = new UserServiceImpl(mock(UserRepository.class));
+        injectRefs(userService);
     }
 
     @Test
-    public void testGetById_WhenDataFound_ThenReturnIt() throws Exception {
-       // UserInDetailDTO userInDetailDTO = new UserInDetailDTO("username", "email", "phone", "address", true, "name");
-//        testGetById_WhenDataFound_ThenReturnIt(1, userInDetailDTO, List.of("getName", "getUsername", "getEmail", "getPhone", "getAddress", "isActive"));
+    public void testEdit_WhenDataIsValid_ThenSave() {
+        User userEntity = mock(User.class);
+        int id = 1;
+        UserStatusDTO userStatusDTO = new UserStatusDTO();
+        userStatusDTO.setActive(false);
+        when(getRepository().getOne(id))
+            .thenReturn(userEntity);
+        when(getRepository().save(userEntity))
+            .thenReturn(userEntity);
+
+        ((UserService) getService()).edit(id, userStatusDTO);
+
+        verify(getRepository()).getOne(id);
+        verify(getRepository()).save(userEntity);
     }
 
     @Test
-    public void testGetById_WhenDataNotFound_ThenThrowNoResultException() {
-        testGetById_WhenDataNotFound_ThenThrowNoResultException(404);
+    public void testGetById_WhenDataFound_ThenReturnIt()
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Optional<UserInDetailDTO> userInDetailDTO = Optional.of(new UserInDetailDTO("username", "email", "phone", "address", "name"));
+        testGetById_WhenDataFound_ThenReturnIt(1, userInDetailDTO, List.of("getUsername", "getEmail", "getPhone", "getAddress", "getName"));
     }
 
     @Test
     public void testGetAllCustomersByPage_WhenDataFound_ThenReturnIt() {
         UserInBriefDTO userInBriefDTO = new UserInBriefDTO(1, "name", true);
-        List<UserInBriefDTO> page = List.of(userInBriefDTO);
-//        when(userRepository.findAllCustomers(any(int.class), any(int.class), anyString(), anyString()))
-//            .thenReturn(page);
-        int countOfAllCustomers = 1;
-//        when(userRepository.countAllCustomers())
-//            .thenReturn(countOfAllCustomers);
-        SavedItemsDTO<UserInBriefDTO> expectedResult = new SavedItemsDTO<>(page, countOfAllCustomers);
+        Page<UserInBriefDTO> page = mock(Page.class);
+        when(page.getContent())
+            .thenReturn(List.of(userInBriefDTO));
+        when(page.getTotalElements())
+            .thenReturn(1L);
+        when(((UserRepository) getRepository()).findAllCustomers(any(Pageable.class)))
+            .thenReturn(page);
 
-        SavedItemsDTO<UserInBriefDTO> actualResult = null;//userService.getAllCustomers(0, "name", "ASC");
+        SavedItemsDTO<UserInBriefDTO> actualResult = getService().getAll(0, "id", "ASC");
 
-        assertEquals(expectedResult.getAllSavedItemsCount(), actualResult.getAllSavedItemsCount());
-        assertIterableEquals(expectedResult.getItems(), actualResult.getItems());
-    }
-
-    @Test
-    public void testEdit_WhenDataIsValid_ThenSave() {
-        int id = 1;
-        UserStatusDTO userStatusDTO = new UserStatusDTO();
-        userStatusDTO.setActive(false);
-        int affectedRows = 1;
-        when(userRepository.update(id, userStatusDTO.isActive()))
-            .thenReturn(affectedRows);
-
-        userService.edit(id, userStatusDTO);
-
-        verify(userRepository).update(id, userStatusDTO.isActive());
-    }
-
-    @Test
-    public void testEdit_WhenRecordNotUpdated_ThenThrowDataNotUpdatedException() {
-        int id = 1;
-        UserStatusDTO userStatusDTO = new UserStatusDTO();
-        userStatusDTO.setActive(false);
-        int affectedRows = 0;
-        when(userRepository.update(any(int.class), any(boolean.class)))
-            .thenReturn(affectedRows);
-
-        assertThrows(DataNotUpdatedException.class,
-            () -> userService.edit(id, userStatusDTO));
+        assertEquals(Long.valueOf(page.getTotalElements()).intValue(), actualResult.getAllSavedItemsCount());
+        assertIterableEquals(page.getContent(), actualResult.getItems());
     }
 
     @Test
     public void testLoadUserByUsername_WhenDataFound_ThenReturnIt() {
         String username = "username";
-        User user = new User();
-        user.setUsername(username);
-        Optional<User> expectedResult = Optional.of(user);
-        when(userRepository.findByUsername(anyString()))
+        User userEntity = new User();
+        userEntity.setUsername(username);
+        Optional<User> expectedResult = Optional.of(userEntity);
+        when(((UserRepository) getRepository()).findByUsername(anyString()))
             .thenReturn(expectedResult);
 
-        UserDetails actualResult = userService.loadUserByUsername(username);
+        UserDetails actualResult = ((UserDetailsService) getService()).loadUserByUsername(username);
 
         assertEquals(username, actualResult.getUsername());
     }
@@ -123,11 +107,11 @@ public class UserServiceTest
     public void testLoadUserByUsername_WhenDataNotFound_ThenThrowUsernameNotFoundException() {
         String username = "username";
         Optional<User> expectedResult = Optional.empty();
-        when(userRepository.findByUsername(anyString()))
+        when(((UserRepository) getRepository()).findByUsername(anyString()))
             .thenReturn(expectedResult);
 
         assertThrows(UsernameNotFoundException.class,
-            () -> userService.loadUserByUsername(username));
+            () -> ((UserDetailsService) getService()).loadUserByUsername(username));
     }
-*/
+
 }

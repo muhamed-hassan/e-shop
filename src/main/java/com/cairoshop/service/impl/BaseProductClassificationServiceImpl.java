@@ -20,8 +20,8 @@ public class BaseProductClassificationServiceImpl<T, D, B>
             extends BaseServiceImpl<T, D, B>
             implements BaseProductClassificationService<D, B> {
 
-    protected BaseProductClassificationServiceImpl(Class<T> entityClass, Class<B> briefDtoClass) {
-        super(entityClass, briefDtoClass);
+    public BaseProductClassificationServiceImpl(Class<T> entityClass, Class<B> briefDtoClass, BaseProductClassificationRepository<T, D, B> repository) {
+        super(entityClass, briefDtoClass, repository);
     }
 
     @Transactional

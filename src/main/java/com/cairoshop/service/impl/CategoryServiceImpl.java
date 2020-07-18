@@ -1,7 +1,5 @@
 package com.cairoshop.service.impl;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +20,8 @@ public class CategoryServiceImpl
             implements CategoryService {
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    public CategoryServiceImpl() {
-        super(Category.class, CategoryInBriefDTO.class);
-    }
-
-    @PostConstruct
-    public void injectRefs() {
-        setRepo(categoryRepository);
+    public CategoryServiceImpl(CategoryRepository repository) {
+        super(Category.class, CategoryInBriefDTO.class, repository);
     }
 
 }

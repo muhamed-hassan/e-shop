@@ -2,8 +2,6 @@ package com.cairoshop.web.controllers;
 
 import java.net.HttpURLConnection;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,13 +28,10 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("users")
 public class UserController
             extends BaseController<UserInDetailDTO, UserInBriefDTO> {
-    
-    @Autowired
-    private UserService userService;
 
-    @PostConstruct
-    public void injectRefs() {
-        setService(userService);
+    @Autowired
+    public UserController(UserService userService) {
+        super(userService);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -48,7 +43,7 @@ public class UserController
     })
     @PatchMapping(path = "{id}")
     public ResponseEntity<Void> changeStatus(@PathVariable int id, @RequestBody UserStatusDTO userStatusDTO) {
-        userService.edit(id, userStatusDTO);
+        ((UserService) getService()).edit(id, userStatusDTO);
         return ResponseEntity.noContent().build();
     }
     

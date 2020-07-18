@@ -1,11 +1,13 @@
 package com.cairoshop.services;
 
+import static org.mockito.Mockito.mock;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
 import com.cairoshop.persistence.entities.Category;
 import com.cairoshop.persistence.repositories.CategoryRepository;
@@ -19,62 +21,49 @@ import com.cairoshop.web.dtos.CategoryInDetailDTO;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 public class CategoryServiceTest
-           /* extends BaseProductClassificationServiceTest<Category, CategoryInDetailDTO, CategoryInBriefDTO>*/ {
-
-   /* @Mock
-    private CategoryRepository categoryRepository;
-
-    @InjectMocks
-    private CategoryServiceImpl categoryService;
+           extends BaseProductClassificationServiceTest<Category, CategoryInDetailDTO, CategoryInBriefDTO> {
 
     public CategoryServiceTest() {
-        super(Category.class, CategoryInDetailDTO.class, CategoryInBriefDTO.class);
+        super(Category.class);
     }
 
     @BeforeEach
     public void injectRefs() {
-        injectRefs(categoryRepository, categoryService);
+        CategoryServiceImpl categoryService = new CategoryServiceImpl(mock(CategoryRepository.class));
+        injectRefs(categoryService);
     }
 
     @Test
-    public void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId() throws Exception {
+    public void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId()
+            throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         CategoryInDetailDTO categoryInDetailDTO = new CategoryInDetailDTO("Tablets");
         testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(categoryInDetailDTO);
     }
 
     @Test
-    public void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() throws Exception {
+    public void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
         CategoryInDetailDTO categoryInDetailDTO = new CategoryInDetailDTO("Tablets");
         testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(categoryInDetailDTO);
     }
 
     @Test
-    public void testEdit_WhenDataIsValid_ThenSave() throws Exception {
+    public void testEdit_WhenDataIsValid_ThenSave()
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         CategoryInDetailDTO savedDetailedCategoryDTO = new CategoryInDetailDTO("Mobiles");
         testEdit_WhenDataIsValid_ThenSave(1, savedDetailedCategoryDTO);
     }
 
     @Test
-    public void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() throws Exception {
+    public void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
         CategoryInDetailDTO savedDetailedCategoryDTO = new CategoryInDetailDTO("Tablets");
         testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(1, savedDetailedCategoryDTO);
     }
 
     @Test
-    public void testEdit_WhenRecordNotUpdated_ThenThrowDataNotUpdatedException() throws Exception {
-        CategoryInDetailDTO savedDetailedCategoryDTO = new CategoryInDetailDTO("Mobiles");
-        testEdit_WhenRecordNotUpdated_ThenThrowDataNotUpdatedException(1, savedDetailedCategoryDTO);
-    }
-
-    @Test
-    public void testGetById_WhenDataFound_ThenReturnIt() throws Exception {
-        CategoryInDetailDTO savedDetailedCategoryDTO = new CategoryInDetailDTO("Mobiles");
-//        testGetById_WhenDataFound_ThenReturnIt(1, savedDetailedCategoryDTO, List.of("getName"));
-    }
-
-    @Test
-    public void testGetById_WhenDataNotFound_ThenThrowNoResultException() {
-        testGetById_WhenDataNotFound_ThenThrowNoResultException(404);
+    public void testGetById_WhenDataFound_ThenReturnIt()
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Optional<CategoryInDetailDTO> categoryInDetailDTO = Optional.of(new CategoryInDetailDTO("Mobiles"));
+        testGetById_WhenDataFound_ThenReturnIt(1, categoryInDetailDTO, List.of("getName"));
     }
 
     @Test
@@ -100,18 +89,14 @@ public class CategoryServiceTest
     }
 
     @Test
-    public void testRemoveById_WhenDataFound_ThenReturnIt() {
-        super.testRemoveById_WhenDataFound_ThenRemoveIt(1);
-    }
-
-    @Test
-    public void testRemoveById_WhenDataNotFound_ThenThrowDataNotDeletedException() {
-        super.testRemoveById_WhenDataNotFound_ThenThrowDataNotDeletedException(404);
+    public void testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt()
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        super.testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt(1);
     }
 
     @Test
     public void testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException() {
         super.testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException(2);
-    }*/
+    }
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.cairoshop.service.BaseProductClassificationService;
+import com.cairoshop.service.BaseService;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -26,6 +27,10 @@ import io.swagger.annotations.ApiResponses;
  * ************************************************************************ */
 public class BaseProductClassificationController<D, B>
             extends BaseController<D, B> {
+
+    public BaseProductClassificationController(BaseService<D, B> service) {
+        super(service);
+    }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     @ApiResponses(value = {

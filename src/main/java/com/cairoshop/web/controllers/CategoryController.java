@@ -1,7 +1,5 @@
 package com.cairoshop.web.controllers;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,11 +19,8 @@ public class CategoryController
             extends BaseProductClassificationController<CategoryInDetailDTO, CategoryInBriefDTO> {
 
     @Autowired
-    private CategoryService categoryService;
-
-    @PostConstruct
-    public void injectRefs() {
-        setService(categoryService);
+    public CategoryController(CategoryService categoryService) {
+        super(categoryService);
     }
 
 }

@@ -1,7 +1,5 @@
 package com.cairoshop.service.impl;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +20,8 @@ public class VendorServiceImpl
             implements VendorService {
 
     @Autowired
-    private VendorRepository vendorRepository;
-
-    public VendorServiceImpl() {
-        super(Vendor.class, VendorInBriefDTO.class);
-    }
-
-    @PostConstruct
-    public void injectRefs() {
-        setRepo(vendorRepository);
+    public VendorServiceImpl(VendorRepository repository) {
+        super(Vendor.class, VendorInBriefDTO.class, repository);
     }
 
 }

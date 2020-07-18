@@ -1,11 +1,13 @@
 package com.cairoshop.services;
 
+import static org.mockito.Mockito.mock;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
 import com.cairoshop.persistence.entities.Vendor;
 import com.cairoshop.persistence.repositories.VendorRepository;
@@ -19,62 +21,48 @@ import com.cairoshop.web.dtos.VendorInDetailDTO;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 public class VendorServiceTest
-            /*extends BaseProductClassificationServiceTest<Vendor, VendorInDetailDTO, VendorInBriefDTO>*/ {
-
-   /* @Mock
-    private VendorRepository vendorRepository;
-
-    @InjectMocks
-    private VendorServiceImpl vendorService;
+            extends BaseProductClassificationServiceTest<Vendor, VendorInDetailDTO, VendorInBriefDTO> {
 
     public VendorServiceTest() {
-        super(Vendor.class, VendorInDetailDTO.class, VendorInBriefDTO.class);
+        super(Vendor.class);
     }
 
     @BeforeEach
     public void injectRefs() {
-        injectRefs(vendorRepository, vendorService);
+        VendorServiceImpl vendorService = new VendorServiceImpl(mock(VendorRepository.class));
+        injectRefs(vendorService);
     }
 
     @Test
-    public void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId() throws Exception {
+    public void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId()
+            throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         VendorInDetailDTO vendorInDetailDTO = new VendorInDetailDTO("Sony");
         testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(vendorInDetailDTO);
     }
 
     @Test
-    public void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() throws Exception {
+    public void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
         VendorInDetailDTO vendorInDetailDTO = new VendorInDetailDTO("Sony");
         testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(vendorInDetailDTO);
     }
 
     @Test
-    public void testEdit_WhenDataIsValid_ThenSave() throws Exception {
+    public void testEdit_WhenDataIsValid_ThenSave() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         VendorInDetailDTO vendorInDetailDTO = new VendorInDetailDTO("Toshiba");
         testEdit_WhenDataIsValid_ThenSave(1, vendorInDetailDTO);
     }
 
     @Test
-    public void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() throws Exception {
+    public void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
         VendorInDetailDTO vendorInDetailDTO = new VendorInDetailDTO("Sony");
         testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(1, vendorInDetailDTO);
     }
 
     @Test
-    public void testEdit_WhenRecordNotUpdated_ThenThrowDataNotUpdatedException() throws Exception {
-        VendorInDetailDTO vendorInDetailDTO = new VendorInDetailDTO("Toshiba");
-        testEdit_WhenRecordNotUpdated_ThenThrowDataNotUpdatedException(1, vendorInDetailDTO);
-    }
-
-    @Test
-    public void testGetById_WhenDataFound_ThenReturnIt() throws Exception {
-        VendorInDetailDTO vendorInDetailDTO = new VendorInDetailDTO("Toshiba");
-//        testGetById_WhenDataFound_ThenReturnIt(1, vendorInDetailDTO, List.of("getName"));
-    }
-
-    @Test
-    public void testGetById_WhenDataNotFound_ThenThrowNoResultException() {
-        testGetById_WhenDataNotFound_ThenThrowNoResultException(404);
+    public void testGetById_WhenDataFound_ThenReturnIt()
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Optional<VendorInDetailDTO> vendorInDetailDTO = Optional.of(new VendorInDetailDTO("Toshiba"));
+        testGetById_WhenDataFound_ThenReturnIt(1, vendorInDetailDTO, List.of("getName"));
     }
 
     @Test
@@ -99,19 +87,16 @@ public class VendorServiceTest
         super.testGetAll_WhenDataNotFound_ThenThrowNoResultException();
     }
 
-    @Test
-    public void testRemoveById_WhenDataFound_ThenReturnIt() {
-        super.testRemoveById_WhenDataFound_ThenRemoveIt(1);
-    }
 
     @Test
-    public void testRemoveById_WhenDataNotFound_ThenThrowDataNotDeletedException() {
-        super.testRemoveById_WhenDataNotFound_ThenThrowDataNotDeletedException(404);
+    public void testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt()
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        super.testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt(1);
     }
 
     @Test
     public void testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException() {
         super.testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException(2);
-    }*/
+    }
 
 }

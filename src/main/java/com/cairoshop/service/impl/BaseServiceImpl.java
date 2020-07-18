@@ -31,28 +31,25 @@ public class BaseServiceImpl<T, D, B>
 
     private Class<B> briefDtoClass;
 
-    public BaseServiceImpl(Class<T> entityClass, Class<B> briefDtoClass) {
+    public BaseServiceImpl(Class<T> entityClass, Class<B> briefDtoClass, BaseRepository<T, D, B> repository) {
         this.briefDtoClass = briefDtoClass;
         this.entityClass = entityClass;
-    }
-
-    protected void setRepo(BaseRepository<T, D, B> repository) {
         this.repository = repository;
     }
 
-    protected BaseRepository<T, D, B> getRepository() {
+    public BaseRepository<T, D, B> getRepository() {
         return repository;
     }
 
-    protected Class<T> getEntityClass() {
+    public Class<T> getEntityClass() {
         return entityClass;
     }
 
-    protected Class<B> getBriefDtoClass() {
+    public Class<B> getBriefDtoClass() {
         return briefDtoClass;
     }
 
-    protected Sort sortFrom(String sortBy, String sortDirection) {
+    public Sort sortFrom(String sortBy, String sortDirection) {
         Sort sort = Sort.by(sortBy);
         switch (sortDirection) {
             case "DESC":
@@ -92,15 +89,6 @@ public class BaseServiceImpl<T, D, B>
         return id;
     }
 
-    @Transactional
-    @Override
-    public void removeById(int id)
-            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        T entity = getRepository().getOne(id);
-        entity.getClass().getMethod("setActive", boolean.class).invoke(entity, false);
-        getRepository().save(entity);
-    }
-
     @Override
     public D getById(int id) {
         return repository.findByIdAndActive(id, true)
@@ -110,12 +98,21 @@ public class BaseServiceImpl<T, D, B>
     @Override
     public SavedItemsDTO<B> getAll(int startPosition, String sortBy, String sortDirection) {
         Page<B> page = repository.findAllByActive(true,
-                                                        PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection)),
-                                                        getBriefDtoClass());
+                                                    PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection)),
+                                                    briefDtoClass);
         if (page.isEmpty()) {
             throw new NoResultException();
         }
         return new SavedItemsDTO<>(page.getContent(), Long.valueOf(page.getTotalElements()).intValue());
+    }
+
+    @Transactional
+    @Override
+    public void removeById(int id)
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        T entity = getRepository().getOne(id);
+        entity.getClass().getMethod("setActive", boolean.class).invoke(entity, false);
+        getRepository().save(entity);
     }
 
 }
