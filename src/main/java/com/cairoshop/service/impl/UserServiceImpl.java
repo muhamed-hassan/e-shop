@@ -4,11 +4,10 @@ import static com.cairoshop.configs.Constants.MAX_PAGE_SIZE;
 
 import java.text.MessageFormat;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -50,7 +49,8 @@ public class UserServiceImpl
 
     @Override
     public SavedItemsDTO<UserInBriefDTO> getAll(int startPosition, String sortBy, String sortDirection) {
-        Page<UserInBriefDTO> page = ((UserRepository) getRepository()).findAllCustomers(PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection)));
+        Pageable pageable = PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection));
+        Page<UserInBriefDTO> page = ((UserRepository) getRepository()).findAllCustomers(pageable);
         if (page.isEmpty()) {
             throw new NoResultException();
         }
@@ -60,7 +60,7 @@ public class UserServiceImpl
     @Override
     public UserDetails loadUserByUsername(String username) {
         return ((UserRepository) getRepository()).findByUsername(username)
-                                .orElseThrow(() -> new UsernameNotFoundException(MessageFormat.format("This user name {0} does not exist", username)));
+            .orElseThrow(() -> new UsernameNotFoundException(MessageFormat.format("This user name {0} does not exist", username)));
     }
 
 }

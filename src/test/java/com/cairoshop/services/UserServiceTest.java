@@ -68,8 +68,15 @@ public class UserServiceTest
     @Test
     public void testGetById_WhenDataFound_ThenReturnIt()
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Optional<UserInDetailDTO> userInDetailDTO = Optional.of(new UserInDetailDTO("username", "email", "phone", "address", "name"));
-        testGetById_WhenDataFound_ThenReturnIt(1, userInDetailDTO, List.of("getUsername", "getEmail", "getPhone", "getAddress", "getName"));
+        Optional<UserInDetailDTO> userInDetailDTO = Optional.of(UserInDetailDTO.builder()
+                                                                                    .name("some name")
+                                                                                    .username("some username")
+                                                                                    .email("malekshda3wah@leehkeda.com")
+                                                                                    .phone("0151212002")
+                                                                                    .address("henak")
+                                                                                .build());
+        List<String> getters = List.of("getUsername", "getEmail", "getPhone", "getAddress", "getName");
+        testGetById_WhenDataFound_ThenReturnIt(1, userInDetailDTO, getters);
     }
 
     @Test

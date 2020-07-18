@@ -11,13 +11,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cairoshop.persistence.entities.Category;
 import com.cairoshop.persistence.entities.Product;
 import com.cairoshop.persistence.entities.ProductSortableFields;
-import com.cairoshop.persistence.entities.Vendor;
 import com.cairoshop.persistence.repositories.CategoryRepository;
 import com.cairoshop.persistence.repositories.ProductRepository;
 import com.cairoshop.persistence.repositories.ProductSortableFieldsRepository;
@@ -61,18 +60,14 @@ public class ProductServiceImpl
     public int add(ProductInDetailDTO productInDetailDTO) {
         int id;
         try {
-            Product product = new Product();
-            product.setName(productInDetailDTO.getName());
-            product.setDescription(productInDetailDTO.getDescription());
-            product.setPrice(productInDetailDTO.getPrice());
-            product.setQuantity(productInDetailDTO.getQuantity());
-            Vendor vendor = new Vendor();
-            vendor.setId(productInDetailDTO.getVendorId());
-            product.setVendor(vendor);
-            Category category = new Category();
-            category.setId(productInDetailDTO.getCategoryId());
-            product.setCategory(category);
-            product.setActive(true);
+            Product product = Product.builder()
+                                        .name(productInDetailDTO.getName())
+                                        .price(productInDetailDTO.getPrice())
+                                        .quantity(productInDetailDTO.getQuantity())
+                                        .description(productInDetailDTO.getDescription())
+                                        .category(categoryRepository.getOne(productInDetailDTO.getCategoryId()))
+                                        .vendor(vendorRepository.getOne(productInDetailDTO.getVendorId()))
+                                    .build();
             id = getRepository().save(product).getId();
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
@@ -125,10 +120,9 @@ public class ProductServiceImpl
 
     @Override
     public SavedItemsDTO<ProductInBriefDTO> searchByProductName(String name, int startPosition, String sortBy, String sortDirection) {
-        Page<ProductInBriefDTO> page = ((ProductRepository) getRepository()).findAllByActiveAndNameLike(true,
-                                                                                "%" + name + "%",
-                                                                                    PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection)),
-                                                                                    getBriefDtoClass());
+        Pageable pageable = PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection));
+        Page<ProductInBriefDTO> page = ((ProductRepository) getRepository())
+                                            .findAllByActiveAndNameLike(true, "%" + name + "%", pageable, getBriefDtoClass());
         if (page.isEmpty()) {
             throw new NoResultException();
         }

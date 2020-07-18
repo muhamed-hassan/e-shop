@@ -49,6 +49,8 @@ public class Product
     @JoinColumn(name = "vendor")
     private Vendor vendor;
 
+    private static Builder builder = new Builder();
+
     public int getId() {
         return id;
     }
@@ -119,6 +121,68 @@ public class Product
 
     public void setVendor(Vendor vendor) {
         this.vendor = vendor;
+    }
+
+    public static Builder builder() {
+        return builder;
+    }
+
+    public static class Builder {
+
+        private String name;
+
+        private double price;
+
+        private int quantity;
+
+        private String description;
+
+        private Category category;
+
+        private Vendor vendor;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder price(double price) {
+            this.price = price;
+            return this;
+        }
+
+        public Builder quantity(int quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder category(Category category) {
+            this.category = category;
+            return this;
+        }
+
+        public Builder vendor(Vendor vendor) {
+            this.vendor = vendor;
+            return this;
+        }
+
+        public Product build() {
+            Product product = new Product();
+            product.setName(name);
+            product.setPrice(price);
+            product.setQuantity(quantity);
+            product.setDescription(description);
+            product.setCategory(category);
+            product.setVendor(vendor);
+            product.setActive(true);
+            return product;
+        }
+
     }
 
     @Override

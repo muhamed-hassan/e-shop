@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,14 +93,13 @@ public class BaseServiceImpl<T, D, B>
     @Override
     public D getById(int id) {
         return repository.findByIdAndActive(id, true)
-                            .orElseThrow(NoResultException::new);
+            .orElseThrow(NoResultException::new);
     }
 
     @Override
     public SavedItemsDTO<B> getAll(int startPosition, String sortBy, String sortDirection) {
-        Page<B> page = repository.findAllByActive(true,
-                                                    PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection)),
-                                                    briefDtoClass);
+        Pageable pageable = PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection));
+        Page<B> page = repository.findAllByActive(true, pageable, briefDtoClass);
         if (page.isEmpty()) {
             throw new NoResultException();
         }

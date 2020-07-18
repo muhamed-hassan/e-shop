@@ -78,7 +78,15 @@ public class ProductServiceTest
         int expectedIdOfCreatedProduct = 1;
         when(productEntity.getId())
             .thenReturn(expectedIdOfCreatedProduct);
-        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description", 1, 1, false, "name");
+        ProductInDetailDTO productInDetailDTO = ProductInDetailDTO.builder()
+                                                                        .name("some name")
+                                                                        .price(0.5)
+                                                                        .quantity(20)
+                                                                        .description("some description")
+                                                                        .vendorId(1)
+                                                                        .categoryId(1)
+                                                                        .imageUploaded(false)
+                                                                    .build();
 
         int actualIdOfCreatedProduct = getService().add(productInDetailDTO);
 
@@ -87,7 +95,15 @@ public class ProductServiceTest
 
     @Test
     public void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
-        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description", 1, 1, false, "name");
+        ProductInDetailDTO productInDetailDTO = ProductInDetailDTO.builder()
+                                                                        .name("some duplicated name")
+                                                                        .price(0.5)
+                                                                        .quantity(20)
+                                                                        .description("some description")
+                                                                        .vendorId(1)
+                                                                        .categoryId(1)
+                                                                        .imageUploaded(false)
+                                                                    .build();
         doThrow(DataIntegrityViolationException.class)
             .when(getRepository()).save(any(Product.class));
 
@@ -95,34 +111,50 @@ public class ProductServiceTest
             () -> getService().add(productInDetailDTO));
     }
 
-   @Test
+    @Test
     public void testEdit_WhenDataIsValid_ThenSave() {
         int id = 1;
-        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description", 1, 1, false, "name");
+        ProductInDetailDTO productInDetailDTO = ProductInDetailDTO.builder()
+                                                                        .name("some name")
+                                                                        .price(0.5)
+                                                                        .quantity(20)
+                                                                        .description("some description")
+                                                                        .vendorId(1)
+                                                                        .categoryId(1)
+                                                                        .imageUploaded(false)
+                                                                    .build();
         Product productEntity = mock(Product.class);
-       when(getRepository().getOne(id))
-           .thenReturn(productEntity);
-       Vendor vendorEntity = mock(Vendor.class);
-       when(vendorRepository.getOne(productInDetailDTO.getVendorId()))
-           .thenReturn(vendorEntity);
-       Category categoryEntity = mock(Category.class);
-       when(categoryRepository.getOne(productInDetailDTO.getCategoryId()))
-           .thenReturn(categoryEntity);
-       when(getRepository().save(productEntity))
-           .thenReturn(productEntity);
+        when(getRepository().getOne(id))
+            .thenReturn(productEntity);
+        Vendor vendorEntity = mock(Vendor.class);
+        when(vendorRepository.getOne(productInDetailDTO.getVendorId()))
+            .thenReturn(vendorEntity);
+        Category categoryEntity = mock(Category.class);
+        when(categoryRepository.getOne(productInDetailDTO.getCategoryId()))
+            .thenReturn(categoryEntity);
+        when(getRepository().save(productEntity))
+            .thenReturn(productEntity);
 
-       ((ProductService) getService()).edit(id, productInDetailDTO);
+        ((ProductService) getService()).edit(id, productInDetailDTO);
 
-       verify(getRepository()).getOne(id);
-       verify(vendorRepository).getOne(productInDetailDTO.getVendorId());
-       verify(categoryRepository).getOne(productInDetailDTO.getCategoryId());
-       verify(getRepository()).save(productEntity);
+        verify(getRepository()).getOne(id);
+        verify(vendorRepository).getOne(productInDetailDTO.getVendorId());
+        verify(categoryRepository).getOne(productInDetailDTO.getCategoryId());
+        verify(getRepository()).save(productEntity);
     }
 
    @Test
     public void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
         int id = 1;
-        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description", 1, 1, false, "name");
+        ProductInDetailDTO productInDetailDTO = ProductInDetailDTO.builder()
+                                                                       .name("some duplicated name")
+                                                                       .price(0.5)
+                                                                       .quantity(20)
+                                                                       .description("some description")
+                                                                       .vendorId(1)
+                                                                       .categoryId(1)
+                                                                       .imageUploaded(false)
+                                                                   .build();
         Product productEntity = mock(Product.class);
         when(getRepository().getOne(id))
             .thenReturn(productEntity);
@@ -160,8 +192,17 @@ public class ProductServiceTest
     @Test
     public void testGetById_WhenDataFound_ThenReturnIt()
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        ProductInDetailDTO productInDetailDTO = new ProductInDetailDTO(0.5, 20, "description", 1, 1, false, "name");
-        testGetById_WhenDataFound_ThenReturnIt(1, Optional.of(productInDetailDTO), List.of("getName", "getPrice", "getQuantity", "getDescription", "getCategoryId", "getVendorId", "isImageUploaded"));
+        Optional<ProductInDetailDTO> productInDetailDTO = Optional.of(ProductInDetailDTO.builder()
+                                                                                            .name("some name")
+                                                                                            .price(0.5)
+                                                                                            .quantity(20)
+                                                                                            .description("some description")
+                                                                                            .vendorId(1)
+                                                                                            .categoryId(1)
+                                                                                            .imageUploaded(false)
+                                                                                        .build());
+        List<String> getters = List.of("getName", "getPrice", "getQuantity", "getDescription", "getCategoryId", "getVendorId", "isImageUploaded");
+        testGetById_WhenDataFound_ThenReturnIt(1, productInDetailDTO, getters);
     }
 
     @Test
@@ -211,7 +252,8 @@ public class ProductServiceTest
        when(((ProductRepository) getRepository()).findAllByActiveAndNameLike(any(boolean.class), anyString(), any(Pageable.class), any(Class.class)))
            .thenReturn(page);
 
-        SavedItemsDTO<ProductInBriefDTO> actualResult = ((ProductService) getService()).searchByProductName("IPhone", 0, "name", "ASC");
+        SavedItemsDTO<ProductInBriefDTO> actualResult = ((ProductService) getService())
+            .searchByProductName("IPhone", 0, "name", "ASC");
 
         assertEquals(Long.valueOf(page.getTotalElements()).intValue(), actualResult.getAllSavedItemsCount());
         assertIterableEquals(page.getContent(), actualResult.getItems());
@@ -253,7 +295,8 @@ public class ProductServiceTest
     }
 
     @Test
-    public void testRemoveById_WhenDataFound_ThenReturnIt() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void testRemoveById_WhenDataFound_ThenReturnIt()
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         super.testRemoveById_WhenDataFound_ThenRemoveIt(1);
     }
 

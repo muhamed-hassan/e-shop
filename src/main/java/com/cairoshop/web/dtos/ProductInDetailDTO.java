@@ -31,6 +31,8 @@ public class ProductInDetailDTO
     @JsonProperty(value = "image_uploaded")
     private boolean imageUploaded = false;
 
+    private static Builder builder = new Builder();
+    
     public ProductInDetailDTO(double price, int quantity, String description, int categoryId, int vendorId, boolean imageUploaded, String name) {
         setName(name);
         this.price = price;
@@ -87,6 +89,67 @@ public class ProductInDetailDTO
 
     public void setImageUploaded(boolean imageUploaded) {
         this.imageUploaded = imageUploaded;
+    }
+
+    public static Builder builder() {
+        return builder;
+    }
+
+    public static class Builder {
+
+        private String name;
+
+        private double price;
+
+        private int quantity;
+
+        private String description;
+        
+        private int categoryId;
+
+        private int vendorId;
+
+        private boolean imageUploaded;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder price(double price) {
+            this.price = price;
+            return this;
+        }
+
+        public Builder quantity(int quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder categoryId(int categoryId) {
+            this.categoryId = categoryId;
+            return this;
+        }
+
+        public Builder vendorId(int vendorId) {
+            this.vendorId = vendorId;
+            return this;
+        }
+
+        public Builder imageUploaded(boolean imageUploaded) {
+            this.imageUploaded = imageUploaded;
+            return this;
+        }
+
+        public ProductInDetailDTO build() {
+            return new ProductInDetailDTO(price, quantity, description, categoryId, vendorId, imageUploaded, name);
+        }
+
     }
     
 }
