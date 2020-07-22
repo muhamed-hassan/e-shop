@@ -65,7 +65,7 @@ public class BaseServiceTest<T, D, B> {
         int expectedCreatedId = 1;
         when(entity.getClass().getMethod("getId").invoke(entity))
             .thenReturn(expectedCreatedId);
-        when(repository.save(any(entityClass)))
+        when(repository.saveAndFlush(any(entityClass)))
             .thenReturn(entity);
 
         int actualCreatedId = service.add(detailedDto);
@@ -74,7 +74,7 @@ public class BaseServiceTest<T, D, B> {
     }
 
     protected void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(D detailedDto) {
-        when(repository.save(any(entityClass)))
+        when(repository.saveAndFlush(any(entityClass)))
             .thenThrow(DataIntegrityViolationException.class);
 
         assertThrows(DataIntegrityViolatedException.class,

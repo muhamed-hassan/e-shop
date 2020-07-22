@@ -34,8 +34,8 @@ public class VendorControllerIT
     private static Stream<Arguments> provideArgsForTestAddWithInvalidPayload() {
         return Stream.of(
             Arguments.of("invalid_new_vendor_with_duplicated_name.json", "db_violated_constraints.json"),
-            Arguments.of("invalid_new_vendor_with_empty_name_value.json", "name_is_required.json"),
-            Arguments.of("invalid_new_vendor_with_empty_payload.json", "name_is_required.json")
+            Arguments.of("invalid_new_product_classification_with_empty_name_value.json", "name_is_required.json"),
+            Arguments.of("invalid_new_product_classification_with_empty_payload.json", "name_is_required.json")
         );
     }
 
@@ -58,8 +58,8 @@ public class VendorControllerIT
     private static Stream<Arguments> provideArgsForTestEditWithInvalidPayload() {
         return Stream.of(
             Arguments.of("invalid_new_vendor_with_duplicated_name.json", "db_violated_constraints.json"),
-            Arguments.of("invalid_new_vendor_with_empty_name_value.json", "name_is_required.json"),
-            Arguments.of("invalid_new_vendor_with_empty_payload.json", "name_is_required.json")
+            Arguments.of("invalid_new_product_classification_with_empty_name_value.json", "name_is_required.json"),
+            Arguments.of("invalid_new_product_classification_with_empty_payload.json", "name_is_required.json")
         );
     }
 

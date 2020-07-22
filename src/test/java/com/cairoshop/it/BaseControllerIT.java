@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -71,7 +72,7 @@ public class BaseControllerIT {
     private int port;
 
     @BeforeAll
-    public static void initTestDB() throws SQLException {
+    public static void initTestDB() throws SQLException, InterruptedException {
         mySQLContainer = new MySQLContainer("mysql:8.0.20")
             .withDatabaseName("integration-tests-db")
             .withUsername("username")
@@ -81,6 +82,7 @@ public class BaseControllerIT {
         System.setProperty("DB_USER", mySQLContainer.getUsername());
         System.setProperty("DB_PASSWORD", mySQLContainer.getPassword());
         connection = mySQLContainer.createConnection("");
+//        TimeUnit.SECONDS.sleep(1);
     }
 
     @PostConstruct
@@ -100,6 +102,7 @@ public class BaseControllerIT {
                     throw new RuntimeException(sqlException);
                 }
             });
+            //TimeUnit.SECONDS.sleep(1);
         } catch (Exception e) {
             e.printStackTrace();
         }

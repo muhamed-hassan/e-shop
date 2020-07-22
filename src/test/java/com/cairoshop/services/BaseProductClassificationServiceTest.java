@@ -35,20 +35,20 @@ public class BaseProductClassificationServiceTest<T, D, B>
         T entity = mock(getEntityClass());
         when(getRepository().getOne(id))
             .thenReturn(entity);
-        when(getRepository().save(entity))
+        when(getRepository().saveAndFlush(entity))
             .thenReturn(entity);
 
         ((BaseProductClassificationService) getService()).edit(id, detailedDtoClass);
 
         verify(getRepository()).getOne(id);
-        verify(getRepository()).save(entity);
+        verify(getRepository()).saveAndFlush(entity);
     }
 
     protected void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(int id, D detailedDtoClass) {
         T entity = mock(getEntityClass());
         when(getRepository().getOne(id))
             .thenReturn(entity);
-        when(getRepository().save(any(getEntityClass())))
+        when(getRepository().saveAndFlush(any(getEntityClass())))
             .thenThrow(DataIntegrityViolationException.class);
 
         assertThrows(DataIntegrityViolatedException.class,
