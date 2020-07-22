@@ -82,7 +82,7 @@ public class BaseServiceImpl<T, D, B>
                 }
             }
             entity.getClass().getMethod("setActive", boolean.class).invoke(entity, true);
-            entity = repository.save(entity);
+            entity = repository.saveAndFlush(entity);
             id = (int) entity.getClass().getMethod("getId").invoke(entity);
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();

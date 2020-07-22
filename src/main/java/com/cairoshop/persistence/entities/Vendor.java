@@ -8,8 +8,6 @@ import javax.persistence.Id;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.Loader;
-import org.hibernate.annotations.NamedQuery;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
@@ -17,11 +15,6 @@ import org.hibernate.annotations.NamedQuery;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @Entity
-@Loader(namedQuery = "findVendorById")
-@NamedQuery(name = "findVendorById",
-            query = "SELECT v " +
-                    "FROM Vendor v " +
-                    "WHERE v.id = ?1 ")
 public class Vendor
             extends ProductClassification {
 

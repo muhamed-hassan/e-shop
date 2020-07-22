@@ -15,7 +15,7 @@ public class ProductControllerIT
 
     // admin
     public void testEdit_WhenPayloadIsValid_ThenReturn204() throws Exception {
-        testDataModification(null,null,null);
+        //testDataModificationWithInvalidPayloadAndAuthorizedUser(null,null,null);
     }
 
     //admin
@@ -25,12 +25,12 @@ public class ProductControllerIT
 
     //admin or customer
     public void testGetById_WhenDataFound_ThenReturnDataWith200() throws Exception {
-        testDataRetrievalToReturnExistedData(null, null, null);
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(null, null, null);
     }
 
     //admin or customer
     public void testGetAllItemsByPagination_WhenDataExists_ThenReturnDataWith200() throws Exception {
-        testDataRetrievalToReturnExistedData(null, null, null);
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(null, null, null);
     }
 
     //customer

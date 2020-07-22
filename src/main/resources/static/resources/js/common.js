@@ -93,7 +93,7 @@ function getProductDetails(requestUrl) {
             });
             let imageSrc;
             if (product.image_uploaded) {
-                imageSrc = `/products/images/${product.id}`;
+                imageSrc = `/products/${product.id}/images`;
             } else {
                 imageSrc = `resources/images/empty.jpg`;
             }

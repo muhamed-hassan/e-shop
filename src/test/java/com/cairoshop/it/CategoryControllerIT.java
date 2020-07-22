@@ -15,7 +15,7 @@ public class CategoryControllerIT
 
     // admin
     public void testEdit_WhenPayloadIsValid_ThenReturn204() throws Exception {
-        testDataModification(null,null,null);
+        //testDataModificationWithInvalidPayloadAndAuthorizedUser(null,null,null);
     }
 
     //admin
@@ -25,17 +25,17 @@ public class CategoryControllerIT
 
     //admin or customer
     protected void testGetById_WhenDataFound_ThenReturn200AndData() throws Exception {
-        testDataRetrievalToReturnExistedData(null, null, null);
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(null, null, null);
     }
 
     //admin or customer
     protected void testGetAllItemsByPagination_WhenDataExists_ThenReturn200WithData() throws Exception {
-        testDataRetrievalToReturnExistedData(null, null, null);
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(null, null, null);
     }
 
     // admin or customer
     public void testGetAll_WhenDataExists_ThenReturn200WithData() throws Exception {
-        testDataRetrievalToReturnExistedData(null, null, null);
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(null, null, null);
     }
 
 }

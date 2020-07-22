@@ -6,10 +6,10 @@ package com.cairoshop.it;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 public class UserControllerIT
-            extends BaseCommonControllerIT {
+            /*extends BaseCommonControllerIT*/ {
 
     // admin
-    public void testEdit_WhenPayloadIsValid_ThenReturn204() throws Exception {
+    /*public void testEdit_WhenPayloadIsValid_ThenReturn204() throws Exception {
         testDataModification(null,null,null);
     }
 
@@ -21,6 +21,6 @@ public class UserControllerIT
     //admin or customer
     protected void testGetAllItemsByPagination_WhenDataExists_ThenReturn200WithData() throws Exception {
         testDataRetrievalToReturnExistedData(null, null, null);
-    }
+    }*/
 
 }

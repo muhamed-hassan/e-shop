@@ -129,6 +129,8 @@ public class Product
 
     public static class Builder {
 
+        private int id;
+
         private String name;
 
         private double price;
@@ -140,6 +142,13 @@ public class Product
         private Category category;
 
         private Vendor vendor;
+
+        private boolean imageUploaded;
+
+        public Builder id(int id) {
+            this.id = id;
+            return this;
+        }
 
         public Builder name(String name) {
             this.name = name;
@@ -171,8 +180,14 @@ public class Product
             return this;
         }
 
+        public Builder imageUploaded(boolean imageUploaded) {
+            this.imageUploaded = imageUploaded;
+            return this;
+        }
+
         public Product build() {
             Product product = new Product();
+            product.setId(id);
             product.setName(name);
             product.setPrice(price);
             product.setQuantity(quantity);
@@ -180,6 +195,7 @@ public class Product
             product.setCategory(category);
             product.setVendor(vendor);
             product.setActive(true);
+            product.setImageUploaded(imageUploaded);
             return product;
         }
 

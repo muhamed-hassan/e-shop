@@ -32,7 +32,7 @@ public class BaseProductClassificationServiceImpl<T, D, B>
             String name = (String) detailedDto.getClass().getMethod("getName").invoke(detailedDto);
             T entity = getRepository().getOne(id);
             entity.getClass().getMethod("setName", String.class).invoke(entity, name);
-            getRepository().save(entity);
+            getRepository().saveAndFlush(entity);
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
         }

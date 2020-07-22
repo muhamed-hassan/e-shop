@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import com.cairoshop.it.helpers.Endpoints;
 import com.cairoshop.it.helpers.Users;
+import com.cairoshop.it.models.Credentials;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
@@ -19,13 +20,13 @@ import com.cairoshop.it.helpers.Users;
 public class VendorControllerIT
             extends BaseProductClassificationControllerIT {
 
-//    @Test
+    @Test
     public void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation() throws Exception {
         testAddingDataWithValidPayloadAndAuthorizedUser(Endpoints.ADD_NEW_VENDOR, Users.ADMIN,"valid_new_vendor.json");
     }
 
-//    @ParameterizedTest
-//    @MethodSource("provideArgsForTestAddWithInvalidPayload")
+    @ParameterizedTest
+    @MethodSource("provideArgsForTestAddWithInvalidPayload")
     public void testAdd_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile) throws Exception {
         testAddingDataWithInvalidPayloadAndAuthorizedUser(Endpoints.ADD_NEW_VENDOR, Users.ADMIN, requestBodyFile, errorMsgFile);
     }
@@ -38,20 +39,20 @@ public class VendorControllerIT
         );
     }
 
-//    @Test
+    @Test
     public void testAdd_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg() throws Exception {
         testAddingDataWithValidPayloadAndUnauthorizedUser(Endpoints.ADD_NEW_VENDOR, Users.CUSTOMER,"valid_new_vendor.json", "access_denied.json");
     }
 
-//    @Test
+    @Test
     public void testEdit_WhenPayloadIsValid_ThenReturn204() throws Exception {
-        testDataModification(Endpoints.EDIT_VENDOR, Users.ADMIN,"valid_new_vendor_for_update.json");
+        testDataModificationWithValidPayloadAndAuthorizedUser(MessageFormat.format(Endpoints.EDIT_VENDOR, 1), Users.ADMIN,"valid_new_vendor_for_update.json");
     }
 
-//    @ParameterizedTest
-//    @MethodSource("provideArgsForTestEditWithInvalidPayload")
+    @ParameterizedTest
+    @MethodSource("provideArgsForTestEditWithInvalidPayload")
     public void testEdit_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile) throws Exception {
-        testAddingDataWithInvalidPayloadAndAuthorizedUser(Endpoints.EDIT_VENDOR, Users.ADMIN, requestBodyFile, errorMsgFile);
+        testDataModificationWithInvalidPayloadAndAuthorizedUser(MessageFormat.format(Endpoints.EDIT_VENDOR, 2), Users.ADMIN, requestBodyFile, errorMsgFile);
     }
 
     private static Stream<Arguments> provideArgsForTestEditWithInvalidPayload() {
@@ -62,24 +63,60 @@ public class VendorControllerIT
         );
     }
 
-    //admin
+    @Test
+    public void testEdit_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg() throws Exception {
+        testDataModificationWithValidPayloadAndUnauthorizedUser(MessageFormat.format(Endpoints.EDIT_VENDOR, 2), Users.CUSTOMER,"valid_new_vendor.json", "access_denied.json");
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideArgsForTestGetByIdWhenUserIsAuthorizedAndDataFound")
+    public void testGetById_WhenUserIsAuthorizedAndDataFound_ThenReturn200AndData(Credentials credentials) throws Exception {
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(MessageFormat.format(Endpoints.GET_VENDOR_BY_ID, 4), credentials, "hp_vendor.json");
+    }
+
+    private static Stream<Arguments> provideArgsForTestGetByIdWhenUserIsAuthorizedAndDataFound() {
+        return Stream.of(
+            Arguments.of(Users.ADMIN),
+            Arguments.of(Users.CUSTOMER)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideArgsForTestGetByIdWhenUserIsAuthorizedAndDataNotFound")
+    public void testGetById_WhenUserIsAuthorizedAndDataNotFound_ThenReturn404WithErrorMsg(Credentials credentials) throws Exception {
+        testDataRetrievalForNonExistedDataUsingAuthorizedUser(MessageFormat.format(Endpoints.GET_VENDOR_BY_ID, 404), credentials, "no_data_found.json");
+    }
+
+    private static Stream<Arguments> provideArgsForTestGetByIdWhenUserIsAuthorizedAndDataNotFound() {
+        return Stream.of(
+            Arguments.of(Users.ADMIN),
+            Arguments.of(Users.CUSTOMER)
+        );
+    }
+
+    @Test
+    public void testGetAllItemsByPagination_WhenUserIsAuthorizedAndDataFound_ThenReturn200WithData() throws Exception {
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(MessageFormat.format(Endpoints.GET_VENDORS_BY_PAGINATION, 0), Users.ADMIN, "vendors_with_pagination.json");
+    }
+
+    @Test
+    public void testGetAllItemsByPagination_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg() throws Exception {
+        testDataRetrievalUsingUnauthorizedUser(MessageFormat.format(Endpoints.GET_VENDORS_BY_PAGINATION, 0), Users.CUSTOMER, "access_denied.json");
+    }
+
+    @Test
+    public void testGetAll_WhenUserIsAuthorizedAndDataFound_ThenReturn200WithData() throws Exception {
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(Endpoints.GET_ALL_VENDORS, Users.ADMIN, "all_vendors.json");
+    }
+
+    @Test
+    public void testGetAll_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg() throws Exception {
+        testDataRetrievalUsingUnauthorizedUser(Endpoints.GET_ALL_VENDORS, Users.CUSTOMER, "access_denied.json");
+    }
+
+    @Test
     public void testRemove_WhenItemExists_ThenRemoveItAndReturn204() {
-        testDataRemoval(Endpoints.DELETE_VENDOR_BY_ID,Users.ADMIN);
-    }
-
-    //admin or customer
-    public void testGetById_WhenDataFound_ThenReturn200AndData() throws Exception {
-        testDataRetrievalToReturnExistedData(Endpoints.GET_VENDOR_BY_ID, Users.ADMIN, null);
-    }
-
-    //admin or customer
-    public void testGetAllItemsByPagination_WhenDataExists_ThenReturn200WithData() throws Exception {
-        testDataRetrievalToReturnExistedData(MessageFormat.format(Endpoints.GET_VENDORS_BY_PAGINATION, 0), Users.ADMIN, null);
-    }
-
-    // admin or customer
-    public void testGetAll_WhenDataExists_ThenReturn200WithData() throws Exception {
-        testDataRetrievalToReturnExistedData(Endpoints.GET_ALL_VENDORS, Users.ADMIN, null);
+        testDataRemoval(MessageFormat.format(Endpoints.DELETE_VENDOR_BY_ID, 5), Users.ADMIN);
     }
 
 }

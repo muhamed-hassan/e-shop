@@ -32,7 +32,7 @@ public class BaseProductClassificationController<D, B>
         super(service);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiResponses(value = {
         @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Succeeded in fetching data"),
         @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Data not found"),
