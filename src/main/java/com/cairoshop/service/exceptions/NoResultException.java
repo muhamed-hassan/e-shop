@@ -5,4 +5,10 @@ package com.cairoshop.service.exceptions;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class NoResultException extends RuntimeException {}
+public class NoResultException extends RuntimeException {
+
+    public NoResultException() {
+        super("No data found");
+    }
+
+}

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -94,16 +96,28 @@ public class ProductServiceImpl
             getRepository().save(product);
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
+        } catch (Exception e) {
+            if (e.getCause() != null && e.getCause().getClass() == EntityNotFoundException.class) {
+                throw new NoResultException();
+            }
+            throw new RuntimeException(e);
         }
     }
 
     @Transactional
     @Override
     public void edit(int id, byte[] image) {
-        Product product = getRepository().getOne(id);
-        product.setImage(image);
-        product.setImageUploaded(image != null);
-        getRepository().save(product);
+        try {
+            Product product = getRepository().getOne(id);
+            product.setImage(image);
+            product.setImageUploaded(image != null);
+            getRepository().save(product);
+        } catch (RuntimeException e) {
+            if (e.getCause() != null && e.getCause().getClass() == EntityNotFoundException.class) {
+                throw new NoResultException();
+            }
+            throw new RuntimeException(e);
+        }
     }
 
     @Cacheable(value = "productSortableFieldsCache")

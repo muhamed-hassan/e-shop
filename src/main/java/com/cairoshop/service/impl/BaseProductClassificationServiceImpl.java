@@ -1,7 +1,8 @@
 package com.cairoshop.service.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +27,7 @@ public class BaseProductClassificationServiceImpl<T, D, B>
 
     @Transactional
     @Override
-    public void edit(int id, D detailedDto)
-            throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+    public void edit(int id, D detailedDto) {
         try {
             String name = (String) detailedDto.getClass().getMethod("getName").invoke(detailedDto);
             T entity = getRepository().getOne(id);
@@ -35,6 +35,11 @@ public class BaseProductClassificationServiceImpl<T, D, B>
             getRepository().saveAndFlush(entity);
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
+        } catch (Exception e) {
+            if (e.getCause() != null && e.getCause().getClass() == EntityNotFoundException.class) {
+                throw new NoResultException();
+            }
+            throw new RuntimeException(e);
         }
     }
 
@@ -49,8 +54,7 @@ public class BaseProductClassificationServiceImpl<T, D, B>
 
     @Transactional
     @Override
-    public void removeById(int id)
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void removeById(int id) {
         boolean notSafeToDelete = ((BaseProductClassificationRepository) getRepository()).countOfAssociationsWithProduct(id) > 0L;
         if (notSafeToDelete) {
             throw new IllegalArgumentException("Can not delete this item because it is associated with an active product");

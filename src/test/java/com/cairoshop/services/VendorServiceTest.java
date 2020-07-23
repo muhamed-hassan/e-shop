@@ -47,8 +47,7 @@ public class VendorServiceTest
     }
 
     @Test
-    public void testEdit_WhenDataIsValid_ThenSave()
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void testEdit_WhenDataIsValid_ThenSave() {
         VendorInDetailDTO vendorInDetailDTO = new VendorInDetailDTO("Toshiba");
         testEdit_WhenDataIsValid_ThenSave(1, vendorInDetailDTO);
     }

@@ -1,6 +1,5 @@
 package com.cairoshop.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /* **************************************************************************
@@ -11,7 +10,7 @@ import java.util.List;
 public interface BaseProductClassificationService<D, B>
             extends BaseService<D, B> {
 
-    void edit(int id, D detailedDto) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException;
+    void edit(int id, D detailedDto);
 
     List<B> getAll();
 

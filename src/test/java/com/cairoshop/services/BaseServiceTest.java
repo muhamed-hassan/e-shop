@@ -122,16 +122,14 @@ public class BaseServiceTest<T, D, B> {
             () -> service.getAll(0, "id", "ASC"));
     }
 
-    protected void testRemoveById_WhenDataFound_ThenRemoveIt(int idOfObjectToDelete)
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    protected void testRemoveById_WhenDataFound_ThenRemoveIt(int idOfObjectToDelete) {
         T entity = mock(entityClass);
-        int id = 1;
-        when(repository.getOne(id))
+        when(repository.getOne(idOfObjectToDelete))
             .thenReturn(entity);
         when(repository.save(entity))
             .thenReturn(entity);
 
-        service.removeById(id);
+        service.removeById(idOfObjectToDelete);
 
         verify(repository).save(entity);
     }

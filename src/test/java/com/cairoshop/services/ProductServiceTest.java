@@ -295,8 +295,7 @@ public class ProductServiceTest
     }
 
     @Test
-    public void testRemoveById_WhenDataFound_ThenReturnIt()
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void testRemoveById_WhenDataFound_ThenReturnIt() {
         super.testRemoveById_WhenDataFound_ThenRemoveIt(1);
     }
 

@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -11,12 +13,11 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -59,9 +60,14 @@ public class BaseControllerIT {
 
     private static final String BASE_MAPPINGS_DIR = "__files/";
 
-    private static MySQLContainer mySQLContainer = null;
+    private static final String UPDATE_SCRIPTS_DIR = "db/scripts/";
 
-    private static Connection connection = null;
+    private static final String NEW_DATA_SQL = "new_data.sql";
+    
+    private static final String RESET_DATA_SQL = "reset_data.sql";
+    public static final String AUTHENTICATE_ENDPOINT = "/authenticate";
+
+    private static MySQLContainer mySQLContainer;
 
     private TestRestTemplate testRestTemplate;
 
@@ -72,17 +78,17 @@ public class BaseControllerIT {
     private int port;
 
     @BeforeAll
-    public static void initTestDB() throws SQLException, InterruptedException {
-        mySQLContainer = new MySQLContainer("mysql:8.0.20")
-            .withDatabaseName("integration-tests-db")
-            .withUsername("username")
-            .withPassword("password");
-        mySQLContainer.start();
-        System.setProperty("DB_URL", mySQLContainer.getJdbcUrl());
-        System.setProperty("DB_USER", mySQLContainer.getUsername());
-        System.setProperty("DB_PASSWORD", mySQLContainer.getPassword());
-        connection = mySQLContainer.createConnection("");
-//        TimeUnit.SECONDS.sleep(1);
+    public static void initTestDB() {
+        if (mySQLContainer == null) {
+            mySQLContainer = new MySQLContainer("mysql:8.0.20")
+                .withDatabaseName("integration-tests-db")
+                .withUsername("username")
+                .withPassword("password");
+            mySQLContainer.start();
+            System.setProperty("DB_URL", mySQLContainer.getJdbcUrl());
+            System.setProperty("DB_USER", mySQLContainer.getUsername());
+            System.setProperty("DB_PASSWORD", mySQLContainer.getPassword());
+        }
     }
 
     @PostConstruct
@@ -92,27 +98,39 @@ public class BaseControllerIT {
     }
 
     @BeforeEach
-    public void resetData() {
-        try (Stream<String> lines = Files.lines(Paths.get(ClassLoader.getSystemResource("db/changelog/reset_data.sql").toURI()))) {
-            final Statement statement = connection.createStatement();
-            lines.forEach(line -> {
-                try {
-                    statement.execute(line);
-                } catch (SQLException sqlException) {
-                    throw new RuntimeException(sqlException);
-                }
-            });
-            //TimeUnit.SECONDS.sleep(1);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void populateNewData() 
+            throws SQLException, IOException, URISyntaxException {
+        updateTestDB(NEW_DATA_SQL);
+    }
+
+    @AfterEach
+    public void resetData() 
+            throws SQLException, IOException, URISyntaxException {
+        updateTestDB(RESET_DATA_SQL);
+    }
+
+    private void updateTestDB(String script) 
+            throws SQLException, URISyntaxException, IOException {
+        String[] scriptLines = Files.readAllLines(Paths.get(ClassLoader.getSystemResource(UPDATE_SCRIPTS_DIR + script).toURI()))
+                                    .stream()
+                                    .collect(Collectors.joining())
+                                    .split(";");
+        Connection connection = mySQLContainer.createConnection("");
+        Statement statement = connection.createStatement();
+        for (int cursor = 0; cursor < scriptLines.length; cursor++) {
+            statement.addBatch(scriptLines[cursor]);
+            if (cursor % 50 == 0) {
+                statement.executeBatch();
+            }
         }
+        statement.executeBatch();
     }
 
     protected String readJsonFrom(String responseLocation) throws Exception {
         return Files.readAllLines(Paths.get(ClassLoader.getSystemResource(BASE_MAPPINGS_DIR + responseLocation).toURI()),
                                     Charset.forName(StandardCharsets.UTF_8.name()))
-                                .stream()
-                                .collect(Collectors.joining());
+                    .stream()
+                    .collect(Collectors.joining());
     }
 
     protected String authenticate(Credentials credentials) {
@@ -125,43 +143,25 @@ public class BaseControllerIT {
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formData, headers);
 
-        ResponseEntity<Void> response = testRestTemplate.exchange("/authenticate", HttpMethod.POST, request, Void.class);
+        ResponseEntity<Void> response = testRestTemplate.exchange(AUTHENTICATE_ENDPOINT, HttpMethod.POST, request, Void.class);
 
         return response.getHeaders().get(Constants.AUTHORIZATION_HEADER_KEY).get(0);
     }
 
     protected <T, R> ResponseEntity<R> doRequest(HttpRequest<T> httpRequest, Class<R> responseType) {
-        HttpEntity<T> requestEntity = null;
+        HttpEntity<T> requestEntity;
         if (httpRequest.getRequestBody() != null) {
             requestEntity = new HttpEntity<>(httpRequest.getRequestBody(), httpRequest.getHeaders());
         } else {
             requestEntity = new HttpEntity<>(httpRequest.getHeaders());
         }
-
         return testRestTemplate.exchange(httpRequest.getUri(), httpRequest.getHttpMethod(), requestEntity, responseType);
     }
 
-    protected static String getSeedMappingsDir() {
-        return SEED_MAPPINGS_DIR;
-    }
-
-    protected static String getExpectedMappingsDir() {
-        return EXPECTED_MAPPINGS_DIR;
-    }
-
-    protected static String getErrorsMappingsDir() {
-        return ERRORS_MAPPINGS_DIR;
-    }
-
-    protected static String getBaseMappingsDir() {
-        return BASE_MAPPINGS_DIR;
-    }
-
-    //////////////////////////////////////////////////////
-
-    protected void testAddingDataWithValidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile) throws Exception {
-        String requestBody = readJsonFrom(getSeedMappingsDir() + requestBodyFile);
+    protected void testAddingDataWithValidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile)
+            throws Exception {
         String jwtToken = authenticate(credentials);
+        String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
         HttpHeaders headers = new HttpHeaders();
         headers.add(KeysOfHttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
@@ -175,9 +175,9 @@ public class BaseControllerIT {
 
     protected void testAddingDataWithInvalidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
             throws Exception {
-        String requestBody = readJsonFrom(getSeedMappingsDir() + requestBodyFile);
-        String expectedErrorMsg = readJsonFrom(getErrorsMappingsDir() + errorMsgFile);
         String jwtToken = authenticate(credentials);
+        String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
+        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
         HttpHeaders headers = new HttpHeaders();
         headers.add(KeysOfHttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
@@ -190,9 +190,9 @@ public class BaseControllerIT {
 
     protected void testAddingDataWithValidPayloadAndUnauthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
             throws Exception {
-        String requestBody = readJsonFrom(getSeedMappingsDir() + requestBodyFile);
-        String expectedErrorMsg = readJsonFrom(getErrorsMappingsDir() + errorMsgFile);
         String jwtToken = authenticate(credentials);
+        String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
+        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
         HttpHeaders headers = new HttpHeaders();
         headers.add(KeysOfHttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
@@ -205,8 +205,8 @@ public class BaseControllerIT {
 
     protected void testDataModificationWithValidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile)
             throws Exception {
-        String requestBody = readJsonFrom(getSeedMappingsDir() + requestBodyFile);
         String jwtToken = authenticate(credentials);
+        String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
         HttpHeaders headers = new HttpHeaders();
         headers.add(KeysOfHttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
@@ -218,9 +218,9 @@ public class BaseControllerIT {
 
     protected void testDataModificationWithInvalidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
             throws Exception {
-        String requestBody = readJsonFrom(getSeedMappingsDir() + requestBodyFile);
-        String expectedErrorMsg = readJsonFrom(getErrorsMappingsDir() + errorMsgFile);
         String jwtToken = authenticate(credentials);
+        String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
+        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
         HttpHeaders headers = new HttpHeaders();
         headers.add(KeysOfHttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
@@ -233,9 +233,9 @@ public class BaseControllerIT {
 
     protected void testDataModificationWithValidPayloadAndUnauthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
             throws Exception {
-        String requestBody = readJsonFrom(getSeedMappingsDir() + requestBodyFile);
-        String expectedErrorMsg = readJsonFrom(getErrorsMappingsDir() + errorMsgFile);
         String jwtToken = authenticate(credentials);
+        String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
+        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
         HttpHeaders headers = new HttpHeaders();
         headers.add(KeysOfHttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
@@ -248,8 +248,8 @@ public class BaseControllerIT {
 
     protected void testDataRetrievalToReturnExistedDataUsingAuthorizedUser(String uri, Credentials credentials, String expectedResponseFile)
             throws Exception {
-        String expectedResponse = readJsonFrom(getExpectedMappingsDir() + expectedResponseFile);
         String jwtToken = authenticate(credentials);
+        String expectedResponse = readJsonFrom(EXPECTED_MAPPINGS_DIR + expectedResponseFile);
         HttpHeaders headers = new HttpHeaders();
         headers.add(KeysOfHttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
@@ -262,8 +262,8 @@ public class BaseControllerIT {
 
     protected void testDataRetrievalUsingUnauthorizedUser(String uri, Credentials credentials, String errorMsgFile)
             throws Exception {
-        String expectedErrorMsg = readJsonFrom(getErrorsMappingsDir() + errorMsgFile);
         String jwtToken = authenticate(credentials);
+        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
         HttpHeaders headers = new HttpHeaders();
         headers.add(KeysOfHttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
@@ -276,8 +276,8 @@ public class BaseControllerIT {
 
     protected void testDataRetrievalForNonExistedDataUsingAuthorizedUser(String uri, Credentials credentials, String errorMsgFile)
             throws Exception {
-        String expectedErrorMsg = readJsonFrom(getErrorsMappingsDir() + errorMsgFile);
         String jwtToken = authenticate(credentials);
+        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
         HttpHeaders headers = new HttpHeaders();
         headers.add(KeysOfHttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
@@ -288,7 +288,7 @@ public class BaseControllerIT {
         JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
-    protected void testDataRemoval(String uri, Credentials credentials) {
+    protected void testDataRemovalOfExistingDataUsingAuthorizedUser(String uri, Credentials credentials) {
         String jwtToken = authenticate(credentials);
         HttpHeaders headers = new HttpHeaders();
         headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
@@ -296,6 +296,32 @@ public class BaseControllerIT {
         ResponseEntity<Void> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.DELETE), Void.class);
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    protected void testDataRemovalUsingUnauthorizedUser(String uri, Credentials credentials, String errorMsgFile)
+            throws Exception {
+        String jwtToken = authenticate(credentials);
+        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
+
+        ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.DELETE), String.class);
+
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    protected void testDataRemovalOfNonExistingDataUsingAuthorizedUser(String uri, Credentials credentials, String errorMsgFile)
+            throws Exception {
+        String jwtToken = authenticate(credentials);
+        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
+
+        ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.DELETE), String.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
 }

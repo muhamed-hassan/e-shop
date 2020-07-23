@@ -30,8 +30,7 @@ public class BaseProductClassificationServiceTest<T, D, B>
         super(entityClass);
     }
 
-    protected void testEdit_WhenDataIsValid_ThenSave(int id, D detailedDtoClass)
-            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    protected void testEdit_WhenDataIsValid_ThenSave(int id, D detailedDtoClass) {
         T entity = mock(getEntityClass());
         when(getRepository().getOne(id))
             .thenReturn(entity);

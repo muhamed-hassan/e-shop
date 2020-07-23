@@ -4,6 +4,8 @@ import static com.cairoshop.configs.Constants.MAX_PAGE_SIZE;
 
 import java.text.MessageFormat;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,10 +43,18 @@ public class UserServiceImpl
     @Transactional
     @Override
     public void edit(int id, UserStatusDTO userStatusDTO) {
-        User user = getRepository().getOne(id);
-        user.setActive(userStatusDTO.isActive());
-        user.setEnabled(userStatusDTO.isActive());
-        getRepository().save(user);
+        try {
+            User user = getRepository().getOne(id);
+            user.setActive(userStatusDTO.isActive());
+            user.setEnabled(userStatusDTO.isActive());
+            getRepository().save(user);
+        } catch (RuntimeException e) {
+            if (e.getCause() != null && e.getCause().getClass() == EntityNotFoundException.class) {
+                throw new NoResultException();
+            }
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override

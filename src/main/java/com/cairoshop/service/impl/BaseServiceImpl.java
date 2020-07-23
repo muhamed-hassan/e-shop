@@ -5,6 +5,8 @@ import static com.cairoshop.configs.Constants.MAX_PAGE_SIZE;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -93,7 +95,7 @@ public class BaseServiceImpl<T, D, B>
     @Override
     public D getById(int id) {
         return repository.findByIdAndActive(id, true)
-            .orElseThrow(NoResultException::new);
+                            .orElseThrow(NoResultException::new);
     }
 
     @Override
@@ -108,11 +110,17 @@ public class BaseServiceImpl<T, D, B>
 
     @Transactional
     @Override
-    public void removeById(int id)
-            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        T entity = getRepository().getOne(id);
-        entity.getClass().getMethod("setActive", boolean.class).invoke(entity, false);
-        getRepository().save(entity);
+    public void removeById(int id) {
+        try {
+            T entity = getRepository().getOne(id);
+            entity.getClass().getMethod("setActive", boolean.class).invoke(entity, false);
+            getRepository().save(entity);
+        } catch (Exception e) {
+            if (e.getCause() != null && e.getCause().getClass() == EntityNotFoundException.class) {
+                throw new NoResultException();
+            }
+            throw new RuntimeException(e);
+        }
     }
 
 }

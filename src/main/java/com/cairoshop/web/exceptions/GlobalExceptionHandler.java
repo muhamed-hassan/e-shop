@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> handleNoResultException(NoResultException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                .body(Map.of(ERROR_KEY, "No data found"));
+                                .body(Map.of(ERROR_KEY, exception.getMessage()));
     }
 
     @ExceptionHandler

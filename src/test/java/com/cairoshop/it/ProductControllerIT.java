@@ -20,7 +20,7 @@ public class ProductControllerIT
 
     //admin
     public void testRemove_WhenItemExists_ThenRemoveItAndReturn204() {
-        testDataRemoval(null,null);
+        testDataRemovalOfExistingDataUsingAuthorizedUser(null,null);
     }
 
     //admin or customer

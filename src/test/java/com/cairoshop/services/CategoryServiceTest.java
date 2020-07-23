@@ -47,8 +47,7 @@ public class CategoryServiceTest
     }
 
     @Test
-    public void testEdit_WhenDataIsValid_ThenSave()
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void testEdit_WhenDataIsValid_ThenSave() {
         CategoryInDetailDTO savedDetailedCategoryDTO = new CategoryInDetailDTO("Mobiles");
         testEdit_WhenDataIsValid_ThenSave(1, savedDetailedCategoryDTO);
     }

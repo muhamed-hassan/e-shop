@@ -17,6 +17,6 @@ public interface BaseService<D, B> {
 
     SavedItemsDTO<B> getAll(int startPosition, String sortBy, String sortDirection);
 
-    void removeById(int id) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException;
+    void removeById(int id);
 
 }
