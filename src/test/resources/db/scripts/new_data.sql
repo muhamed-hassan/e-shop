@@ -6,3 +6,5 @@ INSERT INTO `product` (`id`, `name`, `price`, `quantity`, `description`, `active
 VALUES (1, 'test product 1', 65.2, 60, 'ttttttttt666ttttt', true, 2, 2, false);
 INSERT INTO `product` (`id`, `name`, `price`, `quantity`, `description`, `active`, `vendor`, `category`, `image_uploaded`)
 VALUES (2, 'test product 2', 75.2, 70, 'ttttttttt777ttttt', true, 1, 1, false);
+INSERT INTO `user` (`id`, `user_name`, `name`, `password`, `address`, `phone`, `email`, `role`, `account_non_expired`, `account_non_locked`, `credentials_non_expired`, `enabled`)
+VALUES (3, 'admintmp', 'Administrator tmp', '$2a$10$2hR3NKUBY6C5FtmH7.cqlOwL8ci9mDB5vbWCVDIB3w/6OTNxMz7Zm', NULL, NULL, 'admintmp@local.com', 2, true, true, true, true);

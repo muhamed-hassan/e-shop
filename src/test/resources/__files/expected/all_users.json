@@ -1,0 +1,10 @@
+{
+  "items": [
+    {
+      "name": "Demo Customer",
+      "id": 2,
+      "active": true
+    }
+  ],
+  "allSavedItemsCount": 1
+}

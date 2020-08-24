@@ -23,7 +23,7 @@ public final class Endpoints {
     public static final String GET_CATEGORIES_BY_PAGINATION = "/categories?start-position={0}&sort-by=id&sort-direction=ASC";
     public static final String GET_ALL_CATEGORIES = "/categories";
 
-    public static final String EDIT_USER = "/users";
+    public static final String EDIT_USER = "/users/{0}";
     public static final String GET_USER_BY_ID = "/users/{0}";
     public static final String GET_USERS_BY_PAGINATION = "/users?start-position={0}&sort-by=id&sort-direction=ASC";
 
