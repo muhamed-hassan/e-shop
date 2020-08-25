@@ -14,6 +14,8 @@
                               2, true, true, true, true),
                             ('demo', 'Demo Customer', '$2a$10$2hR3NKUBY6C5FtmH7.cqlOwL8ci9mDB5vbWCVDIB3w/6OTNxMz7Zm', 'Cairo', '0112233', 'demo@local.com',
                               1, true, true, true, true);
+
+      INSERT INTO `product_sortable_fields` VALUES ('name'), ('price'), ('quantity');
     </sql>
   </changeSet>
 

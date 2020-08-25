@@ -1,0 +1,9 @@
+{
+  "name": "test product 1",
+  "price": 65.2,
+  "quantity": 60,
+  "description": "ttttttttt666ttttt",
+  "category_id": 2,
+  "vendor_id": 2,
+  "image_uploaded": false
+}

@@ -1,0 +1,17 @@
+{
+  "items": [
+    {
+      "name": "test product 1",
+      "id": 1
+    },
+    {
+      "name": "test product 2",
+      "id": 2
+    },
+    {
+      "name": "test product 3",
+      "id": 3
+    }
+  ],
+  "allSavedItemsCount": 3
+}

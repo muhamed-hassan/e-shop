@@ -136,6 +136,12 @@
     <addDefaultValue columnDataType="bit(1)" columnName="active" defaultValueBoolean="true" tableName="product"/>
     <addDefaultValue columnDataType="int" columnName="version" defaultValueBoolean="true" tableName="product"/>
 
+    <createTable tableName="product_sortable_fields">
+      <column name="name" type="varchar(150)">
+        <constraints primaryKey="true"/>
+      </column>
+    </createTable>
+
   </changeSet>
 
 </databaseChangeLog>

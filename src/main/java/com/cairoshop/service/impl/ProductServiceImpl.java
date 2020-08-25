@@ -93,7 +93,7 @@ public class ProductServiceImpl
             product.setQuantity(productInDetailDTO.getQuantity());
             product.setCategory(categoryRepository.getOne(productInDetailDTO.getCategoryId()));
             product.setVendor(vendorRepository.getOne(productInDetailDTO.getVendorId()));
-            getRepository().save(product);
+            getRepository().saveAndFlush(product);
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
         } catch (Exception e) {
