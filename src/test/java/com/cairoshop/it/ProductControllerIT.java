@@ -9,9 +9,18 @@ import static com.cairoshop.it.helpers.Endpoints.GET_CATEGORY_BY_ID;
 import static com.cairoshop.it.helpers.Endpoints.GET_PRODUCTS_BY_PAGINATION;
 import static com.cairoshop.it.helpers.Endpoints.GET_PRODUCT_BY_ID;
 import static com.cairoshop.it.helpers.Endpoints.GET_SORTABLE_FIELDS_OF_PRODUCT;
+import static com.cairoshop.it.helpers.Endpoints.SEARCH_PRODUCTS_BY_KEYWORD;
+import static com.cairoshop.it.helpers.Endpoints.UPLOAD_IMAGE_OF_PRODUCT;
 import static com.cairoshop.it.helpers.Users.ADMIN;
 import static com.cairoshop.it.helpers.Users.CUSTOMER;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.stream.Stream;
 
@@ -19,9 +28,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.cairoshop.configs.security.Constants;
 import com.cairoshop.it.helpers.Endpoints;
+import com.cairoshop.it.helpers.KeysOfHttpHeaders;
 import com.cairoshop.it.models.Credentials;
+import com.cairoshop.it.models.HttpRequest;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
@@ -178,16 +199,21 @@ public class ProductControllerIT
     }
 
     //customer
-    public void testSearchByProductName_WhenDataExists_ThenReturnDataWith200() {
-
+    @Test
+    public void testSearchByProductName_WhenDataExists_ThenReturnDataWith200() throws Exception {
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
+            MessageFormat.format(SEARCH_PRODUCTS_BY_KEYWORD, "duct", 0, "name", "ASC"),
+            CUSTOMER,
+            "search_products_with_pagination.json");
     }
 
-    public void testUploadImage_WhenProductExist_ThenUpdateItAndReturn200() {
-
+    @Test
+    public void testSearchByProductName_WhenDataNotFound_ThenReturn404WithErrorMsg() throws Exception {
+        testDataRetrievalForNonExistedDataUsingAuthorizedUser(
+            MessageFormat.format(SEARCH_PRODUCTS_BY_KEYWORD, "XXX", 0, "name", "ASC"),
+            CUSTOMER,
+            "no_data_found.json");
     }
 
-    public void testDownloadImage_WhenProductExist_ThenReturnImageStreamWith200() {
-
-    }
 
 }

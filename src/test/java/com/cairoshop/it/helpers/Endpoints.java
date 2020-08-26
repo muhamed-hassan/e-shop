@@ -33,7 +33,7 @@ public final class Endpoints {
     public static final String GET_PRODUCT_BY_ID = "/products/{0}";
     public static final String GET_PRODUCTS_BY_PAGINATION = "/products?start-position={0}&sort-by=id&sort-direction=ASC";
     public static final String SEARCH_PRODUCTS_BY_KEYWORD = "/products?name={0}&start-position={1}&sort-by={2}&sort-direction={3}";
-    public static final String UPLOAD_IMAGE_OF_PRODUCT = "/products/{0}";
+    public static final String UPLOAD_IMAGE_OF_PRODUCT = "/products/{0}/images";
     public static final String DOWNLOAD_IMAGE_OF_PRODUCT = "/products/{0}/images";
     public static final String GET_SORTABLE_FIELDS_OF_PRODUCT = "/products/sortable-fields";
 

@@ -220,7 +220,7 @@ function uploadImageIfAny(productId) {
         let formData = new FormData();
         formData.append('file', tmpUploadedImage);
         return $.ajax({
-            url: `/products/${productId}`,
+            url: `/products/${productId}/images`,
             type: POST,
             data: formData,
             processData: false,

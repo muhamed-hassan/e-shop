@@ -163,8 +163,8 @@ public class BaseControllerIT {
         String jwtToken = authenticate(credentials);
         String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(KeysOfHttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(jwtToken);
 
         ResponseEntity<Void> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.POST, requestBody), Void.class);
 
@@ -179,8 +179,8 @@ public class BaseControllerIT {
         String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
         String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(KeysOfHttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(jwtToken);
 
         ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.POST, requestBody), String.class);
 
@@ -194,8 +194,8 @@ public class BaseControllerIT {
         String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
         String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(KeysOfHttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(jwtToken);
 
         ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.POST, requestBody), String.class);
 
@@ -208,8 +208,8 @@ public class BaseControllerIT {
         String jwtToken = authenticate(credentials);
         String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(KeysOfHttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(jwtToken);
 
         ResponseEntity<Void> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.PATCH, requestBody), Void.class);
 
@@ -222,8 +222,8 @@ public class BaseControllerIT {
         String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
         String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(KeysOfHttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(jwtToken);
 
         ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.PATCH, requestBody), String.class);
 
@@ -237,8 +237,8 @@ public class BaseControllerIT {
         String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
         String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(KeysOfHttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(jwtToken);
 
         ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.PATCH, requestBody), String.class);
 
@@ -251,8 +251,8 @@ public class BaseControllerIT {
         String jwtToken = authenticate(credentials);
         String expectedResponse = readJsonFrom(EXPECTED_MAPPINGS_DIR + expectedResponseFile);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(KeysOfHttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(jwtToken);
 
         ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.GET), String.class);
 
@@ -265,8 +265,8 @@ public class BaseControllerIT {
         String jwtToken = authenticate(credentials);
         String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(KeysOfHttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(jwtToken);
 
         ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.GET), String.class);
 
@@ -279,8 +279,8 @@ public class BaseControllerIT {
         String jwtToken = authenticate(credentials);
         String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(KeysOfHttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(jwtToken);
 
         ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.GET), String.class);
 
@@ -291,7 +291,7 @@ public class BaseControllerIT {
     protected void testDataRemovalOfExistingDataUsingAuthorizedUser(String uri, Credentials credentials) {
         String jwtToken = authenticate(credentials);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
+        headers.setBearerAuth(jwtToken);
 
         ResponseEntity<Void> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.DELETE), Void.class);
 
@@ -303,7 +303,7 @@ public class BaseControllerIT {
         String jwtToken = authenticate(credentials);
         String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
+        headers.setBearerAuth(jwtToken);
 
         ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.DELETE), String.class);
 
@@ -316,7 +316,7 @@ public class BaseControllerIT {
         String jwtToken = authenticate(credentials);
         String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_VALUE_PREFIX + jwtToken);
+        headers.setBearerAuth(jwtToken);
 
         ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, HttpMethod.DELETE), String.class);
 
