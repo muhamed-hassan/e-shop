@@ -2,47 +2,28 @@ package com.cairoshop.it;
 
 import static com.cairoshop.it.helpers.Endpoints.ADD_NEW_PRODUCT;
 import static com.cairoshop.it.helpers.Endpoints.DELETE_PRODUCT_BY_ID;
-import static com.cairoshop.it.helpers.Endpoints.EDIT_CATEGORY;
 import static com.cairoshop.it.helpers.Endpoints.EDIT_PRODUCT;
-import static com.cairoshop.it.helpers.Endpoints.GET_CATEGORIES_BY_PAGINATION;
-import static com.cairoshop.it.helpers.Endpoints.GET_CATEGORY_BY_ID;
 import static com.cairoshop.it.helpers.Endpoints.GET_PRODUCTS_BY_PAGINATION;
 import static com.cairoshop.it.helpers.Endpoints.GET_PRODUCT_BY_ID;
 import static com.cairoshop.it.helpers.Endpoints.GET_SORTABLE_FIELDS_OF_PRODUCT;
 import static com.cairoshop.it.helpers.Endpoints.SEARCH_PRODUCTS_BY_KEYWORD;
-import static com.cairoshop.it.helpers.Endpoints.UPLOAD_IMAGE_OF_PRODUCT;
+import static com.cairoshop.it.helpers.Errors.ACCESS_DENIED_JSON;
+import static com.cairoshop.it.helpers.Errors.DB_VIOLATED_CONSTRAINTS_JSON;
+import static com.cairoshop.it.helpers.Errors.INVALID_PRICE_JSON;
+import static com.cairoshop.it.helpers.Errors.INVALID_QUANTITY_JSON;
+import static com.cairoshop.it.helpers.Errors.NO_DATA_FOUND_JSON;
 import static com.cairoshop.it.helpers.Users.ADMIN;
 import static com.cairoshop.it.helpers.Users.CUSTOMER;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.text.MessageFormat.format;
 
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.MessageFormat;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.cairoshop.configs.security.Constants;
-import com.cairoshop.it.helpers.Endpoints;
-import com.cairoshop.it.helpers.KeysOfHttpHeaders;
 import com.cairoshop.it.models.Credentials;
-import com.cairoshop.it.models.HttpRequest;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
@@ -52,20 +33,30 @@ import com.cairoshop.it.models.HttpRequest;
 public class ProductControllerIT
             extends BaseControllerIT {
 
-    //admin
+    private static final String VALID_NEW_PRODUCT_JSON = "valid_new_product.json";
+    private static final String VALID_NEW_PRODUCT_FOR_UPDATE_JSON = "valid_new_product_for_update.json";
+    private static final String INVALID_NEW_PRODUCT_WITH_DUPLICATED_NAME_JSON = "invalid_new_product_with_duplicated_name.json";
+    private static final String INVALID_NEW_PRODUCT_WITH_INVALID_PRICE_JSON = "invalid_new_product_with_invalid_price.json";
+    private static final String INVALID_NEW_PRODUCT_WITH_INVALID_QUANTITY_JSON = "invalid_new_product_with_invalid_quantity.json";
+    private static final String PRODUCT_1_JSON = "product_1.json";
+    private static final String PRODUCTS_WITH_PAGINATION_JSON = "products_with_pagination.json";
+    private static final String SORTABLE_FIELDS_JSON = "sortable_fields.json";
+    private static final String SEARCH_PRODUCTS_WITH_PAGINATION_JSON = "search_products_with_pagination.json";
+
     @Test
-    public void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation()
-            throws Exception {
-        testAddingDataWithValidPayloadAndAuthorizedUser(ADD_NEW_PRODUCT,
-                                                          ADMIN,
-                                            "valid_new_product.json");
+    public void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation() {
+        testAddingDataWithValidPayloadAndAuthorizedUser(
+            ADD_NEW_PRODUCT,
+            ADMIN,
+            VALID_NEW_PRODUCT_JSON);
     }
 
     @ParameterizedTest
     @MethodSource("provideArgsForTestAddWithInvalidPayload")
     public void testAdd_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile)
-        throws Exception {
-        testAddingDataWithInvalidPayloadAndAuthorizedUser(ADD_NEW_PRODUCT,
+            throws Exception {
+        testAddingDataWithInvalidPayloadAndAuthorizedUser(
+            ADD_NEW_PRODUCT,
             ADMIN,
             requestBodyFile,
             errorMsgFile);
@@ -73,37 +64,36 @@ public class ProductControllerIT
 
     private static Stream<Arguments> provideArgsForTestAddWithInvalidPayload() {
         return Stream.of(
-            Arguments.of("invalid_new_product_with_duplicated_name.json",
-                "db_violated_constraints.json"),
-            Arguments.of("invalid_new_product_with_invalid_price.json",
-                "invalid_price.json"),
-            Arguments.of("invalid_new_product_with_invalid_quantity.json",
-                "invalid_quantity.json")
+            Arguments.of(INVALID_NEW_PRODUCT_WITH_DUPLICATED_NAME_JSON, DB_VIOLATED_CONSTRAINTS_JSON),
+            Arguments.of(INVALID_NEW_PRODUCT_WITH_INVALID_PRICE_JSON, INVALID_PRICE_JSON),
+            Arguments.of(INVALID_NEW_PRODUCT_WITH_INVALID_QUANTITY_JSON, INVALID_QUANTITY_JSON)
         );
     }
 
     @Test
     public void testAdd_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
-        throws Exception {
-        testAddingDataWithValidPayloadAndUnauthorizedUser(ADD_NEW_PRODUCT,
+            throws Exception {
+        testAddingDataWithValidPayloadAndUnauthorizedUser(
+            ADD_NEW_PRODUCT,
             CUSTOMER,
-            "valid_new_product.json",
-            "access_denied.json");
+            VALID_NEW_PRODUCT_JSON,
+            ACCESS_DENIED_JSON);
     }
 
     @Test
-    // admin
-    public void testEdit_WhenPayloadIsValid_ThenReturn204() throws Exception {
-        testDataModificationWithValidPayloadAndAuthorizedUser(MessageFormat.format(EDIT_PRODUCT, 1),
+    public void testEdit_WhenPayloadIsValid_ThenReturn204() {
+        testDataModificationWithValidPayloadAndAuthorizedUser(
+            format(EDIT_PRODUCT, 1),
             ADMIN,
-            "valid_new_product_for_update.json");
+            VALID_NEW_PRODUCT_FOR_UPDATE_JSON);
     }
 
     @ParameterizedTest
     @MethodSource("provideArgsForTestEditWithInvalidPayload")
     public void testEdit_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile)
-        throws Exception {
-        testDataModificationWithInvalidPayloadAndAuthorizedUser(MessageFormat.format(EDIT_PRODUCT, 2),
+            throws Exception {
+        testDataModificationWithInvalidPayloadAndAuthorizedUser(
+            format(EDIT_PRODUCT, 2),
             ADMIN,
             requestBodyFile,
             errorMsgFile);
@@ -111,109 +101,115 @@ public class ProductControllerIT
 
     private static Stream<Arguments> provideArgsForTestEditWithInvalidPayload() {
         return Stream.of(
-            Arguments.of("invalid_new_product_with_duplicated_name.json",
-                "db_violated_constraints.json"),
-            Arguments.of("invalid_new_product_with_invalid_price.json",
-                "invalid_price.json"),
-            Arguments.of("invalid_new_product_with_invalid_quantity.json",
-                "invalid_quantity.json")
+            Arguments.of(INVALID_NEW_PRODUCT_WITH_DUPLICATED_NAME_JSON, DB_VIOLATED_CONSTRAINTS_JSON),
+            Arguments.of(INVALID_NEW_PRODUCT_WITH_INVALID_PRICE_JSON, INVALID_PRICE_JSON),
+            Arguments.of(INVALID_NEW_PRODUCT_WITH_INVALID_QUANTITY_JSON, INVALID_QUANTITY_JSON)
         );
     }
 
     @Test
     public void testEdit_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
-        throws Exception {
-        testDataModificationWithValidPayloadAndUnauthorizedUser(MessageFormat.format(EDIT_PRODUCT, 2),
+            throws Exception {
+        testDataModificationWithValidPayloadAndUnauthorizedUser(
+            format(EDIT_PRODUCT, 2),
             CUSTOMER,
-            "valid_new_product_for_update.json",
-            "access_denied.json");
+            VALID_NEW_PRODUCT_FOR_UPDATE_JSON,
+            ACCESS_DENIED_JSON);
     }
-
-
-
-
 
     @Test
     public void testRemove_WhenItemExists_ThenRemoveItAndReturn204() {
-        testDataRemovalOfExistingDataUsingAuthorizedUser(MessageFormat.format(DELETE_PRODUCT_BY_ID, 3),ADMIN);
+        testDataRemovalOfExistingDataUsingAuthorizedUser(
+            format(DELETE_PRODUCT_BY_ID, 3),
+            ADMIN);
     }
 
     @Test
-    public void testRemove_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg() throws Exception {
-        testDataRemovalUsingUnauthorizedUser(MessageFormat.format(DELETE_PRODUCT_BY_ID, 3),CUSTOMER,"access_denied.json");
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideArgsForTestGetByIdWhenUserIsAuthorizedAndDataFound")
-    public void testGetById_WhenUserIsAuthorizedAndDataFound_ThenReturn200AndData(Credentials credentials)
-        throws Exception {
-        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(MessageFormat.format(GET_PRODUCT_BY_ID, 1),
-            credentials,
-            "product_1.json");
-    }
-
-    private static Stream<Arguments> provideArgsForTestGetByIdWhenUserIsAuthorizedAndDataFound() {
-        return Stream.of(
-            Arguments.of(ADMIN),
-            Arguments.of(CUSTOMER)
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideArgsForTestGetByIdWhenUserIsAuthorizedAndDataNotFound")
-    public void testGetById_WhenUserIsAuthorizedAndDataNotFound_ThenReturn404WithErrorMsg(Credentials credentials)
-        throws Exception {
-        testDataRetrievalForNonExistedDataUsingAuthorizedUser(MessageFormat.format(GET_PRODUCT_BY_ID, 404),
-            credentials,
-            "no_data_found.json");
-    }
-
-    private static Stream<Arguments> provideArgsForTestGetByIdWhenUserIsAuthorizedAndDataNotFound() {
-        return Stream.of(
-            Arguments.of(ADMIN),
-            Arguments.of(CUSTOMER)
-        );
-    }
-
-    @Test
-    public void testGetAllItemsByPagination_WhenUserIsAuthorizedAndDataFound_ThenReturn200WithData()
-        throws Exception {
-        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(MessageFormat.format(GET_PRODUCTS_BY_PAGINATION, 0),
-            ADMIN,
-            "products_with_pagination.json");
-    }
-
-    @Test
-    public void testGetAllItemsByPagination_WhenUserIsAuthorizedAndDataNotFound_ThenReturn404WithErrorMsg()
-        throws Exception {
-        testDataRetrievalForNonExistedDataUsingAuthorizedUser(MessageFormat.format(GET_PRODUCTS_BY_PAGINATION, 404),
-            ADMIN,
-            "no_data_found.json");
-    }
-
-    @Test
-    public void testGetSortableFields_WhenDataExists_ThenReturnDataWith200() throws Exception {
-        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(GET_SORTABLE_FIELDS_OF_PRODUCT,
+    public void testRemove_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
+            throws Exception {
+        testDataRemovalUsingUnauthorizedUser(
+            format(DELETE_PRODUCT_BY_ID, 3),
             CUSTOMER,
-            "sortable_fields.json");
+            ACCESS_DENIED_JSON);
     }
 
-    //customer
-    @Test
-    public void testSearchByProductName_WhenDataExists_ThenReturnDataWith200() throws Exception {
+    @ParameterizedTest
+    @MethodSource("provideArgsForTestGetByIdWhenDataFound")
+    public void testGetById_WhenDataFound_ThenReturn200AndData(Credentials credentials)
+            throws Exception {
         testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
-            MessageFormat.format(SEARCH_PRODUCTS_BY_KEYWORD, "duct", 0, "name", "ASC"),
-            CUSTOMER,
-            "search_products_with_pagination.json");
+            format(GET_PRODUCT_BY_ID, 1),
+            credentials,
+            PRODUCT_1_JSON);
+    }
+
+    private static Stream<Arguments> provideArgsForTestGetByIdWhenDataFound() {
+        return Stream.of(
+            Arguments.of(ADMIN),
+            Arguments.of(CUSTOMER)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideArgsForTestGetByIdWhenDataNotFound")
+    public void testGetById_WhenDataNotFound_ThenReturn404WithErrorMsg(Credentials credentials)
+            throws Exception {
+        testDataRetrievalForNonExistedDataUsingAuthorizedUser(
+            format(GET_PRODUCT_BY_ID, 404),
+            credentials,
+            NO_DATA_FOUND_JSON);
+    }
+
+    private static Stream<Arguments> provideArgsForTestGetByIdWhenDataNotFound() {
+        return Stream.of(
+            Arguments.of(ADMIN),
+            Arguments.of(CUSTOMER)
+        );
     }
 
     @Test
-    public void testSearchByProductName_WhenDataNotFound_ThenReturn404WithErrorMsg() throws Exception {
-        testDataRetrievalForNonExistedDataUsingAuthorizedUser(
-            MessageFormat.format(SEARCH_PRODUCTS_BY_KEYWORD, "XXX", 0, "name", "ASC"),
-            CUSTOMER,
-            "no_data_found.json");
+    public void testGetAllItemsByPagination_WhenDataFound_ThenReturn200WithData()
+            throws Exception {
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
+            format(GET_PRODUCTS_BY_PAGINATION, 0),
+            ADMIN,
+            PRODUCTS_WITH_PAGINATION_JSON);
     }
 
+    @Test
+    public void testGetAllItemsByPagination_WhenDataNotFound_ThenReturn404WithErrorMsg()
+            throws Exception {
+        testDataRetrievalForNonExistedDataUsingAuthorizedUser(
+            format(GET_PRODUCTS_BY_PAGINATION, 404),
+            ADMIN,
+            NO_DATA_FOUND_JSON);
+    }
+
+    @Test
+    public void testGetSortableFields_WhenDataFound_ThenReturnDataWith200()
+            throws Exception {
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
+            GET_SORTABLE_FIELDS_OF_PRODUCT,
+            CUSTOMER,
+            SORTABLE_FIELDS_JSON);
+    }
+
+    @Test
+    public void testSearchByProductName_WhenDataFound_ThenReturnDataWith200()
+            throws Exception {
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
+            format(SEARCH_PRODUCTS_BY_KEYWORD, "duct", 0, "name", "ASC"),
+            CUSTOMER,
+            SEARCH_PRODUCTS_WITH_PAGINATION_JSON);
+    }
+
+    @Test
+    public void testSearchByProductName_WhenDataNotFound_ThenReturn404WithErrorMsg()
+            throws Exception {
+        testDataRetrievalForNonExistedDataUsingAuthorizedUser(
+            format(SEARCH_PRODUCTS_BY_KEYWORD, "XXX", 0, "name", "ASC"),
+            CUSTOMER,
+            NO_DATA_FOUND_JSON);
+    }
 
 }

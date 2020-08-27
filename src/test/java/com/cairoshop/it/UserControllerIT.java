@@ -1,15 +1,15 @@
 package com.cairoshop.it;
 
 import static com.cairoshop.it.helpers.Endpoints.EDIT_USER;
+import static com.cairoshop.it.helpers.Endpoints.GET_USERS_BY_PAGINATION;
 import static com.cairoshop.it.helpers.Endpoints.GET_USER_BY_ID;
+import static com.cairoshop.it.helpers.Errors.ACCESS_DENIED_JSON;
+import static com.cairoshop.it.helpers.Errors.NO_DATA_FOUND_JSON;
 import static com.cairoshop.it.helpers.Users.ADMIN;
 import static com.cairoshop.it.helpers.Users.CUSTOMER;
-
-import java.text.MessageFormat;
+import static java.text.MessageFormat.format;
 
 import org.junit.jupiter.api.Test;
-
-import com.cairoshop.it.helpers.Endpoints;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
@@ -19,53 +19,62 @@ import com.cairoshop.it.helpers.Endpoints;
 public class UserControllerIT
             extends BaseControllerIT {
 
+    private static final String VALID_NEW_STATUS_OF_USER_JSON = "valid_new_status_of_user.json";
+    private static final String ADMIN_USER_JSON = "admin_user.json";
+    private static final String ALL_USERS_JSON = "all_users.json";
+
     @Test
-    public void testEdit_WhenPayloadIsValid_ThenReturn204()
-            throws Exception {
-        testDataModificationWithValidPayloadAndAuthorizedUser(MessageFormat.format(EDIT_USER, 3),
-                                                                ADMIN,
-                                                  "valid_new_status_of_user.json");
+    public void testEdit_WhenPayloadIsValid_ThenReturn204() {
+        testDataModificationWithValidPayloadAndAuthorizedUser(
+            format(EDIT_USER, 3),
+            ADMIN,
+            VALID_NEW_STATUS_OF_USER_JSON);
     }
 
     @Test
     public void testEdit_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
             throws Exception {
-        testDataModificationWithValidPayloadAndUnauthorizedUser(MessageFormat.format(EDIT_USER, 3),
-                                                                  CUSTOMER,
-                                                     "valid_new_status_of_user.json",
-                                                       "access_denied.json");
+        testDataModificationWithValidPayloadAndUnauthorizedUser(
+            format(EDIT_USER, 3),
+            CUSTOMER,
+            VALID_NEW_STATUS_OF_USER_JSON,
+            ACCESS_DENIED_JSON);
     }
 
     @Test
     public void testGetById_WhenDataFound_ThenReturn200AndData()
             throws Exception {
-        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(MessageFormat.format(GET_USER_BY_ID, 3),
-                                                                  ADMIN,
-                                                "admin_user.json");
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
+            format(GET_USER_BY_ID, 3),
+            ADMIN,
+            ADMIN_USER_JSON);
     }
 
     @Test
-    public void testGetById_WhenUserIsAuthorizedAndDataNotFound_ThenReturn404WithErrorMsg()
+    public void testGetById_WhenDataNotFound_ThenReturn404WithErrorMsg()
             throws Exception {
-        testDataRetrievalForNonExistedDataUsingAuthorizedUser(MessageFormat.format(Endpoints.GET_USER_BY_ID, 404),
-                                                                ADMIN,
-                                                     "no_data_found.json");
+        testDataRetrievalForNonExistedDataUsingAuthorizedUser(
+            format(GET_USER_BY_ID, 404),
+            ADMIN,
+            NO_DATA_FOUND_JSON);
     }
 
     @Test
     public void testGetAllItemsByPagination_WhenDataExists_ThenReturn200WithData()
             throws Exception {
-        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(MessageFormat.format(Endpoints.GET_USERS_BY_PAGINATION, 0),
-                                                                  ADMIN,
-                                                "all_users.json");
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
+            format(GET_USERS_BY_PAGINATION, 0),
+            ADMIN,
+            ALL_USERS_JSON);
     }
 
     @Test
     public void testGetAllItemsByPagination_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
             throws Exception {
-        testDataRetrievalUsingUnauthorizedUser(MessageFormat.format(Endpoints.GET_USERS_BY_PAGINATION, 0),
-                                                 CUSTOMER,
-                                      "access_denied.json");
+        testDataRetrievalUsingUnauthorizedUser(
+            format(GET_USERS_BY_PAGINATION, 0),
+            CUSTOMER,
+            ACCESS_DENIED_JSON);
     }
 
 }

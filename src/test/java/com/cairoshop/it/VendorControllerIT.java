@@ -1,6 +1,19 @@
 package com.cairoshop.it;
 
-import java.text.MessageFormat;
+import static com.cairoshop.it.helpers.Endpoints.ADD_NEW_VENDOR;
+import static com.cairoshop.it.helpers.Endpoints.DELETE_VENDOR_BY_ID;
+import static com.cairoshop.it.helpers.Endpoints.EDIT_VENDOR;
+import static com.cairoshop.it.helpers.Endpoints.GET_ALL_VENDORS;
+import static com.cairoshop.it.helpers.Endpoints.GET_VENDORS_BY_PAGINATION;
+import static com.cairoshop.it.helpers.Endpoints.GET_VENDOR_BY_ID;
+import static com.cairoshop.it.helpers.Errors.ACCESS_DENIED_JSON;
+import static com.cairoshop.it.helpers.Errors.DB_VIOLATED_CONSTRAINTS_JSON;
+import static com.cairoshop.it.helpers.Errors.NAME_IS_REQUIRED_JSON;
+import static com.cairoshop.it.helpers.Errors.NO_DATA_FOUND_JSON;
+import static com.cairoshop.it.helpers.Users.ADMIN;
+import static com.cairoshop.it.helpers.Users.CUSTOMER;
+import static java.text.MessageFormat.format;
+
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -8,8 +21,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import com.cairoshop.it.helpers.Endpoints;
-import com.cairoshop.it.helpers.Users;
 import com.cairoshop.it.models.Credentials;
 
 /* **************************************************************************
@@ -18,176 +29,193 @@ import com.cairoshop.it.models.Credentials;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 public class VendorControllerIT
-            extends BaseProductClassificationControllerIT {
+            extends BaseControllerIT {
+
+    private static final String VALID_NEW_VENDOR_JSON = "valid_new_vendor.json";
+    private static final String INVALID_NEW_VENDOR_WITH_DUPLICATED_NAME_JSON = "invalid_new_vendor_with_duplicated_name.json";
+    private static final String ALL_VENDORS_JSON = "all_vendors.json";
+    private static final String INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_NAME_VALUE_JSON = "invalid_new_product_classification_with_empty_name_value.json";
+    private static final String INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_PAYLOAD_JSON = "invalid_new_product_classification_with_empty_payload.json";
+    private static final String VALID_NEW_VENDOR_FOR_UPDATE_JSON = "valid_new_vendor_for_update.json";
+    private static final String HP_VENDOR_JSON = "hp_vendor.json";
+    private static final String VENDORS_WITH_PAGINATION_JSON = "vendors_with_pagination.json";
 
     @Test
-    public void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation()
-            throws Exception {
-        testAddingDataWithValidPayloadAndAuthorizedUser(Endpoints.ADD_NEW_VENDOR,
-                                                            Users.ADMIN,
-                                                            "valid_new_vendor.json");
+    public void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation() {
+        testAddingDataWithValidPayloadAndAuthorizedUser(
+            ADD_NEW_VENDOR,
+            ADMIN,
+            VALID_NEW_VENDOR_JSON);
     }
 
     @ParameterizedTest
     @MethodSource("provideArgsForTestAddWithInvalidPayload")
     public void testAdd_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile)
             throws Exception {
-        testAddingDataWithInvalidPayloadAndAuthorizedUser(Endpoints.ADD_NEW_VENDOR,
-                                                            Users.ADMIN,
-                                                            requestBodyFile,
-                                                            errorMsgFile);
+        testAddingDataWithInvalidPayloadAndAuthorizedUser(
+            ADD_NEW_VENDOR,
+            ADMIN,
+            requestBodyFile,
+            errorMsgFile);
     }
 
     private static Stream<Arguments> provideArgsForTestAddWithInvalidPayload() {
         return Stream.of(
-            Arguments.of("invalid_new_vendor_with_duplicated_name.json",
-                            "db_violated_constraints.json"),
-            Arguments.of("invalid_new_product_classification_with_empty_name_value.json",
-                            "name_is_required.json"),
-            Arguments.of("invalid_new_product_classification_with_empty_payload.json",
-                            "name_is_required.json")
+            Arguments.of(INVALID_NEW_VENDOR_WITH_DUPLICATED_NAME_JSON, DB_VIOLATED_CONSTRAINTS_JSON),
+            Arguments.of(INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_NAME_VALUE_JSON, NAME_IS_REQUIRED_JSON),
+            Arguments.of(INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_PAYLOAD_JSON, NAME_IS_REQUIRED_JSON)
         );
     }
 
     @Test
     public void testAdd_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
             throws Exception {
-        testAddingDataWithValidPayloadAndUnauthorizedUser(Endpoints.ADD_NEW_VENDOR,
-                                                            Users.CUSTOMER,
-                                                            "valid_new_vendor.json",
-                                                            "access_denied.json");
+        testAddingDataWithValidPayloadAndUnauthorizedUser(
+            ADD_NEW_VENDOR,
+            CUSTOMER,
+            VALID_NEW_VENDOR_JSON,
+            ACCESS_DENIED_JSON);
     }
 
     @Test
-    public void testEdit_WhenPayloadIsValid_ThenReturn204()
-            throws Exception {
-        testDataModificationWithValidPayloadAndAuthorizedUser(MessageFormat.format(Endpoints.EDIT_VENDOR, 1),
-                                                                Users.ADMIN,
-                                                                "valid_new_vendor_for_update.json");
+    public void testEdit_WhenPayloadIsValid_ThenReturn204() {
+        testDataModificationWithValidPayloadAndAuthorizedUser(
+            format(EDIT_VENDOR, 1),
+            ADMIN,
+            VALID_NEW_VENDOR_FOR_UPDATE_JSON);
     }
 
     @ParameterizedTest
     @MethodSource("provideArgsForTestEditWithInvalidPayload")
     public void testEdit_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile)
             throws Exception {
-        testDataModificationWithInvalidPayloadAndAuthorizedUser(MessageFormat.format(Endpoints.EDIT_VENDOR, 2),
-                                                                    Users.ADMIN,
-                                                                    requestBodyFile,
-                                                                    errorMsgFile);
+        testDataModificationWithInvalidPayloadAndAuthorizedUser(
+            format(EDIT_VENDOR, 2),
+            ADMIN,
+            requestBodyFile,
+            errorMsgFile);
     }
 
     private static Stream<Arguments> provideArgsForTestEditWithInvalidPayload() {
         return Stream.of(
-            Arguments.of("invalid_new_vendor_with_duplicated_name.json",
-                            "db_violated_constraints.json"),
-            Arguments.of("invalid_new_product_classification_with_empty_name_value.json",
-                            "name_is_required.json"),
-            Arguments.of("invalid_new_product_classification_with_empty_payload.json",
-                            "name_is_required.json")
+            Arguments.of(INVALID_NEW_VENDOR_WITH_DUPLICATED_NAME_JSON, DB_VIOLATED_CONSTRAINTS_JSON),
+            Arguments.of(INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_NAME_VALUE_JSON, NAME_IS_REQUIRED_JSON),
+            Arguments.of(INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_PAYLOAD_JSON, NAME_IS_REQUIRED_JSON)
         );
     }
 
     @Test
     public void testEdit_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
             throws Exception {
-        testDataModificationWithValidPayloadAndUnauthorizedUser(MessageFormat.format(Endpoints.EDIT_VENDOR, 2),
-                                                                    Users.CUSTOMER,
-                                                                    "valid_new_vendor.json",
-                                                                    "access_denied.json");
+        testDataModificationWithValidPayloadAndUnauthorizedUser(
+            format(EDIT_VENDOR, 2),
+            CUSTOMER,
+            VALID_NEW_VENDOR_JSON,
+            ACCESS_DENIED_JSON);
     }
 
     @ParameterizedTest
-    @MethodSource("provideArgsForTestGetByIdWhenUserIsAuthorizedAndDataFound")
-    public void testGetById_WhenUserIsAuthorizedAndDataFound_ThenReturn200AndData(Credentials credentials)
+    @MethodSource("provideArgsForTestGetByIdWhenDataFound")
+    public void testGetById_WhenDataFound_ThenReturn200AndData(Credentials credentials)
             throws Exception {
-        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(MessageFormat.format(Endpoints.GET_VENDOR_BY_ID, 4),
-                                                                    credentials,
-                                                                    "hp_vendor.json");
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
+            format(GET_VENDOR_BY_ID, 4),
+            credentials,
+            HP_VENDOR_JSON);
     }
 
-    private static Stream<Arguments> provideArgsForTestGetByIdWhenUserIsAuthorizedAndDataFound() {
+    private static Stream<Arguments> provideArgsForTestGetByIdWhenDataFound() {
         return Stream.of(
-            Arguments.of(Users.ADMIN),
-            Arguments.of(Users.CUSTOMER)
+            Arguments.of(ADMIN),
+            Arguments.of(CUSTOMER)
         );
     }
 
     @ParameterizedTest
-    @MethodSource("provideArgsForTestGetByIdWhenUserIsAuthorizedAndDataNotFound")
-    public void testGetById_WhenUserIsAuthorizedAndDataNotFound_ThenReturn404WithErrorMsg(Credentials credentials)
+    @MethodSource("provideArgsForTestGetByIdWhenDataNotFound")
+    public void testGetById_WhenDataNotFound_ThenReturn404WithErrorMsg(Credentials credentials)
             throws Exception {
-        testDataRetrievalForNonExistedDataUsingAuthorizedUser(MessageFormat.format(Endpoints.GET_VENDOR_BY_ID, 404),
-                                                                credentials,
-                                                                "no_data_found.json");
+        testDataRetrievalForNonExistedDataUsingAuthorizedUser(
+            format(GET_VENDOR_BY_ID, 404),
+            credentials,
+            NO_DATA_FOUND_JSON);
     }
 
-    private static Stream<Arguments> provideArgsForTestGetByIdWhenUserIsAuthorizedAndDataNotFound() {
+    private static Stream<Arguments> provideArgsForTestGetByIdWhenDataNotFound() {
         return Stream.of(
-            Arguments.of(Users.ADMIN),
-            Arguments.of(Users.CUSTOMER)
+            Arguments.of(ADMIN),
+            Arguments.of(CUSTOMER)
         );
     }
 
     @Test
-    public void testGetAllItemsByPagination_WhenUserIsAuthorizedAndDataFound_ThenReturn200WithData()
+    public void testGetAllItemsByPagination_WhenDataFound_ThenReturn200WithData()
             throws Exception {
-        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(MessageFormat.format(Endpoints.GET_VENDORS_BY_PAGINATION, 0),
-                                                                    Users.ADMIN,
-                                                                    "vendors_with_pagination.json");
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
+            format(GET_VENDORS_BY_PAGINATION, 0),
+            ADMIN,
+            VENDORS_WITH_PAGINATION_JSON);
     }
 
     @Test
     public void testGetAllItemsByPagination_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
             throws Exception {
-        testDataRetrievalUsingUnauthorizedUser(MessageFormat.format(Endpoints.GET_VENDORS_BY_PAGINATION, 0),
-                                                Users.CUSTOMER,
-                                                "access_denied.json");
+        testDataRetrievalUsingUnauthorizedUser(
+            format(GET_VENDORS_BY_PAGINATION, 0),
+            CUSTOMER,
+            ACCESS_DENIED_JSON);
     }
 
     @Test
-    public void testGetAllItemsByPagination_WhenUserIsAuthorizedAndDataNotFound_ThenReturn404WithErrorMsg()
+    public void testGetAllItemsByPagination_WhenDataNotFound_ThenReturn404WithErrorMsg()
             throws Exception {
-        testDataRetrievalForNonExistedDataUsingAuthorizedUser(MessageFormat.format(Endpoints.GET_VENDORS_BY_PAGINATION, 404),
-                                                                Users.ADMIN,
-                                                                "no_data_found.json");
+        testDataRetrievalForNonExistedDataUsingAuthorizedUser(
+            format(GET_VENDORS_BY_PAGINATION, 404),
+            ADMIN,
+            NO_DATA_FOUND_JSON);
     }
 
     @Test
-    public void testGetAll_WhenUserIsAuthorizedAndDataFound_ThenReturn200WithData()
+    public void testGetAll_WhenDataFound_ThenReturn200WithData()
             throws Exception {
-        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(Endpoints.GET_ALL_VENDORS,
-                                                                    Users.ADMIN,
-                                                                    "all_vendors.json");
+        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
+            GET_ALL_VENDORS,
+            ADMIN,
+            ALL_VENDORS_JSON);
     }
 
     @Test
     public void testGetAll_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
             throws Exception {
-        testDataRetrievalUsingUnauthorizedUser(Endpoints.GET_ALL_VENDORS,
-                                                Users.CUSTOMER,
-                                                "access_denied.json");
+        testDataRetrievalUsingUnauthorizedUser(
+            GET_ALL_VENDORS,
+            CUSTOMER,
+            ACCESS_DENIED_JSON);
     }
 
     @Test
-    public void testRemove_WhenItemExists_ThenRemoveItAndReturn204() {
-        testDataRemovalOfExistingDataUsingAuthorizedUser(MessageFormat.format(Endpoints.DELETE_VENDOR_BY_ID, 5),
-                                                            Users.ADMIN);
+    public void testRemove_WhenDataFound_ThenRemoveItAndReturn204() {
+        testDataRemovalOfExistingDataUsingAuthorizedUser(
+            format(DELETE_VENDOR_BY_ID, 5),
+            ADMIN);
     }
 
     @Test
-    public void testRemove_WhenUserIsUnauthorized_ThenRemoveItAndReturn403WithErrorMsg()
+    public void testRemove_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
             throws Exception {
-        testDataRemovalUsingUnauthorizedUser(MessageFormat.format(Endpoints.DELETE_VENDOR_BY_ID, 5),
-                                                Users.CUSTOMER,
-                                                "access_denied.json");
+        testDataRemovalUsingUnauthorizedUser(
+            format(DELETE_VENDOR_BY_ID, 5),
+            CUSTOMER,
+            ACCESS_DENIED_JSON);
     }
 
     @Test
-    public void testRemove_WhenUserIsAuthorizedAndDataNotFound_ThenRemoveItAndReturn404WithErrorMsg()
+    public void testRemove_WhenDataNotFound_ThenReturn404WithErrorMsg()
             throws Exception {
-        testDataRemovalOfNonExistingDataUsingAuthorizedUser(MessageFormat.format(Endpoints.DELETE_VENDOR_BY_ID, 404),
-                                                                Users.ADMIN,
-                                                                "no_data_found.json");
+        testDataRemovalOfNonExistingDataUsingAuthorizedUser(
+            format(DELETE_VENDOR_BY_ID, 404),
+            ADMIN,
+            NO_DATA_FOUND_JSON);
     }
 
 }

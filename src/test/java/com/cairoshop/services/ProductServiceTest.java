@@ -132,7 +132,7 @@ public class ProductServiceTest
         Category categoryEntity = mock(Category.class);
         when(categoryRepository.getOne(productInDetailDTO.getCategoryId()))
             .thenReturn(categoryEntity);
-        when(getRepository().save(productEntity))
+        when(getRepository().saveAndFlush(productEntity))
             .thenReturn(productEntity);
 
         ((ProductService) getService()).edit(id, productInDetailDTO);
@@ -140,7 +140,7 @@ public class ProductServiceTest
         verify(getRepository()).getOne(id);
         verify(vendorRepository).getOne(productInDetailDTO.getVendorId());
         verify(categoryRepository).getOne(productInDetailDTO.getCategoryId());
-        verify(getRepository()).save(productEntity);
+        verify(getRepository()).saveAndFlush(productEntity);
     }
 
    @Test
@@ -164,8 +164,7 @@ public class ProductServiceTest
         Category categoryEntity = mock(Category.class);
         when(categoryRepository.getOne(productInDetailDTO.getCategoryId()))
             .thenReturn(categoryEntity);
-
-        when(getRepository().save(any(Product.class)))
+        when(getRepository().saveAndFlush(any(Product.class)))
             .thenThrow(DataIntegrityViolationException.class);
 
         assertThrows(DataIntegrityViolatedException.class,
