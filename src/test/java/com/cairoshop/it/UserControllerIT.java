@@ -16,15 +16,14 @@ import org.junit.jupiter.api.Test;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class UserControllerIT
-            extends BaseControllerIT {
+class UserControllerIT extends BaseControllerIT {
 
     private static final String VALID_NEW_STATUS_OF_USER_JSON = "valid_new_status_of_user.json";
     private static final String ADMIN_USER_JSON = "admin_user.json";
     private static final String ALL_USERS_JSON = "all_users.json";
 
     @Test
-    public void testEdit_WhenPayloadIsValid_ThenReturn204() {
+    void testEdit_WhenPayloadIsValid_ThenReturn204() {
         testDataModificationWithValidPayloadAndAuthorizedUser(
             format(EDIT_USER, 3),
             ADMIN,
@@ -32,7 +31,7 @@ public class UserControllerIT
     }
 
     @Test
-    public void testEdit_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
+    void testEdit_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
             throws Exception {
         testDataModificationWithValidPayloadAndUnauthorizedUser(
             format(EDIT_USER, 3),
@@ -42,7 +41,7 @@ public class UserControllerIT
     }
 
     @Test
-    public void testGetById_WhenDataFound_ThenReturn200AndData()
+    void testGetById_WhenDataFound_ThenReturn200AndData()
             throws Exception {
         testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
             format(GET_USER_BY_ID, 3),
@@ -51,7 +50,7 @@ public class UserControllerIT
     }
 
     @Test
-    public void testGetById_WhenDataNotFound_ThenReturn404WithErrorMsg()
+    void testGetById_WhenDataNotFound_ThenReturn404WithErrorMsg()
             throws Exception {
         testDataRetrievalForNonExistedDataUsingAuthorizedUser(
             format(GET_USER_BY_ID, 404),
@@ -60,7 +59,7 @@ public class UserControllerIT
     }
 
     @Test
-    public void testGetAllItemsByPagination_WhenDataExists_ThenReturn200WithData()
+    void testGetAllItemsByPagination_WhenDataExists_ThenReturn200WithData()
             throws Exception {
         testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
             format(GET_USERS_BY_PAGINATION, 0),
@@ -69,7 +68,7 @@ public class UserControllerIT
     }
 
     @Test
-    public void testGetAllItemsByPagination_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
+    void testGetAllItemsByPagination_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
             throws Exception {
         testDataRetrievalUsingUnauthorizedUser(
             format(GET_USERS_BY_PAGINATION, 0),

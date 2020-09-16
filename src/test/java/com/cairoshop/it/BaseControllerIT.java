@@ -53,7 +53,7 @@ import com.cairoshop.it.models.HttpRequest;
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class BaseControllerIT {
+class BaseControllerIT {
 
     private static final String SEED_MAPPINGS_DIR = "seed/";
     private static final String EXPECTED_MAPPINGS_DIR = "expected/";
@@ -115,7 +115,7 @@ public class BaseControllerIT {
         }
     }
 
-    protected String readJsonFrom(String responseLocation) {
+    String readJsonFrom(String responseLocation) {
         try {
             return Files.readAllLines(pathFrom(BASE_MAPPINGS_DIR + responseLocation),
                                                 Charset.forName(StandardCharsets.UTF_8.name()))
@@ -126,12 +126,12 @@ public class BaseControllerIT {
         }
     }
 
-    private Path pathFrom(String location)
+    Path pathFrom(String location)
             throws URISyntaxException {
         return Paths.get(ClassLoader.getSystemResource(location).toURI());
     }
 
-    protected String authenticate(Credentials credentials) {
+    String authenticate(Credentials credentials) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -147,7 +147,7 @@ public class BaseControllerIT {
         return response.getHeaders().get(Constants.AUTHORIZATION_HEADER_KEY).get(0);
     }
 
-    protected <T, R> ResponseEntity<R> doRequest(HttpRequest<T> httpRequest, Class<R> responseType) {
+    <T, R> ResponseEntity<R> doRequest(HttpRequest<T> httpRequest, Class<R> responseType) {
         HttpEntity<T> requestEntity;
         if (httpRequest.getRequestBody() != null) {
             requestEntity = new HttpEntity<>(httpRequest.getRequestBody(), httpRequest.getHeaders());
@@ -158,7 +158,7 @@ public class BaseControllerIT {
                         .exchange(httpRequest.getUri(), httpRequest.getHttpMethod(), requestEntity, responseType);
     }
 
-    protected void testAddingDataWithValidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile) {
+    void testAddingDataWithValidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile) {
         String jwtToken = authenticate(credentials);
         String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
         HttpHeaders headers = new HttpHeaders();
@@ -172,7 +172,7 @@ public class BaseControllerIT {
         assertTrue(response.getHeaders().getLocation().getPath().matches("^\\/[a-z]+\\/[1-9][0-9]*$"));
     }
 
-    protected void testAddingDataWithInvalidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
+    void testAddingDataWithInvalidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
             throws Exception {
         String jwtToken = authenticate(credentials);
         String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
@@ -187,7 +187,7 @@ public class BaseControllerIT {
         JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
-    protected void testAddingDataWithValidPayloadAndUnauthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
+    void testAddingDataWithValidPayloadAndUnauthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
             throws Exception {
         String jwtToken = authenticate(credentials);
         String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
@@ -202,7 +202,7 @@ public class BaseControllerIT {
         JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
-    protected void testDataModificationWithValidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile) {
+    void testDataModificationWithValidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile) {
         String jwtToken = authenticate(credentials);
         String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
         HttpHeaders headers = new HttpHeaders();
@@ -214,7 +214,7 @@ public class BaseControllerIT {
         assertEquals(NO_CONTENT, response.getStatusCode());
     }
 
-    protected void testDataModificationWithInvalidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
+    void testDataModificationWithInvalidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
             throws Exception {
         String jwtToken = authenticate(credentials);
         String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
@@ -229,7 +229,7 @@ public class BaseControllerIT {
         JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
-    protected void testDataModificationWithValidPayloadAndUnauthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
+    void testDataModificationWithValidPayloadAndUnauthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
             throws Exception {
         String jwtToken = authenticate(credentials);
         String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
@@ -244,7 +244,7 @@ public class BaseControllerIT {
         JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
-    protected void testDataRetrievalToReturnExistedDataUsingAuthorizedUser(String uri, Credentials credentials, String expectedResponseFile)
+    void testDataRetrievalToReturnExistedDataUsingAuthorizedUser(String uri, Credentials credentials, String expectedResponseFile)
             throws Exception {
         String jwtToken = authenticate(credentials);
         String expectedResponse = readJsonFrom(EXPECTED_MAPPINGS_DIR + expectedResponseFile);
@@ -258,7 +258,7 @@ public class BaseControllerIT {
         JSONAssert.assertEquals(expectedResponse, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
-    protected void testDataRetrievalUsingUnauthorizedUser(String uri, Credentials credentials, String errorMsgFile)
+    void testDataRetrievalUsingUnauthorizedUser(String uri, Credentials credentials, String errorMsgFile)
             throws Exception {
         String jwtToken = authenticate(credentials);
         String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
@@ -272,7 +272,7 @@ public class BaseControllerIT {
         JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
-    protected void testDataRetrievalForNonExistedDataUsingAuthorizedUser(String uri, Credentials credentials, String errorMsgFile)
+    void testDataRetrievalForNonExistedDataUsingAuthorizedUser(String uri, Credentials credentials, String errorMsgFile)
             throws Exception {
         String jwtToken = authenticate(credentials);
         String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
@@ -286,7 +286,7 @@ public class BaseControllerIT {
         JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
-    protected void testDataRemovalOfExistingDataUsingAuthorizedUser(String uri, Credentials credentials) {
+    void testDataRemovalOfExistingDataUsingAuthorizedUser(String uri, Credentials credentials) {
         String jwtToken = authenticate(credentials);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(jwtToken);
@@ -296,7 +296,7 @@ public class BaseControllerIT {
         assertEquals(NO_CONTENT, response.getStatusCode());
     }
 
-    protected void testDataRemovalUsingUnauthorizedUser(String uri, Credentials credentials, String errorMsgFile)
+    void testDataRemovalUsingUnauthorizedUser(String uri, Credentials credentials, String errorMsgFile)
             throws Exception {
         String jwtToken = authenticate(credentials);
         String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
@@ -309,7 +309,7 @@ public class BaseControllerIT {
         JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
-    protected void testDataRemovalOfNonExistingDataUsingAuthorizedUser(String uri, Credentials credentials, String errorMsgFile)
+    void testDataRemovalOfNonExistingDataUsingAuthorizedUser(String uri, Credentials credentials, String errorMsgFile)
             throws Exception {
         String jwtToken = authenticate(credentials);
         String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);

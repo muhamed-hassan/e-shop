@@ -140,7 +140,7 @@ public class ProductServiceImpl
         if (page.isEmpty()) {
             throw new NoResultException();
         }
-        return new SavedItemsDTO<>(page.getContent(), Long.valueOf(page.getTotalElements()).intValue());
+        return new SavedItemsDTO<>(page.getContent(), (int) page.getTotalElements());
     }
 
 }

@@ -35,10 +35,9 @@ import com.cairoshop.web.dtos.UserStatusDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class UserServiceTest
-            extends BaseServiceTest<User, UserInDetailDTO, UserInBriefDTO> {
+class UserServiceTest extends BaseServiceTest<User, UserInDetailDTO, UserInBriefDTO> {
 
-    protected UserServiceTest() {
+    UserServiceTest() {
         super(User.class);
     }
 
@@ -49,7 +48,7 @@ public class UserServiceTest
     }
 
     @Test
-    public void testEdit_WhenDataIsValid_ThenSave() {
+    void testEdit_WhenDataIsValid_ThenSave() {
         User userEntity = mock(User.class);
         int id = 1;
         UserStatusDTO userStatusDTO = new UserStatusDTO();
@@ -66,7 +65,7 @@ public class UserServiceTest
     }
 
     @Test
-    public void testGetById_WhenDataFound_ThenReturnIt()
+    void testGetById_WhenDataFound_ThenReturnIt()
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Optional<UserInDetailDTO> userInDetailDTO = Optional.of(UserInDetailDTO.builder()
                                                                                     .name("some name")
@@ -80,7 +79,7 @@ public class UserServiceTest
     }
 
     @Test
-    public void testGetAllCustomersByPage_WhenDataFound_ThenReturnIt() {
+    void testGetAllCustomersByPage_WhenDataFound_ThenReturnIt() {
         UserInBriefDTO userInBriefDTO = new UserInBriefDTO(1, "name", true);
         Page<UserInBriefDTO> page = mock(Page.class);
         when(page.getContent())
@@ -97,7 +96,7 @@ public class UserServiceTest
     }
 
     @Test
-    public void testLoadUserByUsername_WhenDataFound_ThenReturnIt() {
+    void testLoadUserByUsername_WhenDataFound_ThenReturnIt() {
         String username = "username";
         User userEntity = new User();
         userEntity.setUsername(username);
@@ -111,7 +110,7 @@ public class UserServiceTest
     }
 
     @Test
-    public void testLoadUserByUsername_WhenDataNotFound_ThenThrowUsernameNotFoundException() {
+    void testLoadUserByUsername_WhenDataNotFound_ThenThrowUsernameNotFoundException() {
         String username = "username";
         Optional<User> expectedResult = Optional.empty();
         when(((UserRepository) getRepository()).findByUsername(anyString()))

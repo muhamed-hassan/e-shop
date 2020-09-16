@@ -43,8 +43,7 @@ import com.cairoshop.web.dtos.SavedItemsDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class ProductServiceTest
-           extends BaseServiceTest<Product, ProductInDetailDTO, ProductInBriefDTO> {
+class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, ProductInBriefDTO> {
 
     private VendorRepository vendorRepository;
 
@@ -52,7 +51,7 @@ public class ProductServiceTest
 
     private ProductSortableFieldsRepository productSortableFieldsRepository;
 
-    protected ProductServiceTest() {
+    ProductServiceTest() {
         super(Product.class);
     }
 
@@ -70,7 +69,7 @@ public class ProductServiceTest
 
 
     @Test
-    public void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId()
+    void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId()
             throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Product productEntity = mock(Product.class);
         when(getRepository().save(any(Product.class)))
@@ -94,7 +93,7 @@ public class ProductServiceTest
     }
 
     @Test
-    public void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
+    void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
         ProductInDetailDTO productInDetailDTO = ProductInDetailDTO.builder()
                                                                         .name("some duplicated name")
                                                                         .price(0.5)
@@ -112,7 +111,7 @@ public class ProductServiceTest
     }
 
     @Test
-    public void testEdit_WhenDataIsValid_ThenSave() {
+    void testEdit_WhenDataIsValid_ThenSave() {
         int id = 1;
         ProductInDetailDTO productInDetailDTO = ProductInDetailDTO.builder()
                                                                         .name("some name")
@@ -143,8 +142,8 @@ public class ProductServiceTest
         verify(getRepository()).saveAndFlush(productEntity);
     }
 
-   @Test
-    public void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
+    @Test
+    void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
         int id = 1;
         ProductInDetailDTO productInDetailDTO = ProductInDetailDTO.builder()
                                                                        .name("some duplicated name")
@@ -172,7 +171,7 @@ public class ProductServiceTest
     }
 
     @Test
-    public void testEditImage_WhenProductFound_ThenUpdateIt() {
+    void testEditImage_WhenProductFound_ThenUpdateIt() {
         byte[] uploadedImageStream = new byte[2048];
         int idOfSavedProduct = 1;
         Product productEntity = mock(Product.class);
@@ -189,7 +188,7 @@ public class ProductServiceTest
 
 
     @Test
-    public void testGetById_WhenDataFound_ThenReturnIt()
+    void testGetById_WhenDataFound_ThenReturnIt()
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Optional<ProductInDetailDTO> productInDetailDTO = Optional.of(ProductInDetailDTO.builder()
                                                                                             .name("some name")
@@ -205,7 +204,7 @@ public class ProductServiceTest
     }
 
     @Test
-    public void testGetImage_WhenProductFound_ThenReturnItsImage() {
+    void testGetImage_WhenProductFound_ThenReturnItsImage() {
         byte[] expectedImageStream = new byte[2048];
         int idOfSavedProduct = 1;
         when(((ProductRepository) getRepository()).findImageByProductId(idOfSavedProduct))
@@ -216,8 +215,8 @@ public class ProductServiceTest
         assertArrayEquals(expectedImageStream, actualImageStream);
     }
 
-   @Test
-    public void testGetImage_WhenImageIsNotUploadedYet_ThenThrowNoResultException() {
+    @Test
+    void testGetImage_WhenImageIsNotUploadedYet_ThenThrowNoResultException() {
        byte[] expectedImageStream = null;
         int idOfSavedProduct = 1;
         when(((ProductRepository) getRepository()).findImageByProductId(any(int.class)))
@@ -228,18 +227,18 @@ public class ProductServiceTest
     }
 
     @Test
-    public void testGetAllByPage_WhenDataFound_ThenReturnIt() {
+    void testGetAllByPage_WhenDataFound_ThenReturnIt() {
         ProductInBriefDTO productInBriefDTO = new ProductInBriefDTO(1, "IPhone X");
         testGetAllByPage_WhenDataFound_ThenReturnIt(productInBriefDTO);
     }
 
     @Test
-    public void testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException() {
+    void testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException() {
         super.testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException();
     }
 
-   @Test
-    public void testSearchByProductName_WhenDataFound_ThenReturnIt() {
+    @Test
+    void testSearchByProductName_WhenDataFound_ThenReturnIt() {
         ProductInBriefDTO productInBriefDTO = new ProductInBriefDTO(1, "IPhone X");
        Page<ProductInBriefDTO> page = mock(Page.class);
        when(page.isEmpty())
@@ -258,8 +257,8 @@ public class ProductServiceTest
         assertIterableEquals(page.getContent(), actualResult.getItems());
     }
 
-     @Test
-    public void testSearchByProductName_WhenDataNotFound_ThenThrowNoResultException() {
+    @Test
+    void testSearchByProductName_WhenDataNotFound_ThenThrowNoResultException() {
          Page<ProductInBriefDTO> page = mock(Page.class);
          when(page.isEmpty())
              .thenReturn(true);
@@ -271,7 +270,7 @@ public class ProductServiceTest
     }
 
     @Test
-    public void testGetSortableFields_WhenDataFound_ThenReturnIt() {
+    void testGetSortableFields_WhenDataFound_ThenReturnIt() {
         List<String> expectedSortableList = List.of("name", "price", "quantity");
         when(productSortableFieldsRepository.findAll())
             .thenReturn(List.of(new ProductSortableFields("name"),
@@ -284,7 +283,7 @@ public class ProductServiceTest
     }
 
     @Test
-    public void testGetSortableFields_WhenDataNotFound_ThenThrowNoResultException() {
+    void testGetSortableFields_WhenDataNotFound_ThenThrowNoResultException() {
         List<ProductSortableFields> expectedSortableList = Collections.emptyList();
         when(productSortableFieldsRepository.findAll())
             .thenReturn(expectedSortableList);
@@ -294,7 +293,7 @@ public class ProductServiceTest
     }
 
     @Test
-    public void testRemoveById_WhenDataFound_ThenReturnIt() {
+    void testRemoveById_WhenDataFound_ThenReturnIt() {
         super.testRemoveById_WhenDataFound_ThenRemoveIt(1);
     }
 

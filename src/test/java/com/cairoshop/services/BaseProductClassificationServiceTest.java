@@ -23,14 +23,13 @@ import com.cairoshop.service.exceptions.NoResultException;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class BaseProductClassificationServiceTest<T, D, B>
-            extends BaseServiceTest<T, D, B> {
+class BaseProductClassificationServiceTest<T, D, B> extends BaseServiceTest<T, D, B> {
 
-    protected BaseProductClassificationServiceTest(Class<T> entityClass) {
+    BaseProductClassificationServiceTest(Class<T> entityClass) {
         super(entityClass);
     }
 
-    protected void testEdit_WhenDataIsValid_ThenSave(int id, D detailedDtoClass) {
+    void testEdit_WhenDataIsValid_ThenSave(int id, D detailedDtoClass) {
         T entity = mock(getEntityClass());
         when(getRepository().getOne(id))
             .thenReturn(entity);
@@ -43,7 +42,7 @@ public class BaseProductClassificationServiceTest<T, D, B>
         verify(getRepository()).saveAndFlush(entity);
     }
 
-    protected void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(int id, D detailedDtoClass) {
+    void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(int id, D detailedDtoClass) {
         T entity = mock(getEntityClass());
         when(getRepository().getOne(id))
             .thenReturn(entity);
@@ -54,7 +53,7 @@ public class BaseProductClassificationServiceTest<T, D, B>
             () -> ((BaseProductClassificationService) getService()).edit(id, detailedDtoClass));
     }
 
-    protected void testGetAll_WhenDataFound_ThenReturnIt(B briefDtoClass) {
+    void testGetAll_WhenDataFound_ThenReturnIt(B briefDtoClass) {
         List<B> expectedResult = List.of(briefDtoClass);
         when(((BaseProductClassificationRepository) getRepository()).findAllByActive(any(boolean.class), any(Class.class)))
             .thenReturn(expectedResult);
@@ -64,7 +63,7 @@ public class BaseProductClassificationServiceTest<T, D, B>
         assertIterableEquals(expectedResult, actualResult);
     }
 
-    protected void testGetAll_WhenDataNotFound_ThenThrowNoResultException() {
+    void testGetAll_WhenDataNotFound_ThenThrowNoResultException() {
         when(((BaseProductClassificationRepository) getRepository()).findAllByActive(any(boolean.class), any(Class.class)))
             .thenReturn(Collections.emptyList());
 
@@ -72,8 +71,7 @@ public class BaseProductClassificationServiceTest<T, D, B>
             () -> ((BaseProductClassificationService) getService()).getAll());
     }
 
-    protected void testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt(int idOfObjectToDelete)
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    void testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt(int idOfObjectToDelete) {
         when(((BaseProductClassificationRepository) getRepository()).countOfAssociationsWithProduct(idOfObjectToDelete))
             .thenReturn(0L);
         T entity = mock(getEntityClass());
@@ -89,7 +87,7 @@ public class BaseProductClassificationServiceTest<T, D, B>
         verify(getRepository()).save(entity);
     }
 
-    protected void testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException(int idOfObjectToDelete) {
+    void testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException(int idOfObjectToDelete) {
         when(((BaseProductClassificationRepository) getRepository()).countOfAssociationsWithProduct(idOfObjectToDelete))
             .thenReturn(1L);
 

@@ -44,7 +44,7 @@ public class JwtVerificationFilter
             String username = parsedToken.getBody().getSubject();
             List<SimpleGrantedAuthority> authorities = ((List<String>) parsedToken.getBody().get("rol"))
                                                             .stream()
-                                                            .map(authority -> new SimpleGrantedAuthority(authority))
+                                                            .map(SimpleGrantedAuthority::new)
                                                             .collect(Collectors.toList());
             if (StringUtils.isEmpty(username) && authorities.isEmpty()) return;
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(username, null, authorities));

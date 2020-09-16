@@ -20,10 +20,9 @@ import com.cairoshop.web.dtos.VendorInDetailDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class VendorServiceTest
-            extends BaseProductClassificationServiceTest<Vendor, VendorInDetailDTO, VendorInBriefDTO> {
+class VendorServiceTest extends BaseProductClassificationServiceTest<Vendor, VendorInDetailDTO, VendorInBriefDTO> {
 
-    public VendorServiceTest() {
+    VendorServiceTest() {
         super(Vendor.class);
     }
 
@@ -34,68 +33,68 @@ public class VendorServiceTest
     }
 
     @Test
-    public void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId()
+    void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId()
             throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         VendorInDetailDTO vendorInDetailDTO = new VendorInDetailDTO("Sony");
         testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(vendorInDetailDTO);
     }
 
     @Test
-    public void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
+    void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
         VendorInDetailDTO vendorInDetailDTO = new VendorInDetailDTO("Sony");
         testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(vendorInDetailDTO);
     }
 
     @Test
-    public void testEdit_WhenDataIsValid_ThenSave() {
+    void testEdit_WhenDataIsValid_ThenSave() {
         VendorInDetailDTO vendorInDetailDTO = new VendorInDetailDTO("Toshiba");
         testEdit_WhenDataIsValid_ThenSave(1, vendorInDetailDTO);
     }
 
     @Test
-    public void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
+    void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
         VendorInDetailDTO vendorInDetailDTO = new VendorInDetailDTO("Sony");
         testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(1, vendorInDetailDTO);
     }
 
     @Test
-    public void testGetById_WhenDataFound_ThenReturnIt()
+    void testGetById_WhenDataFound_ThenReturnIt()
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Optional<VendorInDetailDTO> vendorInDetailDTO = Optional.of(new VendorInDetailDTO("Toshiba"));
         testGetById_WhenDataFound_ThenReturnIt(1, vendorInDetailDTO, List.of("getName"));
     }
 
     @Test
-    public void testGetAllByPage_WhenDataFound_ThenReturnIt() {
+    void testGetAllByPage_WhenDataFound_ThenReturnIt() {
         VendorInBriefDTO vendorInBriefDTO = new VendorInBriefDTO(1, "Toshiba");
         testGetAllByPage_WhenDataFound_ThenReturnIt(vendorInBriefDTO);
     }
 
     @Test
-    public void testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException() {
+    void testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException() {
         super.testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException();
     }
 
     @Test
-    public void testGetAll_WhenDataFound_ThenReturnIt() {
+    void testGetAll_WhenDataFound_ThenReturnIt() {
         VendorInBriefDTO vendorInBriefDTO = new VendorInBriefDTO(1, "Toshiba");
         testGetAll_WhenDataFound_ThenReturnIt(vendorInBriefDTO);
     }
 
     @Test
-    public void testGetAll_WhenDataNotFound_ThenThrowNoResultException() {
+    void testGetAll_WhenDataNotFound_ThenThrowNoResultException() {
         super.testGetAll_WhenDataNotFound_ThenThrowNoResultException();
     }
 
 
     @Test
-    public void testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt()
+    void testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt()
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         super.testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt(1);
     }
 
     @Test
-    public void testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException() {
+    void testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException() {
         super.testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException(2);
     }
 

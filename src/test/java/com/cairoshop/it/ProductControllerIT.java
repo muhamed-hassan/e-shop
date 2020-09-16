@@ -30,8 +30,7 @@ import com.cairoshop.it.models.Credentials;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public class ProductControllerIT
-            extends BaseControllerIT {
+class ProductControllerIT extends BaseControllerIT {
 
     private static final String VALID_NEW_PRODUCT_JSON = "valid_new_product.json";
     private static final String VALID_NEW_PRODUCT_FOR_UPDATE_JSON = "valid_new_product_for_update.json";
@@ -44,7 +43,7 @@ public class ProductControllerIT
     private static final String SEARCH_PRODUCTS_WITH_PAGINATION_JSON = "search_products_with_pagination.json";
 
     @Test
-    public void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation() {
+    void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation() {
         testAddingDataWithValidPayloadAndAuthorizedUser(
             ADD_NEW_PRODUCT,
             ADMIN,
@@ -53,7 +52,7 @@ public class ProductControllerIT
 
     @ParameterizedTest
     @MethodSource("provideArgsForTestAddWithInvalidPayload")
-    public void testAdd_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile)
+    void testAdd_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile)
             throws Exception {
         testAddingDataWithInvalidPayloadAndAuthorizedUser(
             ADD_NEW_PRODUCT,
@@ -71,7 +70,7 @@ public class ProductControllerIT
     }
 
     @Test
-    public void testAdd_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
+    void testAdd_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
             throws Exception {
         testAddingDataWithValidPayloadAndUnauthorizedUser(
             ADD_NEW_PRODUCT,
@@ -81,7 +80,7 @@ public class ProductControllerIT
     }
 
     @Test
-    public void testEdit_WhenPayloadIsValid_ThenReturn204() {
+    void testEdit_WhenPayloadIsValid_ThenReturn204() {
         testDataModificationWithValidPayloadAndAuthorizedUser(
             format(EDIT_PRODUCT, 1),
             ADMIN,
@@ -90,7 +89,7 @@ public class ProductControllerIT
 
     @ParameterizedTest
     @MethodSource("provideArgsForTestEditWithInvalidPayload")
-    public void testEdit_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile)
+    void testEdit_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile)
             throws Exception {
         testDataModificationWithInvalidPayloadAndAuthorizedUser(
             format(EDIT_PRODUCT, 2),
@@ -108,7 +107,7 @@ public class ProductControllerIT
     }
 
     @Test
-    public void testEdit_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
+    void testEdit_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
             throws Exception {
         testDataModificationWithValidPayloadAndUnauthorizedUser(
             format(EDIT_PRODUCT, 2),
@@ -118,14 +117,14 @@ public class ProductControllerIT
     }
 
     @Test
-    public void testRemove_WhenItemExists_ThenRemoveItAndReturn204() {
+    void testRemove_WhenItemExists_ThenRemoveItAndReturn204() {
         testDataRemovalOfExistingDataUsingAuthorizedUser(
             format(DELETE_PRODUCT_BY_ID, 3),
             ADMIN);
     }
 
     @Test
-    public void testRemove_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
+    void testRemove_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
             throws Exception {
         testDataRemovalUsingUnauthorizedUser(
             format(DELETE_PRODUCT_BY_ID, 3),
@@ -135,7 +134,7 @@ public class ProductControllerIT
 
     @ParameterizedTest
     @MethodSource("provideArgsForTestGetByIdWhenDataFound")
-    public void testGetById_WhenDataFound_ThenReturn200AndData(Credentials credentials)
+    void testGetById_WhenDataFound_ThenReturn200AndData(Credentials credentials)
             throws Exception {
         testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
             format(GET_PRODUCT_BY_ID, 1),
@@ -152,7 +151,7 @@ public class ProductControllerIT
 
     @ParameterizedTest
     @MethodSource("provideArgsForTestGetByIdWhenDataNotFound")
-    public void testGetById_WhenDataNotFound_ThenReturn404WithErrorMsg(Credentials credentials)
+    void testGetById_WhenDataNotFound_ThenReturn404WithErrorMsg(Credentials credentials)
             throws Exception {
         testDataRetrievalForNonExistedDataUsingAuthorizedUser(
             format(GET_PRODUCT_BY_ID, 404),
@@ -168,7 +167,7 @@ public class ProductControllerIT
     }
 
     @Test
-    public void testGetAllItemsByPagination_WhenDataFound_ThenReturn200WithData()
+    void testGetAllItemsByPagination_WhenDataFound_ThenReturn200WithData()
             throws Exception {
         testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
             format(GET_PRODUCTS_BY_PAGINATION, 0),
@@ -177,7 +176,7 @@ public class ProductControllerIT
     }
 
     @Test
-    public void testGetAllItemsByPagination_WhenDataNotFound_ThenReturn404WithErrorMsg()
+    void testGetAllItemsByPagination_WhenDataNotFound_ThenReturn404WithErrorMsg()
             throws Exception {
         testDataRetrievalForNonExistedDataUsingAuthorizedUser(
             format(GET_PRODUCTS_BY_PAGINATION, 404),
@@ -186,7 +185,7 @@ public class ProductControllerIT
     }
 
     @Test
-    public void testGetSortableFields_WhenDataFound_ThenReturnDataWith200()
+    void testGetSortableFields_WhenDataFound_ThenReturnDataWith200()
             throws Exception {
         testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
             GET_SORTABLE_FIELDS_OF_PRODUCT,
@@ -195,7 +194,7 @@ public class ProductControllerIT
     }
 
     @Test
-    public void testSearchByProductName_WhenDataFound_ThenReturnDataWith200()
+    void testSearchByProductName_WhenDataFound_ThenReturnDataWith200()
             throws Exception {
         testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
             format(SEARCH_PRODUCTS_BY_KEYWORD, "duct", 0, "name", "ASC"),
@@ -204,7 +203,7 @@ public class ProductControllerIT
     }
 
     @Test
-    public void testSearchByProductName_WhenDataNotFound_ThenReturn404WithErrorMsg()
+    void testSearchByProductName_WhenDataNotFound_ThenReturn404WithErrorMsg()
             throws Exception {
         testDataRetrievalForNonExistedDataUsingAuthorizedUser(
             format(SEARCH_PRODUCTS_BY_KEYWORD, "XXX", 0, "name", "ASC"),

@@ -20,12 +20,9 @@ public class ErrorLoggerAspect {
 
     @AfterThrowing(pointcut = "within(com.cairoshop.service.impl.*)", throwing= "exception")
     public void logExceptionMessage(JoinPoint joinPoint, Exception exception) {
-        StringBuilder errorMsg = new StringBuilder()
-            .append(">> Error occurred in ")
-            .append(joinPoint.getSignature().toLongString())
-            .append(" , with message: ")
-            .append(exception.getMessage() == null ? "Internal error" : exception.getMessage());
-        LOGGER.error(errorMsg.toString());
+        LOGGER.error(">> Error occurred in {}, with message: {}",
+                        joinPoint.getSignature().toLongString(),
+                        exception.getMessage() == null ? "Internal error" : exception.getMessage());
     }
 
 }

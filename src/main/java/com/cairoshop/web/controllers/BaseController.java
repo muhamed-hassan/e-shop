@@ -67,8 +67,7 @@ public class BaseController<D, B> {
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id)
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public ResponseEntity<Void> delete(@PathVariable int id) {
         service.removeById(id);
         return ResponseEntity.noContent().build();
     }
