@@ -2,12 +2,11 @@ package com.cairoshop.persistence.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
@@ -37,16 +36,12 @@ public class Vendor
         if (other == null || getClass() != other.getClass())
             return false;
         Vendor that = (Vendor) other;
-        return new EqualsBuilder()
-                    .append(id, that.id)
-                .isEquals();
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                    .append(id)
-                .toHashCode();
+        return Objects.hashCode(id);
     }
 
 }

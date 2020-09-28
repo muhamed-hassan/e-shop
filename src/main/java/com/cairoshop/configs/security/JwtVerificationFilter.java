@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,7 +35,9 @@ public class JwtVerificationFilter
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         String token = request.getHeader(Constants.AUTHORIZATION_HEADER_KEY);
-        if (StringUtils.isNotEmpty(token) && token.startsWith(Constants.AUTHORIZATION_HEADER_VALUE_PREFIX)) {
+        if (token != null
+                && !token.isBlank()
+                && token.startsWith(Constants.AUTHORIZATION_HEADER_VALUE_PREFIX)) {
             Jws<Claims> parsedToken = Jwts.parserBuilder()
                                             .setSigningKey(jwtSecret.getBytes())
                                             .build()
@@ -46,7 +47,7 @@ public class JwtVerificationFilter
                                                             .stream()
                                                             .map(SimpleGrantedAuthority::new)
                                                             .collect(Collectors.toList());
-            if (StringUtils.isEmpty(username) && authorities.isEmpty()) return;
+            if (username.isBlank() && authorities.isEmpty()) return;
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(username, null, authorities));
         }
         filterChain.doFilter(request, response);

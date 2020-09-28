@@ -4,6 +4,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,8 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -174,16 +173,12 @@ public class User
         if (other == null || getClass() != other.getClass())
             return false;
         User that = (User) other;
-        return new EqualsBuilder()
-                    .append(id, that.id)
-                .isEquals();
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                    .append(id)
-                .toHashCode();
+        return Objects.hashCode(id);
     }
 
 }

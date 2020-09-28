@@ -1,10 +1,9 @@
 package com.cairoshop.persistence.entities;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
@@ -41,19 +40,14 @@ public class Role {
             return true;
         if (other == null || getClass() != other.getClass())
             return false;
-        Role role = (Role) other;
-        return new EqualsBuilder()
-                    .append(id, role.id)
-                    .append(name, role.name)
-                .isEquals();
+        Role that = (Role) other;
+        return Objects.equals(id, that.id)
+            && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                    .append(id)
-                    .append(name)
-                .toHashCode();
+        return Objects.hash(id, name);
     }
 
 }

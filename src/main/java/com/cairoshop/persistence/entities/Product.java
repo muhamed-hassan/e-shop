@@ -2,6 +2,8 @@ package com.cairoshop.persistence.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,9 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
@@ -208,16 +207,12 @@ public class Product
         if (other == null || getClass() != other.getClass())
             return false;
         Product that = (Product) other;
-        return new EqualsBuilder()
-                    .append(id, that.id)
-                .isEquals();
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                    .append(id)
-                .toHashCode();
+        return Objects.hashCode(id);
     }
     
 }

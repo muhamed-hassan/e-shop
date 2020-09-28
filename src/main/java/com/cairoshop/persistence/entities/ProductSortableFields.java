@@ -1,11 +1,10 @@
 package com.cairoshop.persistence.entities;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
@@ -40,16 +39,12 @@ public class ProductSortableFields {
         if (other == null || getClass() != other.getClass())
             return false;
         ProductSortableFields that = (ProductSortableFields) other;
-        return new EqualsBuilder()
-                    .append(name, that.name)
-                .isEquals();
+        return Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                    .append(name)
-                .toHashCode();
+        return Objects.hashCode(name);
     }
 
 }

@@ -1,7 +1,6 @@
 package com.cairoshop.web.dtos;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import java.util.Objects;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
@@ -22,15 +21,11 @@ public class CategoryInBriefDTO
         if (!(other instanceof CategoryInBriefDTO))
             return false;
         CategoryInBriefDTO that = (CategoryInBriefDTO) other;
-        return new EqualsBuilder()
-                    .append(getId(), that.getId())
-                .isEquals();
+        return Objects.equals(getId(), that.getId());
     }
 
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                    .append(getId())
-                .toHashCode();
+        return Objects.hashCode(getId());
     }
 
 }
