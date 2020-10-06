@@ -1,0 +1,2 @@
+INSERT INTO `product` (`id`, `name`, `price`, `quantity`, `description`, `active`, `vendor`, `category`, `image_uploaded`)
+VALUES (1, 'test product 1', 65.2, 60, 'ttttttttt666ttttt', true, 1, 1, false);

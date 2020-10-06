@@ -21,7 +21,7 @@
       </column>
     </createTable>
     <addDefaultValue columnDataType="bit(1)" columnName="active" defaultValueBoolean="true" tableName="category"/>
-    <addDefaultValue columnDataType="int" columnName="version" defaultValueBoolean="true" tableName="category"/>
+    <addDefaultValue columnDataType="int" columnName="version" defaultValueNumeric="0" tableName="category"/>
 
     <createTable tableName="vendor">
       <column name="id" type="int" autoIncrement="true">
@@ -38,7 +38,7 @@
       </column>
     </createTable>
     <addDefaultValue columnDataType="bit(1)" columnName="active" defaultValueBoolean="true" tableName="vendor"/>
-    <addDefaultValue columnDataType="int" columnName="version" defaultValueBoolean="true" tableName="vendor"/>
+    <addDefaultValue columnDataType="int" columnName="version" defaultValueNumeric="0" tableName="vendor"/>
 
     <createTable tableName="role">
       <column name="id" type="int" autoIncrement="true">
@@ -98,7 +98,7 @@
     <addDefaultValue columnDataType="bit(1)" columnName="account_non_locked" defaultValueBoolean="true" tableName="user"/>
     <addDefaultValue columnDataType="bit(1)" columnName="credentials_non_expired" defaultValueBoolean="true" tableName="user"/>
     <addDefaultValue columnDataType="bit(1)" columnName="enabled" defaultValueBoolean="true" tableName="user"/>
-    <addDefaultValue columnDataType="int" columnName="version" defaultValueBoolean="true" tableName="user"/>
+    <addDefaultValue columnDataType="int" columnName="version" defaultValueNumeric="0" tableName="user"/>
 
     <createTable tableName="product">
       <column name="id" type="int" autoIncrement="true">
@@ -134,7 +134,7 @@
       </column>
     </createTable>
     <addDefaultValue columnDataType="bit(1)" columnName="active" defaultValueBoolean="true" tableName="product"/>
-    <addDefaultValue columnDataType="int" columnName="version" defaultValueBoolean="true" tableName="product"/>
+    <addDefaultValue columnDataType="int" columnName="version" defaultValueNumeric="0" tableName="product"/>
 
     <createTable tableName="product_sortable_fields">
       <column name="name" type="varchar(150)">

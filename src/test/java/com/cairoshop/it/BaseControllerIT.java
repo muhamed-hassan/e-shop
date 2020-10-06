@@ -1,18 +1,12 @@
 package com.cairoshop.it;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.http.HttpMethod.DELETE;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.PATCH;
-import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -21,38 +15,33 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.testcontainers.containers.MySQLContainer;
 
 import com.cairoshop.configs.security.Constants;
-import com.cairoshop.it.configs.TestRestTemplateConfig;
 import com.cairoshop.it.models.Credentials;
-import com.cairoshop.it.models.HttpRequest;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest//(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
 class BaseControllerIT {
 
     private static final String SEED_MAPPINGS_DIR = "seed/";
@@ -60,59 +49,23 @@ class BaseControllerIT {
     private static final String ERRORS_MAPPINGS_DIR = "errors/";
     private static final String BASE_MAPPINGS_DIR = "__files/";
 
-    private static final String UPDATE_SCRIPTS_DIR = "db/scripts/";
-    private static final String NEW_DATA_SQL = "new_data.sql";
-    private static final String RESET_DATA_SQL = "reset_data.sql";
-
     private static final String AUTHENTICATE_ENDPOINT = "/authenticate";
 
     private static MySQLContainer mySQLContainer;
 
     @Autowired
-    private TestRestTemplateConfig testRestTemplateConfig;
+    private MockMvc mockMvc;
 
     @BeforeAll
     public static void initTestDB() {
-        if (mySQLContainer == null) {
-            mySQLContainer = new MySQLContainer("mysql:8.0.20")
-                .withDatabaseName("integration-tests-db")
-                .withUsername("username")
-                .withPassword("password");
-            mySQLContainer.start();
-            System.setProperty("DB_URL", mySQLContainer.getJdbcUrl());
-            System.setProperty("DB_USER", mySQLContainer.getUsername());
-            System.setProperty("DB_PASSWORD", mySQLContainer.getPassword());
-        }
-    }
-
-    @BeforeEach
-    public void populateNewData() {
-        updateTestDB(NEW_DATA_SQL);
-    }
-
-    @AfterEach
-    public void resetData() {
-        updateTestDB(RESET_DATA_SQL);
-    }
-
-    private void updateTestDB(String script) {
-        try {
-            String[] scriptLines = Files.readAllLines(pathFrom(UPDATE_SCRIPTS_DIR + script))
-                                        .stream()
-                                        .collect(Collectors.joining())
-                                        .split(";");
-            Connection connection = mySQLContainer.createConnection("");
-            Statement statement = connection.createStatement();
-            for (int cursor = 0; cursor < scriptLines.length; cursor++) {
-                statement.addBatch(scriptLines[cursor]);
-                if (cursor % 50 == 0) {
-                    statement.executeBatch();
-                }
-            }
-            statement.executeBatch();
-        } catch (URISyntaxException| SQLException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        mySQLContainer = new MySQLContainer("mysql:8.0.20")
+            .withDatabaseName("integration-tests-db")
+            .withUsername("username")
+            .withPassword("password");
+        mySQLContainer.start();
+        System.setProperty("DB_URL", mySQLContainer.getJdbcUrl());
+        System.setProperty("DB_USER", mySQLContainer.getUsername());
+        System.setProperty("DB_PASSWORD", mySQLContainer.getPassword());
     }
 
     String readJsonFrom(String responseLocation) {
@@ -131,7 +84,7 @@ class BaseControllerIT {
         return Paths.get(ClassLoader.getSystemResource(location).toURI());
     }
 
-    String authenticate(Credentials credentials) {
+    String authenticate(Credentials credentials) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -139,37 +92,32 @@ class BaseControllerIT {
         formData.add(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY, credentials.getUsername());
         formData.add(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY, credentials.getPassword());
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formData, headers);
+        ResultActions resultActions = mockMvc.perform(
+                                                post(AUTHENTICATE_ENDPOINT)
+                                                    .params(formData)
+                                                    .headers(headers));
 
-        ResponseEntity<Void> response = testRestTemplateConfig.getTestRestTemplate()
-                                                .exchange(AUTHENTICATE_ENDPOINT, POST, request, Void.class);
-
-        return response.getHeaders().get(Constants.AUTHORIZATION_HEADER_KEY).get(0);
+        return resultActions.andReturn()
+                                .getResponse()
+                                .getHeader(Constants.AUTHORIZATION_HEADER_KEY)
+                                .replace("Bearer ", "");
     }
 
-    <T, R> ResponseEntity<R> doRequest(HttpRequest<T> httpRequest, Class<R> responseType) {
-        HttpEntity<T> requestEntity;
-        if (httpRequest.getRequestBody() != null) {
-            requestEntity = new HttpEntity<>(httpRequest.getRequestBody(), httpRequest.getHeaders());
-        } else {
-            requestEntity = new HttpEntity<>(httpRequest.getHeaders());
-        }
-        return testRestTemplateConfig.getTestRestTemplate()
-                        .exchange(httpRequest.getUri(), httpRequest.getHttpMethod(), requestEntity, responseType);
-    }
-
-    void testAddingDataWithValidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile) {
+    void testAddingDataWithValidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile)
+            throws Exception {
         String jwtToken = authenticate(credentials);
         String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResponseEntity<Void> response = doRequest(HttpRequest.from(uri, headers, POST, requestBody), Void.class);
+        ResultActions resultActions = mockMvc.perform(
+                                                post(uri)
+                                                    .content(requestBody)
+                                                    .headers(headers));
 
-        assertEquals(CREATED, response.getStatusCode());
-        assertNotNull(response.getHeaders().getLocation());
-        assertTrue(response.getHeaders().getLocation().getPath().matches("^\\/[a-z]+\\/[1-9][0-9]*$"));
+        resultActions.andExpect(status().isCreated())
+                        .andExpect(header().exists("Location"));
     }
 
     void testAddingDataWithInvalidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
@@ -181,10 +129,13 @@ class BaseControllerIT {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, POST, requestBody), String.class);
+        ResultActions resultActions = mockMvc.perform(
+                                                post(uri)
+                                                    .content(requestBody)
+                                                    .headers(headers));
 
-        assertEquals(BAD_REQUEST, response.getStatusCode());
-        JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
+        resultActions.andExpect(status().isBadRequest())
+                        .andExpect(content().json(expectedErrorMsg));
     }
 
     void testAddingDataWithValidPayloadAndUnauthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
@@ -196,22 +147,29 @@ class BaseControllerIT {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, POST, requestBody), String.class);
+        ResultActions resultActions = mockMvc.perform(
+                                                post(uri)
+                                                    .content(requestBody)
+                                                    .headers(headers));
 
-        assertEquals(FORBIDDEN, response.getStatusCode());
-        JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
+        resultActions.andExpect(status().isForbidden())
+                        .andExpect(content().json(expectedErrorMsg));
     }
 
-    void testDataModificationWithValidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile) {
+    void testDataModificationWithValidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile)
+            throws Exception {
         String jwtToken = authenticate(credentials);
         String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResponseEntity<Void> response = doRequest(HttpRequest.from(uri, headers, PATCH, requestBody), Void.class);
+        ResultActions resultActions = mockMvc.perform(
+                                                patch(uri)
+                                                .content(requestBody)
+                                                .headers(headers));
 
-        assertEquals(NO_CONTENT, response.getStatusCode());
+        resultActions.andExpect(status().isNoContent());
     }
 
     void testDataModificationWithInvalidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
@@ -223,10 +181,13 @@ class BaseControllerIT {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, PATCH, requestBody), String.class);
+        ResultActions resultActions = mockMvc.perform(
+                                                patch(uri)
+                                                .content(requestBody)
+                                                .headers(headers));
 
-        assertEquals(BAD_REQUEST, response.getStatusCode());
-        JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
+        resultActions.andExpect(status().isBadRequest())
+                        .andExpect(content().json(expectedErrorMsg));
     }
 
     void testDataModificationWithValidPayloadAndUnauthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
@@ -238,10 +199,13 @@ class BaseControllerIT {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, PATCH, requestBody), String.class);
+        ResultActions resultActions = mockMvc.perform(
+                                                patch(uri)
+                                                .content(requestBody)
+                                                .headers(headers));
 
-        assertEquals(FORBIDDEN, response.getStatusCode());
-        JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
+        resultActions.andExpect(status().isForbidden())
+                        .andExpect(content().json(expectedErrorMsg));
     }
 
     void testDataRetrievalToReturnExistedDataUsingAuthorizedUser(String uri, Credentials credentials, String expectedResponseFile)
@@ -252,10 +216,12 @@ class BaseControllerIT {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, GET), String.class);
+        ResultActions resultActions = mockMvc.perform(
+                                                get(uri)
+                                                .headers(headers));
 
-        assertEquals(OK, response.getStatusCode());
-        JSONAssert.assertEquals(expectedResponse, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
+        resultActions.andExpect(status().isOk())
+                        .andExpect(content().json(expectedResponse));
     }
 
     void testDataRetrievalUsingUnauthorizedUser(String uri, Credentials credentials, String errorMsgFile)
@@ -266,10 +232,12 @@ class BaseControllerIT {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, GET), String.class);
+        ResultActions resultActions = mockMvc.perform(
+                                                get(uri)
+                                                .headers(headers));
 
-        assertEquals(FORBIDDEN, response.getStatusCode());
-        JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
+        resultActions.andExpect(status().isForbidden())
+                        .andExpect(content().json(expectedErrorMsg));
     }
 
     void testDataRetrievalForNonExistedDataUsingAuthorizedUser(String uri, Credentials credentials, String errorMsgFile)
@@ -280,20 +248,25 @@ class BaseControllerIT {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, GET), String.class);
+        ResultActions resultActions = mockMvc.perform(
+                                                get(uri)
+                                               .headers(headers));
 
-        assertEquals(NOT_FOUND, response.getStatusCode());
-        JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
+        resultActions.andExpect(status().isNotFound())
+                        .andExpect(content().json(expectedErrorMsg));
     }
 
-    void testDataRemovalOfExistingDataUsingAuthorizedUser(String uri, Credentials credentials) {
+    void testDataRemovalOfExistingDataUsingAuthorizedUser(String uri, Credentials credentials)
+            throws Exception {
         String jwtToken = authenticate(credentials);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(jwtToken);
 
-        ResponseEntity<Void> response = doRequest(HttpRequest.from(uri, headers, DELETE), Void.class);
+        ResultActions resultActions = mockMvc.perform(
+                                                delete(uri)
+                                                .headers(headers));
 
-        assertEquals(NO_CONTENT, response.getStatusCode());
+        resultActions.andExpect(status().isNoContent());
     }
 
     void testDataRemovalUsingUnauthorizedUser(String uri, Credentials credentials, String errorMsgFile)
@@ -303,10 +276,12 @@ class BaseControllerIT {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(jwtToken);
 
-        ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, DELETE), String.class);
+        ResultActions resultActions = mockMvc.perform(
+                                                delete(uri)
+                                                .headers(headers));
 
-        assertEquals(FORBIDDEN, response.getStatusCode());
-        JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
+        resultActions.andExpect(status().isForbidden())
+                        .andExpect(content().json(expectedErrorMsg));
     }
 
     void testDataRemovalOfNonExistingDataUsingAuthorizedUser(String uri, Credentials credentials, String errorMsgFile)
@@ -316,10 +291,12 @@ class BaseControllerIT {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(jwtToken);
 
-        ResponseEntity<String> response = doRequest(HttpRequest.from(uri, headers, DELETE), String.class);
+        ResultActions resultActions = mockMvc.perform(
+                                                delete(uri)
+                                                .headers(headers));
 
-        assertEquals(NOT_FOUND, response.getStatusCode());
-        JSONAssert.assertEquals(expectedErrorMsg, response.getBody(), JSONCompareMode.NON_EXTENSIBLE);
+        resultActions.andExpect(status().isNotFound())
+                        .andExpect(content().json(expectedErrorMsg));
     }
 
 }

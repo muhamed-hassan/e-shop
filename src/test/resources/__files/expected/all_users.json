@@ -4,7 +4,22 @@
       "name": "Demo Customer",
       "id": 2,
       "active": true
+    },
+    {
+      "name": "Customer0 tmp",
+      "id": 3,
+      "active": true
+    },
+    {
+      "name": "Customer1 tmp",
+      "id": 4,
+      "active": true
+    },
+    {
+      "name": "Customer2 tmp",
+      "id": 5,
+      "active": true
     }
   ],
-  "allSavedItemsCount": 1
+  "allSavedItemsCount": 4
 }

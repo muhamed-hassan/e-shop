@@ -1,0 +1,2 @@
+INSERT INTO `category` (`id`, `name`) VALUES (1, 'Laptops'), (2, 'Mobiles'), (3, 'Tablets'), (4, 'Accessories'),
+(5, 'Refrigerators'), (6, 'Dishwashers'), (7, 'Air conditioners'), (8, 'Microwave ovens'), (9, 'Water coolers'), (10, 'Coffeemakers');

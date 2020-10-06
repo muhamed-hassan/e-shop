@@ -13,6 +13,8 @@ import static com.cairoshop.it.helpers.Errors.NO_DATA_FOUND_JSON;
 import static com.cairoshop.it.helpers.Users.ADMIN;
 import static com.cairoshop.it.helpers.Users.CUSTOMER;
 import static java.text.MessageFormat.format;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 import java.util.stream.Stream;
 
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.test.context.jdbc.Sql;
 
 import com.cairoshop.it.models.Credentials;
 
@@ -39,12 +42,23 @@ class CategoryControllerIT extends BaseControllerIT {
     private static final String ALL_CATEGORIES_JSON = "all_categories.json";
     private static final String CATEGORIES_WITH_PAGINATION_JSON = "categories_with_pagination.json";
 
+    @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation() {
+    void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation()
+            throws Exception {
         testAddingDataWithValidPayloadAndAuthorizedUser(
             ADD_NEW_CATEGORY,
             ADMIN,
             VALID_NEW_CATEGORY_JSON);
+    }
+
+    @Sql(scripts = "classpath:db/scripts/new_category.sql", executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
+    @Test
+    void testAdd_WhenCategoryNameIsDuplicated_ThenReturn400WithErrorMsg()
+            throws Exception {
+        testAddingDataWithInvalidPayloadAndAuthorizedUser(ADD_NEW_CATEGORY, ADMIN,
+            INVALID_NEW_CATEGORY_WITH_DUPLICATED_NAME_JSON, DB_VIOLATED_CONSTRAINTS_JSON);
     }
 
     @ParameterizedTest
@@ -56,7 +70,6 @@ class CategoryControllerIT extends BaseControllerIT {
 
     private static Stream<Arguments> provideArgsForTestAddWithInvalidPayload() {
         return Stream.of(
-            Arguments.of(INVALID_NEW_CATEGORY_WITH_DUPLICATED_NAME_JSON, DB_VIOLATED_CONSTRAINTS_JSON),
             Arguments.of(INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_NAME_VALUE_JSON, NAME_IS_REQUIRED_JSON),
             Arguments.of(INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_PAYLOAD_JSON, NAME_IS_REQUIRED_JSON)
         );
@@ -72,12 +85,26 @@ class CategoryControllerIT extends BaseControllerIT {
             ACCESS_DENIED_JSON);
     }
 
+    @Sql(scripts = "classpath:db/scripts/categories.sql", executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testEdit_WhenPayloadIsValid_ThenReturn204() {
+    void testEdit_WhenPayloadIsValid_ThenReturn204()
+            throws Exception {
         testDataModificationWithValidPayloadAndAuthorizedUser(
             format(EDIT_CATEGORY, 1),
             ADMIN,
             VALID_NEW_CATEGORY_FOR_UPDATE_JSON);
+    }
+
+    @Sql(scripts = "classpath:db/scripts/categories.sql", executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
+    @Test
+    void testEdit_WhenCategoryNameIsDuplicated_ThenReturn400WithErrorMsg()
+            throws Exception {
+        testDataModificationWithInvalidPayloadAndAuthorizedUser(
+            format(EDIT_CATEGORY, 2),
+            ADMIN,
+            INVALID_NEW_CATEGORY_WITH_DUPLICATED_NAME_JSON, DB_VIOLATED_CONSTRAINTS_JSON);
     }
 
     @ParameterizedTest
@@ -93,7 +120,6 @@ class CategoryControllerIT extends BaseControllerIT {
 
     private static Stream<Arguments> provideArgsForTestEditWithInvalidPayload() {
         return Stream.of(
-            Arguments.of(INVALID_NEW_CATEGORY_WITH_DUPLICATED_NAME_JSON, DB_VIOLATED_CONSTRAINTS_JSON),
             Arguments.of(INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_NAME_VALUE_JSON, NAME_IS_REQUIRED_JSON),
             Arguments.of(INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_PAYLOAD_JSON, NAME_IS_REQUIRED_JSON)
         );
@@ -109,6 +135,8 @@ class CategoryControllerIT extends BaseControllerIT {
             ACCESS_DENIED_JSON);
     }
 
+    @Sql(scripts = "classpath:db/scripts/categories.sql", executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
     @ParameterizedTest
     @MethodSource("provideArgsForTestGetByIdWhenDataFound")
     void testGetById_WhenDataFound_ThenReturn200AndData(Credentials credentials)
@@ -143,6 +171,8 @@ class CategoryControllerIT extends BaseControllerIT {
         );
     }
 
+    @Sql(scripts = "classpath:db/scripts/categories.sql", executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
     void testGetAllItemsByPagination_WhenDataFound_ThenReturn200WithData()
             throws Exception {
@@ -170,6 +200,8 @@ class CategoryControllerIT extends BaseControllerIT {
             ACCESS_DENIED_JSON);
     }
 
+    @Sql(scripts = "classpath:db/scripts/categories.sql", executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
     void testGetAll_WhenDataFound_ThenReturn200WithData()
             throws Exception {
@@ -188,18 +220,21 @@ class CategoryControllerIT extends BaseControllerIT {
             ACCESS_DENIED_JSON);
     }
 
+    @Sql(scripts = "classpath:db/scripts/new_category.sql", executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testRemove_WhenDataFound_ThenRemoveItAndReturn204() {
+    void testRemove_WhenDataFound_ThenRemoveItAndReturn204()
+            throws Exception {
         testDataRemovalOfExistingDataUsingAuthorizedUser(
-            format(DELETE_CATEGORY_BY_ID, 5),
+            format(DELETE_CATEGORY_BY_ID, 1),
             ADMIN);
     }
 
     @Test
-    void testRemove_WhenUserIsUnauthorized_ThenRemoveItAndReturn403WithErrorMsg()
+    void testRemove_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
             throws Exception {
         testDataRemovalUsingUnauthorizedUser(
-            format(DELETE_CATEGORY_BY_ID, 5),
+            format(DELETE_CATEGORY_BY_ID, 1),
             CUSTOMER,
             ACCESS_DENIED_JSON);
     }

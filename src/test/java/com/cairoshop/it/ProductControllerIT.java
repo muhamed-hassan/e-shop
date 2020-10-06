@@ -15,6 +15,8 @@ import static com.cairoshop.it.helpers.Errors.NO_DATA_FOUND_JSON;
 import static com.cairoshop.it.helpers.Users.ADMIN;
 import static com.cairoshop.it.helpers.Users.CUSTOMER;
 import static java.text.MessageFormat.format;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 import java.util.stream.Stream;
 
@@ -22,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.test.context.jdbc.Sql;
 
 import com.cairoshop.it.models.Credentials;
 
@@ -42,12 +45,38 @@ class ProductControllerIT extends BaseControllerIT {
     private static final String SORTABLE_FIELDS_JSON = "sortable_fields.json";
     private static final String SEARCH_PRODUCTS_WITH_PAGINATION_JSON = "search_products_with_pagination.json";
 
+    @Sql(scripts = { "classpath:db/scripts/new_category.sql",
+                        "classpath:db/scripts/new_vendor.sql" },
+            executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = { "classpath:db/scripts/reset_product_table.sql",
+                        "classpath:db/scripts/reset_category_table.sql",
+                        "classpath:db/scripts/reset_vendor_table.sql" },
+            executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation() {
+    void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation()
+            throws Exception {
         testAddingDataWithValidPayloadAndAuthorizedUser(
             ADD_NEW_PRODUCT,
             ADMIN,
             VALID_NEW_PRODUCT_JSON);
+    }
+
+    @Sql(scripts = { "classpath:db/scripts/new_category.sql",
+                        "classpath:db/scripts/new_vendor.sql",
+                        "classpath:db/scripts/new_product.sql" },
+            executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = { "classpath:db/scripts/reset_product_table.sql",
+                        "classpath:db/scripts/reset_category_table.sql",
+                        "classpath:db/scripts/reset_vendor_table.sql" },
+            executionPhase = AFTER_TEST_METHOD)
+    @Test
+    void testAdd_WhenProductNameIsDuplicated_ThenReturn400WithErrorMsg()
+            throws Exception {
+        testAddingDataWithInvalidPayloadAndAuthorizedUser(
+            ADD_NEW_PRODUCT,
+            ADMIN,
+            INVALID_NEW_PRODUCT_WITH_DUPLICATED_NAME_JSON,
+            DB_VIOLATED_CONSTRAINTS_JSON);
     }
 
     @ParameterizedTest
@@ -63,7 +92,6 @@ class ProductControllerIT extends BaseControllerIT {
 
     private static Stream<Arguments> provideArgsForTestAddWithInvalidPayload() {
         return Stream.of(
-            Arguments.of(INVALID_NEW_PRODUCT_WITH_DUPLICATED_NAME_JSON, DB_VIOLATED_CONSTRAINTS_JSON),
             Arguments.of(INVALID_NEW_PRODUCT_WITH_INVALID_PRICE_JSON, INVALID_PRICE_JSON),
             Arguments.of(INVALID_NEW_PRODUCT_WITH_INVALID_QUANTITY_JSON, INVALID_QUANTITY_JSON)
         );
@@ -79,12 +107,38 @@ class ProductControllerIT extends BaseControllerIT {
             ACCESS_DENIED_JSON);
     }
 
+    @Sql(scripts = { "classpath:db/scripts/new_category.sql",
+                        "classpath:db/scripts/new_vendor.sql",
+                        "classpath:db/scripts/new_product.sql" },
+            executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = { "classpath:db/scripts/reset_product_table.sql",
+                        "classpath:db/scripts/reset_category_table.sql",
+                        "classpath:db/scripts/reset_vendor_table.sql" },
+            executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testEdit_WhenPayloadIsValid_ThenReturn204() {
+    void testEdit_WhenPayloadIsValid_ThenReturn204()
+            throws Exception {
         testDataModificationWithValidPayloadAndAuthorizedUser(
             format(EDIT_PRODUCT, 1),
             ADMIN,
             VALID_NEW_PRODUCT_FOR_UPDATE_JSON);
+    }
+
+    @Sql(scripts = { "classpath:db/scripts/new_category.sql",
+                        "classpath:db/scripts/new_vendor.sql",
+                        "classpath:db/scripts/products.sql" },
+            executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = { "classpath:db/scripts/reset_product_table.sql",
+                        "classpath:db/scripts/reset_category_table.sql",
+                        "classpath:db/scripts/reset_vendor_table.sql" },
+            executionPhase = AFTER_TEST_METHOD)
+    @Test
+    void testEdit_WhenProductNameIsDuplicated_ThenReturn400WithErrorMsg()
+            throws Exception {
+        testDataModificationWithInvalidPayloadAndAuthorizedUser(
+            format(EDIT_PRODUCT, 2),
+            ADMIN,
+            INVALID_NEW_PRODUCT_WITH_DUPLICATED_NAME_JSON, DB_VIOLATED_CONSTRAINTS_JSON);
     }
 
     @ParameterizedTest
@@ -100,7 +154,6 @@ class ProductControllerIT extends BaseControllerIT {
 
     private static Stream<Arguments> provideArgsForTestEditWithInvalidPayload() {
         return Stream.of(
-            Arguments.of(INVALID_NEW_PRODUCT_WITH_DUPLICATED_NAME_JSON, DB_VIOLATED_CONSTRAINTS_JSON),
             Arguments.of(INVALID_NEW_PRODUCT_WITH_INVALID_PRICE_JSON, INVALID_PRICE_JSON),
             Arguments.of(INVALID_NEW_PRODUCT_WITH_INVALID_QUANTITY_JSON, INVALID_QUANTITY_JSON)
         );
@@ -116,10 +169,19 @@ class ProductControllerIT extends BaseControllerIT {
             ACCESS_DENIED_JSON);
     }
 
+    @Sql(scripts = { "classpath:db/scripts/new_category.sql",
+                        "classpath:db/scripts/new_vendor.sql",
+                        "classpath:db/scripts/new_product.sql" },
+            executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = { "classpath:db/scripts/reset_product_table.sql",
+                        "classpath:db/scripts/reset_category_table.sql",
+                        "classpath:db/scripts/reset_vendor_table.sql" },
+            executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testRemove_WhenItemExists_ThenRemoveItAndReturn204() {
+    void testRemove_WhenDataFound_ThenRemoveItAndReturn204()
+            throws Exception {
         testDataRemovalOfExistingDataUsingAuthorizedUser(
-            format(DELETE_PRODUCT_BY_ID, 3),
+            format(DELETE_PRODUCT_BY_ID, 1),
             ADMIN);
     }
 
@@ -127,14 +189,22 @@ class ProductControllerIT extends BaseControllerIT {
     void testRemove_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
             throws Exception {
         testDataRemovalUsingUnauthorizedUser(
-            format(DELETE_PRODUCT_BY_ID, 3),
+            format(DELETE_PRODUCT_BY_ID, 1),
             CUSTOMER,
             ACCESS_DENIED_JSON);
     }
 
+    @Sql(scripts = { "classpath:db/scripts/new_category.sql",
+                        "classpath:db/scripts/new_vendor.sql",
+                        "classpath:db/scripts/new_product.sql" },
+            executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = { "classpath:db/scripts/reset_product_table.sql",
+                        "classpath:db/scripts/reset_category_table.sql",
+                        "classpath:db/scripts/reset_vendor_table.sql" },
+            executionPhase = AFTER_TEST_METHOD)
     @ParameterizedTest
     @MethodSource("provideArgsForTestGetByIdWhenDataFound")
-    void testGetById_WhenDataFound_ThenReturn200AndData(Credentials credentials)
+    void testGetById_WhenDataFound_ThenReturn200WithData(Credentials credentials)
             throws Exception {
         testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
             format(GET_PRODUCT_BY_ID, 1),
@@ -166,6 +236,14 @@ class ProductControllerIT extends BaseControllerIT {
         );
     }
 
+    @Sql(scripts = { "classpath:db/scripts/new_category.sql",
+                        "classpath:db/scripts/new_vendor.sql",
+                        "classpath:db/scripts/products.sql" },
+            executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = { "classpath:db/scripts/reset_product_table.sql",
+                        "classpath:db/scripts/reset_category_table.sql",
+                        "classpath:db/scripts/reset_vendor_table.sql" },
+            executionPhase = AFTER_TEST_METHOD)
     @Test
     void testGetAllItemsByPagination_WhenDataFound_ThenReturn200WithData()
             throws Exception {
@@ -185,7 +263,7 @@ class ProductControllerIT extends BaseControllerIT {
     }
 
     @Test
-    void testGetSortableFields_WhenDataFound_ThenReturnDataWith200()
+    void testGetSortableFields_WhenDataFound_ThenReturn200WithData()
             throws Exception {
         testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
             GET_SORTABLE_FIELDS_OF_PRODUCT,
@@ -193,8 +271,16 @@ class ProductControllerIT extends BaseControllerIT {
             SORTABLE_FIELDS_JSON);
     }
 
+    @Sql(scripts = { "classpath:db/scripts/new_category.sql",
+                        "classpath:db/scripts/new_vendor.sql",
+                        "classpath:db/scripts/products.sql" },
+            executionPhase = BEFORE_TEST_METHOD)
+    @Sql(scripts = { "classpath:db/scripts/reset_product_table.sql",
+                        "classpath:db/scripts/reset_category_table.sql",
+                        "classpath:db/scripts/reset_vendor_table.sql" },
+            executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testSearchByProductName_WhenDataFound_ThenReturnDataWith200()
+    void testSearchByProductName_WhenDataFound_ThenReturn200WithData()
             throws Exception {
         testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
             format(SEARCH_PRODUCTS_BY_KEYWORD, "duct", 0, "name", "ASC"),

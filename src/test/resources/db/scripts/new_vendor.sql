@@ -1,0 +1,1 @@
+INSERT INTO `vendor` (`id`, `name`) VALUES (1, 'Sony');
