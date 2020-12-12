@@ -17,7 +17,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -25,7 +24,6 @@ import com.cairoshop.persistence.entities.User;
 import com.cairoshop.persistence.repositories.UserRepository;
 import com.cairoshop.service.UserService;
 import com.cairoshop.service.impl.UserServiceImpl;
-import com.cairoshop.web.dtos.SavedItemsDTO;
 import com.cairoshop.web.dtos.UserInBriefDTO;
 import com.cairoshop.web.dtos.UserInDetailDTO;
 import com.cairoshop.web.dtos.UserStatusDTO;
@@ -35,23 +33,24 @@ import com.cairoshop.web.dtos.UserStatusDTO;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-class UserServiceTest extends BaseServiceTest<User, UserInDetailDTO, UserInBriefDTO> {
+class UserServiceTest
+        extends BaseServiceTest<User, UserInDetailDTO, UserInBriefDTO> {
 
     UserServiceTest() {
         super(User.class);
     }
 
     @BeforeEach
-    public void injectRefs() {
-        UserServiceImpl userService = new UserServiceImpl(mock(UserRepository.class));
+    void injectRefs() {
+        var userService = new UserServiceImpl(mock(UserRepository.class));
         injectRefs(userService);
     }
 
     @Test
     void testEdit_WhenDataIsValid_ThenSave() {
-        User userEntity = mock(User.class);
-        int id = 1;
-        UserStatusDTO userStatusDTO = new UserStatusDTO();
+        var userEntity = mock(User.class);
+        var id = 1;
+        var userStatusDTO = new UserStatusDTO();
         userStatusDTO.setActive(false);
         when(getRepository().getOne(id))
             .thenReturn(userEntity);
@@ -67,21 +66,21 @@ class UserServiceTest extends BaseServiceTest<User, UserInDetailDTO, UserInBrief
     @Test
     void testGetById_WhenDataFound_ThenReturnIt()
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Optional<UserInDetailDTO> userInDetailDTO = Optional.of(UserInDetailDTO.builder()
+        var userInDetailDTO = Optional.of(UserInDetailDTO.builder()
                                                                                     .name("some name")
                                                                                     .username("some username")
                                                                                     .email("malekshda3wah@leehkeda.com")
                                                                                     .phone("0151212002")
                                                                                     .address("henak")
                                                                                 .build());
-        List<String> getters = List.of("getUsername", "getEmail", "getPhone", "getAddress", "getName");
+        var getters = List.of("getUsername", "getEmail", "getPhone", "getAddress", "getName");
         testGetById_WhenDataFound_ThenReturnIt(1, userInDetailDTO, getters);
     }
 
     @Test
     void testGetAllCustomersByPage_WhenDataFound_ThenReturnIt() {
-        UserInBriefDTO userInBriefDTO = new UserInBriefDTO(1, "name", true);
-        Page<UserInBriefDTO> page = mock(Page.class);
+        var userInBriefDTO = new UserInBriefDTO(1, "name", true);
+        var page = mock(Page.class);
         when(page.getContent())
             .thenReturn(List.of(userInBriefDTO));
         when(page.getTotalElements())
@@ -89,7 +88,7 @@ class UserServiceTest extends BaseServiceTest<User, UserInDetailDTO, UserInBrief
         when(((UserRepository) getRepository()).findAllCustomers(any(Pageable.class)))
             .thenReturn(page);
 
-        SavedItemsDTO<UserInBriefDTO> actualResult = getService().getAll(0, "id", "ASC");
+        var actualResult = getService().getAll(0, "id", "ASC");
 
         assertEquals(Long.valueOf(page.getTotalElements()).intValue(), actualResult.getAllSavedItemsCount());
         assertIterableEquals(page.getContent(), actualResult.getItems());
@@ -97,21 +96,21 @@ class UserServiceTest extends BaseServiceTest<User, UserInDetailDTO, UserInBrief
 
     @Test
     void testLoadUserByUsername_WhenDataFound_ThenReturnIt() {
-        String username = "username";
-        User userEntity = new User();
+        var username = "username";
+        var userEntity = new User();
         userEntity.setUsername(username);
-        Optional<User> expectedResult = Optional.of(userEntity);
+        var expectedResult = Optional.of(userEntity);
         when(((UserRepository) getRepository()).findByUsername(anyString()))
             .thenReturn(expectedResult);
 
-        UserDetails actualResult = ((UserDetailsService) getService()).loadUserByUsername(username);
+        var actualResult = ((UserDetailsService) getService()).loadUserByUsername(username);
 
         assertEquals(username, actualResult.getUsername());
     }
 
     @Test
     void testLoadUserByUsername_WhenDataNotFound_ThenThrowUsernameNotFoundException() {
-        String username = "username";
+        var username = "username";
         Optional<User> expectedResult = Optional.empty();
         when(((UserRepository) getRepository()).findByUsername(anyString()))
             .thenReturn(expectedResult);

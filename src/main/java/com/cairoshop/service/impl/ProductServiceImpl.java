@@ -62,14 +62,14 @@ public class ProductServiceImpl
     public int add(ProductInDetailDTO productInDetailDTO) {
         int id;
         try {
-            Product product = Product.builder()
-                                        .name(productInDetailDTO.getName())
-                                        .price(productInDetailDTO.getPrice())
-                                        .quantity(productInDetailDTO.getQuantity())
-                                        .description(productInDetailDTO.getDescription())
-                                        .category(categoryRepository.getOne(productInDetailDTO.getCategoryId()))
-                                        .vendor(vendorRepository.getOne(productInDetailDTO.getVendorId()))
-                                    .build();
+            var product = Product.builder()
+                                            .name(productInDetailDTO.getName())
+                                            .price(productInDetailDTO.getPrice())
+                                            .quantity(productInDetailDTO.getQuantity())
+                                            .description(productInDetailDTO.getDescription())
+                                            .category(categoryRepository.getOne(productInDetailDTO.getCategoryId()))
+                                            .vendor(vendorRepository.getOne(productInDetailDTO.getVendorId()))
+                                        .build();
             id = getRepository().save(product).getId();
         } catch (DataIntegrityViolationException dive) {
             throw new DataIntegrityViolatedException();
@@ -87,7 +87,7 @@ public class ProductServiceImpl
     @Override
     public void edit(int id, ProductInDetailDTO productInDetailDTO) {
         try {
-            Product product = getRepository().getOne(id);
+            var product = getRepository().getOne(id);
             product.setName(productInDetailDTO.getName());
             product.setPrice(productInDetailDTO.getPrice());
             product.setQuantity(productInDetailDTO.getQuantity());
@@ -108,7 +108,7 @@ public class ProductServiceImpl
     @Override
     public void edit(int id, byte[] image) {
         try {
-            Product product = getRepository().getOne(id);
+            var product = getRepository().getOne(id);
             product.setImage(image);
             product.setImageUploaded(image != null);
             getRepository().save(product);
@@ -123,7 +123,7 @@ public class ProductServiceImpl
     @Cacheable(value = "productSortableFieldsCache")
     @Override
     public List<String> getSortableFields() {
-        List<ProductSortableFields> productSortableFields = productSortableFieldsRepository.findAll();
+        var productSortableFields = productSortableFieldsRepository.findAll();
         if (productSortableFields.isEmpty()) {
             throw new NoResultException();
         }
@@ -134,8 +134,8 @@ public class ProductServiceImpl
 
     @Override
     public SavedItemsDTO<ProductInBriefDTO> searchByProductName(String name, int startPosition, String sortBy, String sortDirection) {
-        Pageable pageable = PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection));
-        Page<ProductInBriefDTO> page = ((ProductRepository) getRepository())
+        var pageable = PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection));
+        var page = ((ProductRepository) getRepository())
                                             .findAllByActiveAndNameLike(true, "%" + name + "%", pageable, getBriefDtoClass());
         if (page.isEmpty()) {
             throw new NoResultException();

@@ -14,8 +14,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 
 /* **************************************************************************
@@ -34,16 +32,16 @@ public class JwtVerificationFilter
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        String token = request.getHeader(Constants.AUTHORIZATION_HEADER_KEY);
+        var token = request.getHeader(Constants.AUTHORIZATION_HEADER_KEY);
         if (token != null
                 && !token.isBlank()
                 && token.startsWith(Constants.AUTHORIZATION_HEADER_VALUE_PREFIX)) {
-            Jws<Claims> parsedToken = Jwts.parserBuilder()
-                                            .setSigningKey(jwtSecret.getBytes())
-                                            .build()
-                                            .parseClaimsJws(token.replace(Constants.AUTHORIZATION_HEADER_VALUE_PREFIX, ""));
-            String username = parsedToken.getBody().getSubject();
-            List<SimpleGrantedAuthority> authorities = ((List<String>) parsedToken.getBody().get("rol"))
+            var parsedToken = Jwts.parserBuilder()
+                                                .setSigningKey(jwtSecret.getBytes())
+                                                .build()
+                                                .parseClaimsJws(token.replace(Constants.AUTHORIZATION_HEADER_VALUE_PREFIX, ""));
+            var username = parsedToken.getBody().getSubject();
+            var authorities = ((List<String>) parsedToken.getBody().get("rol"))
                                                             .stream()
                                                             .map(SimpleGrantedAuthority::new)
                                                             .collect(Collectors.toList());

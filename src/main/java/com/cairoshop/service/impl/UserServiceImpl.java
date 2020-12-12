@@ -44,7 +44,7 @@ public class UserServiceImpl
     @Override
     public void edit(int id, UserStatusDTO userStatusDTO) {
         try {
-            User user = getRepository().getOne(id);
+            var user = getRepository().getOne(id);
             user.setActive(userStatusDTO.isActive());
             user.setEnabled(userStatusDTO.isActive());
             getRepository().save(user);
@@ -59,8 +59,8 @@ public class UserServiceImpl
 
     @Override
     public SavedItemsDTO<UserInBriefDTO> getAll(int startPosition, String sortBy, String sortDirection) {
-        Pageable pageable = PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection));
-        Page<UserInBriefDTO> page = ((UserRepository) getRepository()).findAllCustomers(pageable);
+        var pageable = PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection));
+        var page = ((UserRepository) getRepository()).findAllCustomers(pageable);
         if (page.isEmpty()) {
             throw new NoResultException();
         }

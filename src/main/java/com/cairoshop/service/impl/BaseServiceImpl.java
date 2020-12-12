@@ -53,12 +53,14 @@ public class BaseServiceImpl<T, D, B>
     }
 
     public Sort sortFrom(String sortBy, String sortDirection) {
-        Sort sort = Sort.by(sortBy);
+        var sort = Sort.by(sortBy);
         switch (sortDirection) {
             case "DESC":
+            case "desc":
                 sort = sort.descending();
                 break;
             case "ASC":
+            case "asc":
                 sort = sort.ascending();
                 break;
             default:
@@ -73,13 +75,13 @@ public class BaseServiceImpl<T, D, B>
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         int id;
         try {
-            T entity = getEntityClass().getDeclaredConstructor().newInstance();
-            Method[] dtoMethods = detailedDto.getClass().getMethods();
-            for (Method method : dtoMethods) {
-                String methodName = method.getName();
+            var entity = getEntityClass().getDeclaredConstructor().newInstance();
+            var dtoMethods = detailedDto.getClass().getMethods();
+            for (var method : dtoMethods) {
+                var methodName = method.getName();
                 if (methodName.startsWith("get") && !methodName.equals("getClass")) {
-                    Object valueFromDto = method.invoke(detailedDto);
-                    String setterNameFromEntity = methodName.replace("get", "set");
+                    var valueFromDto = method.invoke(detailedDto);
+                    var setterNameFromEntity = methodName.replace("get", "set");
                     entity.getClass().getMethod(setterNameFromEntity, method.getReturnType()).invoke(entity, valueFromDto);
                 }
             }
@@ -100,8 +102,8 @@ public class BaseServiceImpl<T, D, B>
 
     @Override
     public SavedItemsDTO<B> getAll(int startPosition, String sortBy, String sortDirection) {
-        Pageable pageable = PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection));
-        Page<B> page = repository.findAllByActive(true, pageable, briefDtoClass);
+        var pageable = PageRequest.of(startPosition, MAX_PAGE_SIZE, sortFrom(sortBy, sortDirection));
+        var page = repository.findAllByActive(true, pageable, briefDtoClass);
         if (page.isEmpty()) {
             throw new NoResultException();
         }
@@ -112,7 +114,7 @@ public class BaseServiceImpl<T, D, B>
     @Override
     public void removeById(int id) {
         try {
-            T entity = getRepository().getOne(id);
+            var entity = getRepository().getOne(id);
             entity.getClass().getMethod("setActive", boolean.class).invoke(entity, false);
             getRepository().save(entity);
         } catch (Exception e) {

@@ -7,7 +7,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,14 +22,15 @@ import com.cairoshop.service.exceptions.NoResultException;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-class BaseProductClassificationServiceTest<T, D, B> extends BaseServiceTest<T, D, B> {
+class BaseProductClassificationServiceTest<T, D, B>
+        extends BaseServiceTest<T, D, B> {
 
     BaseProductClassificationServiceTest(Class<T> entityClass) {
         super(entityClass);
     }
 
     void testEdit_WhenDataIsValid_ThenSave(int id, D detailedDtoClass) {
-        T entity = mock(getEntityClass());
+        var entity = mock(getEntityClass());
         when(getRepository().getOne(id))
             .thenReturn(entity);
         when(getRepository().saveAndFlush(entity))
@@ -43,7 +43,7 @@ class BaseProductClassificationServiceTest<T, D, B> extends BaseServiceTest<T, D
     }
 
     void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(int id, D detailedDtoClass) {
-        T entity = mock(getEntityClass());
+        var entity = mock(getEntityClass());
         when(getRepository().getOne(id))
             .thenReturn(entity);
         when(getRepository().saveAndFlush(any(getEntityClass())))
@@ -54,11 +54,11 @@ class BaseProductClassificationServiceTest<T, D, B> extends BaseServiceTest<T, D
     }
 
     void testGetAll_WhenDataFound_ThenReturnIt(B briefDtoClass) {
-        List<B> expectedResult = List.of(briefDtoClass);
+        var expectedResult = List.of(briefDtoClass);
         when(((BaseProductClassificationRepository) getRepository()).findAllByActive(any(boolean.class), any(Class.class)))
             .thenReturn(expectedResult);
 
-        List<B> actualResult = ((BaseProductClassificationService) getService()).getAll();
+        var actualResult = ((BaseProductClassificationService) getService()).getAll();
 
         assertIterableEquals(expectedResult, actualResult);
     }
@@ -74,7 +74,7 @@ class BaseProductClassificationServiceTest<T, D, B> extends BaseServiceTest<T, D
     void testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt(int idOfObjectToDelete) {
         when(((BaseProductClassificationRepository) getRepository()).countOfAssociationsWithProduct(idOfObjectToDelete))
             .thenReturn(0L);
-        T entity = mock(getEntityClass());
+        var entity = mock(getEntityClass());
         when(getRepository().getOne(idOfObjectToDelete))
             .thenReturn(entity);
         when(getRepository().save(entity))

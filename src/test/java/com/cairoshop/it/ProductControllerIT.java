@@ -33,7 +33,8 @@ import com.cairoshop.it.models.Credentials;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-class ProductControllerIT extends BaseControllerIT {
+class ProductControllerIT
+        extends BaseControllerIT {
 
     private static final String VALID_NEW_PRODUCT_JSON = "valid_new_product.json";
     private static final String VALID_NEW_PRODUCT_FOR_UPDATE_JSON = "valid_new_product_for_update.json";

@@ -31,7 +31,8 @@ import com.cairoshop.it.models.Credentials;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-class VendorControllerIT extends BaseControllerIT {
+class VendorControllerIT
+        extends BaseControllerIT {
 
     private static final String VALID_NEW_VENDOR_JSON = "valid_new_vendor.json";
     private static final String INVALID_NEW_VENDOR_WITH_DUPLICATED_NAME_JSON = "invalid_new_vendor_with_duplicated_name.json";

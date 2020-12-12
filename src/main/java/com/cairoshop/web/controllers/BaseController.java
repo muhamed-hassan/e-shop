@@ -66,7 +66,7 @@ public class BaseController<D, B> {
         @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
-    @DeleteMapping(path = "{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         service.removeById(id);
         return ResponseEntity.noContent().build();

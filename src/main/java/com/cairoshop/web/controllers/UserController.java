@@ -41,7 +41,7 @@ public class UserController
         @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
-    @PatchMapping(path = "{id}")
+    @PatchMapping("{id}")
     public ResponseEntity<Void> changeStatus(@PathVariable int id, @RequestBody UserStatusDTO userStatusDTO) {
         ((UserService) getService()).edit(id, userStatusDTO);
         return ResponseEntity.noContent().build();

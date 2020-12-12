@@ -35,7 +35,7 @@ public class Vendor
             return true;
         if (other == null || getClass() != other.getClass())
             return false;
-        Vendor that = (Vendor) other;
+        var that = (Vendor) other;
         return Objects.equals(id, that.id);
     }
 

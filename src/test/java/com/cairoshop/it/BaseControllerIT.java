@@ -26,9 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.testcontainers.containers.MySQLContainer;
 
 import com.cairoshop.configs.security.Constants;
@@ -39,7 +37,7 @@ import com.cairoshop.it.models.Credentials;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-@SpringBootTest//(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class BaseControllerIT {
@@ -57,7 +55,7 @@ class BaseControllerIT {
     private MockMvc mockMvc;
 
     @BeforeAll
-    public static void initTestDB() {
+    static void initTestDB() {
         mySQLContainer = new MySQLContainer("mysql:8.0.20")
             .withDatabaseName("integration-tests-db")
             .withUsername("username")
@@ -68,7 +66,7 @@ class BaseControllerIT {
         System.setProperty("DB_PASSWORD", mySQLContainer.getPassword());
     }
 
-    String readJsonFrom(String responseLocation) {
+    private String readJsonFrom(String responseLocation) {
         try {
             return Files.readAllLines(pathFrom(BASE_MAPPINGS_DIR + responseLocation),
                                                 Charset.forName(StandardCharsets.UTF_8.name()))
@@ -79,23 +77,22 @@ class BaseControllerIT {
         }
     }
 
-    Path pathFrom(String location)
+    private Path pathFrom(String location)
             throws URISyntaxException {
         return Paths.get(ClassLoader.getSystemResource(location).toURI());
     }
 
-    String authenticate(Credentials credentials) throws Exception {
-        HttpHeaders headers = new HttpHeaders();
+    private String authenticate(Credentials credentials) throws Exception {
+        var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        var formData = new LinkedMultiValueMap<String, String>();
         formData.add(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY, credentials.getUsername());
         formData.add(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY, credentials.getPassword());
 
-        ResultActions resultActions = mockMvc.perform(
-                                                post(AUTHENTICATE_ENDPOINT)
-                                                    .params(formData)
-                                                    .headers(headers));
+        var resultActions = mockMvc.perform(post(AUTHENTICATE_ENDPOINT)
+                                                            .params(formData)
+                                                            .headers(headers));
 
         return resultActions.andReturn()
                                 .getResponse()
@@ -105,16 +102,15 @@ class BaseControllerIT {
 
     void testAddingDataWithValidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile)
             throws Exception {
-        String jwtToken = authenticate(credentials);
-        String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
-        HttpHeaders headers = new HttpHeaders();
+        var jwtToken = authenticate(credentials);
+        var requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
+        var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResultActions resultActions = mockMvc.perform(
-                                                post(uri)
-                                                    .content(requestBody)
-                                                    .headers(headers));
+        var resultActions = mockMvc.perform(post(uri)
+                                                            .content(requestBody)
+                                                            .headers(headers));
 
         resultActions.andExpect(status().isCreated())
                         .andExpect(header().exists("Location"));
@@ -122,17 +118,16 @@ class BaseControllerIT {
 
     void testAddingDataWithInvalidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
             throws Exception {
-        String jwtToken = authenticate(credentials);
-        String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
-        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
-        HttpHeaders headers = new HttpHeaders();
+        var jwtToken = authenticate(credentials);
+        var requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
+        var expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
+        var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResultActions resultActions = mockMvc.perform(
-                                                post(uri)
-                                                    .content(requestBody)
-                                                    .headers(headers));
+        var resultActions = mockMvc.perform(post(uri)
+                                                            .content(requestBody)
+                                                            .headers(headers));
 
         resultActions.andExpect(status().isBadRequest())
                         .andExpect(content().json(expectedErrorMsg));
@@ -140,17 +135,16 @@ class BaseControllerIT {
 
     void testAddingDataWithValidPayloadAndUnauthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
             throws Exception {
-        String jwtToken = authenticate(credentials);
-        String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
-        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
-        HttpHeaders headers = new HttpHeaders();
+        var jwtToken = authenticate(credentials);
+        var requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
+        var expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
+        var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResultActions resultActions = mockMvc.perform(
-                                                post(uri)
-                                                    .content(requestBody)
-                                                    .headers(headers));
+        var resultActions = mockMvc.perform(post(uri)
+                                                            .content(requestBody)
+                                                            .headers(headers));
 
         resultActions.andExpect(status().isForbidden())
                         .andExpect(content().json(expectedErrorMsg));
@@ -158,33 +152,31 @@ class BaseControllerIT {
 
     void testDataModificationWithValidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile)
             throws Exception {
-        String jwtToken = authenticate(credentials);
-        String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
-        HttpHeaders headers = new HttpHeaders();
+        var jwtToken = authenticate(credentials);
+        var requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
+        var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResultActions resultActions = mockMvc.perform(
-                                                patch(uri)
-                                                .content(requestBody)
-                                                .headers(headers));
+        var resultActions = mockMvc.perform(patch(uri)
+                                                            .content(requestBody)
+                                                            .headers(headers));
 
         resultActions.andExpect(status().isNoContent());
     }
 
     void testDataModificationWithInvalidPayloadAndAuthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
             throws Exception {
-        String jwtToken = authenticate(credentials);
-        String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
-        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
-        HttpHeaders headers = new HttpHeaders();
+        var jwtToken = authenticate(credentials);
+        var requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
+        var expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
+        var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResultActions resultActions = mockMvc.perform(
-                                                patch(uri)
-                                                .content(requestBody)
-                                                .headers(headers));
+        var resultActions = mockMvc.perform(patch(uri)
+                                                            .content(requestBody)
+                                                            .headers(headers));
 
         resultActions.andExpect(status().isBadRequest())
                         .andExpect(content().json(expectedErrorMsg));
@@ -192,17 +184,16 @@ class BaseControllerIT {
 
     void testDataModificationWithValidPayloadAndUnauthorizedUser(String uri, Credentials credentials, String requestBodyFile, String errorMsgFile)
             throws Exception {
-        String jwtToken = authenticate(credentials);
-        String requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
-        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
-        HttpHeaders headers = new HttpHeaders();
+        var jwtToken = authenticate(credentials);
+        var requestBody = readJsonFrom(SEED_MAPPINGS_DIR + requestBodyFile);
+        var expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
+        var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResultActions resultActions = mockMvc.perform(
-                                                patch(uri)
-                                                .content(requestBody)
-                                                .headers(headers));
+        var resultActions = mockMvc.perform(patch(uri)
+                                                            .content(requestBody)
+                                                            .headers(headers));
 
         resultActions.andExpect(status().isForbidden())
                         .andExpect(content().json(expectedErrorMsg));
@@ -210,15 +201,13 @@ class BaseControllerIT {
 
     void testDataRetrievalToReturnExistedDataUsingAuthorizedUser(String uri, Credentials credentials, String expectedResponseFile)
             throws Exception {
-        String jwtToken = authenticate(credentials);
-        String expectedResponse = readJsonFrom(EXPECTED_MAPPINGS_DIR + expectedResponseFile);
-        HttpHeaders headers = new HttpHeaders();
+        var jwtToken = authenticate(credentials);
+        var expectedResponse = readJsonFrom(EXPECTED_MAPPINGS_DIR + expectedResponseFile);
+        var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResultActions resultActions = mockMvc.perform(
-                                                get(uri)
-                                                .headers(headers));
+        var resultActions = mockMvc.perform(get(uri).headers(headers));
 
         resultActions.andExpect(status().isOk())
                         .andExpect(content().json(expectedResponse));
@@ -226,15 +215,13 @@ class BaseControllerIT {
 
     void testDataRetrievalUsingUnauthorizedUser(String uri, Credentials credentials, String errorMsgFile)
             throws Exception {
-        String jwtToken = authenticate(credentials);
-        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
-        HttpHeaders headers = new HttpHeaders();
+        var jwtToken = authenticate(credentials);
+        var expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
+        var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResultActions resultActions = mockMvc.perform(
-                                                get(uri)
-                                                .headers(headers));
+        var resultActions = mockMvc.perform(get(uri).headers(headers));
 
         resultActions.andExpect(status().isForbidden())
                         .andExpect(content().json(expectedErrorMsg));
@@ -242,15 +229,13 @@ class BaseControllerIT {
 
     void testDataRetrievalForNonExistedDataUsingAuthorizedUser(String uri, Credentials credentials, String errorMsgFile)
             throws Exception {
-        String jwtToken = authenticate(credentials);
-        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
-        HttpHeaders headers = new HttpHeaders();
+        var jwtToken = authenticate(credentials);
+        var expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
+        var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        ResultActions resultActions = mockMvc.perform(
-                                                get(uri)
-                                               .headers(headers));
+        var resultActions = mockMvc.perform(get(uri).headers(headers));
 
         resultActions.andExpect(status().isNotFound())
                         .andExpect(content().json(expectedErrorMsg));
@@ -258,27 +243,23 @@ class BaseControllerIT {
 
     void testDataRemovalOfExistingDataUsingAuthorizedUser(String uri, Credentials credentials)
             throws Exception {
-        String jwtToken = authenticate(credentials);
-        HttpHeaders headers = new HttpHeaders();
+        var jwtToken = authenticate(credentials);
+        var headers = new HttpHeaders();
         headers.setBearerAuth(jwtToken);
 
-        ResultActions resultActions = mockMvc.perform(
-                                                delete(uri)
-                                                .headers(headers));
+        var resultActions = mockMvc.perform(delete(uri).headers(headers));
 
         resultActions.andExpect(status().isNoContent());
     }
 
     void testDataRemovalUsingUnauthorizedUser(String uri, Credentials credentials, String errorMsgFile)
             throws Exception {
-        String jwtToken = authenticate(credentials);
-        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
-        HttpHeaders headers = new HttpHeaders();
+        var jwtToken = authenticate(credentials);
+        var expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
+        var headers = new HttpHeaders();
         headers.setBearerAuth(jwtToken);
 
-        ResultActions resultActions = mockMvc.perform(
-                                                delete(uri)
-                                                .headers(headers));
+        var resultActions = mockMvc.perform(delete(uri).headers(headers));
 
         resultActions.andExpect(status().isForbidden())
                         .andExpect(content().json(expectedErrorMsg));
@@ -286,14 +267,12 @@ class BaseControllerIT {
 
     void testDataRemovalOfNonExistingDataUsingAuthorizedUser(String uri, Credentials credentials, String errorMsgFile)
             throws Exception {
-        String jwtToken = authenticate(credentials);
-        String expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
-        HttpHeaders headers = new HttpHeaders();
+        var jwtToken = authenticate(credentials);
+        var expectedErrorMsg = readJsonFrom(ERRORS_MAPPINGS_DIR + errorMsgFile);
+        var headers = new HttpHeaders();
         headers.setBearerAuth(jwtToken);
 
-        ResultActions resultActions = mockMvc.perform(
-                                                delete(uri)
-                                                .headers(headers));
+        var resultActions = mockMvc.perform(delete(uri).headers(headers));
 
         resultActions.andExpect(status().isNotFound())
                         .andExpect(content().json(expectedErrorMsg));

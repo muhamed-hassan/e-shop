@@ -41,7 +41,7 @@ public class UserInBriefDTO
             return true;
         if (!(other instanceof UserInBriefDTO))
             return false;
-        UserInBriefDTO that = (UserInBriefDTO) other;
+        var that = (UserInBriefDTO) other;
         return Objects.equals(getId(), that.getId());
     }
 

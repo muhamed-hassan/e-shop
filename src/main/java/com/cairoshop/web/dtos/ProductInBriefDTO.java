@@ -30,7 +30,7 @@ public class ProductInBriefDTO
             return true;
         if (!(other instanceof ProductInBriefDTO))
             return false;
-        ProductInBriefDTO that = (ProductInBriefDTO) other;
+        var that = (ProductInBriefDTO) other;
         return Objects.equals(getId(), that.getId());
     }
 

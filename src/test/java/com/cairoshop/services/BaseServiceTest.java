@@ -22,7 +22,6 @@ import com.cairoshop.persistence.repositories.BaseRepository;
 import com.cairoshop.service.exceptions.DataIntegrityViolatedException;
 import com.cairoshop.service.exceptions.NoResultException;
 import com.cairoshop.service.impl.BaseServiceImpl;
-import com.cairoshop.web.dtos.SavedItemsDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
@@ -61,14 +60,14 @@ class BaseServiceTest<T, D, B> {
 
     void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(D detailedDto)
             throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        T entity = mock(entityClass);
-        int expectedCreatedId = 1;
+        var entity = mock(entityClass);
+        var expectedCreatedId = 1;
         when(entity.getClass().getMethod("getId").invoke(entity))
             .thenReturn(expectedCreatedId);
         when(repository.saveAndFlush(any(entityClass)))
             .thenReturn(entity);
 
-        int actualCreatedId = service.add(detailedDto);
+        var actualCreatedId = service.add(detailedDto);
 
         assertEquals(expectedCreatedId, actualCreatedId);
     }
@@ -86,16 +85,16 @@ class BaseServiceTest<T, D, B> {
         when(repository.findByIdAndActive(any(int.class), any(boolean.class)))
             .thenReturn(expectedResult);
 
-        D actualResult = service.getById(id);
+        var actualResult = service.getById(id);
 
-        for (String getter : getters) {
+        for (var getter : getters) {
             assertEquals(expectedResult.get().getClass().getMethod(getter).invoke(expectedResult.get()),
                             actualResult.getClass().getMethod(getter).invoke(actualResult));
         }
     }
 
     void testGetAllByPage_WhenDataFound_ThenReturnIt(B briefDto) {
-        Page<B> page = mock(Page.class);
+        var page = mock(Page.class);
         when(page.isEmpty())
             .thenReturn(false);
         when(page.getContent())
@@ -105,14 +104,14 @@ class BaseServiceTest<T, D, B> {
         when(repository.findAllByActive(any(boolean.class), any(Pageable.class), any(Class.class)))
             .thenReturn(page);
 
-        SavedItemsDTO<B> actualResult = service.getAll(0, "id", "ASC");
+        var actualResult = service.getAll(0, "id", "ASC");
 
         assertEquals(page.getTotalElements(), Long.valueOf(actualResult.getAllSavedItemsCount()));
         assertIterableEquals(page.getContent(), actualResult.getItems());
     }
 
     void testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException() {
-        Page<B> page = mock(Page.class);
+        var page = mock(Page.class);
         when(page.isEmpty())
             .thenReturn(true);
         when(repository.findAllByActive(any(boolean.class), any(Pageable.class), any(Class.class)))
@@ -123,7 +122,7 @@ class BaseServiceTest<T, D, B> {
     }
 
     void testRemoveById_WhenDataFound_ThenRemoveIt(int idOfObjectToDelete) {
-        T entity = mock(entityClass);
+        var entity = mock(entityClass);
         when(repository.getOne(idOfObjectToDelete))
             .thenReturn(entity);
         when(repository.save(entity))

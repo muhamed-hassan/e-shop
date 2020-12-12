@@ -31,7 +31,8 @@ import com.cairoshop.it.models.Credentials;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-class CategoryControllerIT extends BaseControllerIT {
+class CategoryControllerIT
+        extends BaseControllerIT {
 
     private static final String VALID_NEW_CATEGORY_JSON = "valid_new_category.json";
     private static final String INVALID_NEW_CATEGORY_WITH_DUPLICATED_NAME_JSON = "invalid_new_category_with_duplicated_name.json";

@@ -20,7 +20,7 @@ public class CategoryInBriefDTO
             return true;
         if (!(other instanceof CategoryInBriefDTO))
             return false;
-        CategoryInBriefDTO that = (CategoryInBriefDTO) other;
+        var that = (CategoryInBriefDTO) other;
         return Objects.equals(getId(), that.getId());
     }
 

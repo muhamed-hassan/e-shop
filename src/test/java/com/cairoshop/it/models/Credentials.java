@@ -12,7 +12,7 @@ public class Credentials {
     private String password;
 
     public static Credentials from(String username, String password) {
-        Credentials credentials = new Credentials();
+        var credentials = new Credentials();
         credentials.username = username;
         credentials.password = password;
         return credentials;

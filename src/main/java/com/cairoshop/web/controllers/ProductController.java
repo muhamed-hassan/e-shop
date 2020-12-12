@@ -54,7 +54,7 @@ public class ProductController
         @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
-    @PostMapping(path = "{id}/images")
+    @PostMapping("{id}/images")
     public ResponseEntity<Void> uploadImageOfProduct(@PathVariable int id, @NotNull @RequestParam("file") MultipartFile file)
             throws IOException {
         ((ProductService) getService()).edit(id, file.getBytes());
@@ -79,7 +79,7 @@ public class ProductController
         @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
-    @PatchMapping(path = "{id}")
+    @PatchMapping("{id}")
     public ResponseEntity<Void> update(@PathVariable int id, @Valid @RequestBody ProductInDetailDTO productInDetailDTO) {
         ((ProductService) getService()).edit(id, productInDetailDTO);
         return ResponseEntity.noContent().build();

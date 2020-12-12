@@ -40,9 +40,9 @@ public class Role {
             return true;
         if (other == null || getClass() != other.getClass())
             return false;
-        Role that = (Role) other;
+        var that = (Role) other;
         return Objects.equals(id, that.id)
-            && Objects.equals(name, that.name);
+                && Objects.equals(name, that.name);
     }
 
     @Override

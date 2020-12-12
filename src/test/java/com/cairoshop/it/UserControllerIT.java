@@ -19,7 +19,8 @@ import org.springframework.test.context.jdbc.Sql;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-class UserControllerIT extends BaseControllerIT {
+class UserControllerIT
+        extends BaseControllerIT {
 
     private static final String VALID_NEW_STATUS_OF_USER_JSON = "valid_new_status_of_user.json";
     private static final String CUSTOMER_USER_JSON = "customer_user.json";

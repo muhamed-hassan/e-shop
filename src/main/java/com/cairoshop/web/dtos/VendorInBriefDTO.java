@@ -20,7 +20,7 @@ public class VendorInBriefDTO
             return true;
         if (!(other instanceof VendorInBriefDTO))
             return false;
-        VendorInBriefDTO that = (VendorInBriefDTO) other;
+        var that = (VendorInBriefDTO) other;
         return Objects.equals(getId(), that.getId());
     }
 

@@ -2,7 +2,6 @@ package com.cairoshop.configs.security;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
@@ -51,15 +50,15 @@ public class JwtAuthenticationFilter
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        String username = request.getParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY);
-        String password = request.getParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY);
+        var username = request.getParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY);
+        var password = request.getParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY);
         return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        List<String> roles = user.getAuthorities()
+        var user = (User) authentication.getPrincipal();
+        var roles = user.getAuthorities()
                                     .stream()
                                     .map(GrantedAuthority::getAuthority)
                                     .collect(Collectors.toList());

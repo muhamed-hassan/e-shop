@@ -36,14 +36,14 @@ import com.cairoshop.service.exceptions.NoResultException;
 import com.cairoshop.service.impl.ProductServiceImpl;
 import com.cairoshop.web.dtos.ProductInBriefDTO;
 import com.cairoshop.web.dtos.ProductInDetailDTO;
-import com.cairoshop.web.dtos.SavedItemsDTO;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, ProductInBriefDTO> {
+class ProductServiceTest
+        extends BaseServiceTest<Product, ProductInDetailDTO, ProductInBriefDTO> {
 
     private VendorRepository vendorRepository;
 
@@ -56,14 +56,14 @@ class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, Pr
     }
 
     @BeforeEach
-    public void injectRefs() {
+    void injectRefs() {
         vendorRepository = mock(VendorRepository.class);
         categoryRepository = mock(CategoryRepository.class);
         productSortableFieldsRepository = mock(ProductSortableFieldsRepository.class);
-        ProductServiceImpl productService = new ProductServiceImpl(mock(ProductRepository.class),
-                                                                    vendorRepository,
-                                                                    categoryRepository,
-                                                                    productSortableFieldsRepository);
+        var productService = new ProductServiceImpl(mock(ProductRepository.class),
+                                                    vendorRepository,
+                                                    categoryRepository,
+                                                    productSortableFieldsRepository);
         injectRefs(productService);
     }
 
@@ -71,13 +71,13 @@ class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, Pr
     @Test
     void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId()
             throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        Product productEntity = mock(Product.class);
+        var productEntity = mock(Product.class);
         when(getRepository().save(any(Product.class)))
             .thenReturn(productEntity);
-        int expectedIdOfCreatedProduct = 1;
+        var expectedIdOfCreatedProduct = 1;
         when(productEntity.getId())
             .thenReturn(expectedIdOfCreatedProduct);
-        ProductInDetailDTO productInDetailDTO = ProductInDetailDTO.builder()
+        var productInDetailDTO = ProductInDetailDTO.builder()
                                                                         .name("some name")
                                                                         .price(0.5)
                                                                         .quantity(20)
@@ -87,14 +87,14 @@ class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, Pr
                                                                         .imageUploaded(false)
                                                                     .build();
 
-        int actualIdOfCreatedProduct = getService().add(productInDetailDTO);
+        var actualIdOfCreatedProduct = getService().add(productInDetailDTO);
 
         assertEquals(expectedIdOfCreatedProduct, actualIdOfCreatedProduct);
     }
 
     @Test
     void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
-        ProductInDetailDTO productInDetailDTO = ProductInDetailDTO.builder()
+        var productInDetailDTO = ProductInDetailDTO.builder()
                                                                         .name("some duplicated name")
                                                                         .price(0.5)
                                                                         .quantity(20)
@@ -112,8 +112,8 @@ class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, Pr
 
     @Test
     void testEdit_WhenDataIsValid_ThenSave() {
-        int id = 1;
-        ProductInDetailDTO productInDetailDTO = ProductInDetailDTO.builder()
+        var id = 1;
+        var productInDetailDTO = ProductInDetailDTO.builder()
                                                                         .name("some name")
                                                                         .price(0.5)
                                                                         .quantity(20)
@@ -122,13 +122,13 @@ class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, Pr
                                                                         .categoryId(1)
                                                                         .imageUploaded(false)
                                                                     .build();
-        Product productEntity = mock(Product.class);
+        var productEntity = mock(Product.class);
         when(getRepository().getOne(id))
             .thenReturn(productEntity);
-        Vendor vendorEntity = mock(Vendor.class);
+        var vendorEntity = mock(Vendor.class);
         when(vendorRepository.getOne(productInDetailDTO.getVendorId()))
             .thenReturn(vendorEntity);
-        Category categoryEntity = mock(Category.class);
+        var categoryEntity = mock(Category.class);
         when(categoryRepository.getOne(productInDetailDTO.getCategoryId()))
             .thenReturn(categoryEntity);
         when(getRepository().saveAndFlush(productEntity))
@@ -144,8 +144,8 @@ class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, Pr
 
     @Test
     void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
-        int id = 1;
-        ProductInDetailDTO productInDetailDTO = ProductInDetailDTO.builder()
+        var id = 1;
+        var productInDetailDTO = ProductInDetailDTO.builder()
                                                                        .name("some duplicated name")
                                                                        .price(0.5)
                                                                        .quantity(20)
@@ -154,13 +154,13 @@ class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, Pr
                                                                        .categoryId(1)
                                                                        .imageUploaded(false)
                                                                    .build();
-        Product productEntity = mock(Product.class);
+        var productEntity = mock(Product.class);
         when(getRepository().getOne(id))
             .thenReturn(productEntity);
-        Vendor vendorEntity = mock(Vendor.class);
+        var vendorEntity = mock(Vendor.class);
         when(vendorRepository.getOne(productInDetailDTO.getVendorId()))
             .thenReturn(vendorEntity);
-        Category categoryEntity = mock(Category.class);
+        var categoryEntity = mock(Category.class);
         when(categoryRepository.getOne(productInDetailDTO.getCategoryId()))
             .thenReturn(categoryEntity);
         when(getRepository().saveAndFlush(any(Product.class)))
@@ -172,9 +172,9 @@ class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, Pr
 
     @Test
     void testEditImage_WhenProductFound_ThenUpdateIt() {
-        byte[] uploadedImageStream = new byte[2048];
-        int idOfSavedProduct = 1;
-        Product productEntity = mock(Product.class);
+        var uploadedImageStream = new byte[2048];
+        var idOfSavedProduct = 1;
+        var productEntity = mock(Product.class);
         when(getRepository().getOne(idOfSavedProduct))
             .thenReturn(productEntity);
         when(getRepository().save(productEntity))
@@ -190,7 +190,7 @@ class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, Pr
     @Test
     void testGetById_WhenDataFound_ThenReturnIt()
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Optional<ProductInDetailDTO> productInDetailDTO = Optional.of(ProductInDetailDTO.builder()
+        var productInDetailDTO = Optional.of(ProductInDetailDTO.builder()
                                                                                             .name("some name")
                                                                                             .price(0.5)
                                                                                             .quantity(20)
@@ -199,26 +199,26 @@ class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, Pr
                                                                                             .categoryId(1)
                                                                                             .imageUploaded(false)
                                                                                         .build());
-        List<String> getters = List.of("getName", "getPrice", "getQuantity", "getDescription", "getCategoryId", "getVendorId", "isImageUploaded");
+        var getters = List.of("getName", "getPrice", "getQuantity", "getDescription", "getCategoryId", "getVendorId", "isImageUploaded");
         testGetById_WhenDataFound_ThenReturnIt(1, productInDetailDTO, getters);
     }
 
     @Test
     void testGetImage_WhenProductFound_ThenReturnItsImage() {
-        byte[] expectedImageStream = new byte[2048];
-        int idOfSavedProduct = 1;
+        var expectedImageStream = new byte[2048];
+        var idOfSavedProduct = 1;
         when(((ProductRepository) getRepository()).findImageByProductId(idOfSavedProduct))
             .thenReturn(expectedImageStream);
 
-        byte[] actualImageStream = ((ProductService) getService()).getImage(idOfSavedProduct);
+        var actualImageStream = ((ProductService) getService()).getImage(idOfSavedProduct);
 
         assertArrayEquals(expectedImageStream, actualImageStream);
     }
 
     @Test
     void testGetImage_WhenImageIsNotUploadedYet_ThenThrowNoResultException() {
-       byte[] expectedImageStream = null;
-        int idOfSavedProduct = 1;
+        byte[] expectedImageStream = null;
+        var idOfSavedProduct = 1;
         when(((ProductRepository) getRepository()).findImageByProductId(any(int.class)))
             .thenReturn(expectedImageStream);
 
@@ -228,7 +228,7 @@ class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, Pr
 
     @Test
     void testGetAllByPage_WhenDataFound_ThenReturnIt() {
-        ProductInBriefDTO productInBriefDTO = new ProductInBriefDTO(1, "IPhone X");
+        var productInBriefDTO = new ProductInBriefDTO(1, "IPhone X");
         testGetAllByPage_WhenDataFound_ThenReturnIt(productInBriefDTO);
     }
 
@@ -239,19 +239,19 @@ class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, Pr
 
     @Test
     void testSearchByProductName_WhenDataFound_ThenReturnIt() {
-        ProductInBriefDTO productInBriefDTO = new ProductInBriefDTO(1, "IPhone X");
-       Page<ProductInBriefDTO> page = mock(Page.class);
-       when(page.isEmpty())
-           .thenReturn(false);
-       when(page.getContent())
-           .thenReturn(List.of(productInBriefDTO));
-       when(page.getTotalElements())
-           .thenReturn(1L);
-       when(((ProductRepository) getRepository()).findAllByActiveAndNameLike(any(boolean.class), anyString(), any(Pageable.class), any(Class.class)))
-           .thenReturn(page);
+        var productInBriefDTO = new ProductInBriefDTO(1, "IPhone X");
+        var page = mock(Page.class);
+        when(page.isEmpty())
+            .thenReturn(false);
+        when(page.getContent())
+            .thenReturn(List.of(productInBriefDTO));
+        when(page.getTotalElements())
+            .thenReturn(1L);
+        when(((ProductRepository) getRepository()).findAllByActiveAndNameLike(any(boolean.class), anyString(), any(Pageable.class), any(Class.class)))
+            .thenReturn(page);
 
-        SavedItemsDTO<ProductInBriefDTO> actualResult = ((ProductService) getService())
-            .searchByProductName("IPhone", 0, "name", "ASC");
+        var actualResult =
+            ((ProductService) getService()).searchByProductName("IPhone", 0, "name", "ASC");
 
         assertEquals(Long.valueOf(page.getTotalElements()).intValue(), actualResult.getAllSavedItemsCount());
         assertIterableEquals(page.getContent(), actualResult.getItems());
@@ -259,25 +259,25 @@ class ProductServiceTest extends BaseServiceTest<Product, ProductInDetailDTO, Pr
 
     @Test
     void testSearchByProductName_WhenDataNotFound_ThenThrowNoResultException() {
-         Page<ProductInBriefDTO> page = mock(Page.class);
-         when(page.isEmpty())
-             .thenReturn(true);
-         when(((ProductRepository) getRepository()).findAllByActiveAndNameLike(any(boolean.class), anyString(), any(Pageable.class), any(Class.class)))
-             .thenReturn(page);
+        var page = mock(Page.class);
+        when(page.isEmpty())
+            .thenReturn(true);
+        when(((ProductRepository) getRepository()).findAllByActiveAndNameLike(any(boolean.class), anyString(), any(Pageable.class), any(Class.class)))
+            .thenReturn(page);
 
         assertThrows(NoResultException.class,
-            () -> ((ProductService) getService()).searchByProductName("XXX", 0, "name", "ASC"));
+                     () -> ((ProductService) getService()).searchByProductName("XXX", 0, "name", "ASC"));
     }
 
     @Test
     void testGetSortableFields_WhenDataFound_ThenReturnIt() {
-        List<String> expectedSortableList = List.of("name", "price", "quantity");
+        var expectedSortableList = List.of("name", "price", "quantity");
         when(productSortableFieldsRepository.findAll())
             .thenReturn(List.of(new ProductSortableFields("name"),
                                     new ProductSortableFields("price"),
                                     new ProductSortableFields("quantity")));
 
-        List<String> actualSortableList = ((ProductService) getService()).getSortableFields();
+        var actualSortableList = ((ProductService) getService()).getSortableFields();
 
         assertIterableEquals(expectedSortableList, actualSortableList);
     }

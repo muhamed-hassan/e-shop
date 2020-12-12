@@ -185,7 +185,7 @@ public class Product
         }
 
         public Product build() {
-            Product product = new Product();
+            var product = new Product();
             product.setId(id);
             product.setName(name);
             product.setPrice(price);
@@ -206,7 +206,7 @@ public class Product
             return true;
         if (other == null || getClass() != other.getClass())
             return false;
-        Product that = (Product) other;
+        var that = (Product) other;
         return Objects.equals(id, that.id);
     }
 

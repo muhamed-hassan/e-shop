@@ -35,7 +35,7 @@ public class Category
             return true;
         if (other == null || getClass() != other.getClass())
             return false;
-        Category that = (Category) other;
+        var that = (Category) other;
         return Objects.equals(id, that.id);
     }
 

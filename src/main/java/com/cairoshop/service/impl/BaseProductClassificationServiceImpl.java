@@ -29,8 +29,8 @@ public class BaseProductClassificationServiceImpl<T, D, B>
     @Override
     public void edit(int id, D detailedDto) {
         try {
-            String name = (String) detailedDto.getClass().getMethod("getName").invoke(detailedDto);
-            T entity = getRepository().getOne(id);
+            var name = (String) detailedDto.getClass().getMethod("getName").invoke(detailedDto);
+            var entity = getRepository().getOne(id);
             entity.getClass().getMethod("setName", String.class).invoke(entity, name);
             getRepository().saveAndFlush(entity);
         } catch (DataIntegrityViolationException dive) {
@@ -45,7 +45,7 @@ public class BaseProductClassificationServiceImpl<T, D, B>
 
     @Override
     public List<B> getAll() {
-        List<B> result = ((BaseProductClassificationRepository) getRepository()).findAllByActive(true, getBriefDtoClass());
+        var result = ((BaseProductClassificationRepository) getRepository()).findAllByActive(true, getBriefDtoClass());
         if (result.isEmpty()) {
             throw new NoResultException();
         }
@@ -55,7 +55,7 @@ public class BaseProductClassificationServiceImpl<T, D, B>
     @Transactional
     @Override
     public void removeById(int id) {
-        boolean notSafeToDelete = ((BaseProductClassificationRepository) getRepository()).countOfAssociationsWithProduct(id) > 0L;
+        var notSafeToDelete = ((BaseProductClassificationRepository) getRepository()).countOfAssociationsWithProduct(id) > 0L;
         if (notSafeToDelete) {
             throw new IllegalArgumentException("Can not delete this item because it is associated with an active product");
         }

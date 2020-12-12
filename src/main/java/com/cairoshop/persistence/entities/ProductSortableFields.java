@@ -38,7 +38,7 @@ public class ProductSortableFields {
             return true;
         if (other == null || getClass() != other.getClass())
             return false;
-        ProductSortableFields that = (ProductSortableFields) other;
+        var that = (ProductSortableFields) other;
         return Objects.equals(name, that.name);
     }
 

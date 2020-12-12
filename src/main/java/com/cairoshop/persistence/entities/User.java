@@ -172,7 +172,7 @@ public class User
             return true;
         if (other == null || getClass() != other.getClass())
             return false;
-        User that = (User) other;
+        var that = (User) other;
         return Objects.equals(id, that.id);
     }
 

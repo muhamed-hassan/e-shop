@@ -50,7 +50,7 @@ public class BaseProductClassificationController<D, B>
         @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server error"),
         @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized")
     })
-    @PatchMapping(path = "{id}")
+    @PatchMapping("{id}")
     public ResponseEntity<Void> edit(@PathVariable int id, @Valid @RequestBody D detailedDto) {
         ((BaseProductClassificationService) getService()).edit(id, detailedDto);
         return ResponseEntity.noContent().build();
