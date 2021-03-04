@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: 'jdbc:mysql://localhost:3306/cairoshop'
+    username: root
+    password: root
+  cache:
+    jcache:
+      config: 'classpath:ehcache.xml'
+

@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: cairoshop-api
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  liquibase:
+    change-log: 'classpath:/db/changelog/changelog-master.xml'
+  servlet:
+    multipart:
+      max-file-size: 190MB
+      max-request-size: 200MB
+
+jwt:
+  secret: 'QiiKLh_g0-CmQlx-foyJ0HA_Qnqk5hB5deXTiFCnLzs3NLSwjGzazVOiWEZvB3sCxyQiR2IQJcl5PAqfxzzF-69E18tozdtDXVKChEqT4gTIv66WGKGrfR_anOayiKoZ139CZ_RL0mv9bYYE18J0EdttknsNTR9s7ONc4DNs8Nc'
+  expiration: 86400000
