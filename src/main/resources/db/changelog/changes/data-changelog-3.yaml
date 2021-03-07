@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 7
+      author: admin
+      changes:
+        - sql:
+            sql: UPDATE `product` SET `image_uploaded` = true WHERE `image` IS NOT NULL;
+                  UPDATE `product` SET `image_uploaded` = false WHERE `image` IS NULL;

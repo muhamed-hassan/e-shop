@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: adding_initial_schema
+      id: 1
       author: admin
       changes:
         - createTable:
@@ -17,11 +17,10 @@ databaseChangeLog:
                     nullable: false
                     unique: true
                   name: name
-                  type: VARCHAR(150)
+                  type: varchar(150)
               - column:
                   constraints:
                     nullable: false
-                    unique: true
                   name: active
                   type: bit(1)
                   defaultValue: true
@@ -40,11 +39,10 @@ databaseChangeLog:
                     nullable: false
                     unique: true
                   name: name
-                  type: VARCHAR(150)
+                  type: varchar(150)
               - column:
                   constraints:
                     nullable: false
-                    unique: true
                   name: active
                   type: bit(1)
                   defaultValue: true
@@ -63,7 +61,7 @@ databaseChangeLog:
                     nullable: false
                     unique: true
                   name: name
-                  type: VARCHAR(150)
+                  type: varchar(150)
             tableName: role
         - createTable:
             columns:
@@ -78,36 +76,35 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                   name: name
-                  type: VARCHAR(150)
+                  type: varchar(150)
               - column:
                   constraints:
                     nullable: false
                     unique: true
                   name: user_name
-                  type: VARCHAR(150)
+                  type: varchar(150)
               - column:
                   constraints:
                     nullable: false
                   name: password
-                  type: VARCHAR(150)
+                  type: varchar(150)
               - column:
                   name: address
-                  type: VARCHAR(500)
+                  type: varchar(500)
               - column:
                   constraints:
                     unique: true
                   name: phone
-                  type: VARCHAR(45)
+                  type: varchar(45)
               - column:
                   constraints:
                     nullable: false
                     unique: true
                   name: email
-                  type: VARCHAR(150)
+                  type: varchar(150)
               - column:
                   constraints:
                     nullable: false
-                    unique: true
                   name: active
                   type: bit(1)
                   defaultValue: true
@@ -116,6 +113,7 @@ databaseChangeLog:
                     nullable: false
                   name: role
                   type: int
+                  defaultValue: 1
             tableName: user
         - addForeignKeyConstraint:
             baseColumnNames: role
@@ -123,3 +121,64 @@ databaseChangeLog:
             constraintName: role_fk
             referencedColumnNames: id
             referencedTableName: role
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  startWith: 1
+              - column:
+                  constraints:
+                    nullable: false
+                    unique: true
+                  name: name
+                  type: varchar(150)
+              - column:
+                  name: image
+                  type: mediumblob
+              - column:
+                  constraints:
+                    nullable: false
+                  name: price
+                  type: double
+              - column:
+                  constraints:
+                    nullable: false
+                  name: quantity
+                  type: int
+              - column:
+                  name: description
+                  type: varchar(1000)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: active
+                  type: bit(1)
+                  defaultValue: true
+              - column:
+                  constraints:
+                    nullable: false
+                  name: vendor
+                  type: int
+              - column:
+                  constraints:
+                    nullable: false
+                  name: category
+                  type: int
+            tableName: product
+        - addForeignKeyConstraint:
+            baseColumnNames: vendor
+            baseTableName: product
+            constraintName: vendor_fk
+            referencedColumnNames: id
+            referencedTableName: vendor
+        - addForeignKeyConstraint:
+            baseColumnNames: category
+            baseTableName: product
+            constraintName: category_fk
+            referencedColumnNames: id
+            referencedTableName: category
+

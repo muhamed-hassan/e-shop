@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: adding_data_to_product_sortable_fields_table
+      author: admin
+      changes:
+        - sql:
+            sql: INSERT INTO `product_sortable_fields` VALUES ('name'), ('price'), ('quantity');

@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: admin
+      changes:
+        - addColumn:
+            tableName: user
+            columns:
+              name: version
+              type: int
+              defaultValue: 0
+        - addNotNullConstraint:
+            columnDataType:  int
+            columnName: version
+            tableName: user
+        - addColumn:
+            tableName: vendor
+            columns:
+              name: version
+              type: int
+              defaultValue: 0
+        - addNotNullConstraint:
+            columnDataType: int
+            columnName: version
+            tableName: vendor
+        - addColumn:
+            tableName: category
+            columns:
+              name: version
+              type: int
+              defaultValue: 0
+        - addNotNullConstraint:
+            columnDataType: int
+            columnName: version
+            tableName: category
+        - addColumn:
+            tableName: product
+            columns:
+              name: version
+              type: int
+              defaultValue: 0
+        - addNotNullConstraint:
+            columnDataType: int
+            columnName: version
+            tableName: product

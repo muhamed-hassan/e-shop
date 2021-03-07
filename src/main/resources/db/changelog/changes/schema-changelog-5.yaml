@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: adding_product_sortable_fields_table
+      author: admin
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: name
+                  type: varchar(150)
+            tableName: product_sortable_fields

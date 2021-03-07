@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: admin
+      changes:
+        - addColumn:
+            tableName: user
+            columns:
+              name: account_non_expired
+              type: bit(1)
+              defaultValue: true
+        - addNotNullConstraint:
+            columnDataType:  bit(1)
+            columnName: account_non_expired
+            tableName: user
+        - addColumn:
+            tableName: user
+            columns:
+              name: account_non_locked
+              type: bit(1)
+              defaultValue: true
+        - addNotNullConstraint:
+            columnDataType: bit(1)
+            columnName: account_non_locked
+            tableName: user
+        - addColumn:
+            tableName: user
+            columns:
+              name: credentials_non_expired
+              type: bit(1)
+              defaultValue: true
+        - addNotNullConstraint:
+            columnDataType: bit(1)
+            columnName: credentials_non_expired
+            tableName: user
+        - addColumn:
+            tableName: user
+            columns:
+              name: enabled
+              type: bit(1)
+              defaultValue: true
+        - addNotNullConstraint:
+            columnDataType: bit(1)
+            columnName: enabled
+            tableName: user

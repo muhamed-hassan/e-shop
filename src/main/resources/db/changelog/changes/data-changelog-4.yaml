@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 7
+      author: admin
+      changes:
+        - sql:
+            sql: UPDATE `role` SET `name` = 'ROLE_ADMIN' WHERE `name` = 'Admin';
+                  UPDATE `role` SET `name` = 'ROLE_CUSTOMER' WHERE `name` = 'Customer';

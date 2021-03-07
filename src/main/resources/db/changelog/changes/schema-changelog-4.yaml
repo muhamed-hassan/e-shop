@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 6
+      author: admin
+      changes:
+        - addColumn:
+            tableName: product
+            columns:
+              name: image_uploaded
+              type: bit(1)
+        - addNotNullConstraint:
+            columnDataType:  bit(1)
+            columnName: image_uploaded
+            tableName: product
