@@ -1,0 +1,125 @@
+databaseChangeLog:
+  - changeSet:
+      id: adding_initial_schema
+      author: admin
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  startWith: 1
+              - column:
+                  constraints:
+                    nullable: false
+                    unique: true
+                  name: name
+                  type: VARCHAR(150)
+              - column:
+                  constraints:
+                    nullable: false
+                    unique: true
+                  name: active
+                  type: bit(1)
+                  defaultValue: true
+            tableName: category
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  startWith: 1
+              - column:
+                  constraints:
+                    nullable: false
+                    unique: true
+                  name: name
+                  type: VARCHAR(150)
+              - column:
+                  constraints:
+                    nullable: false
+                    unique: true
+                  name: active
+                  type: bit(1)
+                  defaultValue: true
+            tableName: vendor
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  startWith: 1
+              - column:
+                  constraints:
+                    nullable: false
+                    unique: true
+                  name: name
+                  type: VARCHAR(150)
+            tableName: role
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  startWith: 1
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(150)
+              - column:
+                  constraints:
+                    nullable: false
+                    unique: true
+                  name: user_name
+                  type: VARCHAR(150)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: password
+                  type: VARCHAR(150)
+              - column:
+                  name: address
+                  type: VARCHAR(500)
+              - column:
+                  constraints:
+                    unique: true
+                  name: phone
+                  type: VARCHAR(45)
+              - column:
+                  constraints:
+                    nullable: false
+                    unique: true
+                  name: email
+                  type: VARCHAR(150)
+              - column:
+                  constraints:
+                    nullable: false
+                    unique: true
+                  name: active
+                  type: bit(1)
+                  defaultValue: true
+              - column:
+                  constraints:
+                    nullable: false
+                  name: role
+                  type: int
+            tableName: user
+        - addForeignKeyConstraint:
+            baseColumnNames: role
+            baseTableName: user
+            constraintName: role_fk
+            referencedColumnNames: id
+            referencedTableName: role

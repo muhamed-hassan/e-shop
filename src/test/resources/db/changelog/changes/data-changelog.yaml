@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: adding_users
+      author: admin
+      changes:
+        - sql:
+            sql: INSERT INTO `role` VALUES (1, 'ROLE_CUSTOMER'), (2, 'ROLE_ADMIN');
+
+                  INSERT INTO `user` (`user_name`, `name`, `password`, `address`, `phone`, `email`, `role`, `account_non_expired`, `account_non_locked`,
+                                      `credentials_non_expired`, `enabled`) VALUES
+                  ('admin', 'Administrator', '$2a$10$2hR3NKUBY6C5FtmH7.cqlOwL8ci9mDB5vbWCVDIB3w/6OTNxMz7Zm', NULL, NULL, 'admin@local.com',
+                                        2, true, true, true, true),
+                  ('demo', 'Demo Customer', '$2a$10$2hR3NKUBY6C5FtmH7.cqlOwL8ci9mDB5vbWCVDIB3w/6OTNxMz7Zm', 'Cairo', '0112233', 'demo@local.com',
+                                        1, true, true, true, true);
+
+                  INSERT INTO `product_sortable_fields` VALUES ('name'), ('price'), ('quantity');
