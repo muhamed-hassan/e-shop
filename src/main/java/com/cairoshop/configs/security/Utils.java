@@ -1,13 +1,13 @@
 package com.cairoshop.configs.security;
 
-import static com.cairoshop.configs.Constants.ERROR_KEY;
-
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+
+import com.cairoshop.configs.Error;
 
 /* **************************************************************************
  * Developed by : Muhamed Hassan                                            *
@@ -21,7 +21,7 @@ public class Utils {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(httpStatus);
         var writer = response.getWriter();
-        writer.write(new StringBuilder("{\"").append(ERROR_KEY).append("\":\"").append(message).append("\"}").toString());
+        writer.write(new Error(message).toJson());
         writer.flush();
     }
 

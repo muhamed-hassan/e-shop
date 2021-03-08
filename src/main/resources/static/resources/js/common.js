@@ -60,7 +60,16 @@ function getItems(itemAction, requestUrl) {
             showDataNotFound();
         }                     
     }).fail(function (jqXHR, textStatus, errorThrown) {
-        showMessage('Failed to fetch data', 'danger');
+        let msg;
+        let msgLevel;
+        if (jqXHR.status === 404) {
+            msg = 'No data found !';
+            msgLevel = 'warning';
+        } else {
+            msg = 'Failed to fetch data';
+            msgLevel = 'danger';
+        }
+        showMessage(msg, msgLevel);
     }).always(function() {
         removePreloader();        
     });

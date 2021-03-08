@@ -1,8 +1,5 @@
 package com.cairoshop.web.exceptions;
 
-import static com.cairoshop.configs.Constants.ERROR_KEY;
-
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
@@ -28,22 +25,22 @@ import com.cairoshop.service.exceptions.NoResultException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleNoResultException(NoResultException exception) {
+    public ResponseEntity<Error> handleNoResultException(NoResultException exception) {
         return responseFrom(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException exception) {
+    public ResponseEntity<Error> handleIllegalArgumentException(IllegalArgumentException exception) {
         return responseFrom(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
     @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleDataIntegrityViolatedException(DataIntegrityViolatedException exception) {
+    public ResponseEntity<Error> handleDataIntegrityViolatedException(DataIntegrityViolatedException exception) {
         return responseFrom(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
     @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleConstraintViolationException(ConstraintViolationException exception) {
+    public ResponseEntity<Error> handleConstraintViolationException(ConstraintViolationException exception) {
         var message = exception.getConstraintViolations()
                                         .stream()
                                         .map(ConstraintViolation::getMessage)
@@ -52,7 +49,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<Error> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         var message = exception.getBindingResult()
                                         .getAllErrors()
                                         .stream()
@@ -62,19 +59,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleAccessDeniedException(AccessDeniedException exception) {
+    public ResponseEntity<Error> handleAccessDeniedException(AccessDeniedException exception) {
         return responseFrom(HttpStatus.FORBIDDEN, exception.getMessage());
     }
 
     @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleGeneralException(Exception exception) {
+    public ResponseEntity<Error> handleGeneralException(Exception exception) {
         var message = exception.getMessage() == null ? "Unable to process this request." : exception.getMessage();
         return responseFrom(HttpStatus.INTERNAL_SERVER_ERROR, message);
     }
 
-    private ResponseEntity<Map<String, String>> responseFrom(HttpStatus httpStatus, String message) {
+    private ResponseEntity<Error> responseFrom(HttpStatus httpStatus, String message) {
         return ResponseEntity.status(httpStatus)
-                             .body(Map.of(ERROR_KEY, message));
+                             .body(new Error(message));
     }
 
 }

@@ -5,10 +5,20 @@ package com.cairoshop.configs;
  * LinkedIn     : https://www.linkedin.com/in/muhamed-hassan/               *
  * GitHub       : https://github.com/muhamed-hassan                         *
  * ************************************************************************ */
-public final class Constants {
+public final class Error {
 
-    private Constants() {}
+    private final String message;
 
-    public static final int MAX_PAGE_SIZE = 9;
+    public Error(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String toJson() {
+        return new StringBuilder("{\"message").append("\":\"").append(message).append("\"}").toString();
+    }
 
 }
