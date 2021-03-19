@@ -46,7 +46,7 @@ public class SecurityConfig
         http.csrf().disable()
             .authorizeRequests()
             .antMatchers("/", "/resources/**", "/products/images/*").permitAll()
-            .antMatchers("/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs").permitAll()
+            .antMatchers("/swagger-ui/**", "/webjars/**", "/swagger-resources/**", "/v2/api-docs").permitAll()
             .antMatchers("/authenticate").permitAll()
             .anyRequest().authenticated()
             .and()

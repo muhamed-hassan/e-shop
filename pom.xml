@@ -18,8 +18,7 @@
   <properties>
     <java.version>11</java.version>
     <liquibase-core.version>4.3.1</liquibase-core.version>
-    <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
-    <springfox-swagger2-ui.version>2.9.2</springfox-swagger2-ui.version>
+    <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
     <jsonwebtoken.version>0.11.1</jsonwebtoken.version>
     <testcontainers.mysql.version>1.14.3</testcontainers.mysql.version>
     <ehcache.version>3.7.1</ehcache.version>
@@ -43,13 +42,8 @@
 
     <dependency>
       <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger2</artifactId>
-      <version>${springfox-swagger2.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger-ui</artifactId>
-      <version>${springfox-swagger2-ui.version}</version>
+      <artifactId>springfox-boot-starter</artifactId>
+      <version>${springfox-boot-starter.version}</version>
     </dependency>
 
     <dependency>
