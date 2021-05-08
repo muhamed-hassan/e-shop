@@ -29,18 +29,16 @@ class UserControllerIT
     @Sql(scripts = "classpath:db/scripts/new_user.sql", executionPhase = BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:db/scripts/remove_test_user.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testEdit_WhenPayloadIsValid_ThenReturn204()
-            throws Exception {
-        testDataModificationWithValidPayloadAndAuthorizedUser(
+    void shouldEditWhenUserPayloadIsValid() throws Exception {
+        shouldEditAndReturnStatus204WhenPayloadIsValidAndUserIsAuthorized(
             format(EDIT_USER, 3),
             ADMIN,
             VALID_NEW_STATUS_OF_USER_JSON);
     }
 
     @Test
-    void testEdit_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
-            throws Exception {
-        testDataModificationWithValidPayloadAndUnauthorizedUser(
+    void shouldFailEditWhenUserIsUnauthorized() throws Exception {
+        shouldFailEditAndReturnStatus402WithErrMsgWhenPayloadIsValidAndUserIsUnauthorized(
             format(EDIT_USER, 3),
             CUSTOMER,
             VALID_NEW_STATUS_OF_USER_JSON,
@@ -50,18 +48,16 @@ class UserControllerIT
     @Sql(scripts = "classpath:db/scripts/new_user.sql", executionPhase = BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:db/scripts/remove_test_user.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testGetById_WhenDataFound_ThenReturn200AndData()
-            throws Exception {
-        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
+    void shouldReturnUserQueriedByIdWhenDataFound() throws Exception {
+        shouldReturnStatus200WithDataWhenItsFoundAndUserIsAuthorized(
             format(GET_USER_BY_ID, 3),
             ADMIN,
             CUSTOMER_USER_JSON);
     }
 
     @Test
-    void testGetById_WhenDataNotFound_ThenReturn404WithErrorMsg()
-            throws Exception {
-        testDataRetrievalForNonExistedDataUsingAuthorizedUser(
+    void shouldFailRetrievalWhenUserQueriedByIdAndDataNotFound() throws Exception {
+        shouldReturnStatus404WithErrMsgWhenDataNotFoundAndUserIsAuthorized(
             format(GET_USER_BY_ID, 404),
             ADMIN,
             NO_DATA_FOUND_JSON);
@@ -70,18 +66,16 @@ class UserControllerIT
     @Sql(scripts = "classpath:db/scripts/users.sql", executionPhase = BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:db/scripts/remove_test_user.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testGetAllItemsByPagination_WhenDataExists_ThenReturn200WithData()
-            throws Exception {
-        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
+    void shouldReturnUsersQueriedByPageWhenDataFound() throws Exception {
+        shouldReturnStatus200WithDataWhenItsFoundAndUserIsAuthorized(
             format(GET_USERS_BY_PAGINATION, 0),
             ADMIN,
             ALL_USERS_JSON);
     }
 
     @Test
-    void testGetAllItemsByPagination_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
-            throws Exception {
-        testDataRetrievalUsingUnauthorizedUser(
+    void shouldFailRetrievalWhenUsersQueriedByPageAndUserIsUnauthorized() throws Exception {
+        shouldReturnStatus403WithErrMsgWhenUserIsUnauthorized(
             format(GET_USERS_BY_PAGINATION, 0),
             CUSTOMER,
             ACCESS_DENIED_JSON);

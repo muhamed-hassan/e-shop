@@ -29,73 +29,64 @@ class VendorServiceTest
 
     @BeforeEach
     void injectRefs() {
-        var vendorService = new VendorServiceImpl(mock(VendorRepository.class));
-        injectRefs(vendorService);
+        injectRefs(new VendorServiceImpl(mock(VendorRepository.class)));
     }
 
     @Test
-    void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId()
+    void shouldCreateVendorAndReturnItsIdWhenDataIsValid()
             throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        var vendorInDetailDTO = new VendorInDetailDTO("Sony");
-        testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(vendorInDetailDTO);
+        shouldSaveAndReturnNewIdWhenDataIsValid(new VendorInDetailDTO("Sony"));
     }
 
     @Test
-    void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
-        var vendorInDetailDTO = new VendorInDetailDTO("Sony");
-        testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(vendorInDetailDTO);
+    void shouldThrowDataIntegrityViolatedExceptionWhenDbConstraintViolatedOnVendorCreation() {
+        shouldThrowDataIntegrityViolatedExceptionWhenDbConstraintViolatedOnItemCreation(new VendorInDetailDTO("Sony"));
     }
 
     @Test
-    void testEdit_WhenDataIsValid_ThenSave() {
-        var vendorInDetailDTO = new VendorInDetailDTO("Toshiba");
-        testEdit_WhenDataIsValid_ThenSave(1, vendorInDetailDTO);
+    void shouldUpdateVendorWhenItsDataIsValid() {
+        shouldUpdateItemWhenItsDataIsValid(1, new VendorInDetailDTO("Toshiba"));
     }
 
     @Test
-    void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
-        var vendorInDetailDTO = new VendorInDetailDTO("Sony");
-        testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(1, vendorInDetailDTO);
+    void shouldThrowDataIntegrityViolatedExceptionWhenDbConstraintViolatedOnVendorEditing() {
+        shouldThrowDataIntegrityViolatedExceptionWhenDbConstraintViolatedOnItemEditing(1, new VendorInDetailDTO("Sony"));
     }
 
     @Test
-    void testGetById_WhenDataFound_ThenReturnIt()
+    void shouldReturnVendorQueriedByIdWhenItsFound()
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        var vendorInDetailDTO = Optional.of(new VendorInDetailDTO("Toshiba"));
-        testGetById_WhenDataFound_ThenReturnIt(1, vendorInDetailDTO, List.of("getName"));
+        shouldReturnSingleItemWhenItsDataFound(1, Optional.of(new VendorInDetailDTO("Toshiba")), List.of("getName"));
     }
 
     @Test
-    void testGetAllByPage_WhenDataFound_ThenReturnIt() {
-        var vendorInBriefDTO = new VendorInBriefDTO(1, "Toshiba");
-        testGetAllByPage_WhenDataFound_ThenReturnIt(vendorInBriefDTO);
+    void shouldReturnPageOfVendorsWhenItsDataFound() {
+        shouldReturnPageWhenItsDataFound(new VendorInBriefDTO(1, "Toshiba"));
     }
 
     @Test
-    void testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException() {
-        super.testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException();
+    void shouldThrowNoResultExceptionWhenPageOfVendorsNotFound() {
+        super.shouldThrowNoResultExceptionWhenDataOfPageNotFound();
     }
 
     @Test
-    void testGetAll_WhenDataFound_ThenReturnIt() {
-        var vendorInBriefDTO = new VendorInBriefDTO(1, "Toshiba");
-        testGetAll_WhenDataFound_ThenReturnIt(vendorInBriefDTO);
+    void shouldReturnAllVendorsWhenTheyAreFound() {
+        shouldReturnAllDataWhenTheyAreFound(new VendorInBriefDTO(1, "Toshiba"));
     }
 
     @Test
-    void testGetAll_WhenDataNotFound_ThenThrowNoResultException() {
-        super.testGetAll_WhenDataNotFound_ThenThrowNoResultException();
-    }
-
-
-    @Test
-    void testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt() {
-        super.testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt(1);
+    void shouldThrowNoResultExceptionWhenAllVendorsNotFound() {
+        super.shouldThrowNoResultExceptionWhenAllDataNotFound();
     }
 
     @Test
-    void testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException() {
-        super.testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException(2);
+    void shouldRemoveVendorWhenItsDataIsNotAssociatedWithProduct() {
+        super.shouldRemoveItemWhenItsDataIsNotAssociatedWithProduct(1);
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionWhenVendorIsAssociatedWithProduct() {
+        super.shouldThrowIllegalArgumentExceptionWhenItsDataIsAssociatedWithProduct(2);
     }
 
 }

@@ -45,9 +45,8 @@ class CategoryControllerIT
 
     @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testAdd_WhenPayloadIsValid_ThenSaveItAndReturn201WithItsLocation()
-            throws Exception {
-        testAddingDataWithValidPayloadAndAuthorizedUser(
+    void shouldAddWhenCategoryPayloadIsValid() throws Exception {
+        shouldAddAndReturnStatus201AndLocationOfCreatedItemWhenPayloadIsValidAndUserIsAuthorized(
             ADD_NEW_CATEGORY,
             ADMIN,
             VALID_NEW_CATEGORY_JSON);
@@ -56,30 +55,20 @@ class CategoryControllerIT
     @Sql(scripts = "classpath:db/scripts/new_category.sql", executionPhase = BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testAdd_WhenCategoryNameIsDuplicated_ThenReturn400WithErrorMsg()
-            throws Exception {
-        testAddingDataWithInvalidPayloadAndAuthorizedUser(ADD_NEW_CATEGORY, ADMIN,
+    void shouldFailAddWhenCategoryNameIsDuplicated() throws Exception {
+        shouldFailAddAndReturnStatus400WithErrMsgWhenPayloadIsInvalidAndUserIsAuthorized(ADD_NEW_CATEGORY, ADMIN,
             INVALID_NEW_CATEGORY_WITH_DUPLICATED_NAME_JSON, DB_VIOLATED_CONSTRAINTS_JSON);
     }
 
     @ParameterizedTest
-    @MethodSource("provideArgsForTestAddWithInvalidPayload")
-    void testAdd_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile)
-            throws Exception {
-        testAddingDataWithInvalidPayloadAndAuthorizedUser(ADD_NEW_CATEGORY, ADMIN, requestBodyFile, errorMsgFile);
-    }
-
-    private static Stream<Arguments> provideArgsForTestAddWithInvalidPayload() {
-        return Stream.of(
-            Arguments.of(INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_NAME_VALUE_JSON, NAME_IS_REQUIRED_JSON),
-            Arguments.of(INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_PAYLOAD_JSON, NAME_IS_REQUIRED_JSON)
-        );
+    @MethodSource("provideArgsWhenCategoryPayloadIsInvalid")
+    void shouldFailAddWhenCategoryPayloadIsInvalid(String requestBodyFile, String errorMsgFile) throws Exception {
+        shouldFailAddAndReturnStatus400WithErrMsgWhenPayloadIsInvalidAndUserIsAuthorized(ADD_NEW_CATEGORY, ADMIN, requestBodyFile, errorMsgFile);
     }
 
     @Test
-    void testAdd_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
-            throws Exception {
-        testAddingDataWithValidPayloadAndUnauthorizedUser(
+    void shouldFailAddWhenUserIsUnauthorized() throws Exception {
+        shouldFailAddAndReturnStatus403WithErrMsgWhenPayloadIsValidAndUserIsUnauthorized(
             ADD_NEW_CATEGORY,
             CUSTOMER,
             VALID_NEW_CATEGORY_JSON,
@@ -89,9 +78,8 @@ class CategoryControllerIT
     @Sql(scripts = "classpath:db/scripts/categories.sql", executionPhase = BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testEdit_WhenPayloadIsValid_ThenReturn204()
-            throws Exception {
-        testDataModificationWithValidPayloadAndAuthorizedUser(
+    void shouldEditWhenCategoryPayloadIsValid() throws Exception {
+        shouldEditAndReturnStatus204WhenPayloadIsValidAndUserIsAuthorized(
             format(EDIT_CATEGORY, 1),
             ADMIN,
             VALID_NEW_CATEGORY_FOR_UPDATE_JSON);
@@ -100,36 +88,26 @@ class CategoryControllerIT
     @Sql(scripts = "classpath:db/scripts/categories.sql", executionPhase = BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testEdit_WhenCategoryNameIsDuplicated_ThenReturn400WithErrorMsg()
-            throws Exception {
-        testDataModificationWithInvalidPayloadAndAuthorizedUser(
+    void shouldFailEditWhenCategoryNameIsDuplicated() throws Exception {
+        shouldFailEditAndReturnStatus400WithErrMsgWhenPayloadIsInvalidAndUserIsAuthorized(
             format(EDIT_CATEGORY, 2),
             ADMIN,
             INVALID_NEW_CATEGORY_WITH_DUPLICATED_NAME_JSON, DB_VIOLATED_CONSTRAINTS_JSON);
     }
 
     @ParameterizedTest
-    @MethodSource("provideArgsForTestEditWithInvalidPayload")
-    void testEdit_WhenPayloadIsInvalid_ThenReturn400WithErrorMsg(String requestBodyFile, String errorMsgFile)
-            throws Exception {
-        testDataModificationWithInvalidPayloadAndAuthorizedUser(
+    @MethodSource("provideArgsWhenCategoryPayloadIsInvalid")
+    void shouldFailEditWhenCategoryPayloadIsInvalid(String requestBodyFile, String errorMsgFile) throws Exception {
+        shouldFailEditAndReturnStatus400WithErrMsgWhenPayloadIsInvalidAndUserIsAuthorized(
             format(EDIT_CATEGORY, 2),
             ADMIN,
             requestBodyFile,
             errorMsgFile);
     }
 
-    private static Stream<Arguments> provideArgsForTestEditWithInvalidPayload() {
-        return Stream.of(
-            Arguments.of(INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_NAME_VALUE_JSON, NAME_IS_REQUIRED_JSON),
-            Arguments.of(INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_PAYLOAD_JSON, NAME_IS_REQUIRED_JSON)
-        );
-    }
-
     @Test
-    void testEdit_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
-            throws Exception {
-        testDataModificationWithValidPayloadAndUnauthorizedUser(
+    void shouldFailEditWhenUserIsUnauthorized() throws Exception {
+        shouldFailEditAndReturnStatus402WithErrMsgWhenPayloadIsValidAndUserIsUnauthorized(
             format(EDIT_CATEGORY, 2),
             CUSTOMER,
             VALID_NEW_CATEGORY_JSON,
@@ -139,63 +117,44 @@ class CategoryControllerIT
     @Sql(scripts = "classpath:db/scripts/categories.sql", executionPhase = BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
     @ParameterizedTest
-    @MethodSource("provideArgsForTestGetByIdWhenDataFound")
-    void testGetById_WhenDataFound_ThenReturn200AndData(Credentials credentials)
-            throws Exception {
-        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
+    @MethodSource("provideArgsOfUsers")
+    void shouldReturnCategoryQueriedByIdWhenDataFound(Credentials credentials) throws Exception {
+        shouldReturnStatus200WithDataWhenItsFoundAndUserIsAuthorized(
             format(GET_CATEGORY_BY_ID, 1),
             credentials,
             LAPTOPS_CATEGORY_JSON);
     }
 
-    private static Stream<Arguments> provideArgsForTestGetByIdWhenDataFound() {
-        return Stream.of(
-            Arguments.of(ADMIN),
-            Arguments.of(CUSTOMER)
-        );
-    }
-
     @ParameterizedTest
-    @MethodSource("provideArgsForTestGetByIdWhenDataNotFound")
-    void testGetById_WhenDataNotFound_ThenReturn404WithErrorMsg(Credentials credentials)
-            throws Exception {
-        testDataRetrievalForNonExistedDataUsingAuthorizedUser(
+    @MethodSource("provideArgsOfUsers")
+    void shouldFailRetrievalWhenCategoryQueriedByIdAndDataNotFound(Credentials credentials) throws Exception {
+        shouldReturnStatus404WithErrMsgWhenDataNotFoundAndUserIsAuthorized(
             format(GET_CATEGORY_BY_ID, 404),
             credentials,
             NO_DATA_FOUND_JSON);
     }
 
-    private static Stream<Arguments> provideArgsForTestGetByIdWhenDataNotFound() {
-        return Stream.of(
-            Arguments.of(ADMIN),
-            Arguments.of(CUSTOMER)
-        );
-    }
-
     @Sql(scripts = "classpath:db/scripts/categories.sql", executionPhase = BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testGetAllItemsByPagination_WhenDataFound_ThenReturn200WithData()
-            throws Exception {
-        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
+    void shouldReturnCategoriesQueriedByPageWhenDataFound() throws Exception {
+        shouldReturnStatus200WithDataWhenItsFoundAndUserIsAuthorized(
             format(GET_CATEGORIES_BY_PAGINATION, 0),
             ADMIN,
             CATEGORIES_WITH_PAGINATION_JSON);
     }
 
     @Test
-    void testGetAllItemsByPagination_WhenDataNotFound_ThenReturn404WithErrorMsg()
-            throws Exception {
-        testDataRetrievalForNonExistedDataUsingAuthorizedUser(
+    void shouldFailRetrievalWhenCategoriesQueriedByPageAndDataNotFound() throws Exception {
+        shouldReturnStatus404WithErrMsgWhenDataNotFoundAndUserIsAuthorized(
             format(GET_CATEGORIES_BY_PAGINATION, 404),
             ADMIN,
             NO_DATA_FOUND_JSON);
     }
 
     @Test
-    void testGetAllItemsByPagination_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
-            throws Exception {
-        testDataRetrievalUsingUnauthorizedUser(
+    void shouldFailRetrievalWhenCategoriesQueriedByPageAndUserIsUnauthorized() throws Exception {
+        shouldReturnStatus403WithErrMsgWhenUserIsUnauthorized(
             format(GET_CATEGORIES_BY_PAGINATION, 0),
             CUSTOMER,
             ACCESS_DENIED_JSON);
@@ -204,18 +163,16 @@ class CategoryControllerIT
     @Sql(scripts = "classpath:db/scripts/categories.sql", executionPhase = BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testGetAll_WhenDataFound_ThenReturn200WithData()
-            throws Exception {
-        testDataRetrievalToReturnExistedDataUsingAuthorizedUser(
+    void shouldReturnCategoriesQueriedWithNoCriteriaWhenDataFound() throws Exception {
+        shouldReturnStatus200WithDataWhenItsFoundAndUserIsAuthorized(
             GET_ALL_CATEGORIES,
             ADMIN,
             ALL_CATEGORIES_JSON);
     }
 
     @Test
-    void testGetAll_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
-            throws Exception {
-        testDataRetrievalUsingUnauthorizedUser(
+    void shouldFailRetrievalWhenCategoriesQueriedWithNoCriteriaAndUserIsUnauthorized() throws Exception {
+        shouldReturnStatus403WithErrMsgWhenUserIsUnauthorized(
             GET_ALL_CATEGORIES,
             CUSTOMER,
             ACCESS_DENIED_JSON);
@@ -224,29 +181,40 @@ class CategoryControllerIT
     @Sql(scripts = "classpath:db/scripts/new_category.sql", executionPhase = BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:db/scripts/reset_category_table.sql", executionPhase = AFTER_TEST_METHOD)
     @Test
-    void testRemove_WhenDataFound_ThenRemoveItAndReturn204()
-            throws Exception {
-        testDataRemovalOfExistingDataUsingAuthorizedUser(
+    void shouldRemoveWhenDataFound() throws Exception {
+        shouldRemoveItemAndReturnStatus204WhenDataFoundAndUserIsAuthorized(
             format(DELETE_CATEGORY_BY_ID, 1),
             ADMIN);
     }
 
     @Test
-    void testRemove_WhenUserIsUnauthorized_ThenReturn403WithErrorMsg()
-            throws Exception {
-        testDataRemovalUsingUnauthorizedUser(
+    void shouldFailRemoveWhenUserIsUnauthorized() throws Exception {
+        shouldFailDataRemovalAndReturnStatus403WithErrMsgWhenUserIsUnauthorized(
             format(DELETE_CATEGORY_BY_ID, 1),
             CUSTOMER,
             ACCESS_DENIED_JSON);
     }
 
     @Test
-    void testRemove_WhenDataNotFound_ThenRemoveItAndReturn404WithErrorMsg()
-            throws Exception {
-        testDataRemovalOfNonExistingDataUsingAuthorizedUser(
+    void shouldFailRemoveWhenDataNotFound() throws Exception {
+        shouldFailDataRemovalAndReturnStatus404WithErrMsgWhenDataNotFoundAndUserIsAuthorized(
             format(DELETE_CATEGORY_BY_ID, 404),
             ADMIN,
             NO_DATA_FOUND_JSON);
+    }
+
+    private static Stream<Arguments> provideArgsWhenCategoryPayloadIsInvalid() {
+        return Stream.of(
+            Arguments.of(INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_NAME_VALUE_JSON, NAME_IS_REQUIRED_JSON),
+            Arguments.of(INVALID_NEW_PRODUCT_CLASSIFICATION_WITH_EMPTY_PAYLOAD_JSON, NAME_IS_REQUIRED_JSON)
+        );
+    }
+
+    private static Stream<Arguments> provideArgsOfUsers() {
+        return Stream.of(
+            Arguments.of(ADMIN),
+            Arguments.of(CUSTOMER)
+        );
     }
 
 }

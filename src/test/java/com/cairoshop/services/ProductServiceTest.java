@@ -67,9 +67,8 @@ class ProductServiceTest
         injectRefs(productService);
     }
 
-
     @Test
-    void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId()
+    void shouldCreateProductAndReturnItsIdWhenDataIsValid()
             throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         var productEntity = mock(Product.class);
         when(getRepository().save(any(Product.class)))
@@ -93,7 +92,7 @@ class ProductServiceTest
     }
 
     @Test
-    void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
+    void shouldThrowDataIntegrityViolatedExceptionWhenDbConstraintViolatedOnProductCreation() {
         var productInDetailDTO = ProductInDetailDTO.builder()
                                                                         .name("some duplicated name")
                                                                         .price(0.5)
@@ -111,7 +110,7 @@ class ProductServiceTest
     }
 
     @Test
-    void testEdit_WhenDataIsValid_ThenSave() {
+    void shouldUpdateProductWhenItsDataIsValid() {
         var id = 1;
         var productInDetailDTO = ProductInDetailDTO.builder()
                                                                         .name("some name")
@@ -143,7 +142,7 @@ class ProductServiceTest
     }
 
     @Test
-    void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
+    void shouldThrowDataIntegrityViolatedExceptionWhenDbConstraintViolatedOnProductEditing() {
         var id = 1;
         var productInDetailDTO = ProductInDetailDTO.builder()
                                                                        .name("some duplicated name")
@@ -171,7 +170,7 @@ class ProductServiceTest
     }
 
     @Test
-    void testEditImage_WhenProductFound_ThenUpdateIt() {
+    void shouldUpdateImageOfProductWhenProductIsFound() {
         var uploadedImageStream = new byte[2048];
         var idOfSavedProduct = 1;
         var productEntity = mock(Product.class);
@@ -186,9 +185,8 @@ class ProductServiceTest
         verify(getRepository()).save(productEntity);
     }
 
-
     @Test
-    void testGetById_WhenDataFound_ThenReturnIt()
+    void shouldReturnProductQueriedByIdWhenItsFound()
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         var productInDetailDTO = Optional.of(ProductInDetailDTO.builder()
                                                                                             .name("some name")
@@ -200,11 +198,11 @@ class ProductServiceTest
                                                                                             .imageUploaded(false)
                                                                                         .build());
         var getters = List.of("getName", "getPrice", "getQuantity", "getDescription", "getCategoryId", "getVendorId", "isImageUploaded");
-        testGetById_WhenDataFound_ThenReturnIt(1, productInDetailDTO, getters);
+        shouldReturnSingleItemWhenItsDataFound(1, productInDetailDTO, getters);
     }
 
     @Test
-    void testGetImage_WhenProductFound_ThenReturnItsImage() {
+    void shouldReturnImageOfProductQueriedByIdWhenItsFound() {
         var expectedImageStream = new byte[2048];
         var idOfSavedProduct = 1;
         when(((ProductRepository) getRepository()).findImageByProductId(idOfSavedProduct))
@@ -216,7 +214,7 @@ class ProductServiceTest
     }
 
     @Test
-    void testGetImage_WhenImageIsNotUploadedYet_ThenThrowNoResultException() {
+    void shouldThrowNoResultExceptionWhenImageIsNotUploadedYet() {
         byte[] expectedImageStream = null;
         var idOfSavedProduct = 1;
         when(((ProductRepository) getRepository()).findImageByProductId(any(int.class)))
@@ -227,18 +225,17 @@ class ProductServiceTest
     }
 
     @Test
-    void testGetAllByPage_WhenDataFound_ThenReturnIt() {
-        var productInBriefDTO = new ProductInBriefDTO(1, "IPhone X");
-        testGetAllByPage_WhenDataFound_ThenReturnIt(productInBriefDTO);
+    void shouldReturnPageOfProductsWhenItsDataFound() {
+        shouldReturnPageWhenItsDataFound(new ProductInBriefDTO(1, "IPhone X"));
     }
 
     @Test
-    void testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException() {
-        super.testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException();
+    void shouldThrowNoResultExceptionWhenPageOfProductsNotFound() {
+        super.shouldThrowNoResultExceptionWhenDataOfPageNotFound();
     }
 
     @Test
-    void testSearchByProductName_WhenDataFound_ThenReturnIt() {
+    void shouldReturnPageOfProductsQueriedByNameWhenItsDataFound() {
         var productInBriefDTO = new ProductInBriefDTO(1, "IPhone X");
         var page = mock(Page.class);
         when(page.isEmpty())
@@ -258,7 +255,7 @@ class ProductServiceTest
     }
 
     @Test
-    void testSearchByProductName_WhenDataNotFound_ThenThrowNoResultException() {
+    void shouldThrowNoResultExceptionWhenPageOfProductsQueriedByNameNotFound() {
         var page = mock(Page.class);
         when(page.isEmpty())
             .thenReturn(true);
@@ -270,7 +267,7 @@ class ProductServiceTest
     }
 
     @Test
-    void testGetSortableFields_WhenDataFound_ThenReturnIt() {
+    void shouldReturnSortableFieldsWhenItsDataFound() {
         var expectedSortableList = List.of("name", "price", "quantity");
         when(productSortableFieldsRepository.findAll())
             .thenReturn(List.of(new ProductSortableFields("name"),
@@ -283,7 +280,7 @@ class ProductServiceTest
     }
 
     @Test
-    void testGetSortableFields_WhenDataNotFound_ThenThrowNoResultException() {
+    void shouldThrowNoResultExceptionWhenSortableFieldsNotFound() {
         List<ProductSortableFields> expectedSortableList = Collections.emptyList();
         when(productSortableFieldsRepository.findAll())
             .thenReturn(expectedSortableList);
@@ -293,8 +290,8 @@ class ProductServiceTest
     }
 
     @Test
-    void testRemoveById_WhenDataFound_ThenReturnIt() {
-        super.testRemoveById_WhenDataFound_ThenRemoveIt(1);
+    void shouldRemoveProductWhenItsDataFound() {
+        super.shouldRemoveItemWhenItsDataFound(1);
     }
 
 }

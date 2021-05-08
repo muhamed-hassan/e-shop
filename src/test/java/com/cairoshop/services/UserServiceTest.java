@@ -42,12 +42,11 @@ class UserServiceTest
 
     @BeforeEach
     void injectRefs() {
-        var userService = new UserServiceImpl(mock(UserRepository.class));
-        injectRefs(userService);
+        injectRefs(new UserServiceImpl(mock(UserRepository.class)));
     }
 
     @Test
-    void testEdit_WhenDataIsValid_ThenSave() {
+    void shouldUpdateUserWhenItsDataIsValid() {
         var userEntity = mock(User.class);
         var id = 1;
         var userStatusDTO = new UserStatusDTO();
@@ -64,7 +63,7 @@ class UserServiceTest
     }
 
     @Test
-    void testGetById_WhenDataFound_ThenReturnIt()
+    void shouldReturnUserQueriedByIdWhenItsFound()
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         var userInDetailDTO = Optional.of(UserInDetailDTO.builder()
                                                                                     .name("some name")
@@ -74,11 +73,11 @@ class UserServiceTest
                                                                                     .address("henak")
                                                                                 .build());
         var getters = List.of("getUsername", "getEmail", "getPhone", "getAddress", "getName");
-        testGetById_WhenDataFound_ThenReturnIt(1, userInDetailDTO, getters);
+        shouldReturnSingleItemWhenItsDataFound(1, userInDetailDTO, getters);
     }
 
     @Test
-    void testGetAllCustomersByPage_WhenDataFound_ThenReturnIt() {
+    void shouldReturnPageOfCustomersWhenItsDataFound() {
         var userInBriefDTO = new UserInBriefDTO(1, "name", true);
         var page = mock(Page.class);
         when(page.getContent())
@@ -95,7 +94,7 @@ class UserServiceTest
     }
 
     @Test
-    void testLoadUserByUsername_WhenDataFound_ThenReturnIt() {
+    void shouldReturnUserQueriedByUsernameWhenItsFound() {
         var username = "username";
         var userEntity = new User();
         userEntity.setUsername(username);
@@ -109,7 +108,7 @@ class UserServiceTest
     }
 
     @Test
-    void testLoadUserByUsername_WhenDataNotFound_ThenThrowUsernameNotFoundException() {
+    void shouldThrowUsernameNotFoundExceptionWhenUserNotFound() {
         var username = "username";
         Optional<User> expectedResult = Optional.empty();
         when(((UserRepository) getRepository()).findByUsername(anyString()))

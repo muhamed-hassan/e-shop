@@ -58,7 +58,7 @@ class BaseServiceTest<T, D, B> {
         return service;
     }
 
-    void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(D detailedDto)
+    void shouldSaveAndReturnNewIdWhenDataIsValid(D detailedDto)
             throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         var entity = mock(entityClass);
         var expectedCreatedId = 1;
@@ -72,7 +72,7 @@ class BaseServiceTest<T, D, B> {
         assertEquals(expectedCreatedId, actualCreatedId);
     }
 
-    void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(D detailedDto) {
+    void shouldThrowDataIntegrityViolatedExceptionWhenDbConstraintViolatedOnItemCreation(D detailedDto) {
         when(repository.saveAndFlush(any(entityClass)))
             .thenThrow(DataIntegrityViolationException.class);
 
@@ -80,7 +80,7 @@ class BaseServiceTest<T, D, B> {
             () -> service.add(detailedDto));
     }
 
-    void testGetById_WhenDataFound_ThenReturnIt(int id, Optional<D> expectedResult, List<String> getters)
+    void shouldReturnSingleItemWhenItsDataFound(int id, Optional<D> expectedResult, List<String> getters)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         when(repository.findByIdAndActive(any(int.class), any(boolean.class)))
             .thenReturn(expectedResult);
@@ -93,7 +93,7 @@ class BaseServiceTest<T, D, B> {
         }
     }
 
-    void testGetAllByPage_WhenDataFound_ThenReturnIt(B briefDto) {
+    void shouldReturnPageWhenItsDataFound(B briefDto) {
         var page = mock(Page.class);
         when(page.isEmpty())
             .thenReturn(false);
@@ -110,7 +110,7 @@ class BaseServiceTest<T, D, B> {
         assertIterableEquals(page.getContent(), actualResult.getItems());
     }
 
-    void testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException() {
+    void shouldThrowNoResultExceptionWhenDataOfPageNotFound() {
         var page = mock(Page.class);
         when(page.isEmpty())
             .thenReturn(true);
@@ -121,7 +121,7 @@ class BaseServiceTest<T, D, B> {
             () -> service.getAll(0, "id", "ASC"));
     }
 
-    void testRemoveById_WhenDataFound_ThenRemoveIt(int idOfObjectToDelete) {
+    void shouldRemoveItemWhenItsDataFound(int idOfObjectToDelete) {
         var entity = mock(entityClass);
         when(repository.getOne(idOfObjectToDelete))
             .thenReturn(entity);

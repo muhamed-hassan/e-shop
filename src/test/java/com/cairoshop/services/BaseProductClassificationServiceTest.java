@@ -29,7 +29,7 @@ class BaseProductClassificationServiceTest<T, D, B>
         super(entityClass);
     }
 
-    void testEdit_WhenDataIsValid_ThenSave(int id, D detailedDtoClass) {
+    void shouldUpdateItemWhenItsDataIsValid(int id, D detailedDtoClass) {
         var entity = mock(getEntityClass());
         when(getRepository().getOne(id))
             .thenReturn(entity);
@@ -42,7 +42,7 @@ class BaseProductClassificationServiceTest<T, D, B>
         verify(getRepository()).saveAndFlush(entity);
     }
 
-    void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(int id, D detailedDtoClass) {
+    void shouldThrowDataIntegrityViolatedExceptionWhenDbConstraintViolatedOnItemEditing(int id, D detailedDtoClass) {
         var entity = mock(getEntityClass());
         when(getRepository().getOne(id))
             .thenReturn(entity);
@@ -53,7 +53,7 @@ class BaseProductClassificationServiceTest<T, D, B>
             () -> ((BaseProductClassificationService) getService()).edit(id, detailedDtoClass));
     }
 
-    void testGetAll_WhenDataFound_ThenReturnIt(B briefDtoClass) {
+    void shouldReturnAllDataWhenTheyAreFound(B briefDtoClass) {
         var expectedResult = List.of(briefDtoClass);
         when(((BaseProductClassificationRepository) getRepository()).findAllByActive(any(boolean.class), any(Class.class)))
             .thenReturn(expectedResult);
@@ -63,7 +63,7 @@ class BaseProductClassificationServiceTest<T, D, B>
         assertIterableEquals(expectedResult, actualResult);
     }
 
-    void testGetAll_WhenDataNotFound_ThenThrowNoResultException() {
+    void shouldThrowNoResultExceptionWhenAllDataNotFound() {
         when(((BaseProductClassificationRepository) getRepository()).findAllByActive(any(boolean.class), any(Class.class)))
             .thenReturn(Collections.emptyList());
 
@@ -71,7 +71,7 @@ class BaseProductClassificationServiceTest<T, D, B>
             () -> ((BaseProductClassificationService) getService()).getAll());
     }
 
-    void testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt(int idOfObjectToDelete) {
+    void shouldRemoveItemWhenItsDataIsNotAssociatedWithProduct(int idOfObjectToDelete) {
         when(((BaseProductClassificationRepository) getRepository()).countOfAssociationsWithProduct(idOfObjectToDelete))
             .thenReturn(0L);
         var entity = mock(getEntityClass());
@@ -87,7 +87,7 @@ class BaseProductClassificationServiceTest<T, D, B>
         verify(getRepository()).save(entity);
     }
 
-    void testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException(int idOfObjectToDelete) {
+    void shouldThrowIllegalArgumentExceptionWhenItsDataIsAssociatedWithProduct(int idOfObjectToDelete) {
         when(((BaseProductClassificationRepository) getRepository()).countOfAssociationsWithProduct(idOfObjectToDelete))
             .thenReturn(1L);
 

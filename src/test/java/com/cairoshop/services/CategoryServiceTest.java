@@ -29,72 +29,64 @@ class CategoryServiceTest
 
     @BeforeEach
     void injectRefs() {
-        var categoryService = new CategoryServiceImpl(mock(CategoryRepository.class));
-        injectRefs(categoryService);
+        injectRefs(new CategoryServiceImpl(mock(CategoryRepository.class)));
     }
 
     @Test
-    void testAdd_WhenDataIsValid_ThenSaveAndReturnNewId()
+    void shouldCreateCategoryAndReturnItsIdWhenDataIsValid()
             throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        var categoryInDetailDTO = new CategoryInDetailDTO("Tablets");
-        testAdd_WhenDataIsValid_ThenSaveAndReturnNewId(categoryInDetailDTO);
+        shouldSaveAndReturnNewIdWhenDataIsValid(new CategoryInDetailDTO("Tablets"));
     }
 
     @Test
-    void testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
-        var categoryInDetailDTO = new CategoryInDetailDTO("Tablets");
-        testAdd_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(categoryInDetailDTO);
+    void shouldThrowDataIntegrityViolatedExceptionWhenDbConstraintViolatedOnCategoryCreation() {
+        shouldThrowDataIntegrityViolatedExceptionWhenDbConstraintViolatedOnItemCreation(new CategoryInDetailDTO("Tablets"));
     }
 
     @Test
-    void testEdit_WhenDataIsValid_ThenSave() {
-        var savedDetailedCategoryDTO = new CategoryInDetailDTO("Mobiles");
-        testEdit_WhenDataIsValid_ThenSave(1, savedDetailedCategoryDTO);
+    void shouldUpdateCategoryWhenItsDataIsValid() {
+        shouldUpdateItemWhenItsDataIsValid(1, new CategoryInDetailDTO("Mobiles"));
     }
 
     @Test
-    void testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException() {
-        var savedDetailedCategoryDTO = new CategoryInDetailDTO("Tablets");
-        testEdit_WhenDbConstraintViolated_ThenThrowDataIntegrityViolatedException(1, savedDetailedCategoryDTO);
+    void shouldThrowDataIntegrityViolatedExceptionWhenDbConstraintViolatedOnCategoryEditing() {
+        shouldThrowDataIntegrityViolatedExceptionWhenDbConstraintViolatedOnItemEditing(1, new CategoryInDetailDTO("Tablets"));
     }
 
     @Test
-    void testGetById_WhenDataFound_ThenReturnIt()
+    void shouldReturnCategoryQueriedByIdWhenItsFound()
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        var categoryInDetailDTO = Optional.of(new CategoryInDetailDTO("Mobiles"));
-        testGetById_WhenDataFound_ThenReturnIt(1, categoryInDetailDTO, List.of("getName"));
+        shouldReturnSingleItemWhenItsDataFound(1, Optional.of(new CategoryInDetailDTO("Mobiles")), List.of("getName"));
     }
 
     @Test
-    void testGetAllByPage_WhenDataFound_ThenReturnIt() {
-        var categoryInBriefDTO = new CategoryInBriefDTO(2, "Mobiles");
-        testGetAllByPage_WhenDataFound_ThenReturnIt(categoryInBriefDTO);
+    void shouldReturnPageOfCategoriesWhenItsDataFound() {
+        shouldReturnPageWhenItsDataFound(new CategoryInBriefDTO(2, "Mobiles"));
     }
 
     @Test
-    void testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException() {
-        super.testGetAllByPage_WhenDataNotFound_ThenThrowNoResultException();
+    void shouldThrowNoResultExceptionWhenPageOfCategoriesNotFound() {
+        super.shouldThrowNoResultExceptionWhenDataOfPageNotFound();
     }
 
     @Test
-    void testGetAll_WhenDataFound_ThenReturnIt() {
-        var categoryInBriefDTO = new CategoryInBriefDTO(2, "Mobiles");
-        testGetAll_WhenDataFound_ThenReturnIt(categoryInBriefDTO);
+    void shouldReturnAllCategoriesWhenTheyAreFound() {
+        shouldReturnAllDataWhenTheyAreFound(new CategoryInBriefDTO(2, "Mobiles"));
     }
 
     @Test
-    void testGetAll_WhenDataNotFound_ThenThrowNoResultException() {
-        super.testGetAll_WhenDataNotFound_ThenThrowNoResultException();
+    void shouldThrowNoResultExceptionWhenAllCategoriesNotFound() {
+        super.shouldThrowNoResultExceptionWhenAllDataNotFound();
     }
 
     @Test
-    void testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt() {
-        super.testRemoveById_WhenDataIsNotAssociatedWithProduct_ThenRemoveIt(1);
+    void shouldRemoveCategoryWhenItsDataIsNotAssociatedWithProduct() {
+        super.shouldRemoveItemWhenItsDataIsNotAssociatedWithProduct(1);
     }
 
     @Test
-    void testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException() {
-        super.testRemoveById_WhenDataIsAssociatedWithProduct_ThenThrowIllegalArgumentException(2);
+    void shouldThrowIllegalArgumentExceptionWhenCategoryIsAssociatedWithProduct() {
+        super.shouldThrowIllegalArgumentExceptionWhenItsDataIsAssociatedWithProduct(2);
     }
 
 }
